@@ -7,7 +7,7 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>aloha-core</artifactId>
+    <artifactId>aloha-core${artifact.ext}</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <name>${project.artifactId}</name>
 
