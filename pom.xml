@@ -62,14 +62,6 @@
     </properties>
 
     <dependencies>
-        <!-- Remove later -->
-        <dependency>
-            <groupId>com.eharmony.matching</groupId>
-            <artifactId>matching-protobuf</artifactId>
-            <version>1.0.43-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-
         <!-- Dependencies in under aloha's dependency management. -->
         <dependency>
             <groupId>org.scalaz</groupId>
@@ -84,13 +76,13 @@
 
         <dependency>
             <groupId>com.eharmony.matching</groupId>
-            <artifactId>aloha-core</artifactId>
+            <artifactId>aloha-core${artifact.ext}</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>com.eharmony.matching</groupId>
-            <artifactId>aloha-compiled-semantics</artifactId>
+            <artifactId>aloha-compiled-semantics${artifact.ext}</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
