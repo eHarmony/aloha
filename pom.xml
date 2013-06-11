@@ -53,6 +53,71 @@
         </developer>
     </developers>
 
+    <profiles>
+
+        <!--
+            Require a protocol buffer version to be specified at build time.  Currently, the available options are:
+
+                - 2.5.0
+                - 2.4.1
+                - 2.3.0
+
+            To specify the version at compilation time for a child project, do (with proto v. 2.5.0 for example):
+
+                mvn -Dproto=2.5.0 clean install
+        -->
+        <profile>
+            <id>proto-2.5.0</id>
+            <activation>
+                <property>
+                    <name>proto</name>
+                    <value>2.5.0</value>
+                </property>
+            </activation>
+            <properties>
+                <protobuf.version>2.5.0</protobuf.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>proto-2.4.1</id>
+            <activation>
+                <property>
+                    <name>proto</name>
+                    <value>2.4.1</value>
+                </property>
+            </activation>
+            <properties>
+                <protobuf.version>2.4.1</protobuf.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>proto-2.3.0</id>
+            <activation>
+                <property>
+                    <name>proto</name>
+                    <value>2.3.0</value>
+                </property>
+            </activation>
+            <properties>
+                <protobuf.version>2.3.0</protobuf.version>
+            </properties>
+        </profile>
+
+        <!-- Scala compiler optimization -->
+        <profile>
+            <id>scala-compiler-optimizer-activated</id>
+            <activation>
+                <property>
+                    <name>optimize</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <properties>
+                <scala.optmize.flag>-optimise</scala.optmize.flag>
+            </properties>
+        </profile>
+    </profiles>
+
     <properties>
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
@@ -64,35 +129,12 @@
 
         <!--
             For child artifacts, the artifact name should be "[my-artifact-name-here]${artifact.ext}".  This allows
-            us to build different artifact names for different maven profiles.  Note that the default maven profile
-            is proto-2.5.0.
+            us to build different artifact names for different maven profiles.
         -->
         <artifact.ext>_${scala.version}_proto-${protobuf.version}</artifact.ext>
 
-        <!--
-        Should be "-optimise" (prod build) or blank (non-prod build).  This will eventually be extracted to a profile.
-         -->
-        <!--<scala.optmize.flag>-optimise</scala.optmize.flag>-->
         <scala.optmize.flag></scala.optmize.flag>
     </properties>
-
-    <profiles>
-        <profile>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <id>proto-2.5.0</id>
-            <properties>
-                <protobuf.version>2.5.0</protobuf.version>
-            </properties>
-        </profile>
-        <profile>
-            <id>proto-2.4.1</id>
-            <properties>
-                <protobuf.version>2.4.1</protobuf.version>
-            </properties>
-        </profile>
-    </profiles>
 
     <build>
         <pluginManagement>
