@@ -15,6 +15,29 @@
         </license>
     </licenses>
 
+    <scm>
+        <connection>scm:git:git@github.corp.eharmony.com:matching/aloha.git</connection>
+        <url>git@github.corp.eharmony.com:matching/aloha.git</url>
+        <developerConnection>scm:git:git@github.corp.eharmony.com:matching/aloha.git</developerConnection>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>internal-releases</id>
+            <name>Internal Releases</name>
+            <url>https://repository.corp.eharmony.com/nexus/content/repositories/internal-releases</url>
+            <layout>default</layout>
+        </repository>
+        <snapshotRepository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>internal-snapshots</id>
+            <name>Internal Snapshots</name>
+            <url>https://repository.corp.eharmony.com/nexus/content/repositories/internal-snapshots</url>
+            <layout>default</layout>
+        </snapshotRepository>
+    </distributionManagement>
+
     <developers>
         <developer>
             <id>ryan</id>
