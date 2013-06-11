@@ -1,0 +1,130 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.eharmony.matching</groupId>
+        <artifactId>aloha</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>aloha-compiled-semantics</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>${project.artifactId}</name>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git@github.corp.eharmony.com:matching/aloha-compiled-semantics.git</connection>
+        <url>git@github.corp.eharmony.com:matching/aloha-compiled-semantics.git</url>
+        <developerConnection>scm:git:git@github.corp.eharmony.com:matching/aloha-compiled-semantics.git</developerConnection>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>internal-releases</id>
+            <name>Internal Releases</name>
+            <url>https://repository.corp.eharmony.com/nexus/content/repositories/internal-releases</url>
+            <layout>default</layout>
+        </repository>
+        <snapshotRepository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>internal-snapshots</id>
+            <name>Internal Snapshots</name>
+            <url>https://repository.corp.eharmony.com/nexus/content/repositories/internal-snapshots</url>
+            <layout>default</layout>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <developers>
+        <developer>
+            <id>ryan</id>
+            <name>Ryan Deak</name>
+            <email>rdeak@eharmony.com</email>
+            <organization>eHarmony</organization>
+            <organizationUrl>http://www.eharmony.com</organizationUrl>
+            <roles>
+                <role>creator</role>
+                <role>developer</role>
+            </roles>
+            <timezone>-8</timezone>
+        </developer>
+    </developers>
+
+
+    <dependencies>
+        <!-- Dependencies in under aloha's dependency management. -->
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-compiler</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Dependencies in under aloha's dependency management. -->
+
+        <dependency>
+            <groupId>com.eharmony.matching</groupId>
+            <artifactId>aloha-core</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.twitter</groupId>
+            <artifactId>util-eval_${scala.major.version}</artifactId>
+            <version>6.3.4</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-compiler</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-reflect</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <sourceDirectory>src/main/scala</sourceDirectory>
+        <testSourceDirectory>src/test/scala</testSourceDirectory>
+
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>test.properties</include>
+                </includes>
+            </testResource>
+        </testResources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
