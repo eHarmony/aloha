@@ -1,0 +1,106 @@
+package com.eharmony.matching.aloha.score;
+
+option java_outer_classname="Scores";
+
+//
+// To see how to easily convert a BaseScore in Score to a basic Java value see the following tests for a comprehensive
+// specification:
+//
+//   aloha/src/test/java/com.eharmony.matching.aloha.score.conversions.StrictConversionsTest
+//   aloha/src/test/java/com.eharmony.matching.aloha.score.conversions.RelaxedConversionsTest
+//
+//
+message Score {
+    message ModelId {
+        required int64 id = 1;
+        optional string name = 2;
+    }
+
+    message MissingRequiredFields {
+        repeated string names = 1;
+    }
+
+    message ScoreError {
+        required ModelId model = 1;
+
+        // An error may or may not be due to missing data.  We want to pay special reverence to data that
+        // was missing but expected and necessary to produce a score.
+        optional MissingRequiredFields missing_features = 2;
+
+        // Any messages stating why the score couldn't be produced.
+        repeated string messages = 3;
+    }
+
+    message BaseScore {
+        extensions 101 to max;
+
+        enum ScoreType {
+            NONE = 1;        // In case no score value was produced but a score (of BaseScore type) is set in the Score message.
+            BOOLEAN = 2;
+            INT = 3;
+            LONG = 4;
+            FLOAT = 5;
+            DOUBLE = 6;
+            STRING = 7;
+        }
+
+        required ModelId model = 1;
+        required ScoreType type = 2;
+    }
+
+    message BooleanScore {
+        extend BaseScore {
+            required BooleanScore impl = 102;
+        }
+        required bool score = 1;
+    }
+
+    message IntScore {
+        extend BaseScore {
+            required IntScore impl = 103;
+        }
+        required int32 score = 1;
+    }
+
+    message LongScore {
+        extend BaseScore {
+            required LongScore impl = 104;
+        }
+        required int64 score = 1;
+    }
+
+    message FloatScore {
+        extend BaseScore {
+            required FloatScore impl = 105;
+        }
+        required float score = 1;
+    }
+
+    message DoubleScore {
+        extend BaseScore {
+            required DoubleScore impl = 106;
+        }
+        required double score = 1;
+    }
+
+    message StringScore {
+        extend BaseScore {
+            required StringScore impl = 107;
+        }
+        required string score = 1;
+    }
+
+    // There are three distinct possibilities:
+    // COMPLETE SUCCESS:  When a base score is present but no score error is present.
+    // PARTIAL SUCCESS:   When a base score and a score error are both present.
+    // FAILURE:           If no base score is present.  (A score error is not strictly required on a failure.)
+    optional BaseScore score = 1;
+
+    // Contains information about an error encountered while scoring.  The presence of an error doesn't indicate
+    // an unrecoverable error and it is valid to have both a score and error simultaneously.  Such cases should
+    // be taken to mean a score was produced but it was in some way compromised.
+    optional ScoreError error = 2;
+
+    // Scores for all sub-models.
+    repeated Score sub_scores = 3;
+}
