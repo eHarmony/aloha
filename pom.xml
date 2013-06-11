@@ -59,10 +59,15 @@
         <encoding>UTF-8</encoding>
         <scala.version>2.10.1</scala.version>
         <scala.major.version>2.10</scala.major.version>
-        <protobuf.version>2.5.0</protobuf.version>
         <jackson.version>1.9.9</jackson.version>
         <protostuff.version>1.0.7</protostuff.version>
 
+        <!--
+            For child artifacts, the artifact name should be "[my-artifact-name-here]${artifact.ext}".  This allows
+            us to build different artifact names for different maven profiles.  Note that the default maven profile
+            is proto-2.5.0.
+        -->
+        <artifact.ext>_${scala.version}_proto-${protobuf.version}</artifact.ext>
 
         <!--
         Should be "-optimise" (prod build) or blank (non-prod build).  This will eventually be extracted to a profile.
@@ -70,6 +75,24 @@
         <!--<scala.optmize.flag>-optimise</scala.optmize.flag>-->
         <scala.optmize.flag></scala.optmize.flag>
     </properties>
+
+    <profiles>
+        <profile>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <id>proto-2.5.0</id>
+            <properties>
+                <protobuf.version>2.5.0</protobuf.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>proto-2.4.1</id>
+            <properties>
+                <protobuf.version>2.4.1</protobuf.version>
+            </properties>
+        </profile>
+    </profiles>
 
     <build>
         <pluginManagement>
