@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/matching2012/!svn/ver/56418/model/proto-model-semantics/trunk/src/main/scala/com/eharmony/matching/model/v3/semantics/impl/proto/codegen
+END
+MapType.scala
+K 25
+svn:wc:ra_dav:version-url
+V 151
+/matching2012/!svn/ver/56418/model/proto-model-semantics/trunk/src/main/scala/com/eharmony/matching/model/v3/semantics/impl/proto/codegen/MapType.scala
+END
+CodeGenerators.scala
+K 25
+svn:wc:ra_dav:version-url
+V 158
+/matching2012/!svn/ver/56418/model/proto-model-semantics/trunk/src/main/scala/com/eharmony/matching/model/v3/semantics/impl/proto/codegen/CodeGenerators.scala
+END
+RequiredAccessorCodeGenerator.scala
+K 25
+svn:wc:ra_dav:version-url
+V 173
+/matching2012/!svn/ver/56418/model/proto-model-semantics/trunk/src/main/scala/com/eharmony/matching/model/v3/semantics/impl/proto/codegen/RequiredAccessorCodeGenerator.scala
+END
+OptionalAccessorCodeGenerator.scala
+K 25
+svn:wc:ra_dav:version-url
+V 173
+/matching2012/!svn/ver/56418/model/proto-model-semantics/trunk/src/main/scala/com/eharmony/matching/model/v3/semantics/impl/proto/codegen/OptionalAccessorCodeGenerator.scala
+END

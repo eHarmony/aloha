@@ -1,0 +1,36 @@
+{
+	"modelType": "Regression",
+	"modelId" : { "id" : 1, "name" : "SPRING_TEST_1" },
+	"features": {
+		"intercept":               "intercept",
+		"num_c3s":                 "ind(${opt_c1.opt_c2.rep_c3}.size)",
+		"required_int_value":      "ind(${req_int_1})",
+		"distinct_chars":          "ind(${req_str_1}.groupBy(identity).keys.size)",
+		"optional_defaulted":      "ind(${opt_c1.opt_c2.req_int_3:-1})"
+	},
+	"spline": {
+		"type": "regular",
+		"min": 0,
+		"max": 1,
+		"knots": [0, 0.5, 1]
+	},
+	"weights": {
+		"intercept":            0.100000,
+		"num_c3s=0":            0.000010,
+		"num_c3s=1":            0.000020,
+		"num_c3s=2":            0.000030,
+		"num_c3s=3":            0.000040,
+		"required_int_value=0": 0.000100,
+		"required_int_value=1": 0.000200,
+		"required_int_value=2": 0.000300,
+		"required_int_value=3": 0.000400,
+		"distinct_chars=0":     0.001000,
+		"distinct_chars=2":     0.002000,
+		"distinct_chars=3":     0.003000,
+		"distinct_chars=3":     0.004000,
+		"optional_defaulted=0": 0.010000,
+		"optional_defaulted=1": 0.020000,
+		"optional_defaulted=2": 0.030000,
+		"optional_defaulted=3": 0.040000
+	}
+}

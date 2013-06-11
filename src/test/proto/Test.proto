@@ -1,0 +1,65 @@
+package com.eharmony.matching.aloha.semantics.compiled.plugin.proto;
+
+option java_outer_classname="TestProtoBuffs";
+
+message TestProto {
+    message Class1Proto {
+        optional int32 opt_int_2 = 1;
+        required int32 req_int_2 = 2;
+        repeated int32 rep_int_2 = 3;
+        optional Class2Proto opt_c2 = 4;
+        required Class2Proto req_c2 = 5;
+        repeated Class2Proto rep_c2 = 6;
+    }
+
+    message Class2Proto {
+        optional int32 opt_int_3 = 1;
+        required int32 req_int_3 = 2;
+        repeated int32 rep_int_3 = 3;
+        optional Class3Proto opt_c3 = 4;
+        required Class3Proto req_c3 = 5;
+        repeated Class3Proto rep_c3 = 6;
+    }
+
+    message Class3Proto {
+        optional int32 opt_int_4 = 1;
+        required int32 req_int_4 = 2;
+        repeated int32 rep_int_4 = 3;
+        optional Class4Proto opt_c4 = 4;
+        required Class4Proto req_c4 = 5;
+        repeated Class4Proto rep_c4 = 6;
+    }
+
+    message Class4Proto {
+        optional int32 opt_int_5 = 1;
+        required int32 req_int_5 = 2;
+        repeated int32 rep_int_5 = 3;
+        optional Class5Proto opt_c5 = 4;
+        required Class5Proto req_c5 = 5;
+        repeated Class5Proto rep_c5 = 6;
+    }
+
+    message Class5Proto {
+        optional int32 opt_int_6 = 1;
+        required int32 req_int_6 = 2;
+        repeated int32 rep_int_6 = 3;
+        optional Class6Proto opt_c6 = 4;
+        required Class6Proto req_c6 = 5;
+        repeated Class6Proto rep_c6 = 6;
+
+    }
+
+    message Class6Proto {
+        optional int32 opt_int_7 = 1;
+        required int32 req_int_7 = 2;
+        repeated int32 rep_int_7 = 3;
+    }
+
+    optional int32 opt_int_1 = 1;
+    required int32 req_int_1 = 2;
+    repeated int32 rep_int_1 = 3;
+    optional Class1Proto opt_c1 = 4;
+    required Class1Proto req_c1 = 5;
+    repeated Class1Proto rep_c1 = 6;
+    required string req_str_1 = 7;
+}

@@ -1,0 +1,299 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.eharmony.matching</groupId>
+        <artifactId>aloha</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>aloha-compiled-semantics-proto-plugin</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>${project.artifactId}</name>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git@github.corp.eharmony.com:matching/aloha-compiled-semantics-proto-plugin.git</connection>
+        <url>git@github.corp.eharmony.com:matching/aloha-compiled-semantics-proto-plugin.git</url>
+        <developerConnection>scm:git:git@github.corp.eharmony.com:matching/aloha-compiled-semantics-proto-plugin.git</developerConnection>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>internal-releases</id>
+            <name>Internal Releases</name>
+            <url>https://repository.corp.eharmony.com/nexus/content/repositories/internal-releases</url>
+            <layout>default</layout>
+        </repository>
+        <snapshotRepository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>internal-snapshots</id>
+            <name>Internal Snapshots</name>
+            <url>https://repository.corp.eharmony.com/nexus/content/repositories/internal-snapshots</url>
+            <layout>default</layout>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <developers>
+        <developer>
+            <id>ryan</id>
+            <name>Ryan Deak</name>
+            <email>rdeak@eharmony.com</email>
+            <organization>eHarmony</organization>
+            <organizationUrl>http://www.eharmony.com</organizationUrl>
+            <roles>
+                <role>creator</role>
+                <role>developer</role>
+            </roles>
+            <timezone>-8</timezone>
+        </developer>
+    </developers>
+
+    <properties>
+        <org.springframework.version>3.0.5.RELEASE</org.springframework.version>
+        <generated.classes.test>${build.outputDirectory}/test-classes/generated</generated.classes.test>
+    </properties>
+
+    <dependencies>
+        <!-- Remove later -->
+        <dependency>
+            <groupId>com.eharmony.matching</groupId>
+            <artifactId>matching-protobuf</artifactId>
+            <version>1.0.43-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Dependencies in under aloha's dependency management. -->
+        <dependency>
+            <groupId>org.scalaz</groupId>
+            <artifactId>scalaz-core_${scala.major.version}</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+        </dependency>
+        <!-- Dependencies in under aloha's dependency management. -->
+
+        <dependency>
+            <groupId>com.eharmony.matching</groupId>
+            <artifactId>aloha-core</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.eharmony.matching</groupId>
+            <artifactId>aloha-compiled-semantics</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-reflect</artifactId>
+        </dependency>
+
+
+        <!-- Version can be changed independently of grizzled-slf4j version -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Dictated by grizzled-slf4j version -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- *********************************  SPRING FOR TESTING  ********************************* -->
+        <!--
+            Core utilities used by other modules.
+            Define this if you use Spring Utility APIs (org.springframework.core.*/org.springframework.util.*)
+        -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${org.springframework.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!--
+            Bean Factory and JavaBeans utilities (depends on spring-core)
+            Define this if you use Spring Bean APIs (org.springframework.beans.*)
+        -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${org.springframework.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!--
+            Application Context (depends on spring-core, spring-expression, spring-aop, spring-beans)
+            This is the central artifact for Spring's Dependency Injection Container and is generally always defined
+        -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${org.springframework.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!--
+            Various Application Context utilities, including EhCache, JavaMail, Quartz, and Freemarker integration
+            Define this if you need any of these integrations
+        -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${org.springframework.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!--
+            Support for testing Spring applications with tools such as JUnit and TestNG
+            This artifact is generally always defined with a 'test' scope for the integration testing framework and unit testing stubs
+        -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${org.springframework.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>mvn_gen_test.properties</include>
+                </includes>
+            </testResource>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>mvn_gen_test.properties</exclude>
+                </excludes>
+            </testResource>
+        </testResources>
+
+        <plugins>
+
+            <!--
+                Both the antrun plugin and the build-helper-maven-plugin need to run using the generate-sources rather
+                than the generate-test-sources because the tests won't compile otherwise.
+
+                Removed the proto directory in generated-test-sources for IntelliJ interoperability.
+                http://stackoverflow.com/questions/5170620/unable-to-use-intellij-with-a-generated-sources-folder
+            -->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>compile-test-protoc</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <tasks>
+                                <!-- aloha generated class file cache directory. -->
+                                <mkdir dir="${generated.classes.test}" />
+
+                                <mkdir dir="${basedir}/target/generated-test-sources" />
+                                <path id="proto.path">
+                                    <fileset dir="src/test/proto">
+                                        <include name="**/*.proto" />
+                                    </fileset>
+                                </path>
+                                <pathconvert pathsep=" " property="proto.files" refid="proto.path" />
+                                <!--
+                                    This required protoc to be installed INSTRUCTIONS: wget http://protobuf.googlecode.com/files/protobuf-2.4.1.tar.gz
+                                    tar -xzf protobuf-2.4.1.tar.gz cd protobuf-2.4.1 sudo ./configure sudo make sudo make install
+
+                                    If on a mac, sudo port install protobuf-java
+                                -->
+                                <exec executable="protoc" failonerror="true">
+                                    <arg value="--java_out=${basedir}/target/generated-test-sources" />
+                                    <arg value="-I${project.basedir}/src/test/proto" />
+                                    <arg line="${proto.files}" />
+                                </exec>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>add-test-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${basedir}/target/generated-test-sources</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Expose the tests jar to other projects to allow testing of protocol buffers. -->
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>test-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
