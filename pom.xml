@@ -210,8 +210,21 @@
                                     </fileset>
                                 </path>
                                 <pathconvert pathsep=" " property="proto.files" refid="proto.path" />
-                                <!-- This required protoc to be installed INSTRUCTIONS: wget http://protobuf.googlecode.com/files/protobuf-2.4.1.tar.gz
-                                    tar -xzf protobuf-2.4.1.tar.gz cd protobuf-2.4.1 sudo ./configure sudo make sudo make install -->
+                                <!--
+                                    This required protoc to be installed.
+
+                                    INSTRUCTIONS:
+                                        (X.Y.Z in {2.5.0, 2.4.1, 2.3.0})
+                                        wget http://protobuf.googlecode.com/files/protobuf-X.Y.Z.tar.gz
+                                        tar -xzf protobuf-X.Y.Z.tar.gz
+                                        cd protobuf-X.Y.Z
+                                        sudo ./configure
+                                        sudo make
+                                        sudo make install
+
+                                    Alternatively, on OS X:
+                                        sudo port install protobuf-cpp @X.Y.Z
+                                -->
                                 <exec executable="protoc" failonerror="true">
                                     <arg value="--java_out=${basedir}/target/generated-sources" />
                                     <arg value="-I${project.basedir}/src/main/proto" />
