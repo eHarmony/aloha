@@ -10,6 +10,7 @@ import com.eharmony.matching.aloha.semantics.Semantics
 import com.eharmony.matching.aloha.semantics.func.{GeneratedAccessor, OptionalFunc, GenFunc, GenAggFunc}
 import com.eharmony.matching.aloha.util.EitherHelpers
 import com.eharmony.matching.aloha.reflect.{RefInfoOps, RefInfo}
+import grizzled.slf4j.Logging
 
 
 /** A semantics that can interpret complicated expressions by compiling the expressions.  This semantics constructs
@@ -143,7 +144,10 @@ import com.eharmony.matching.aloha.reflect.{RefInfoOps, RefInfo}
 case class CompiledSemantics[A](
         compiler: ContainerReadable[Try],
         plugin: CompiledSemanticsPlugin[A],
-        imports: Seq[String])(implicit ec: ExecutionContext) extends Semantics[A] with EitherHelpers {
+        imports: Seq[String])(implicit ec: ExecutionContext)
+    extends Semantics[A]
+    with EitherHelpers
+    with Logging {
 
     /** A java (Spring) friendly constructor.
       * @param compiler a compiler capable of compiling real scala code and generating real instances that work at full speed.
@@ -269,6 +273,9 @@ case class CompiledSemantics[A](
         val (code, hasOpt) = rawCode[B](accessors, codeSpec)  // Generate the raw (untyped) code
         val typedCode = addType[B](code, hasOpt)              // Add typing information
         val finalCode = addImports(typedCode)                 // Add imports if necessary.
+
+        debug(s"""Creating function with${if (!hasOpt) "out" else ""} optional accessors: $finalCode""")
+
         success((finalCode, hasOpt))                          // Return code and whether code has optional accessors.
     }
 
@@ -294,12 +301,10 @@ case class CompiledSemantics[A](
       * @return
       */
     private[this] def addType[B: RefInfo](code: String, hasOpt: Boolean): String = {
+        // TODO: Check this String very carefully.
         val typeStr = if (hasOpt) RefInfoOps.toString(RefInfoOps.wrap[A, Option[B]].in[GenAggFunc])
                       else RefInfoOps.toString(RefInfoOps.wrap[A, B].in[GenAggFunc])
 
-        // TODO: Check this String very carefully.
-//        val typeStr = if (hasOpt) ru.typeTag[GenAggFunc[A, Option[B]]].tpe.toString
-//                      else ru.typeTag[GenAggFunc[A, B]].tpe.toString
         s"identity[${typeStr}]($code)"
     }
 

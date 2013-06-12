@@ -10,7 +10,7 @@ import java.io.{IOException, File, StringReader}
 object FileLocations {
     private[this] val props = {
         // Get the string representation and let Source close everything.
-        val s = scala.io.Source.fromInputStream(VFS.getManager.resolveFile("res:test.properties").getContent.getInputStream).mkString
+        val s = scala.io.Source.fromInputStream(VFS.getManager.resolveFile("res:mvn_gen_test.properties").getContent.getInputStream).mkString
         val p = new Properties
         p.load(new StringReader(s))
         p

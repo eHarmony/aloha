@@ -65,6 +65,27 @@
         </dependency>
 
         <dependency>
+            <groupId>org.clapper</groupId>
+            <artifactId>grizzled-slf4j_${scala.major.version}</artifactId>
+        </dependency>
+
+        <!-- Version can be changed independently of grizzled-slf4j version -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Dictated by grizzled-slf4j version -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
@@ -107,10 +128,18 @@
                 <directory>src/test/resources</directory>
                 <filtering>true</filtering>
                 <includes>
-                    <include>test.properties</include>
+                    <include>mvn_gen_test.properties</include>
                 </includes>
             </testResource>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>mvn_gen_test.properties</exclude>
+                </excludes>
+            </testResource>
         </testResources>
+
 
         <plugins>
             <plugin>
