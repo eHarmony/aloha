@@ -168,7 +168,7 @@ object RegressionModel extends ParserProviderCompanion with JsValuePimpz {
 
     protected[this] type M[-A, +B] = RegressionModel[A, B]
 
-    private[this] case class Spec(spec: String, default: Seq[(String, Double)] = Nil)
+    private[this] case class Spec(spec: String, defVal: Seq[(String, Double)] = Nil)
     private[this] val specJsonFormat = jsonFormat2(Spec)
 
     private[this] implicit object FeatureSpecFormat extends JsonFormat[Spec] {
