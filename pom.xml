@@ -72,6 +72,11 @@
             <groupId>org.scalaz</groupId>
             <artifactId>scalaz-core_${scala.major.version}</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>commons-vfs</groupId>
+            <artifactId>commons-vfs</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-vfs2</artifactId>
