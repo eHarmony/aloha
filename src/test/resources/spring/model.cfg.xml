@@ -29,7 +29,7 @@ mixins, cake pattern, etc.
     </bean>
 
     <!-- Apache VFS manager used to create files to pass to factory for parsing. -->
-    <bean id="vfsFileManager" class="org.apache.commons.vfs2.VFS" factory-method="getManager" />
+    <bean id="vfs2FileManager" class="org.apache.commons.vfs2.VFS" factory-method="getManager" />
 
 
     <!-- Execution context is required for the multi-threaded caching implementation. -->
@@ -118,7 +118,7 @@ mixins, cake pattern, etc.
     <!-- *************************************************************************************************** -->
     <!-- Construct model using the Apache VFS FileObject interface. -->
     <!-- The actual file object containing the JSON. -->
-    <bean id="modelJson1" factory-bean="vfsFileManager" factory-method="resolveFile">
+    <bean id="modelJson1" factory-bean="vfs2FileManager" factory-method="resolveFile">
         <constructor-arg value="${model_location_1}" />
     </bean>
 
@@ -126,7 +126,7 @@ mixins, cake pattern, etc.
         The scala.util.Try with the model. This either contains the model or an exception.  When calling '.get()'
         it will either return the model on success or will throw the exception it is holding.
     -->
-    <bean id="modelTry1" factory-bean="modelFactory" factory-method="fromFileObject">
+    <bean id="modelTry1" factory-bean="modelFactory" factory-method="fromVfs2">
         <constructor-arg ref="modelJson1" />
     </bean>
 

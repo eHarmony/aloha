@@ -5,8 +5,8 @@ import com.eharmony.matching.aloha.models.Model;
 import com.eharmony.matching.aloha.score.Scores.Score;
 import com.eharmony.matching.aloha.score.conversions.StrictConversions;
 import com.eharmony.matching.aloha.semantics.compiled.plugin.proto.TestProtoBuffs.TestProto;
-import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.VFS;
+import org.apache.commons.vfs2.FileObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -63,7 +63,7 @@ public class SpringModelFactoryTest {
 
     @Test
     public void testUsingModelFactoryPulledFromSpringCtxAndCallingFileObject() {
-        final Model<TestProto, Double> model = modelFactory.fromFileObject(modelJson1).get();
+        final Model<TestProto, Double> model = modelFactory.fromVfs2(modelJson1).get();
         final TestProto p = PROTOS.get(1);
         final Score s = model.score(p);
         final Double d = StrictConversions.asJavaDouble(s);
