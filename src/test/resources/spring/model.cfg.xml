@@ -113,16 +113,6 @@ mixins, cake pattern, etc.
         <constructor-arg index="1" type="com.eharmony.matching.aloha.interop.FactoryInfo" ref="doubleFactoryInfo" />
     </bean>
 
-    <!--
-        The factory can stick around for the duration of an application and new models JSON can be passed to the same
-        factory.
-    -->
-    <!--<bean id="modelFactory" class="com.eharmony.matching.aloha.interop.NoImplModelFactory">-->
-        <!--<constructor-arg index="0" ref="doubleFactoryInfo" />-->
-        <!--<constructor-arg index="1" ref="parsers" />-->
-        <!--<constructor-arg index="2" ref="semantics" />-->
-    <!--</bean>-->
-
     <!-- *************************************************************************************************** -->
     <!--                                      CREATE FIRST MODEL HERE ...                                    -->
     <!-- *************************************************************************************************** -->
