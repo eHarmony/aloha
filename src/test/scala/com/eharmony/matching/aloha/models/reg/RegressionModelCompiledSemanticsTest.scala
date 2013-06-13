@@ -54,7 +54,7 @@ class RegressionModelTestCompiledSemanticsTest {
               |        "user_education": "ind(${user.profile.education})",
               |        "user_income": {
               |          "spec": "ind(${user.profile.income})",
-              |          "default": [["=income_error", 1]]
+              |          "defVal": [["=income_error", 1]]
               |        },
               |        "distance": "sos2(log2(${pair.distance}), 0, 10, 1)"
               |    },
