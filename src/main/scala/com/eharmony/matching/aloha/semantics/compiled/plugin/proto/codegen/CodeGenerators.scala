@@ -5,8 +5,41 @@ import MapType._
 
 
 private[proto] object CodeGenerators {
-//    private[this] def toCamelCase(s: String) = s.split("_+").map(_.toLowerCase.capitalize) mkString ""
-    private[this] def toCamelCase(s: String) = s.split("_+").map(_.capitalize) mkString ""
+
+    /** Camel-case a protocol buffer field name (so we can generate code for the getters / setters).  This is a
+      * slightly atypical version of camel-case.  The original version was just:
+      *
+      * {{{
+      * private[this] def toCamelCase(s: String) = s.split("_+").map(_.capitalize) mkString ""
+      * }}}
+      *
+      * But this disagrees with Google's protocol buffer implementation of camel-case that capitalizes
+      * letters appearing directly after a number.  So, the following protocol buffer specification:
+      *
+      * {{{
+      * optional bool comm_7d_c = 7;
+      * }}}
+      *
+      * creates getter:
+      *
+      * {{{
+      * public boolean getComm7DC(){ // ...
+      * }}}
+      *
+      * Therefore, we have to do the slight craziness to match.
+      * @param s input String to be camel-cased.
+      * @return a camel-cased String
+      */
+    private[this] def toCamelCase(s: String) = {
+        if (s.isEmpty) s
+        else {
+            val v = s.toVector
+            v.drop(1).foldLeft(Vector(s.toString.capitalize.head)) { case(s, x) =>
+                val l = s.last
+                s :+ (if (l == '_' || (0x30 <= l && l <= 0x39)) x.toString.capitalize.head else x)
+            }.filter(_ != '_').mkString
+        }
+    }
 
     implicit object RequiredCodeGenerator extends RequiredAccessorCodeGenerator[Required] {
         override def generateGet(r: Required) = "get" + toCamelCase(r.field.getName)
