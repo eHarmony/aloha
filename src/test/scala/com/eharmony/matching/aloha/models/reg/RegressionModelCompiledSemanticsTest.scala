@@ -5,7 +5,6 @@ import collection.JavaConversions.asScalaBuffer
 import org.junit.Test
 import org.junit.Assert._
 import org.junit.runner.RunWith
-import org.junit.internal.runners.JUnit4ClassRunner
 
 import com.eharmony.matching.aloha.id.ModelId
 import com.eharmony.matching.aloha.factory.ModelFactory
@@ -16,8 +15,9 @@ import com.eharmony.matching.aloha.semantics.compiled.{CompiledSemantics, Option
 import com.eharmony.matching.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import com.eharmony.matching.aloha.FileLocations
 import com.eharmony.matching.aloha.reflect.RefInfo
+import org.junit.runners.BlockJUnit4ClassRunner
 
-@RunWith(classOf[JUnit4ClassRunner])
+@RunWith(classOf[BlockJUnit4ClassRunner])
 class RegressionModelTestCompiledSemanticsTest {
     import RegressionModelTestCompiledSemanticsTest.simpleModel
 
