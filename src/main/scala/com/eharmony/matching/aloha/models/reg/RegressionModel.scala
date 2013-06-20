@@ -59,9 +59,9 @@ import grizzled.slf4j.Logging
   *                 is applied prior to invLinkFunction
   * @param numMissingThreshold if provided, we check whether the threshold is exceeded.  If so, return an error instead
   *                            of the computed score.  This is for missing data situations.
-  * @param evidence$1 converter from type instance of B to a [[com.eharmony.matching.aloha.score.Scores.Score]]
   * @tparam A model input type
-  * @tparam B model input type
+  * @tparam B model output type.  Requires a implicit [[com.eharmony.matching.aloha.score.conversions.ScoreConverter]]
+  *           to convert from B to [[com.eharmony.matching.aloha.score.Scores.Score]]
   */
 case class RegressionModel[-A, +B: ScoreConverter](
         modelId: ModelIdentity,
@@ -162,29 +162,10 @@ case class RegressionModel[-A, +B: ScoreConverter](
     }
 }
 
-object RegressionModel extends ParserProviderCompanion with JsValuePimpz {
+object RegressionModel extends ParserProviderCompanion with JsValuePimpz with RegressionModelJson {
     import spray.json._
-    import spray.json.DefaultJsonProtocol._
 
     protected[this] type M[-A, +B] = RegressionModel[A, B]
-
-    private[this] case class Spec(spec: String, defVal: Seq[(String, Double)] = Nil)
-    private[this] val specJsonFormat = jsonFormat2(Spec)
-
-    private[this] implicit object FeatureSpecFormat extends JsonFormat[Spec] {
-        def write(o: Spec) = throw new SerializationException("Spec serialization not supported")
-        def read(json: JsValue) = json match {
-            case JsString(s) => Spec(s)
-            case o : JsObject => o.convertTo[Spec](specJsonFormat)
-            case e => throw new DeserializationException(s"unexpected feature $e")
-        }
-    }
-
-    private[this] case class Hof(features: Map[String, Seq[String]], wt: Double)
-    private[this] case class RegData(features: Map[String, Spec], weights: Map[String, Double], higherOrderFeatures: Option[Seq[Hof]], spline: Option[ConstantDeltaSpline], numMissingThreshold: Option[Int])
-    private[this] implicit val hofJsonFormat = jsonFormat2(Hof)
-    private[this] implicit val regSplineJsonFormat = jsonFormat(ConstantDeltaSpline, "min", "max", "knots")
-    private[this] implicit val regDataJsonFormat = jsonFormat5(RegData)
 
     private[this] class Parser extends ModelParserWithSemantics[M] with EitherHelpers {
         val modelType = "Regression"
@@ -201,9 +182,7 @@ object RegressionModel extends ParserProviderCompanion with JsValuePimpz {
           */
         def modelJsonReader[A, B: JsonReader: ScoreConverter, C >: M[A, B]](semantics: Option[Semantics[A]]) = new JsonReader[C] {
             def read(json: JsValue): RegressionModel[A, B] = {
-
-                val modelId = getModelId(json) getOrElse { throw new DeserializationException("No model ID available: " + json) }
-
+//                val modelId = getModelId(json) getOrElse { throw new DeserializationException("No model ID available: " + json) }
                 val sem = semantics getOrElse { throw new DeserializationException("Required semantics for no semantics") }
 
                 // Get the metadata necessary to create the model.
@@ -225,7 +204,7 @@ object RegressionModel extends ParserProviderCompanion with JsValuePimpz {
 
                 // These are the features.  Do them last because they are the slowest.
                 val f = features(featureMap, sem).fold(f => throw new DeserializationException(f.mkString("\n")), identity)
-                val m = RegressionModel[A, B](modelId, f, beta, cf, d.spline, d.numMissingThreshold)
+                val m = RegressionModel[A, B](d.modelId, f, beta, cf, d.spline, d.numMissingThreshold)
                 m
             }
         }
@@ -263,7 +242,8 @@ object RegressionModel extends ParserProviderCompanion with JsValuePimpz {
         private[this] def features[A](featureMap: Seq[(String, Spec)], semantics: Semantics[A]) =
             mapSeq(featureMap){
                 case (k, Spec(spec, default)) =>
-                    semantics.createFunction[Iterable[(String, Double)]](spec, Option(default)).right.map(f => (k, f))
+//                    semantics.createFunction[Iterable[(String, Double)]](spec, Option(default)).right.map(f => (k, f))
+                    semantics.createFunction[Iterable[(String, Double)]](spec, default).right.map(f => (k, f))
             }.right.map(_.toMap)
 
         /** Translate the specification of higher order features to something a

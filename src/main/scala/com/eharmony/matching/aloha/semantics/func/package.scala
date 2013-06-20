@@ -35,11 +35,17 @@ sealed trait GenAggFunc[-A, +B] extends (A => B) { self: Product =>
       */
     def accessorOutput(a: A) = accessors.map(acc => (acc.descriptor, acc(a))).toMap
 
-    /** Produce a list of accessor descriptors where the accessor results in missing data.
+    /** Produce a list of accessor descriptors where the accessor results in missing data.  This is determined applying
+      * accessorOutput and collecting keys whose values are None or Left(_).
       * @param a input on which we are trying to report accessors with missing outputs.
       * @return
       */
-    def accessorOutputMissing(a: A) = accessorOutput(a).collect{case(k, None) => k}.toList
+    def accessorOutputMissing(a: A) = {
+        accessorOutput(a).collect {
+            case(k, None) => k
+            case(k, Left(_)) => k
+        }.toList
+    }
 
     override def toString() = accessors.map(a => "${" + a.descriptor + "}").mkString("GenAggFunc((", ", ", ") => ") + specification + ")"
 }
