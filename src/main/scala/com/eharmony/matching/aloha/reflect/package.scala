@@ -13,7 +13,7 @@ package com.eharmony.matching.aloha
 package object reflect {
 
     /** Type alias for Reflection meta-information type.  Manifest, TypeTag, etc.
-      * Currently, this is Manifest.  Once [SI-7555 https://issues.scala-lang.org/browse/SI-7555] is
+      * Currently, this is Manifest.  Once [https://issues.scala-lang.org/browse/SI-7555 SI-7555] is
       * addressed, we can move over to a scala.reflect.runtime.universe.TypeTag based implementation.
       *
       * '''NOTE''': If all goes well, we should be able to just swap this one type definition and

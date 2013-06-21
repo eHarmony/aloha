@@ -17,8 +17,8 @@ package com.eharmony.matching.aloha.feature
   * val s = sos2(v, 0, 2, 1)
   * assert(s == List(("=1", 0.75), ("=2", 0.25)))
   *
-  * // Show the existing isomorphism between v and sos2(v, min, max, delta) (if min <= v <= max)
-  * val vPrime = sos2(v, 0, 2, 1).foldLeft(0.0){case(s, (k, v)) => s + k * v}
+  * // Show the existing isomorphism between v and sos2I(v, min, max, delta) (if min <= v <= max)
+  * val vPrime = sos2I(v, 0, 2, 1).foldLeft(0.0){case(s, (k, v)) => s + k * v}
   * assert(v == vPrime)
   * }}}
   */
@@ -72,6 +72,14 @@ trait Sos2 { self: DefaultPossessor with BasicMath =>
     @inline def sos2U(value: Double, min: Long, max: Long, delta: Long): Iterable[(String, Double)] =
         sos2U(Some(value), min, max, delta, UnderflowKey, UnknownSeq)
 
+    /** Like sos2U but no underflows are reported.  Instead the values are first clamped to be in range so in the
+      * event value < min, return a tuple representing the min.
+      * @param value number to be sos,,2,, binned
+      * @param min minimum bin value
+      * @param max minimum bin value
+      * @param delta bin size
+      * @return sos,,2,, binned value
+      */
     @inline def sos2(value: Double, min: Long, max: Long, delta: Long): Iterable[(String, Double)] =
         sos2I(value, min, max, delta).map(p => (s"=${p._1}", p._2))
 
@@ -91,7 +99,7 @@ trait Sos2 { self: DefaultPossessor with BasicMath =>
         value flatMap {_ match {
             case v if v.isNaN => unknown
             case v if v < min => badPair(underflowKey)
-            case v => Option(sos2S(v, min, max, delta))
+            case v => Option(sos2(v, min, max, delta))
         }} orElse unknown getOrElse Nil
     }
 
@@ -144,7 +152,4 @@ trait Sos2 { self: DefaultPossessor with BasicMath =>
     }
 
     @inline private[this] def badPair(s: Option[String]) = s.map(k => Seq((s"=$k", 1.0)))
-
-    @inline private[this] def sos2S(value: Double, min: Long, max: Long, delta: Long) =
-        sos2I(value, min, max, delta).map(p => (s"=${p._1}", p._2))
 }

@@ -15,7 +15,7 @@ package object rich {
       * @param id
       */
     implicit class RichModelId(protected val id: MId) {
-        /** Transform the [[com.eharmony.matching.aloha.score.Scores.Score.ModelId]] to a
+        /** Transform the com.eharmony.matching.aloha.score.Scores.Score.ModelId to a
           * [[com.eharmony.matching.aloha.id.ModelId]].
           * @return
           */

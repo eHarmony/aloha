@@ -61,7 +61,7 @@ import grizzled.slf4j.Logging
   *                            of the computed score.  This is for missing data situations.
   * @tparam A model input type
   * @tparam B model output type.  Requires a implicit [[com.eharmony.matching.aloha.score.conversions.ScoreConverter]]
-  *           to convert from B to [[com.eharmony.matching.aloha.score.Scores.Score]]
+  *           to convert from B to com.eharmony.matching.aloha.score.Scores.Score
   */
 case class RegressionModel[-A, +B: ScoreConverter](
         modelId: ModelIdentity,

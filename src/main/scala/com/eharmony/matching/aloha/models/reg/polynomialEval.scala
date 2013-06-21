@@ -67,9 +67,9 @@ case class Coefficient(coeff: Double, featureIndices: IndexedSeq[Int] = IndexedS
   * assert(Z == (W1 dot X))
   * }}}
   *
-  * While constructing a [[com.eharmony.matching.aloha.models.PolynomialEvaluator]] via direct means is entirely
+  * While constructing a [[PolynomialEvaluator]] via direct means is entirely
   * possible, it is less straightforward than using a builder to do it.  Below, we show a better way to construct
-  * [[com.eharmony.matching.aloha.models.PolynomialEvaluator]] instances where we just specify the terms in the
+  * [[PolynomialEvaluator]] instances where we just specify the terms in the
   * polynomial and the associated coefficient values.  Note linear regression is the special case when all of the
   * inner maps contain exactly one element.
   *

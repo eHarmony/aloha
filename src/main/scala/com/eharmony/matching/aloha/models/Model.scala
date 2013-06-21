@@ -6,7 +6,7 @@ import com.eharmony.matching.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.score.basic.ModelOutput
 
 /** Models are identifiable and need to allow their scores to be converted to
-  * [[com.eharmony.matching.aloha.score.Scores.Score]] instances.
+  * com.eharmony.matching.aloha.score.Scores.Score instances.
   * @tparam A model input type
   * @tparam B model output type
   */

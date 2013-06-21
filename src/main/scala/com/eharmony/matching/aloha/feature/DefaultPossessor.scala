@@ -12,5 +12,5 @@ trait DefaultPossessor {
       */
     protected[this] val DefaultForMissingDataInReg: Iterable[(String, Double)]
 
-    final protected [this] val empty = Iterable(("", 1.0))
+    final protected[this] val empty = Iterable(("", 1.0))
 }
