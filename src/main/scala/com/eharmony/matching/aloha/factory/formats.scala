@@ -1,8 +1,13 @@
 package com.eharmony.matching.aloha.factory
 
 import java.{lang => jl}
-import spray.json.{JsValue, JsonFormat}
+import spray.json._
 import spray.json.DefaultJsonProtocol.{BooleanJsonFormat, ByteJsonFormat, ShortJsonFormat, IntJsonFormat, LongJsonFormat, FloatJsonFormat, DoubleJsonFormat}
+import scala.collection.immutable.ListMap
+
+object Formats
+    extends JavaJsonFormats
+    with ScalaJsonFormats
 
 object JavaJsonFormats extends JavaJsonFormats
 
@@ -40,5 +45,26 @@ trait JavaJsonFormats {
     implicit object JavaDoubleJsonFormat extends JsonFormat[jl.Double] {
         def write(i: jl.Double) = DoubleJsonFormat write i
         def read(json: JsValue) = DoubleJsonFormat read json
+    }
+}
+
+object ScalaJsonFormats extends ScalaJsonFormats
+
+trait ScalaJsonFormats {
+    implicit def listMapFormat[K :JsonFormat, V :JsonFormat] = new RootJsonFormat[ListMap[K, V]] {
+        def write(m: ListMap[K, V]) = JsObject {
+            m.map { field =>
+                field._1.toJson match {
+                    case JsString(x) => x -> field._2.toJson
+                    case x => throw new SerializationException("Map key must be formatted as JsString, not '" + x + "'")
+                }
+            }
+        }
+        def read(value: JsValue) = value match {
+            case x: JsObject => x.fields.map { field =>
+                (JsString(field._1).convertTo[K], field._2.convertTo[V])
+            } (collection.breakOut)
+            case x => deserializationError("Expected Map as JsObject, but got " + x)
+        }
     }
 }
