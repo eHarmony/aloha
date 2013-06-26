@@ -4,13 +4,12 @@ import com.eharmony.matching.aloha.id.{ModelId, ModelIdentity}
 import com.eharmony.matching.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 import com.eharmony.matching.aloha.score.basic.ModelOutput
-import com.eharmony.matching.aloha.factory.{BasicModelParser, ModelFactory, ParserProviderCompanion, ModelParser}
+import com.eharmony.matching.aloha.factory.{BasicModelParser, ParserProviderCompanion, ModelParser}
 import spray.json.{DeserializationException, JsValue, JsonReader}
-import com.eharmony.matching.aloha.semantics.Semantics
 
 case class ConstantModel[+B: ScoreConverter](constant: ModelOutput[B], modelId: ModelIdentity) extends Model[Any, B] {
-    private[this] val w = toScoreTuple(constant)(true, implicitly[ScoreConverter[B]])
-    private[this] val wo = toScoreTuple(constant)(false, implicitly[ScoreConverter[B]])
+    private[this] val w = toScoreTuple(constant)(audit = true, implicitly[ScoreConverter[B]])
+    private[this] val wo = toScoreTuple(constant)(audit = false, implicitly[ScoreConverter[B]])
     private[aloha] final def getScore(a: Any)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = if (audit) w else wo
 }
 

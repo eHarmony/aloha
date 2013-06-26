@@ -96,6 +96,16 @@ trait ScoreConversion[+A] { self: Identifiable =>
         b.build
     }
 
+    /** Convert a model output to a Score object and a single optional subscore if applicable.
+      * @param o the model output object.
+      * @param subScore a series of zero or more submodel scores.
+      * @param c a type class that knows how to convert the output to the proper type of score.
+      * @tparam B
+      * @return a properly-typed Score object
+      */
+    protected[this] def toScore[B >: A](o: ModelOutput[B], subScore: Option[Score])(implicit c: ScoreConverter[B]): Score =
+        toScore(o, if (subScore.nonEmpty) List(subScore.get) else Nil)
+
     /** Convert a model output to the type of object returned by the [[com.eharmony.matching.aloha.models.Model]] getScore
       * method.
       * @param o the model output object.
@@ -118,4 +128,16 @@ trait ScoreConversion[+A] { self: Identifiable =>
       */
     @inline protected[this] def toScoreTuple[B >: A](o: ModelOutput[B], subScores: Iterable[Score])(implicit audit: Boolean, c: ScoreConverter[B]): (ModelOutput[B], Option[Score]) =
         if (audit) (o, Option(toScore(o, subScores))) else (o, None)
+
+    /** Convert a model output to the type of object returned by the [[com.eharmony.matching.aloha.models.Model]] getScore
+      * method.
+      * @param o the model output object.
+      * @param subScore a single optional submodel score.
+      * @param audit whether or not to include the score object in the tuple.
+      * @param c a type class that knows how to convert the output to the proper type of score.
+      * @tparam B
+      * @return a properly-typed Score object
+      */
+    @inline protected[this] def toScoreTuple[B >: A](o: ModelOutput[B], subScore: Option[Score])(implicit audit: Boolean, c: ScoreConverter[B]): (ModelOutput[B], Option[Score]) =
+        toScoreTuple(o, if (subScore.nonEmpty) List(subScore.get) else Nil)
 }
