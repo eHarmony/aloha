@@ -16,7 +16,7 @@ sealed trait Spline extends (Double => Double)
   * @param knots Required to have a positive number of knots (size > 0).
   */
 case class ConstantDeltaSpline(min: Double, max: Double, knots: IndexedSeq[Double]) extends Spline {
-    require((min < max && 1 < knots.size) || (min == max && 1 == knots.size))
+    require((min < max && 1 < knots.size) || (min == max && 1 == knots.size), s"min: $min, max: $max, num knots: ${knots.size}")
 
     /** If knots is one, then we want bin equal to be 1 so that the division to get the value of
       * k in calibrate doesn't divide by zero.  If there are 2+ knots, then bin contains the
