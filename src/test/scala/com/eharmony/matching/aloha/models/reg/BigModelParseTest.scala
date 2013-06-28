@@ -11,20 +11,31 @@ import com.eharmony.matching.aloha.util.Timing
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class BigModelParseTest extends RegressionModelJson with Timing {
 
-    @Test def test1() {
+    /** The purpose of this test is that we can parse a fairly large model JSON to an abstract syntax tree of data used
+      * to construct the regression model.  This JSON has
+      *
+      *  - 184,846 file lines
+      *  - 94 features
+      *  - 874 first order weights
+      *  - 30,598 second order weights
+      *  - 341 spline knots.
+      *
+      *  and comes from an actual model with the information stripped out.
+      */
+    @Test def testBigJsonParsedToAstForRegModel() {
         val ((s, data), t) = time(getBigZippedData("/com/eharmony/matching/aloha/models/reg/semi_cleaned_big_model.json.gz"))
         assertTrue(s"Should take less than 5 seconds to parse, took $t", t < 5)
 
         assertEquals("file lines", 184846, io.Source.fromString(s).getLines().size)
         assertEquals("Features", 94, data.features.size)
-        assertEquals("Higher order weights", 30598, data.higherOrderFeatures.map(_.size).getOrElse(0))
         assertEquals("First order weights", 874, data.weights.size)
-        assertEquals("spline size", 342, data.spline.map(_.knots.size).getOrElse(0))
+        assertEquals("Higher order weights", 30598, data.higherOrderFeatures.map(_.size).getOrElse(0))
+        assertEquals("spline size", 341, data.spline.map(_.knots.size).getOrElse(0))
 
-        println("file lines: 184846, features: 94, first order weights: 874, higher order weights: 30598, spline size: 342")
+        println("file lines: 184846, features: 94, first order weights: 874, higher order weights: 30598, spline size: 341")
     }
 
-    def getBigZippedData(resourcePath: String) = {
+    private[this] def getBigZippedData(resourcePath: String) = {
         val s = StringReadable.gz().fromResource(resourcePath)
         (s, s.asJson.convertTo[RegData])
     }
