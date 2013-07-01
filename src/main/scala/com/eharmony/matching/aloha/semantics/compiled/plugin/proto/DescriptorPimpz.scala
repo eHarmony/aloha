@@ -10,17 +10,6 @@ import com.google.protobuf.Descriptors.{FieldDescriptor, Descriptor}
 
 private[proto] object DescriptorPimpz {
 
-    /** Implicit conversions to pimpz.  Import these via
-      * {{{
-      * import DescriptorPimpz.Implicits._
-      * }}}
-      * to get pimped Descriptor types.
-      */
-//    object Implicits {
-//        implicit def descriptor2pimpedDescriptor(d: Descriptor): PimpedDescriptor = new PimpedDescriptor(d)
-//        implicit def fieldDescriptor2pimpedFieldDescriptor(d: FieldDescriptor): PimpedFieldDescriptor = new PimpedFieldDescriptor(d)
-//    }
-
     /**
       * @param d
       * @param fieldName
@@ -66,8 +55,6 @@ private[proto] object DescriptorPimpz {
                         (b, f :: l)
                     }}.unzip._1
 
-//                    val a = t.scanLeft(z){ case((z, l), f) => (z.flatMap(fd2fd(_, f).fold(_.successNel, err(f, l).failNel)), f :: l) }.unzip._1
-//                    Traverse[List].sequence[({type L[A] = ValidationNel[String, A]})#L, FieldDescriptor](a)
                     a.sequence[({type L[A] = ValidationNel[String, A]})#L, FieldDescriptor]
                 case Nil => ("Cannot get subfield for fields=Nil in " + d.getFullName + ".").failNel
             }
@@ -116,95 +103,3 @@ private[proto] object DescriptorPimpz {
         def apply(fieldName: String) = fd2fd(d, fieldName)
     }
 }
-
-
-//private[proto] object DescriptorPimpz {
-//
-//    /** Implicit conversions to pimpz.  Import these via
-//      * {{{
-//      * import DescriptorPimpz.Implicits._
-//      * }}}
-//      * to get pimped Descriptor types.
-//      */
-//    object Implicits {
-//        implicit def descriptor2pimpedDescriptor(d: Descriptor): PimpedDescriptor = new PimpedDescriptor(d)
-//        implicit def fieldDescriptor2pimpedFieldDescriptor(d: FieldDescriptor): PimpedFieldDescriptor = new PimpedFieldDescriptor(d)
-//    }
-//
-//    def d2fd(d: Descriptor, fieldName: String) = Option(d findFieldByName fieldName)
-//    def fd2fd(fd: FieldDescriptor, fieldName: String) = if (fd.getType == FieldDescriptor.Type.MESSAGE) d2fd(fd.getMessageType, fieldName) else None
-//
-//    /** Continually flatMap the field String names to optional FieldDescriptors to produce a
-//      * FieldDescriptor in the end.
-//      * @param d
-//      * @return
-//      */
-//    class PimpedDescriptor(d: Descriptor) extends (String => Option[FieldDescriptor]) {
-//        def apply(fieldName: String) = d2fd(d, fieldName)
-//
-//        def subfields(fields: Traversable[String]): Either[String, List[FieldDescriptor]] = {
-//            def err(f: String, lst: List[String] = Nil) =
-//                "For subfield '" + fields.mkString(".") + "' in " + d.getFullName +
-//                    ", '" + lst.reverse.mkString(".") + "." + f + "' is not found."
-//
-//            type EitherString[A] = Either[String, A]
-//
-//            // Right project and flatMap.  Use fd2fd and convert values to Right.  For errors, construct an error
-//            // message and place in Left.  This will produce an Either.  In the second field of the 2-tuple, accumulate
-//            // the fields in reverse order.  This is OK because we only use the reversed list once on an error. If all
-//            // goes well we'll never use it, so guaranteed O(1) insertion time is important.  a contains the list of
-//            // either accumulated.  Once we sequence a, we get either an error message or a list of successes.
-//            fields.toList match {
-//                case h :: t =>
-//                    // Force the type of z so the foldLeft doesn't need types.
-//                    val z: (Either[String, FieldDescriptor], List[String]) = (d2fd(d, h).toRight(err(h)), List(h))
-//                    val a = t.scanLeft(z){ case((z, l), f) => (z.right.flatMap(fd2fd(_, f).toRight(err(f, l))), f :: l) }.unzip._1
-//                    a.sequence[EitherString, FieldDescriptor] // scalaz
-//                case Nil => Left("Cannot get subfield for fields=Nil in " + d.getFullName + ".")
-//            }
-//        }
-//
-//        def subfields(desc: String): Either[String, List[FieldDescriptor]] = subfields(desc.split("\\."))
-//
-//        def subfield(fields: Traversable[String]): Either[String, FieldDescriptor] = subfields(fields).fold(Left(_), l => Right(l.last))
-//
-//        /** Get a subfield
-//          *
-//          * {{{
-//          * import com.eharmony.matching.common.value.UserProtoBuffs.UserProto
-//          * import DescriptorPimpz.Implicits._
-//          * val v1 = UserProto.getDescriptor.subfield("user_activity.communication.aggregates.by_day.date")
-//          * assert(v1.isRight)
-//          * assert(v1.fold(_ => false, _.getName == "date"))
-//          * }}}
-//          *
-//          * @param desc
-//          * @return
-//          */
-//        def subfield(desc: String): Either[String, FieldDescriptor] = subfield(desc.split("\\."))
-//
-//        /** Get a list of all full descriptions
-//          * @return
-//          */
-//        def allSubfields: List[String] = {
-//            type FDesc = (String, FieldDescriptor)
-//            import collection.JavaConversions.asScalaBuffer
-//
-//            def partition(fd: List[FDesc]) = fd.partition(_._2.getType == FieldDescriptor.Type.MESSAGE)
-//
-//            def h(messages: List[FDesc], nonMessages: List[FDesc]): List[String] =
-//                if (messages.isEmpty) nonMessages.map(_._1)
-//                else {
-//                    val (m, nm) = partition(for { m <- messages; f <- m._2.getMessageType.getFields } yield (m._1 + "." + f.getName, f))
-//                    h(m, nm ::: nonMessages)
-//                }
-//
-//            h(d.getFields.map(f => (f.getName, f)).toList, List.empty[FDesc]).sortWith(_ < _)
-//        }
-//    }
-//
-//    class PimpedFieldDescriptor(d: FieldDescriptor) extends (String => Option[FieldDescriptor]) {
-//        def apply(fieldName: String) = fd2fd(d, fieldName)
-//    }
-//}
-

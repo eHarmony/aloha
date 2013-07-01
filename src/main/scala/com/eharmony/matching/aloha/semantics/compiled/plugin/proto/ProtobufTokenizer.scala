@@ -24,10 +24,6 @@ private[this] object ProtobufTokenizer {
       * @param cs A string to parse
       * @return either a list of tokens on success, or an error message on failure.
       */
-//    def getTokens(cs: CharSequence): Either[String, List[Token]] = tokenizer.parseAll(tokenizer.spec, cs) match {
-//        case s if s.successful => Right(s.get)
-//        case f => Left(f.toString)
-//    }
     def getTokens(cs: CharSequence): ValidationNel[String, List[Token]] = tokenizer.parseAll(tokenizer.spec, cs) match {
         case s if s.successful => s.get.success
         case f => f.toString.failNel
