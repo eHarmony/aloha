@@ -1,6 +1,6 @@
 package com.eharmony.matching.aloha.models
 
-import com.eharmony.matching.aloha.id.Identifiable
+import com.eharmony.matching.aloha.id.{ModelIdentity, Identifiable}
 import com.eharmony.matching.aloha.score.conversions.ScoreConversion
 import com.eharmony.matching.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.score.basic.ModelOutput

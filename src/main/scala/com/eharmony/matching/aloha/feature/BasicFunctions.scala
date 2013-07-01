@@ -12,6 +12,7 @@ object BasicFunctions
     with CustomSos2
     with Indicator
     with Intercept
+    with TimeConstants
     with RegressionModelValueToTupleConversions {
 
     final protected[this] val DefaultForMissingDataInReg = Seq(("=UNK", 1.0))
