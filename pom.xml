@@ -109,6 +109,18 @@
                     <missing>${basedir}</missing>
                 </file>
             </activation>
+
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>dtrott-protoc-plugin</id>
+                    <url>http://maven.davidtrott.com/repository</url>
+                    <layout>default</layout>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                </pluginRepository>
+            </pluginRepositories>
+
             <build>
                 <pluginManagement>
                     <plugins>
@@ -136,6 +148,22 @@
                                 </jvmArgs>
                             </configuration>
                         </plugin>
+
+                        <plugin>
+                            <groupId>com.google.protobuf.tools</groupId>
+                            <artifactId>maven-protoc-plugin</artifactId>
+                            <version>0.1.10</version>
+                            <executions>
+                                <execution>
+                                    <phase>generate-sources</phase>
+                                    <goals>
+                                        <goal>compile</goal>
+                                        <goal>testCompile</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+
                     </plugins>
                 </pluginManagement>
                 <plugins>
@@ -179,6 +207,14 @@
                     <exists>${basedir}</exists>
                 </file>
             </activation>
+
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>protoc-plugin</id>
+                    <url>http://sergei-ivanov.github.com/maven-protoc-plugin/repo/releases/</url>
+                </pluginRepository>
+            </pluginRepositories>
+
             <build>
                 <pluginManagement>
                     <plugins>
@@ -230,6 +266,21 @@
                                 <jvmArgs>
                                 </jvmArgs>
                             </configuration>
+                        </plugin>
+
+                        <plugin>
+                            <groupId>com.google.protobuf.tools</groupId>
+                            <artifactId>maven-protoc-plugin</artifactId>
+                            <version>0.3.1</version>
+                            <executions>
+                                <execution>
+                                    <phase>generate-sources</phase>
+                                    <goals>
+                                        <goal>compile</goal>
+                                        <goal>testCompile</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
                         </plugin>
                     </plugins>
                 </pluginManagement>
@@ -436,22 +487,10 @@
                 <version>${protobuf.version}</version>
             </dependency>
 
-            <!-- Jackson used for protocol buffer serialization to JSON via protostuff interface. -->
-            <dependency>
-                <groupId>org.codehaus.jackson</groupId>
-                <artifactId>jackson-mapper-asl</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.codehaus.jackson</groupId>
-                <artifactId>jackson-jaxrs</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.codehaus.jackson</groupId>
-                <artifactId>jackson-xc</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
+            <!--
+                3 dependencies for adding JSON serialization to protocol buffers via protostuff.  For more info, see:
+                    http://code.google.com/p/protostuff/wiki/JsonSerialization#java_v2protoc_schema
+            -->
             <dependency>
                 <groupId>com.dyuproject.protostuff</groupId>
                 <artifactId>protostuff-api</artifactId>
@@ -461,19 +500,12 @@
                 <groupId>com.dyuproject.protostuff</groupId>
                 <artifactId>protostuff-json</artifactId>
                 <version>${protostuff.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>jackson-core-asl</artifactId>
-                        <groupId>org.codehaus.jackson</groupId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
-                <groupId>com.dyuproject.protostuff</groupId>
-                <artifactId>protostuff-core</artifactId>
-                <version>${protostuff.version}</version>
+                <artifactId>jackson-core-asl</artifactId>
+                <groupId>org.codehaus.jackson</groupId>
+                <version>${jackson.version}</version>
             </dependency>
-            <!-- Jackson used for protocol buffer serialization to JSON via protostuff interface. -->
 
 
             <!-- Testing deps -->
@@ -485,12 +517,4 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <!-- Dependencies included in every child project automatically. -->
-    <dependencies>
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-        </dependency>
-    </dependencies>
 </project>
