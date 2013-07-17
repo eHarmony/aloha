@@ -69,6 +69,7 @@
             The default is protocol buffers 2.5.0 so there is no profile.  Just a property in the global properties
             that appears below.
         -->
+<!--
         <profile>
             <id>proto-2.4.1</id>
             <activation>
@@ -81,6 +82,20 @@
                 <protobuf.version>2.4.1</protobuf.version>
             </properties>
         </profile>
+-->
+        <profile>
+            <id>proto-2.5.0</id>
+            <activation>
+                <property>
+                    <name>proto</name>
+                    <value>2.5.0</value>
+                </property>
+            </activation>
+            <properties>
+                <protobuf.version>2.5.0</protobuf.version>
+            </properties>
+        </profile>
+
         <profile>
             <id>proto-2.3.0</id>
             <activation>
@@ -348,7 +363,7 @@
         <scala.major.version>2.10</scala.major.version>
         <jackson.version>1.9.9</jackson.version>
         <protostuff.version>1.0.7</protostuff.version>
-        <protobuf.version>2.5.0</protobuf.version>
+        <protobuf.version>2.4.1</protobuf.version>
 
         <!--
             For child artifacts, the artifact name should be "[my-artifact-name-here]${artifact.ext}".  This allows
