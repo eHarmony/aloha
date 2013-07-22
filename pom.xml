@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.eharmony.matching</groupId>
     <artifactId>aloha</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
     <name>${project.artifactId}</name>
     <description>Scala-based machine learning library with generic models and lazily created features.</description>
@@ -371,7 +371,7 @@
         -->
         <artifact.ext>_${scala.version}_proto-${protobuf.version}</artifact.ext>
 
-        <scala.optmize.flag></scala.optmize.flag>
+        <scala.optmize.flag />
     </properties>
 
     <build>
@@ -443,7 +443,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore></ignore>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
