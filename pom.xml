@@ -67,7 +67,7 @@
         <dependency>
             <groupId>com.eharmony.matching</groupId>
             <artifactId>aloha-proto_${protobuf.version}</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>0.9.0</version>
         </dependency>
 
         <dependency>
