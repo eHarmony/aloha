@@ -59,6 +59,7 @@
     <properties>
         <org.springframework.version>3.0.5.RELEASE</org.springframework.version>
         <generated.classes.test>${build.outputDirectory}/test-classes/generated</generated.classes.test>
+	<aloha.version>0.9.1-SNAPSHOT</aloha.version>
     </properties>
 
     <dependencies>
@@ -66,6 +67,11 @@
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-reflect</artifactId>
         </dependency>
 
         <dependency>
@@ -82,23 +88,13 @@
         <dependency>
             <groupId>com.eharmony.matching</groupId>
             <artifactId>aloha-core${artifact.ext}</artifactId>
-            <version>0.9.0</version>
+            <version>${aloha.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.eharmony.matching</groupId>
             <artifactId>aloha-compiled-semantics${artifact.ext}</artifactId>
-            <version>0.9.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.protobuf</groupId>
-            <artifactId>protobuf-java</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-reflect</artifactId>
+            <version>${aloha.version}</version>
         </dependency>
 
 
