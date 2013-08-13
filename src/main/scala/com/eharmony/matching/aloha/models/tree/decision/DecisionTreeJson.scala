@@ -2,6 +2,7 @@ package com.eharmony.matching.aloha.models.tree.decision
 
 import com.eharmony.matching.aloha.semantics.Semantics
 import com.eharmony.matching.aloha.factory.pimpz.JsValuePimpz
+import com.eharmony.matching.aloha.util.rand.HashedCategoricalDistribution
 
 trait DecisionTreeJson {
     import spray.json.{JsonReader, JsonFormat, JsValue, JsString, DeserializationException}
@@ -20,6 +21,21 @@ trait DecisionTreeJson {
         }
     }
 
+    private[this] case class RandomNodeSelectorAst(
+            children: Seq[Int],
+            features: Seq[String],
+            probabilities: Seq[Double],
+            selectorType: String) extends NodeSelectorAst {
+
+        def nodeSelector[A](semantics: Semantics[A], missingOk: Boolean): NodeSelector[A] = {
+            val functions = features.map{f => semantics.createFunction[Option[Any]](f, Option(None)).right.get}.toIndexedSeq
+            val distribution = HashedCategoricalDistribution(probabilities:_*)
+            RandomNodeSelector(functions, distribution, missingOk)
+        }
+    }
+
+    private[this] implicit val randomNodeSelectorAstJsonFormat = jsonFormat4(RandomNodeSelectorAst)
+
     private[this] case class LinearNodeSelectorAst(
             children: Seq[Int],
             predicates: Seq[String],
@@ -33,13 +49,15 @@ trait DecisionTreeJson {
 
     private[this] implicit val linearNodeSelectorAstJsonFormat = jsonFormat3(LinearNodeSelectorAst)
     private[this] implicit object NodeSelectorJsonFormat extends JsonFormat[NodeSelectorAst] with JsValuePimpz {
+        val acceptable = Seq("linear", "random").map("'" + _ + "'").mkString(", ")
         def read(json: JsValue) =
             json("selectorType") map {_ match {
                 case JsString("linear") => json.convertTo[LinearNodeSelectorAst]
+                case JsString("random") => json.convertTo[RandomNodeSelectorAst]
                 case JsString(selType) => throw new DeserializationException(s"unrecognized selectorType '$selType'. with one of the following values: 'linear'")
-                case x => throw new DeserializationException(s"selectorType must be a string with one of the following values: 'linear'. found $x")
+                case x => throw new DeserializationException(s"selectorType must be a string with one of the following values: $acceptable. found $x")
             }} getOrElse {
-                throw new DeserializationException("node selector needs selectorType field with one of the following values: 'linear'")
+                throw new DeserializationException(s"node selector needs selectorType field with one of the following values: $acceptable")
             }
 
         def write(ns: NodeSelectorAst) = ns match {

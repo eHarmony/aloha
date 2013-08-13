@@ -9,19 +9,6 @@ import com.eharmony.matching.aloha.util.EitherHelpers
   * @param predicates The number of predicates must equal the number of nodes
   * @tparam A input type
   */
-//case class LinearNodeSelector[-A](predicates: Seq[GenAggFunc[A,Boolean]]) extends NodeSelector[A] {
-//    def apply(a: A) = predicates.indexWhere(_(a)) match {
-//        case -1 => msg(a)
-//        case n => Right(n)
-//    }
-//
-//    private[this] def msg(a: A) =
-//        Left(Seq("No decision tree predicate satisfied. Tried: " + predicates.mkString("[", ", ", "]")))
-//
-//    override def toString = "LinearNodeSelector(" + predicates.mkString(", ") + ")"
-//}
-
-
 case class LinearNodeSelector[-A](predicates: List[GenAggFunc[A, Option[Boolean]]], missingDataOk: Boolean = false)
     extends NodeSelector[A]
     with EitherHelpers {
@@ -64,8 +51,6 @@ case class LinearNodeSelector[-A](predicates: List[GenAggFunc[A, Option[Boolean]
             ErrorsAndMissing(Seq(s"Encountered unacceptable missing data in predicate: ${predicate.specification}"), predicate.accessorOutputMissing(a))
         }
     }
-
-//    override def toString = "LinearNodeSelector(" + predicates.mkString(", ") + ")"
 }
 
 object LinearNodeSelector {

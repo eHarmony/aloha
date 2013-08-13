@@ -37,12 +37,10 @@ case class RandomNodeSelector[-A](
         // produce different hashes but if we applied flatMap, they would give the same hash value.
         val x = features.map(_(a))
 
-        x.indexWhere(_ == None) match {
-            case -1 => distribution(x)
-            case missingIndex =>
-                if (missingOk) distribution(x)
-                else -missingIndex
-        }
+        val missingIndex = x.indexWhere(_ == None)
+        val i = if (-1 == missingIndex || missingOk) distribution(x)
+                else -missingIndex - 1
+        i
     }
 
     /** Process an error.
@@ -53,6 +51,7 @@ case class RandomNodeSelector[-A](
       */
     def processErrorAt(a: A, i: Int): ErrorsAndMissing = {
         val missing = features.flatMap(_.accessorOutputMissing(a)).distinct.sorted
-        ErrorsAndMissing(Seq("Missing index " + -i + " in " + this), missing)
+        val em = ErrorsAndMissing(Seq(s"Couldn't randomly branch due to missing features: ${missing.mkString(", ")} in " + this), missing)
+        em
     }
 }
