@@ -13,9 +13,12 @@ import com.eharmony.matching.aloha.semantics.Semantics
 import com.eharmony.matching.aloha.reflect.RefInfo
 import com.eharmony.matching.aloha.semantics.func.{GenFunc, GeneratedAccessor, GenAggFunc}
 import com.eharmony.matching.aloha.util.rand.HashedCategoricalDistribution
+import scala.util.Random
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class RandomNodeSelectorTest {
+
+    val StdSampleSize = 10000
 
     /** Create a decision tree that has a root value and two leaf nodes with values 0 and 1 and transition
       * probabilities ''1 - p'' and ''p'', respectively.  If the transition probabilities are working correctly, we
@@ -33,13 +36,13 @@ class RandomNodeSelectorTest {
       * those of the Bernoulli distribution.
       */
     @Test def testTwoSplitCorrectnessIsApproximatelyBernoulli() {
-        val n = 10000
+        val n = StdSampleSize
 
         // Make sure to test the 0 and 1 probabilities, inclusive.
         (0 to 10).map(i => {
             val p = i / 10.0
 
-            val tree = model(getTreeJson(true, true, p))
+            val tree = intModel(getTreeJson(returnBest = true, missingDataOk = true, p))
 
             // Compute the number of successes from the decision tree given a success probability of p.
             // This shows that the
@@ -59,15 +62,23 @@ class RandomNodeSelectorTest {
         })
     }
 
+    @Test def testRandom3Split() { testRandomDSplit(3, StdSampleSize) }
+    @Test def testRandom4Split() { testRandomDSplit(4, StdSampleSize) }
+    @Test def testRandom5Split() { testRandomDSplit(5, StdSampleSize) }
+    @Test def testRandom6Split() { testRandomDSplit(6, StdSampleSize) }
+    @Test def testRandom7Split() { testRandomDSplit(7, StdSampleSize) }
+    @Test def testRandom8Split() { testRandomDSplit(8, StdSampleSize) }
+    @Test def testRandom9Split() { testRandomDSplit(9, StdSampleSize) }
+
     @Test def test_returnBest_false__missingOK_false() {
-        val s = model(getTreeJson(false, false, 0.5)).score(Map.empty)
+        val s = intModel(getTreeJson(returnBest = false, missingDataOk = false, 0.5)).score(Map.empty)
         assertFalse("Score should NOT have a value.", s.hasScore)
         assertTrue("Score should have an error.", s.hasError)
         assertEquals("Incorrect list of missing features.", Seq("F"), s.getError.getMissingFeatures.getNamesList.toSeq)
     }
 
     @Test def test_returnBest_true__missingOK_false() {
-        val s = model(getTreeJson(true, false, 0.5)).score(Map.empty)
+        val s = intModel(getTreeJson(returnBest = true, missingDataOk = false, 0.5)).score(Map.empty)
         assertTrue("Score should have an error.", s.hasError)
         assertEquals("Incorrect list of missing features.", Seq("F"), s.getError.getMissingFeatures.getNamesList.toSeq)
         assertTrue("Score should have a value.", s.hasScore)
@@ -86,17 +97,42 @@ class RandomNodeSelectorTest {
 
         import com.eharmony.matching.aloha.score.conversions.rich.RichScore
         Seq(true, false).foreach { b => {
-            val s = model(getTreeJson(b, true, 0.5)).score(Map.empty)
+            val s = intModel(getTreeJson(b, missingDataOk = true, 0.5)).score(Map.empty)
             assertFalse("Score should NOT have an error.", s.hasError)
             assertTrue("Score should have a value.", s.hasScore)
             assertEquals("Unexpected score returned by the model.", Some(1), s.relaxed.asInt)
         }}
     }
 
-    private[this] def model(json: JsValue) = {
+    /** Create a decision tree with a desired number of splits and test the randomness.
+      *
+      * The constructed tree has the property that each leaf value is equal to the inverse of the probability of
+      * branching to that leaf divided by the product of split dimensionality and the number of samples.  The result is
+      * that the expectation for one draw is 1 / ''numSamples''.  Because we draw ''numSamples'' samples from the
+      * categorical distribution induced by the constructed decision tree, we expect the sum to be exactly one as
+      * ''numSamples'' approaches infinity.
+      * @param splitDimensionality number of dimensions in the random split
+      * @param numSamples the number draws from the categorical distribution.
+      * @param r a random number generator
+      */
+    private[this] def testRandomDSplit(splitDimensionality: Int, numSamples: Int)(implicit r: Random = new Random(0)) {
+        val m = doubleModel(treeJsonForCategoricalDist(splitDimensionality, numSamples))
+        val z = (1 to numSamples).foldLeft(0.0)((s, x) => s + m(Map("F" -> x.toDouble)).get)
+        assertEquals(1.0, z, 0.015)  // 1.5% seems reasonable.
+    }
+
+    private[this] def intModel(json: JsValue) = {
         import com.eharmony.matching.aloha.score.conversions.ScoreConverter.Implicits.IntScoreConverter
         import spray.json.DefaultJsonProtocol.IntJsonFormat
         val reader = BasicDecisionTree.parser.modelJsonReader[Map[String, Double], Int](randomTestSemantics)
+        val m = reader.read(json)
+        m
+    }
+
+    private[this] def doubleModel(json: JsValue) = {
+        import com.eharmony.matching.aloha.score.conversions.ScoreConverter.Implicits.DoubleScoreConverter
+        import spray.json.DefaultJsonProtocol.DoubleJsonFormat
+        val reader = BasicDecisionTree.parser.modelJsonReader[Map[String, Double], Double](randomTestSemantics)
         val m = reader.read(json)
         m
     }
@@ -159,6 +195,42 @@ class RandomNodeSelectorTest {
             """.stripMargin.trim.asJson
         json
     }
+
+    private[this] def randomCategoricalPdf(n: Int)(implicit r: scala.util.Random) = {
+        val pr = Iterator.fill(n)(r.nextDouble()).toList
+        val z = pr.sum
+        val p = pr.map(_ / z)
+        p
+    }
+
+    private[this] def treeJsonForCategoricalDist(d: Int, n: Int)(implicit r: Random): JsValue = {
+        val pdf = randomCategoricalPdf(d)
+        val pdfInv = pdf.map(p => 1 / (p * d * n))
+        val pdfStr = pdf.mkString("[", ", ", "]")
+        val childrenStr = Seq.range(0, d).mkString("[", ", ", "]")
+        val childNodesStr = Seq.range(0, d).zip(pdfInv).map{case(i, x) => s"""{ "id": $i, "value": $x }"""}.mkString(", ")
+
+        import spray.json.pimpString
+        val json =
+            s"""
+               |{
+               |  "modelType": "DecisionTree",
+               |  "modelId": {"id": 0, "name": ""},
+               |  "returnBest": false,
+               |  "missingDataOk": false,
+               |  "nodes": [
+               |    {
+               |      "id": -1,
+               |      "value": 1.0e-42,
+               |      "selector": { "selectorType": "random", "children": $childrenStr, "features": ["F"], "probabilities": $pdfStr }
+               |    },
+               |    $childNodesStr
+               |  ]
+               |}
+            """.stripMargin.trim.asJson
+        json
+    }
+
 
     //    @Test def test1() {
     //        val n = 1000
