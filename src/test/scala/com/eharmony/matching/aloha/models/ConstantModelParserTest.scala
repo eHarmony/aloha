@@ -14,6 +14,8 @@ import com.eharmony.matching.aloha.factory.ex.AlohaFactoryException
 
 @RunWith(classOf[JUnit4ClassRunner])
 class ConstantModelParserTest {
+
+
     @Test def testValueOnly() {
         val js =
             """

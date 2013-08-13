@@ -1,7 +1,6 @@
 package com.eharmony.matching.aloha.score
 
 import org.junit.runner.RunWith
-import org.junit.internal.runners.JUnit4ClassRunner
 import org.junit.Test
 import org.junit.Assert._
 
@@ -15,12 +14,12 @@ import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter.Implicits._
 import com.eharmony.matching.aloha.score.Scores.Score.{BaseScore, BooleanScore, IntScore, LongScore, FloatScore, DoubleScore, StringScore}
 import com.eharmony.matching.aloha.score.Scores.Score.BaseScore.ScoreType._
-import com.eharmony.matching.aloha.score.basic.ModelOutput
 import com.eharmony.matching.aloha.reflect.RefInfo
+import org.junit.runners.BlockJUnit4ClassRunner
 
 /** Test that the implicit conversions work.
   */
-@RunWith(classOf[JUnit4ClassRunner])
+@RunWith(classOf[BlockJUnit4ClassRunner])
 class ScoreConversionTest {
     import ScoreConversionTest._
 
@@ -196,50 +195,50 @@ object ScoreConversionTest {
     }
 
 
-    object BooleanConv extends Model[String, Boolean]{
+    object BooleanConv extends Model[String, Boolean] {
         private[aloha] def getScore(s: String)(implicit audit: Boolean) =
-            toScoreTuple(try { ModelOutput(s.toBoolean) } catch {case e: IllegalArgumentException => ModelOutput.fail(e.getMessage)})
+            try { success(s.toBoolean) } catch {case e: IllegalArgumentException => failure(Seq(e.getMessage)) }
         val modelId = ModelId(1, "true")
     }
 
     object ByteConv extends Model[String, Byte] {
         private[aloha] def getScore(s: String)(implicit audit: Boolean) =
-            toScoreTuple(try { ModelOutput(s.toByte) } catch {case e: NumberFormatException => ModelOutput.fail(e.getMessage)})
+            try { success(s.toByte) } catch {case e: NumberFormatException => failure(Seq(e.getMessage)) }
         val modelId = ModelId(2, "20")
     }
 
     object ShortConv extends Model[String, Short] {
         private[aloha] def getScore(s: String)(implicit audit: Boolean) =
-            toScoreTuple(try { ModelOutput(s.toShort) } catch {case e: NumberFormatException => ModelOutput.fail(e.getMessage)})
+            try { success(s.toShort) } catch {case e: NumberFormatException => failure(Seq(e.getMessage)) }
         val modelId = ModelId(3, "30")
     }
 
     object IntConv extends Model[String, Int] {
         private[aloha] def getScore(s: String)(implicit audit: Boolean) =
-            toScoreTuple(try { ModelOutput(s.toInt) } catch {case e: NumberFormatException => ModelOutput.fail(e.getMessage)})
+            try { success(s.toInt) } catch {case e: NumberFormatException => failure(Seq(e.getMessage)) }
         val modelId = ModelId(4, "40")
     }
 
     object LongConv extends Model[String, Long] {
         private[aloha] def getScore(s: String)(implicit audit: Boolean) =
-            toScoreTuple(try { ModelOutput(s.toLong) } catch {case e: NumberFormatException => ModelOutput.fail(e.getMessage)})
+            try { success(s.toLong) } catch {case e: NumberFormatException => failure(Seq(e.getMessage)) }
         val modelId = ModelId(5, "50")
     }
 
     object FloatConv extends Model[String, Float] {
         private[aloha] def getScore(s: String)(implicit audit: Boolean) =
-            toScoreTuple(try { ModelOutput(s.toFloat) } catch {case e: NumberFormatException => ModelOutput.fail(e.getMessage)})
+            try { success(s.toFloat) } catch {case e: NumberFormatException => failure(Seq(e.getMessage)) }
         val modelId = ModelId(6, "60")
     }
 
     object DoubleConv extends Model[String, Double] {
         private[aloha] def getScore(s: String)(implicit audit: Boolean) =
-            toScoreTuple(try { ModelOutput(s.toDouble) } catch {case e: NumberFormatException => ModelOutput.fail(e.getMessage)})
+            try { success(s.toDouble) } catch {case e: NumberFormatException => failure(Seq(e.getMessage)) }
         val modelId = ModelId(7, "70")
     }
 
     object StringConv extends Model[String, String] {
-        private[aloha] def getScore(s: String)(implicit audit: Boolean) = toScoreTuple(ModelOutput(s))
+        private[aloha] def getScore(s: String)(implicit audit: Boolean) = success(s)
         val modelId = ModelId(8, "80")
     }
 
@@ -285,13 +284,13 @@ object ScoreConversionTest {
         //         private[aloha] def getScore(s: String)(implicit audit: Boolean) = \/-(s).toScoreTuple
 
         private[aloha] def getScore(s: String)(implicit audit: Boolean) =
-            toScoreTuple(try { ModelOutput(new ContainerX(s)) } catch {case e: NumberFormatException => ModelOutput.fail(e.getMessage)})
+            try { success(new ContainerX(s)) } catch {case e: NumberFormatException => failure(Seq(e.getMessage)) }
         val modelId = ModelId(9, "90")
     }
 
     object ContainerYConv extends Model[String, ContainerY[String]] {
         private[aloha] def getScore(s: String)(implicit audit: Boolean) =
-            toScoreTuple(try { ModelOutput(new ContainerY(s)) } catch {case e: NumberFormatException => ModelOutput.fail(e.getMessage)})
+            try { success(new ContainerY(s)) } catch {case e: NumberFormatException => failure(Seq(e.getMessage)) }
         val modelId = ModelId(10, "100")
     }
 }

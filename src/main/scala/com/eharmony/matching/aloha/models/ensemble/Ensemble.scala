@@ -32,10 +32,10 @@ trait Ensemble[-A, B, C, +D] { self: Model[A, D] =>
                 sub = y._2.get :: sub
                 combiner.seqOp(s, (y._1, x._2))
             })
-//            combiner.finalOp(_c).toScoreTuple(sub)
-            toScoreTuple(combiner.finalOp(_c), sub)
+            scoreTuple(combiner.finalOp(_c), sub)
         }
-        else toScoreTuple(combiner.finalOp(subModelList.foldLeft(combiner.zero(firstSubModel.scoreAsEither(a)))((s, x) => combiner.seqOp(s, (x._1.scoreAsEither(a), x._2)))))
-//        else combiner.finalOp(subModelList.foldLeft(combiner.zero(firstSubModel.scoreAsEither(a)))((s, x) => combiner.seqOp(s, (x._1.scoreAsEither(a), x._2)))).toScoreTuple
+        else {
+            scoreTuple(combiner.finalOp(subModelList.foldLeft(combiner.zero(firstSubModel.scoreAsEither(a)))((s, x) => combiner.seqOp(s, (x._1.scoreAsEither(a), x._2)))))
+        }
     }
 }

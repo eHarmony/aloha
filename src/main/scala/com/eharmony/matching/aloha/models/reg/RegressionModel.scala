@@ -10,7 +10,7 @@ import com.eharmony.matching.aloha.semantics.func.GenAggFunc
 import com.eharmony.matching.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.score.basic.ModelOutput
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter
-import com.eharmony.matching.aloha.factory.{ModelParserWithSemantics, ModelParser, ParserProviderCompanion}
+import com.eharmony.matching.aloha.factory.{ModelParserWithSemantics, ParserProviderCompanion}
 import com.eharmony.matching.aloha.semantics.Semantics
 import com.eharmony.matching.aloha.factory.pimpz.JsValuePimpz
 import com.eharmony.matching.aloha.util.EitherHelpers
@@ -105,14 +105,14 @@ case class RegressionModel[-A, +B: ScoreConverter](
                 debug(s"splined eta: $splinedEta")
                 val mu = invLinkFunction(splinedEta)              // Currently, really just a casting operation.
                 debug(s"mu: $mu")
-                ModelOutput(mu)
-            }
-            else ModelOutput.fail(
-                Seq[String]("Missing too much data in features: " + missing.keys.toIndexedSeq.sorted),
-                missing.values.flatten)
 
-        val s = if (audit) Option(toScoreWithMissingFeatures(out, missing.values.flatten)) else None
-        (out, s)
+                success(mu, missing.values.flatten)
+            }
+            else {
+                failure(Seq("Missing too much data in features: " + missing.keys.toIndexedSeq.sorted), missing.values.flatten)
+            }
+
+        out
     }
 
     /** Extract the features from the raw data.  Intentionally, ''protected[this] final'' so that we can extend this
@@ -165,9 +165,7 @@ case class RegressionModel[-A, +B: ScoreConverter](
 object RegressionModel extends ParserProviderCompanion with JsValuePimpz with RegressionModelJson {
     import spray.json._
 
-    protected[this] type M[-A, +B] = RegressionModel[A, B]
-
-    private[this] class Parser extends ModelParserWithSemantics[M] with EitherHelpers {
+    object Parser extends ModelParserWithSemantics with EitherHelpers {
         val modelType = "Regression"
 
         /**
@@ -177,13 +175,10 @@ object RegressionModel extends ParserProviderCompanion with JsValuePimpz with Re
           *                  function creation is performed by the semantics.
           * @tparam A input type of the model
           * @tparam B output type of the model
-          * @tparam C RegressionModel[A, B] (needed for dealing with proper type variance)
           * @return
           */
-        def modelJsonReader[A, B: JsonReader: ScoreConverter, C >: M[A, B]](semantics: Option[Semantics[A]]) = new JsonReader[C] {
+        def modelJsonReader[A, B: JsonReader: ScoreConverter](semantics: Semantics[A]): JsonReader[RegressionModel[A, B]] = new JsonReader[RegressionModel[A, B]] {
             def read(json: JsValue): RegressionModel[A, B] = {
-//                val modelId = getModelId(json) getOrElse { throw new DeserializationException("No model ID available: " + json) }
-                val sem = semantics getOrElse { throw new DeserializationException("Required semantics for no semantics") }
 
                 // Get the metadata necessary to create the model.
                 val d = json.convertTo[RegData]
@@ -203,7 +198,7 @@ object RegressionModel extends ParserProviderCompanion with JsValuePimpz with Re
                 }
 
                 // These are the features.  Do them last because they are the slowest.
-                val f = features(featureMap, sem).fold(f => throw new DeserializationException(f.mkString("\n")), identity)
+                val f = features(featureMap, semantics).fold(f => throw new DeserializationException(f.mkString("\n")), identity)
                 val m = RegressionModel[A, B](d.modelId, f, beta, cf, d.spline, d.numMissingThreshold)
                 m
             }
@@ -281,7 +276,7 @@ object RegressionModel extends ParserProviderCompanion with JsValuePimpz with Re
         }
     }
 
-    val parser = new Parser().asInstanceOf[ModelParser[M]]
+    val parser = Parser
 
     private[this] object doubleFunctions {
         val doubleToByteFunction   = (_: Double).toByte

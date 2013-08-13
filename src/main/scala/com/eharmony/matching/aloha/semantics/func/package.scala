@@ -35,6 +35,13 @@ sealed trait GenAggFunc[-A, +B] extends (A => B) { self: Product =>
       */
     def accessorOutput(a: A) = accessors.map(acc => (acc.descriptor, acc(a))).toMap
 
+    /** Like Function1.andThen except it returns a GenAggFunc.
+      * @param g a function to execute after this
+      * @tparam C output type of the resulting function.
+      * @return
+      */
+    def andThenGenAggFunc[C](g: B => C): GenAggFunc[A, C]
+
     /** Produce a list of accessor descriptors where the accessor results in missing data.  This is determined applying
       * accessorOutput and collecting keys whose values are None or Left(_).
       * @param a input on which we are trying to report accessors with missing outputs.
@@ -113,49 +120,61 @@ case class OptionalFunc[-A, +B](function: GenAggFunc[A, Option[B]], default: B) 
     @inline def apply(a: A) = function(a) getOrElse default
     override def accessors = function.accessors
     val specification = function.specification
+    def andThenGenAggFunc[C](g: B => C) = function andThenGenAggFunc ((b: Option[B]) => g(b getOrElse default))
     override def toString() = s"OptionalFunc(${function.toString()}, $default)"
 }
 
 case class GenFunc0[-A, +B](specification: String, f: A => B) extends GenAggFunc[A, B] {
     @inline def apply(a: A) = f(a)
+    def andThenGenAggFunc[C](g: B => C) = copy(f = f.andThen(g))
 }
 
 case class GenFunc1[-A, B1, +C](specification: String, f: B1 => C, f1: GeneratedAccessor[A, B1]) extends GenAggFunc[A, C] {
     @inline def apply(a: A) = f(f1(a))
+    def andThenGenAggFunc[D](g: C => D) = copy(f = f.andThen(g))
 }
 
 case class GenFunc2[-A, B1, B2, +C](specification: String, f: (B1, B2) => C, f1: GeneratedAccessor[A, B1], f2: GeneratedAccessor[A, B2]) extends GenAggFunc[A, C] {
     @inline def apply(a: A) = f(f1(a), f2(a))
+    def andThenGenAggFunc[D](g: C => D) = copy(f = (b1: B1, b2: B2) => g(f(b1, b2)))
 }
 
 case class GenFunc3[-A, B1, B2, B3, +C](specification: String, f: (B1, B2, B3) => C, f1: GeneratedAccessor[A, B1], f2: GeneratedAccessor[A, B2], f3: GeneratedAccessor[A, B3]) extends GenAggFunc[A, C] {
     @inline def apply(a: A) = f(f1(a), f2(a), f3(a))
+    def andThenGenAggFunc[D](g: C => D) = copy(f = (b1: B1, b2: B2, b3: B3) => g(f(b1, b2, b3)))
 }
 
 case class GenFunc4[-A, B1, B2, B3, B4, +C](specification: String, f: (B1, B2, B3, B4) => C, f1: GeneratedAccessor[A, B1], f2: GeneratedAccessor[A, B2], f3: GeneratedAccessor[A, B3], f4: GeneratedAccessor[A, B4]) extends GenAggFunc[A, C] {
     @inline def apply(a: A) = f(f1(a), f2(a), f3(a), f4(a))
+    def andThenGenAggFunc[D](g: C => D) = copy(f = (b1: B1, b2: B2, b3: B3, b4: B4) => g(f(b1, b2, b3, b4)))
 }
 
 case class GenFunc5[-A, B1, B2, B3, B4, B5, +C](specification: String, f: (B1, B2, B3, B4, B5) => C, f1: GeneratedAccessor[A, B1], f2: GeneratedAccessor[A, B2], f3: GeneratedAccessor[A, B3], f4: GeneratedAccessor[A, B4], f5: GeneratedAccessor[A, B5]) extends GenAggFunc[A, C] {
     @inline def apply(a: A) = f(f1(a), f2(a), f3(a), f4(a), f5(a))
+    def andThenGenAggFunc[D](g: C => D) = copy(f = (b1: B1, b2: B2, b3: B3, b4: B4, b5: B5) => g(f(b1, b2, b3, b4, b5)))
 }
 
 case class GenFunc6[-A, B1, B2, B3, B4, B5, B6, +C](specification: String, f: (B1, B2, B3, B4, B5, B6) => C, f1: GeneratedAccessor[A, B1], f2: GeneratedAccessor[A, B2], f3: GeneratedAccessor[A, B3], f4: GeneratedAccessor[A, B4], f5: GeneratedAccessor[A, B5], f6: GeneratedAccessor[A, B6]) extends GenAggFunc[A, C] {
     @inline def apply(a: A) = f(f1(a), f2(a), f3(a), f4(a), f5(a), f6(a))
+    def andThenGenAggFunc[D](g: C => D) = copy(f = (b1: B1, b2: B2, b3: B3, b4: B4, b5: B5, b6: B6) => g(f(b1, b2, b3, b4, b5, b6)))
 }
 
 case class GenFunc7[-A, B1, B2, B3, B4, B5, B6, B7, +C](specification: String, f: (B1, B2, B3, B4, B5, B6, B7) => C, f1: GeneratedAccessor[A, B1], f2: GeneratedAccessor[A, B2], f3: GeneratedAccessor[A, B3], f4: GeneratedAccessor[A, B4], f5: GeneratedAccessor[A, B5], f6: GeneratedAccessor[A, B6], f7: GeneratedAccessor[A, B7]) extends GenAggFunc[A, C] {
     @inline def apply(a: A) = f(f1(a), f2(a), f3(a), f4(a), f5(a), f6(a), f7(a))
+    def andThenGenAggFunc[D](g: C => D) = copy(f = (b1: B1, b2: B2, b3: B3, b4: B4, b5: B5, b6: B6, b7: B7) => g(f(b1, b2, b3, b4, b5, b6, b7)))
 }
 
 case class GenFunc8[-A, B1, B2, B3, B4, B5, B6, B7, B8, +C](specification: String, f: (B1, B2, B3, B4, B5, B6, B7, B8) => C, f1: GeneratedAccessor[A, B1], f2: GeneratedAccessor[A, B2], f3: GeneratedAccessor[A, B3], f4: GeneratedAccessor[A, B4], f5: GeneratedAccessor[A, B5], f6: GeneratedAccessor[A, B6], f7: GeneratedAccessor[A, B7], f8: GeneratedAccessor[A, B8]) extends GenAggFunc[A, C] {
     @inline def apply(a: A) = f(f1(a), f2(a), f3(a), f4(a), f5(a), f6(a), f7(a), f8(a))
+    def andThenGenAggFunc[D](g: C => D) = copy(f = (b1: B1, b2: B2, b3: B3, b4: B4, b5: B5, b6: B6, b7: B7, b8: B8) => g(f(b1, b2, b3, b4, b5, b6, b7, b8)))
 }
 
 case class GenFunc9[-A, B1, B2, B3, B4, B5, B6, B7, B8, B9, +C](specification: String, f: (B1, B2, B3, B4, B5, B6, B7, B8, B9) => C, f1: GeneratedAccessor[A, B1], f2: GeneratedAccessor[A, B2], f3: GeneratedAccessor[A, B3], f4: GeneratedAccessor[A, B4], f5: GeneratedAccessor[A, B5], f6: GeneratedAccessor[A, B6], f7: GeneratedAccessor[A, B7], f8: GeneratedAccessor[A, B8], f9: GeneratedAccessor[A, B9]) extends GenAggFunc[A, C] {
     @inline def apply(a: A) = f(f1(a), f2(a), f3(a), f4(a), f5(a), f6(a), f7(a), f8(a), f9(a))
+    def andThenGenAggFunc[D](g: C => D) = copy(f = (b1: B1, b2: B2, b3: B3, b4: B4, b5: B5, b6: B6, b7: B7, b8: B8, b9: B9) => g(f(b1, b2, b3, b4, b5, b6, b7, b8, b9)))
 }
 
 case class GenFunc10[-A, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, +C](specification: String, f: (B1, B2, B3, B4, B5, B6, B7, B8, B9, B10) => C, f1: GeneratedAccessor[A, B1], f2: GeneratedAccessor[A, B2], f3: GeneratedAccessor[A, B3], f4: GeneratedAccessor[A, B4], f5: GeneratedAccessor[A, B5], f6: GeneratedAccessor[A, B6], f7: GeneratedAccessor[A, B7], f8: GeneratedAccessor[A, B8], f9: GeneratedAccessor[A, B9], f10: GeneratedAccessor[A, B10]) extends GenAggFunc[A, C] {
     @inline def apply(a: A) = f(f1(a), f2(a), f3(a), f4(a), f5(a), f6(a), f7(a), f8(a), f9(a), f10(a))
+    def andThenGenAggFunc[D](g: C => D) = copy(f = (b1: B1, b2: B2, b3: B3, b4: B4, b5: B5, b6: B6, b7: B7, b8: B8, b9: B9, b10: B10) => g(f(b1, b2, b3, b4, b5, b6, b7, b8, b9, b10)))
 }

@@ -3,28 +3,25 @@ package com.eharmony.matching.aloha.models
 import scala.language.higherKinds
 
 import com.eharmony.matching.aloha.id.ModelIdentity
-import com.eharmony.matching.aloha.score.basic.ModelOutput
-import com.eharmony.matching.aloha.score.conversions.ScoreConverter.Implicits.NothingScoreConverter
-import com.eharmony.matching.aloha.factory.{BasicModelParser, ParserProviderCompanion, ModelParser}
+import com.eharmony.matching.aloha.factory.{BasicModelParser, ParserProviderCompanion}
 import spray.json.{DeserializationException, JsValue, JsonReader}
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 
 
 case class ErrorModel(modelId: ModelIdentity, errors: Seq[String]) extends Model[Any, Nothing] {
     private[this] val (w, wo) = {
-        val f = ModelOutput.fail(errors:_*)
-        (toScoreTuple(f)(true, NothingScoreConverter), (f, None))
+        val Seq(_w, _wo) = Seq(true, false) map { audit => failure(errors)(audit) }
+        (_w, _wo)
     }
     private[aloha] def getScore(a: Any)(implicit audit: Boolean) = if (audit) w else wo
-    override def toString = "ErrorModel(" + modelId + "," + errors + ")"
+    override def toString() = "ErrorModel(" + modelId + "," + errors + ")"
 }
 
 object ErrorModel extends ParserProviderCompanion {
-    protected[this] type M[-A, +B] = ErrorModel
-    private[this] class Parser extends BasicModelParser[M] {
+    object Parser extends BasicModelParser {
         val modelType = "Error"
         private[this] val errorField = "errors"
-        def modelJsonReader[A, B: JsonReader : ScoreConverter, C >: M[A, B]] = new JsonReader[C] {
+        def modelJsonReader[A, B: JsonReader : ScoreConverter]: JsonReader[ErrorModel] = new JsonReader[ErrorModel] {
             def read(json: JsValue) = {
                 val model = for {
                     errors <- json.sa(errorField) orElse { Option(Seq("Error with unspecified reason.")) }
@@ -36,5 +33,5 @@ object ErrorModel extends ParserProviderCompanion {
         }
     }
 
-    val parser = new Parser().asInstanceOf[ModelParser[M]]
+    val parser = Parser
 }

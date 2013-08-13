@@ -1,6 +1,7 @@
 package com.eharmony.matching.aloha.models.tree
 
 import scala.language.higherKinds
+import scala.collection.immutable
 
 object Tree {
 
@@ -126,6 +127,31 @@ object Tree {
             builder: (A, Seq[A], Seq[TreeImpl]) => TreeImpl): TreeImpl = findRoot(parents) match {
         case None => throw new IllegalArgumentException
         case Some(rootId) => apply[A, C, TreeImpl](nodes, adjacenyListStructure(rootId, parents).toMap, rootId, builder)
+    }
+
+    /**
+      *
+      * @param nodes a list of nodes.
+      * @param root index in nodes of the root node.
+      * @param getId a function taking a node that returns an ID
+      * @param childrenIds a function taking a node and a that returns ID for it children
+      * @param builder a builder function
+      * @tparam A
+      * @tparam C
+      * @tparam TreeImpl
+      * @return
+      */
+    def apply[A, C[_] <: Iterable[_], TreeImpl <: Tree[_, C, _]](
+            nodes: Seq[A],
+            root: Seq[A] => Int,
+            getId: A => Int,
+            childrenIds: A => Seq[Int],
+            builder: (A, Seq[A], Seq[TreeImpl]) => TreeImpl): TreeImpl = {
+        val ids = nodes.map(getId)
+        val idMap = nodes.map(getId).zipWithIndex.toMap
+        val children = ids.indices.zip(nodes.map(n => childrenIds(n).map(idMap.apply))).toMap
+        val t = apply[A, C, TreeImpl](nodes, children, root(nodes), builder)
+        t
     }
 }
 

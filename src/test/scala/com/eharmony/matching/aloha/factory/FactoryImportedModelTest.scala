@@ -1,7 +1,6 @@
 package com.eharmony.matching.aloha.factory
 
 import org.junit.runner.RunWith
-import org.junit.internal.runners.JUnit4ClassRunner
 import org.junit.Test
 
 import spray.json.DefaultJsonProtocol._
@@ -9,8 +8,9 @@ import com.eharmony.matching.aloha.score.conversions.ScoreConverter.Implicits._
 
 import com.eharmony.matching.aloha.models.ErrorModel
 import com.eharmony.matching.aloha.factory.ex.RecursiveModelDefinitionException
+import org.junit.runners.BlockJUnit4ClassRunner
 
-@RunWith(classOf[JUnit4ClassRunner])
+@RunWith(classOf[BlockJUnit4ClassRunner])
 class FactoryImportedModelTest {
 
     @Test(expected = classOf[RecursiveModelDefinitionException])

@@ -12,70 +12,47 @@ import com.eharmony.matching.aloha.factory.pimpz.JsValuePimpz
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 import com.eharmony.matching.aloha.semantics.Semantics
 import com.eharmony.matching.aloha.reflect.RefInfo
+import com.eharmony.matching.aloha.factory.ex.AlohaFactoryException
 
 /**
   * '''NOTE''': If the covariance annotation on M were removed we could change the signature of modelJsonReader from
   * {{{ def modelJsonReader[A, B: JsonReader: ScoreConverter, C >: M[A, B]]: JsonReader[C] }}}
   * to
   * {{{ def modelJsonReader[A, B: JsonReader: ScoreConverter]: JsonReader[M[A, B]] }}}
-  * @tparam M The implementation of model that will be generated.  Notice that this is a two param
   */
-trait ModelParser[+M[-_, +_] <: Model[_, _]] extends JsValuePimpz {
+trait ModelParser extends JsValuePimpz {
     private implicit val modelIdFormat = DefaultJsonProtocol.jsonFormat2(ModelId.apply)
 
     val modelType: String
 
     /**
       * @param factory ModelFactory[Model[_, _] ]
-      * @tparam A
-      * @tparam B
-      * @tparam C
+      * @tparam A model input type
+      * @tparam B model input type
       * @return
       */
-    def modelJsonReader[M1[-_, +_] <: Model[_,_], A, B: JsonReader: ScoreConverter, C >: M[A, B]](factory: Option[ModelFactory[M1]], semantics: Option[Semantics[A]]): JsonReader[C]
+    def modelJsonReader[A, B: JsonReader: ScoreConverter](factory: ModelFactory, semantics: Option[Semantics[A]]): JsonReader[_ <: Model[A, B]]
 
     protected final def getModelId(json: JsValue): Option[ModelIdentity] =
         json(ModelParser.modelIdField).collect{case o: JsObject => o.convertTo[ModelId]}
 
-    final def getParser[M1[-_, +_] <: Model[_,_], A: RefInfo, B: RefInfo: JsonReader: ScoreConverter](factory: Option[ModelFactory[M1]], semantics: Option[Semantics[A]]) = new Parser[JsValue, M[A, B]] {
-        def parse(json: JsValue): M[A, B] = json.convertTo(modelJsonReader[M1, A, B, M[A, B]](factory, semantics))
+    final def getParser[A: RefInfo, B: RefInfo: JsonReader: ScoreConverter](factory: ModelFactory, semantics: Option[Semantics[A]]) = new Parser[JsValue, Model[A, B]] {
+        def parse(json: JsValue): Model[A, B] = json.convertTo(modelJsonReader[A, B](factory, semantics))
     }
 }
 
-trait BasicModelParser[+M[-_, +_] <: Model[_, _]] extends ModelParser[M] {
-    def modelJsonReader[A, B: JsonReader: ScoreConverter, C >: M[A, B]]: JsonReader[C]
-    final def modelJsonReader[M1[-_, +_] <: Model[_,_], A, B: JsonReader: ScoreConverter, C >: M[A, B]](factory: Option[ModelFactory[M1]], semantics: Option[Semantics[A]]): JsonReader[C] =
-        modelJsonReader[A, B, C]
+trait BasicModelParser extends ModelParser {
+    def modelJsonReader[A, B: JsonReader: ScoreConverter]: JsonReader[_ <: Model[A, B]]
+    final def modelJsonReader[A, B: JsonReader: ScoreConverter](factory: ModelFactory, semantics: Option[Semantics[A]]): JsonReader[_ <: Model[A, B]] =
+        modelJsonReader[A, B]
 }
 
-trait ModelParserWithSemantics[+M[-_, +_] <: Model[_, _]] extends ModelParser[M] {
-    def modelJsonReader[A, B: JsonReader: ScoreConverter, C >: M[A, B]](semantics: Option[Semantics[A]]): JsonReader[C]
-    final def modelJsonReader[M1[-_, +_] <: Model[_,_], A, B: JsonReader: ScoreConverter, C >: M[A, B]](factory: Option[ModelFactory[M1]], semantics: Option[Semantics[A]]): JsonReader[C] =
-        modelJsonReader[A, B, C](semantics)
+trait ModelParserWithSemantics extends ModelParser {
+    def modelJsonReader[A, B: JsonReader: ScoreConverter](semantics: Semantics[A]): JsonReader[_ <: Model[A, B]]
+    final def modelJsonReader[A, B: JsonReader: ScoreConverter](factory: ModelFactory, semantics: Option[Semantics[A]]): JsonReader[_ <: Model[A, B]] = {
+        semantics.map(s => modelJsonReader[A, B](s)).getOrElse { throw new AlohaFactoryException(this.toString + "(ModelParserWithSemantics): No semantics provided") }
+    }
 }
-
-
-//trait ModelParser[+M[-_, +_] <: Model[_, _]] extends JsValuePimpz {
-//    private implicit val modelIdFormat = DefaultJsonProtocol.jsonFormat2(ModelId.apply)
-//
-//    val modelType: String
-//
-//    /**
-//     * @param factory ModelFactory[Model[_, _] ]
-//     * @tparam A
-//     * @tparam B
-//     * @tparam C
-//     * @return
-//     */
-//    def modelJsonReader[A, B: JsonReader: ScoreConverter, C >: M[A, B]]: JsonReader[C]
-//
-//    protected final def getModelId(json: JsValue): Option[ModelIdentity] =
-//        json(ModelParser.modelIdField).collect{case o: JsObject => o.convertTo[ModelId]}
-//
-//    final def getParser[A: TypeTag, B: TypeTag: JsonReader: ScoreConverter] = new Parser[JsValue, M[A, B]] {
-//        def parse(json: JsValue): M[A, B] = json.convertTo(modelJsonReader[A, B, M[A, B]])
-//    }
-//}
 
 private object ModelParser {
     val modelIdField = "modelId"
