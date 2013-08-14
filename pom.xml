@@ -2,7 +2,7 @@
     <parent>
         <groupId>com.eharmony.matching</groupId>
         <artifactId>aloha</artifactId>
-        <version>0.9.0</version>
+        <version>0.9.1-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -130,7 +130,7 @@
         <dependency>
             <groupId>com.eharmony.matching</groupId>
             <artifactId>aloha-proto_${protobuf.version}</artifactId>
-            <version>0.9.0</version>
+            <version>${aloha.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

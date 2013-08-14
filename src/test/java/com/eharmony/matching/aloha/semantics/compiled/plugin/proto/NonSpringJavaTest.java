@@ -1,6 +1,7 @@
 package com.eharmony.matching.aloha.semantics.compiled.plugin.proto;
 
 import com.eharmony.matching.aloha.factory.ModelFactory;
+import com.eharmony.matching.aloha.factory.ModelParser;
 import com.eharmony.matching.aloha.factory.TypedModelFactory;
 import com.eharmony.matching.aloha.interop.DoubleFactoryInfo;
 import com.eharmony.matching.aloha.interop.IntegerFactoryInfo;
@@ -74,7 +75,7 @@ public class NonSpringJavaTest {
     {
 
         // Construct the factory.  Can use one factory for many models so long as the type parameters are the same.
-        final TypedModelFactory<TestProto, Double, Model<TestProto, Double>> modelFactory = getModelFactory();
+        final TypedModelFactory<TestProto, Double> modelFactory = getModelFactory();
 
         // Construct the model.  Can reuse the models.  All models should be thread safe and lock free.
         final Model<TestProto, Double> model = getModel(modelFactory, vfs2FileManager.resolveFile(VFS2_MODEL_LOCATION_URL_STRING));
@@ -102,13 +103,12 @@ public class NonSpringJavaTest {
      * @return a model specified by the file.
      */
     private static Model<TestProto, Double> getModel(
-            TypedModelFactory<TestProto, Double, Model<TestProto, Double>> modelFactory,
+            TypedModelFactory<TestProto, Double> modelFactory,
             org.apache.commons.vfs2.FileObject fo2Model) {
 
         // THIS CAST IS NECESSARY (even though it might not seem like it):  (Scala compiler bug)
         // Get an attempt to get the model.
-        final Try<Model<TestProto,Double>> modelTry =
-                (Try<Model<TestProto,Double>>) modelFactory.fromVfs2(fo2Model);
+        final Try<Model<TestProto,Double>> modelTry = (Try<Model<TestProto,Double>>) modelFactory.fromVfs2(fo2Model);
 
         // modelTry.isSuccess() tells if there is something inside:
         //   - true is good.
@@ -136,7 +136,7 @@ public class NonSpringJavaTest {
      * some programming concepts (e.g. higher kinds) not easily reducible to a java programming concept.
      * @return a factory used to construct models.
      */
-    private static TypedModelFactory<TestProto, Double, Model<TestProto, Double>> getModelFactory() {
+    private static TypedModelFactory<TestProto, Double> getModelFactory() {
 
         // ================================================================================================
         //  Construct the semantics
@@ -163,19 +163,21 @@ public class NonSpringJavaTest {
         //  Construct the semantics.  This is the object that gives meaning to the features.  I.e., it
         //  transforms them from specifications to working functions.
         // ------------------------------------------------------------------------------------------------
-        final CompiledSemantics<TestProto> semantics = (CompiledSemantics<TestProto>) new CompiledSemantics(
-                compiler,
-                userPairingProtoPlugin,
-                SEMANTICS_IMPORTS,
-                scala.concurrent.ExecutionContext$.MODULE$.global());
+        final CompiledSemantics<TestProto> semantics =
+                new CompiledSemantics(
+                        compiler,
+                        userPairingProtoPlugin,
+                        SEMANTICS_IMPORTS,
+                        scala.concurrent.ExecutionContext$.MODULE$.global());
 
         // ================================================================================================
         //  Add each model parser that we want the factory to know about.  Eventually, there will be a
         //  standard list of parsers in aloha-core so any factory will easily be able to include all
         //  parsers.
         // ================================================================================================
-        final ArrayList parsers = new ArrayList();
+        final ArrayList<ModelParser> parsers = new ArrayList<ModelParser>();
         parsers.add(RegressionModel.parser());
+        RegressionModel.parser();
 
         // ================================================================================================
         //  Create an untyped factory.  This isn't much use in Java because it makes use of higher kinds.
@@ -192,16 +194,15 @@ public class NonSpringJavaTest {
         //  useful in a production setting because it contains type-safe return values along with an
         //  audit trail and error messages and it logs missing data.
         // ================================================================================================
-        final TypedModelFactory<TestProto, Double, Model<TestProto, Double>> testProtoToDoubleModelFactory =
+        final TypedModelFactory<TestProto, Double> testProtoToDoubleModelFactory =
                 untypedModelFactory.toTypedFactory(semantics, new DoubleFactoryInfo<TestProto>(TestProto.class));
 
         // ------------------------------------------------------------------------------------------------
         //  This just shows that we can easily construct another factory for different output types
         //  while reusing the semantics, etc.
         // ------------------------------------------------------------------------------------------------
-        final TypedModelFactory<TestProto, Integer, Model<TestProto, Integer>> testProtoToIntegerModelFactory =
+        final TypedModelFactory<TestProto, Integer> testProtoToIntegerModelFactory =
                 untypedModelFactory.toTypedFactory(semantics, new IntegerFactoryInfo<TestProto>(TestProto.class));
-
 
         return testProtoToDoubleModelFactory;
     }
