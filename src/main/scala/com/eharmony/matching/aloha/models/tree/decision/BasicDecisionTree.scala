@@ -7,7 +7,7 @@ import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 import com.eharmony.matching.aloha.id.ModelIdentity
 import com.eharmony.matching.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.score.basic.ModelOutput
-import com.eharmony.matching.aloha.factory.{ParserProviderCompanion, ModelParserWithSemantics}
+import com.eharmony.matching.aloha.factory.{ModelParser, ParserProviderCompanion, ModelParserWithSemantics}
 import com.eharmony.matching.aloha.util.EitherHelpers
 import com.eharmony.matching.aloha.semantics.Semantics
 import com.eharmony.matching.aloha.models.tree.Tree
@@ -89,6 +89,6 @@ object BasicDecisionTree extends ParserProviderCompanion {
         }
     }
 
-    val parser = Parser
+    def parser: ModelParser = Parser
 }
 

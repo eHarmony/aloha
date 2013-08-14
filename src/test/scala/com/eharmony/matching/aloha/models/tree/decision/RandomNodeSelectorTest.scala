@@ -124,7 +124,7 @@ class RandomNodeSelectorTest {
     private[this] def intModel(json: JsValue) = {
         import com.eharmony.matching.aloha.score.conversions.ScoreConverter.Implicits.IntScoreConverter
         import spray.json.DefaultJsonProtocol.IntJsonFormat
-        val reader = BasicDecisionTree.parser.modelJsonReader[Map[String, Double], Int](randomTestSemantics)
+        val reader = BasicDecisionTree.Parser.modelJsonReader[Map[String, Double], Int](randomTestSemantics)
         val m = reader.read(json)
         m
     }
@@ -132,7 +132,7 @@ class RandomNodeSelectorTest {
     private[this] def doubleModel(json: JsValue) = {
         import com.eharmony.matching.aloha.score.conversions.ScoreConverter.Implicits.DoubleScoreConverter
         import spray.json.DefaultJsonProtocol.DoubleJsonFormat
-        val reader = BasicDecisionTree.parser.modelJsonReader[Map[String, Double], Double](randomTestSemantics)
+        val reader = BasicDecisionTree.Parser.modelJsonReader[Map[String, Double], Double](randomTestSemantics)
         val m = reader.read(json)
         m
     }

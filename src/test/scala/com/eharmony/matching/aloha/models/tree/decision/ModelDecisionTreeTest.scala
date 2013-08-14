@@ -252,7 +252,7 @@ object ModelDecisionTreeTest {
 
         val f = ModelFactory(ConstantModel.parser, BasicDecisionTree.parser, ModelDecisionTree.parser)
         val factory = f.toTypedFactory[Map[String, Double], Int](semantics)
-        val mTry = factory.model.fromString(json(missing1, best1, missing2, best2))
+        val mTry = factory.fromString(json(missing1, best1, missing2, best2)) // So we can see the exception in debugging.
         val m = mTry.get
         ModelContainer(m, missing1, best1, missing2, best2)
     }

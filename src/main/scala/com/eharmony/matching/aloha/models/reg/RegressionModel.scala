@@ -10,7 +10,7 @@ import com.eharmony.matching.aloha.semantics.func.GenAggFunc
 import com.eharmony.matching.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.score.basic.ModelOutput
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter
-import com.eharmony.matching.aloha.factory.{ModelParserWithSemantics, ParserProviderCompanion}
+import com.eharmony.matching.aloha.factory.{ModelParser, ModelParserWithSemantics, ParserProviderCompanion}
 import com.eharmony.matching.aloha.semantics.Semantics
 import com.eharmony.matching.aloha.factory.pimpz.JsValuePimpz
 import com.eharmony.matching.aloha.util.EitherHelpers
@@ -276,7 +276,7 @@ object RegressionModel extends ParserProviderCompanion with JsValuePimpz with Re
         }
     }
 
-    val parser = Parser
+    def parser: ModelParser = Parser
 
     private[this] object doubleFunctions {
         val doubleToByteFunction   = (_: Double).toByte

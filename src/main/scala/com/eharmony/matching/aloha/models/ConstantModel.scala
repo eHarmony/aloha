@@ -4,7 +4,7 @@ import com.eharmony.matching.aloha.id.{ModelId, ModelIdentity}
 import com.eharmony.matching.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 import com.eharmony.matching.aloha.score.basic.ModelOutput
-import com.eharmony.matching.aloha.factory.{BasicModelParser, ParserProviderCompanion}
+import com.eharmony.matching.aloha.factory.{ModelParser, BasicModelParser, ParserProviderCompanion}
 import spray.json.{DeserializationException, JsValue, JsonReader}
 
 case class ConstantModel[+B: ScoreConverter](constant: ModelOutput[B], modelId: ModelIdentity) extends Model[Any, B] {
@@ -33,5 +33,5 @@ object ConstantModel extends ParserProviderCompanion {
         }
     }
 
-    val parser = Parser
+    def parser: ModelParser = Parser
 }

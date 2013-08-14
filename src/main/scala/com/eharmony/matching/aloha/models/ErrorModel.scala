@@ -3,7 +3,7 @@ package com.eharmony.matching.aloha.models
 import scala.language.higherKinds
 
 import com.eharmony.matching.aloha.id.ModelIdentity
-import com.eharmony.matching.aloha.factory.{BasicModelParser, ParserProviderCompanion}
+import com.eharmony.matching.aloha.factory.{ModelParser, BasicModelParser, ParserProviderCompanion}
 import spray.json.{DeserializationException, JsValue, JsonReader}
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 
@@ -33,5 +33,5 @@ object ErrorModel extends ParserProviderCompanion {
         }
     }
 
-    val parser = Parser
+    def parser: ModelParser = Parser
 }

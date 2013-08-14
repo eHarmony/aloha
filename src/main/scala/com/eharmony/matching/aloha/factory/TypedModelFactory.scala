@@ -5,7 +5,7 @@ import scala.util.Try
 
 import spray.json.{JsonReader, pimpString}
 
-import com.eharmony.matching.aloha.io.ReadableByString
+import com.eharmony.matching.aloha.io.{AlohaReadable, ReadableByString}
 import com.eharmony.matching.aloha.models.Model
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 import com.eharmony.matching.aloha.semantics.Semantics
@@ -84,18 +84,13 @@ import com.eharmony.matching.aloha.reflect.RefInfo
   * parameter that was passed to this factory instance.
   */
 case class TypedModelFactory[A: RefInfo, B: RefInfo: JsonReader: ScoreConverter](factory: ModelFactory, semantics: Option[Semantics[A]] = None)
-extends ReadableByString[Try[Model[A, B]]] {
+    extends ReadableByString[Try[Model[A, B]]] {
 
     /** Most information provided by any of the three APIs.  One of the two recommended interfaces for Scala code.
       */
     val modelAndInfo = new ReadableByString[Try[ModelInfo[Model[A, B]]]] {
-        def fromString(s: String): Try[ModelInfo[Model[A, B]]] = factory.getModelAndInfo[A, B](s.asJson, semantics)
-    }
-
-    /** One of the two recommended interfaces for Scala code.
-      */
-    val model = new ReadableByString[Try[Model[A, B]]] {
-        def fromString(s: String): Try[Model[A, B]] = factory.getModel[A, B](s.asJson, semantics)
+        def fromString(s: String): Try[ModelInfo[Model[A, B]]] = Try { throw new UnsupportedOperationException("modelAndInfo unsupported") }
+//            factory.getModelAndInfo[A, B](s.asJson, semantics)
     }
 
     /** The recommended API method from Java.  It's also equally valid to use any of the other methods provided by

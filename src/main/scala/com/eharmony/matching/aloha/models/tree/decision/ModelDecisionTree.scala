@@ -123,5 +123,5 @@ object ModelDecisionTree extends ParserProviderCompanion {
         }
     }
 
-    val parser = Parser
+    def parser: ModelParser = Parser
 }
