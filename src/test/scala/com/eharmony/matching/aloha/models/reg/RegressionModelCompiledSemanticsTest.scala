@@ -16,6 +16,7 @@ import com.eharmony.matching.aloha.semantics.compiled.compiler.TwitterEvalCompil
 import com.eharmony.matching.aloha.FileLocations
 import com.eharmony.matching.aloha.reflect.RefInfo
 import org.junit.runners.BlockJUnit4ClassRunner
+import com.eharmony.matching.aloha.models.Model
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class RegressionModelTestCompiledSemanticsTest {
@@ -91,9 +92,9 @@ class RegressionModelTestCompiledSemanticsTest {
         import concurrent.ExecutionContext.Implicits.global
         val semantics = CompiledSemantics(compiler, plugin, imports)
 
-        val f = ModelFactory(RegressionModel.parser).toTypedFactory[Map[String, Long], Double](Some(semantics))
+        val f = ModelFactory(RegressionModel.parser).toTypedFactory[Map[String, Long], Double](semantics)
 
-        val m: RegressionModel[Map[String, Long], Double] = f.model.fromString(json).get
+        val m: Model[Map[String, Long], Double] = f.fromString(json).get
 
         val x = Map[String, Long](
             "user.profile.education" -> 4,
@@ -102,8 +103,7 @@ class RegressionModelTestCompiledSemanticsTest {
             "pair.distance" -> 8
         )
 
-        val y = m.score(x)
-        val a = 1
+        m.score(x)
     }
 }
 
