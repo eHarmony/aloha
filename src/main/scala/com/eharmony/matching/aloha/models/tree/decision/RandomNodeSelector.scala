@@ -4,14 +4,15 @@ import com.eharmony.matching.aloha.util.rand.HashedCategoricalDistribution
 import com.eharmony.matching.aloha.semantics.func.GenAggFunc
 
 /** A selector that random selects a child node.
-  * @param features features on which the hash is based.
+  * @param features features on which the hash is based.  Notice that function output type is Any.
   * @param distribution a distribution used for selecting values.
   * @param missingOk whether it is OK to hash on missing data.  Keep in mind that if set to true, there is no
-  *                  guarantee about what value will be selected.
+  *                  guarantee about what value will be selected.  (Missing data in this context means None.  There are
+  *                  no explicit null checks; just None checks.)
   * @tparam A the input type from which features are extracted.
   */
 case class RandomNodeSelector[-A](
-        features: Seq[GenAggFunc[A, Option[Any]]],
+        features: Seq[GenAggFunc[A, Any]],
         distribution: HashedCategoricalDistribution,
         missingOk: Boolean = false) extends NodeSelector[A] {
 

@@ -3,6 +3,7 @@ package com.eharmony.matching.aloha.models.tree.decision
 import com.eharmony.matching.aloha.semantics.Semantics
 import com.eharmony.matching.aloha.factory.pimpz.JsValuePimpz
 import com.eharmony.matching.aloha.util.rand.HashedCategoricalDistribution
+import com.eharmony.matching.aloha.factory.ex.AlohaFactoryException
 
 trait DecisionTreeJson {
     import spray.json.{JsonReader, JsonFormat, JsValue, JsString, DeserializationException}
@@ -28,7 +29,16 @@ trait DecisionTreeJson {
             selectorType: String) extends NodeSelectorAst {
 
         def nodeSelector[A](semantics: Semantics[A], missingOk: Boolean): NodeSelector[A] = {
-            val functions = features.map{f => semantics.createFunction[Option[Any]](f, Option(None)).right.get}.toIndexedSeq
+
+            // TODO: Check this out: A little dangerous compiling a function that can return any type.
+            // I guess no more dangerous than not, if we allow impure functions (which we do).
+            val functions = features.map { f => semantics.createFunction[Any](f, Option(None)).fold(
+                // Preemptively throw an exception containing the actual actual problem rather than passively
+                // getting a NoSuchElementException when accessing the .right of a Left.
+                failMsgs => throw new AlohaFactoryException(s"Problem creating random node selector feature '$f'${failMsgs.mkString(":\n", "\n", "")}" ),
+                identity
+            )}.toIndexedSeq
+
             val distribution = HashedCategoricalDistribution(probabilities:_*)
             RandomNodeSelector(functions, distribution, missingOk)
         }
@@ -42,8 +52,17 @@ trait DecisionTreeJson {
             selectorType: String = "linear") extends NodeSelectorAst {
 
         def nodeSelector[A](semantics: Semantics[A], missingOk: Boolean): NodeSelector[A] = {
-            val p = predicates.map{p => semantics.createFunction[Option[Boolean]](p, Option(None)).right.get}.toList
-            LinearNodeSelector(p, missingOk)
+            val pred = predicates.map { p =>
+                semantics.createFunction[Option[Boolean]](p, Option(None)).fold(
+                    // Preemptively throw an exception containing the actual actual problem rather than passively
+                    // getting a NoSuchElementException when accessing the .right of a Left.
+                    failMsgs => throw new AlohaFactoryException(s"Problem creating linear node selector predicate '$p'${failMsgs.mkString(":\n", "\n", "")}" ),
+                    identity
+                )
+            }.toList
+
+            // val p = predicates.map{p => semantics.createFunction[Option[Boolean]](p, Option(None)).right.get}.toList
+            LinearNodeSelector(pred, missingOk)
         }
     }
 

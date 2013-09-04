@@ -70,6 +70,12 @@ class RandomNodeSelectorTest {
     @Test def testRandom8Split() { testRandomDSplit(8, StdSampleSize) }
     @Test def testRandom9Split() { testRandomDSplit(9, StdSampleSize) }
 
+    /**
+     * Is a little harder to satisfy with a small number of samples due to randomness and rounding.  Bump the
+     * tolerance.  Could instead bump of the number of samples, but that takes longer to run.
+     */
+    @Test def testRandom50Split() { testRandomDSplit(50, StdSampleSize, 0.06) }
+
     @Test def test_returnBest_false__missingOK_false() {
         val s = intModel(getTreeJson(returnBest = false, missingDataOk = false, 0.5)).score(Map.empty)
         assertFalse("Score should NOT have a value.", s.hasScore)
@@ -113,12 +119,13 @@ class RandomNodeSelectorTest {
       * ''numSamples'' approaches infinity.
       * @param splitDimensionality number of dimensions in the random split
       * @param numSamples the number draws from the categorical distribution.
+      * @param delta 1.5% default delta seems reasonable.
       * @param r a random number generator
       */
-    private[this] def testRandomDSplit(splitDimensionality: Int, numSamples: Int)(implicit r: Random = new Random(0)) {
+    private[this] def testRandomDSplit(splitDimensionality: Int, numSamples: Int, delta: Double = 0.015)(implicit r: Random = new Random(0)) {
         val m = doubleModel(treeJsonForCategoricalDist(splitDimensionality, numSamples))
         val z = (1 to numSamples).foldLeft(0.0)((s, x) => s + m(Map("F" -> x.toDouble)).get)
-        assertEquals(1.0, z, 0.015)  // 1.5% seems reasonable.
+        assertEquals(1.0, z, delta)
     }
 
     private[this] def intModel(json: JsValue) = {

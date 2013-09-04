@@ -1,5 +1,8 @@
 package com.eharmony.matching.aloha.semantics.func
 
+import scala.util.Try
+import com.eharmony.matching.aloha.semantics.SemanticsUdfException
+
 /** An extractor function containing additional information about itself.
   * @param descriptor A descriptor of the data being extracted from data input of type A
   * @param function The actual function used to extract the data from type A.
@@ -27,13 +30,15 @@ sealed trait GenAggFunc[-A, +B] extends (A => B) { self: Product =>
     /** Get the accessors contained in the Function.
       * @return
       */
-    def accessors = productIterator.drop(2).asInstanceOf[Iterator[GeneratedAccessor[A, _]]].toList
+    def accessors: List[GeneratedAccessor[A, _]] = productIterator.drop(2).asInstanceOf[Iterator[GeneratedAccessor[A, _]]].toList
 
     /** Produce a list of results by applying each accessor on the input.
       * @param a the input
       * @return a map from each accessor's descriptor to the value produced by the accessor.
       */
-    def accessorOutput(a: A) = accessors.map(acc => (acc.descriptor, acc(a))).toMap
+//    def accessorOutput(a: A): Map[String, Any] = accessors.map(acc => (acc.descriptor, acc(a))).toMap
+
+    def accessorOutput(a: A): Map[String, Try[Any]] = accessors.map(acc => (acc.descriptor, Try{acc(a)})).toMap
 
     /** Like Function1.andThen except it returns a GenAggFunc.
       * @param g a function to execute after this
@@ -47,12 +52,32 @@ sealed trait GenAggFunc[-A, +B] extends (A => B) { self: Product =>
       * @param a input on which we are trying to report accessors with missing outputs.
       * @return
       */
-    def accessorOutputMissing(a: A) = {
-        accessorOutput(a).collect {
-            case(k, None) => k
-            case(k, Left(_)) => k
+    def accessorOutputMissing(a: A): List[String] = accessorsWithMissing(accessorOutput(a))
+
+    def accessorOutputWithError(a: A): List[String] = accessorsInErr(accessorOutput(a))
+
+    /** Produce a list of accessor descriptors where the accessor results in missing data.  This is determined applying
+      * accessorOutput and collecting keys whose values are None or Left(_).
+      * @param ao input on which we are trying to report accessors with missing outputs.
+      * @return
+      */
+    protected[this] final def accessorsWithMissing(ao: Map[String, Try[Any]]): List[String] = {
+        ao.flatMap {
+            case(k, v) if v.isSuccess => v.get match {
+                case None => Option(k)
+                case Left(_) => Option(k)
+                case _ => None
+            }
+            case _ => None
         }.toList
     }
+
+    /** Accessor names for accessors with errors.
+      * @param ao output of accessorOutput applied to an input.
+      * @return
+      */
+    protected[this] final def accessorsInErr(ao: Map[String, Try[Any]]): List[String] =
+        ao.collect { case (k, v) if v.isFailure => k }.toList
 
     override def toString() = accessors.map(a => "${" + a.descriptor + "}").mkString("GenAggFunc((", ", ", ") => ") + specification + ")"
 }
@@ -115,6 +140,47 @@ object GenFunc {
     def f9[A, B1, B2, B3, B4, B5, B6, B7, B8, B9, C](f1: GeneratedAccessor[A, B1], f2: GeneratedAccessor[A, B2], f3: GeneratedAccessor[A, B3], f4: GeneratedAccessor[A, B4], f5: GeneratedAccessor[A, B5], f6: GeneratedAccessor[A, B6], f7: GeneratedAccessor[A, B7], f8: GeneratedAccessor[A, B8], f9: GeneratedAccessor[A, B9])(specification: String, f: (B1, B2, B3, B4, B5, B6, B7, B8, B9) => C) = GenFunc9(specification, f, f1, f2, f3, f4, f5, f6, f7, f8, f9)
     def f10[A, B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, C](f1: GeneratedAccessor[A, B1], f2: GeneratedAccessor[A, B2], f3: GeneratedAccessor[A, B3], f4: GeneratedAccessor[A, B4], f5: GeneratedAccessor[A, B5], f6: GeneratedAccessor[A, B6], f7: GeneratedAccessor[A, B7], f8: GeneratedAccessor[A, B8], f9: GeneratedAccessor[A, B9], f10: GeneratedAccessor[A, B10])(specification: String, f: (B1, B2, B3, B4, B5, B6, B7, B8, B9, B10) => C) = GenFunc10(specification, f, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10)
 }
+
+/** A wrapper around an unsafe GenAggFunc that will catch exceptions and rethrow
+  * [[com.eharmony.matching.aloha.semantics.SemanticsUdfException]] with the appropriate information filled in.
+  * @param unsafe an unsafe GenAggFunc that can throw exceptions.
+  * @tparam A input type of the function
+  * @tparam B output type of the function
+  */
+case class EnrichedErrorGenAggFunc[-A, +B](unsafe: GenAggFunc[A, B]) extends GenAggFunc[A, B] {
+    override def accessors = unsafe.accessors
+    val specification = unsafe.specification
+
+    /** Like Function1.andThen except it returns a GenAggFunc.  This calls the unsafe GenAggFunc's andThenGenAggFunc
+      * function and then wraps the result in a RethrowingGenAggFunc.
+      *
+      * @param g a function to execute after this
+      * @tparam C output type of the resulting function.
+      * @return
+      */
+    def andThenGenAggFunc[C](g: B => C) = EnrichedErrorGenAggFunc(unsafe.andThenGenAggFunc(g))
+
+    /** Apply the unsafe GenAggFunc.  If it results in a SemanticsUdfException, rethrow.  If it results in any other
+      * type of Exception, gather data and create a SemanticsUdfException and throw it.
+      * @param a function input
+      * @return
+      */
+    @throws[SemanticsUdfException[A]]("when the underlying unsafe GenAggFunc throws an exception.")
+    @inline def apply(a: A) =
+        try {
+            unsafe(a)
+        }
+        catch {
+            case e: SemanticsUdfException[A] => throw e
+            case e: Exception =>
+                val ao = accessorOutput(a)
+                val missing = accessorsWithMissing(ao)
+                val err = accessorsInErr(ao)
+                val ex = SemanticsUdfException(specification, ao, missing, err, e, a)
+                throw ex
+        }
+}
+
 
 case class OptionalFunc[-A, +B](function: GenAggFunc[A, Option[B]], default: B) extends GenAggFunc[A, B] {
     @inline def apply(a: A) = function(a) getOrElse default

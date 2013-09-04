@@ -1,6 +1,7 @@
 package com.eharmony.matching.aloha.feature
 
 import com.eharmony.matching.aloha.models.reg.RegressionModelValueToTupleConversions
+import com.eharmony.matching.aloha.models.tree.decision.DecisionTreeBoolToOptBoolConversions
 
 /**
   *
@@ -13,7 +14,8 @@ object BasicFunctions
     with Indicator
     with Intercept
     with TimeConstants
-    with RegressionModelValueToTupleConversions {
+    with RegressionModelValueToTupleConversions
+    with DecisionTreeBoolToOptBoolConversions {
 
     final protected[this] val DefaultForMissingDataInReg = Seq(("=UNK", 1.0))
 }
