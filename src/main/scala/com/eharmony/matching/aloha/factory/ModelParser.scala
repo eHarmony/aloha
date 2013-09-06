@@ -3,7 +3,7 @@ package com.eharmony.matching.aloha.factory
 import scala.language.higherKinds
 
 
-import spray.json.{JsObject, JsValue, JsonReader, DefaultJsonProtocol}
+import spray.json._
 import spray.json.DefaultJsonProtocol.{LongJsonFormat, StringJsonFormat}
 
 import com.eharmony.matching.aloha.id.{ModelIdentity, ModelId}
@@ -24,6 +24,14 @@ trait ModelParser extends JsValuePimpz {
     private implicit val modelIdFormat = DefaultJsonProtocol.jsonFormat2(ModelId.apply)
 
     val modelType: String
+
+    protected[this] final def jsonReaderToJsonFormat[A](implicit jr: JsonReader[A]): JsonFormat[A] = jr match {
+        case jf: JsonFormat[A] => jf
+        case _ => new JsonFormat[A] {
+            def write(a: A): JsValue = throw new UnsupportedOperationException("write not supported")
+            def read(json: JsValue): A = jr.read(json)
+        }
+    }
 
     /**
       * @param factory ModelFactory[Model[_, _] ]

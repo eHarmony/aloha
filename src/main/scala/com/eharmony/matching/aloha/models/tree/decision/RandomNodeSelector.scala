@@ -16,7 +16,7 @@ case class RandomNodeSelector[-A](
         distribution: HashedCategoricalDistribution,
         missingOk: Boolean = false) extends NodeSelector[A] {
 
-    assert(1 <= features.size, "There should be at least one feature on which the hash is based.  Received 0 features.")
+    require(1 <= features.size, "There should be at least one feature on which the hash is based.  Received 0 features.")
 
     /** "Randomly" but ''idempotently'' pick an index of a sub-tree down which to branch.
       * Compute a uniformly distributed hash code from the features specified to the constructor and then use it to
