@@ -11,6 +11,7 @@ import com.eharmony.matching.aloha.semantics.func.{GeneratedAccessor, OptionalFu
 import com.eharmony.matching.aloha.util.EitherHelpers
 import com.eharmony.matching.aloha.reflect.{RefInfoOps, RefInfo}
 import grizzled.slf4j.Logging
+import java.io.{PrintWriter, StringWriter}
 
 
 /** A semantics that can interpret complicated expressions by compiling the expressions.  This semantics constructs
@@ -151,7 +152,8 @@ case class CompiledSemantics[A](
         imports: Seq[String],
         override val provideSemanticsUdfException: Boolean = true)(implicit protected val ec: ExecutionContext)
     extends CompiledSemanticsLike[A]
-    with ErrorEnrichingSemantics[A] {
+    with ErrorEnrichingSemantics[A]
+    with Logging {
 
     /** A java (Spring) friendly constructor.
       * @param compiler a compiler capable of compiling real scala code and generating real instances that work at full speed.
@@ -535,8 +537,12 @@ sealed trait CompiledSemanticsLike[A]
     private[this] def compile[B](code: String): ENS[GenAggFunc[A, B]] = {
         compiler.fromString[GenAggFunc[A, B]](code).map(success).recover {
             case e: Exception =>
-                // TODO: Log
-                fail(e.getMessage)
+                error(s"Problem compiling code: $code", e)
+
+                // Save stack trace too.
+                val sw = new StringWriter
+                e.printStackTrace(new PrintWriter(sw))
+                fail(e.getMessage, sw.toString)
         }.get
     }
 
