@@ -162,7 +162,7 @@ case class RegressionModel[-A, +B: ScoreConverter](
     }
 }
 
-object RegressionModel extends ParserProviderCompanion with JsValuePimpz with RegressionModelJson {
+object RegressionModel extends ParserProviderCompanion with JsValuePimpz with RegressionModelJson with Logging {
     import spray.json._
 
     object Parser extends ModelParserWithSemantics with EitherHelpers {
@@ -197,7 +197,6 @@ object RegressionModel extends ParserProviderCompanion with JsValuePimpz with Re
                     throw new DeserializationException("Couldn't find conversion function for RegressionModel with output type: " + RefInfoOps.toString(rib))
                 }
 
-                // These are the features.  Do them last because they are the slowest.
                 val f = features(featureMap, semantics).fold(f => throw new DeserializationException(f.mkString("\n")), identity)
                 val m = RegressionModel[A, B](d.modelId, f, beta, cf, d.spline, d.numMissingThreshold)
                 m
@@ -237,8 +236,9 @@ object RegressionModel extends ParserProviderCompanion with JsValuePimpz with Re
         private[this] def features[A](featureMap: Seq[(String, Spec)], semantics: Semantics[A]) =
             mapSeq(featureMap){
                 case (k, Spec(spec, default)) =>
-//                    semantics.createFunction[Iterable[(String, Double)]](spec, Option(default)).right.map(f => (k, f))
-                    semantics.createFunction[Iterable[(String, Double)]](spec, default).right.map(f => (k, f))
+                    semantics.createFunction[Iterable[(String, Double)]](spec, default).
+                        left.map { Seq(s"Error processing spec '$spec'") ++ _ }.  // Add the spec that errored.
+                        right.map { f => (k, f) }
             }.right.map(_.toMap)
 
         /** Translate the specification of higher order features to something a
