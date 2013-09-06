@@ -98,11 +98,7 @@
         <dependency>
             <groupId>com.eharmony.matching</groupId>
             <artifactId>aloha-core${artifact.ext}</artifactId>
-<<<<<<< HEAD
             <version>${aloha.version}</version>
-=======
-            <version>0.9.1-SNAPSHOT</version>
->>>>>>> c38074c7687d5c3e935a30884ac0eaed85fa55cc
         </dependency>
 
         <dependency>
