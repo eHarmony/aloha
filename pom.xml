@@ -104,7 +104,7 @@
         <dependency>
             <groupId>com.twitter</groupId>
             <artifactId>util-eval_${scala.major.version}</artifactId>
-            <version>6.3.4</version>
+            <version>6.4.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.scala-lang</groupId>
