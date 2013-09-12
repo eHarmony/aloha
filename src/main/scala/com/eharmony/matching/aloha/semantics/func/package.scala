@@ -32,6 +32,14 @@ sealed trait GenAggFunc[-A, +B] extends (A => B) { self: Product =>
       */
     def accessors: List[GeneratedAccessor[A, _]] = productIterator.drop(2).asInstanceOf[Iterator[GeneratedAccessor[A, _]]].toList
 
+    /** A convenience method providing the arity of the function.  This is just:
+      * {{{
+      * def arity = accessors.size
+      * }}}
+      * @return
+      */
+    def arity: Int = accessors.size
+
     /** Produce a list of results by applying each accessor on the input.
       * @param a the input
       * @return a map from each accessor's descriptor to the value produced by the accessor.
