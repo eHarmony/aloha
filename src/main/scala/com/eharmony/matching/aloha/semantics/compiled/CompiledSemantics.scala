@@ -265,6 +265,11 @@ sealed trait CompiledSemanticsLike[A]
         // Future of return value of create function.  We try to cache if not present.
         val f = cache(codeSpec)(create(codeSpec, default))  // Try to pull from cache; otherwise create, cache, return.
         val v = Await.result(f, maxGenWaitInSec.seconds)    // TODO: Remove this when API is changed.
+
+        // Log
+        v.left.foreach{ errMsgs => debug(s"Couldn't compile codeSpec: '$codeSpec': ${errMsgs.mkString("\n\t")}") }
+        v.right.foreach{ func => s"constructed spec '$codeSpec' to function: $func" }
+
         v                                                   // TODO: Change API to actually return the future, f.
     }
 
@@ -595,9 +600,10 @@ sealed trait CompiledSemanticsLike[A]
         def accessorString = "${" + descriptor + default.map(specDefSep + _).getOrElse("") + "}"
 
         /** The name of variable in the generated function.
+          * Replace all non-alpha-numeric, non-underscore characters with double underscore.
           * @return
           */
-        def varName = "_" + descriptor.replaceAll("""\.""", "__")
+        def varName = "_" + descriptor.replaceAll("""\W""", "__")
 
         /** Generate the self-sufficient code that compiles down to one accessor.
           * '''NOTE''': Whether the code is retained is up to the code that extends the contain trait
