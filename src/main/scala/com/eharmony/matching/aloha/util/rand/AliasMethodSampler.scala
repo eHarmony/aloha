@@ -24,11 +24,16 @@ trait AliasMethodSampler {
       - http://www.keithschwarz.com/interesting/code/alias-method/AliasMethod.java.html
       - http://www.keithschwarz.com/darts-dice-coins/
       *
+      * There was a bug that occurred infrequently which seems to have been a problem that arose while porting.  It
+      * was easier just to reimplement than to track down the problem.
+      *
       * @param probs probabilities with which the sampler will return the associated index.
       * @return
       */
     protected[this] final def structures(probs: Seq[Double]): (IndexedSeq[Int], IndexedSeq[Double]) = {
         val k = probs.size
+        require(0 < k, "prob must have at least one element")
+
         val z = k / probs.sum // Ensure normalization.
 
         val q = new Array[Double](k)
@@ -68,7 +73,9 @@ trait AliasMethodSampler {
         (j.toIndexedSeq, q.toIndexedSeq)
     }
 
-    /** Induces a non-uniform distribution given a uniform random variate.
+    /** Induces a non-uniform distribution given a uniform random variates.
+      *
+      * This method has the following nice property for distributions with two possible outcomes:
       *
       * Given two distributions ''D'',,1,, and ''D'',,2,, with two classes, if
       *

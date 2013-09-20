@@ -43,19 +43,25 @@ class IntAliasMethodSamplerTest {
         })
     }
 
-    /** Ensure that 2-class distributions can be expanded and if the user is in the zeroth class, they still will be
-      * after it's probability is expanded.
+    /** Ensure that 2-class distributions can be expanded and if the user is in the zeroth class, he still will be
+      * after it's probability is increased.
       */
     @Test def test2ClassDistribution() {
         val numRandomSamples = 1000
-        val prGranularity: Int = 100
+        val prGranularity: Int = 97 // Sum prime
         val rand = new scala.util.Random(1)
 
         val distributions = List.range(1, prGranularity + 1).map(i => dist2(i / prGranularity.toDouble))
 
         distributions.tails.foreach {
             case testDist :: subsequentDists =>
+                // Get a bunch of samples where the classes returned is class 0 (ala the 3rd argument)
                 val samples = getSamples(rand, numRandomSamples, _ == 0, testDist)
+
+                // Given that the probability distribution testDist is (p = i / prGranularity, 1 - p) for classes 0 and
+                // 1, respectively, iterate over all such distributions (p = i1 / prGranularity, 1 - p) such that
+                // i1 > i and ensure that given the same random variates, that if the 0 class was returned testDist
+                // then the 0 class will be returned when the probability of the zero class is increased.
                 for {
                     dist <- subsequentDists
                     iams = new IntAliasMethodSampler(dist)
@@ -73,21 +79,58 @@ class IntAliasMethodSamplerTest {
         (1 to 1000000).foreach(_ => test(2, 2, rand))
     }
 
+    /** Sadly, this doesn't work.  We'd like to be able to guarantee this but it'll require an algorithm change that
+      * would be cool enough to be paper-worthy.
+      */
     @Test(expected = classOf[AssertionError])
-    def test4ClassDistribution() {
+    def randomClassDistributionSamePrefixAndRandomSuffix() {
         val rand = new scala.util.Random(3)
         (1 to 38).foreach(i => test(2, 3, rand))
     }
 
-    /** Test whether two randomly defined different distributions with the same prefix of probabilities in their
-      * defining probability vectors will return the same sample value given the same two draws from the random
-      * variates.
-      *
-      * @param minSize minimum number of classes in the randomized distributions (inclusive).
-      * @param maxSize maximum number of classes in the randomized distributions (inclusive).
-      * @param rand a random number generator.
+    /** Sadly, this doesn't work either.
       */
-    def test(minSize: Int, maxSize: Int, rand: Random) {
+    @Test(expected = classOf[AssertionError])
+    def randomClassDistributionWithSamePrefixAndBoostedProbAndScaledDownSubsequentProbs() {
+        val rand = new scala.util.Random(4)
+        (1 to 3).foreach(i => test1(2, 3, rand, Some(i)))
+    }
+
+    private[this] def test1(minSize: Int, maxSize: Int, rand: Random, testNumber: Option[Int] = None) {
+        //   _ _ _ _ _ | _ | _ _ _ _ _
+        //   _________   _   _________
+        //   size = j    j
+        //
+        //   pr(0) ... pr(j-1) unchanged
+        //   pr(j) increased
+        //   pr(j+1) ... pr(n-1) randomly filled in
+        //
+        //   j >= 0
+        //   j < n - 1
+        val n = rand.nextInt(maxSize - minSize + 1) + minSize
+        val j = rand.nextInt(n - 1)
+        val x = rand.nextFloat()
+        val sumPrefix = if (0 == j) 0.0 else rand.nextDouble()
+        val complSumPrefix = 1 - sumPrefix
+        val prefix = randomSeq(j, sumPrefix)(rand)
+
+        val suff1 = randomSeq(n - j, complSumPrefix)(rand)
+        val dist1 = prefix ++ suff1
+        val jprOld = suff1.head
+        val jpr = jprOld + rand.nextDouble() * (complSumPrefix - jprOld)
+
+        val suff2 = normalize(suff1.tail, complSumPrefix - jpr)        // Scaled tail
+//      val suff2 = randomSeq(n - j - 1, complSumPrefix - jpr)(rand)   // Random
+        val dist2 = prefix ++ Seq(jpr) ++ suff2
+        val s1 = new IntAliasMethodSampler(dist1)
+        val s2 = new IntAliasMethodSampler(dist2)
+        val v1 = s1.sample(j, x)
+        val v2 = s2.sample(j, x)
+
+        testNumber.fold(assertEquals(v1, v2))(i => assertEquals(s"on test $i", v1, v2))
+    }
+
+    private[this] def test(minSize: Int, maxSize: Int, rand: Random, testNumber: Option[Int] = None) {
         val n = rand.nextInt(maxSize - minSize + 1) + minSize
         val j = rand.nextInt(n)
         val jSize = j + 1
@@ -100,7 +143,8 @@ class IntAliasMethodSamplerTest {
         val s2 = new IntAliasMethodSampler(dist2)
         val v1 = s1.sample(j, x)
         val v2 = s2.sample(j, x)
-        assertEquals(v1, v2)
+
+        testNumber.fold(assertEquals(v1, v2))(i => assertEquals(s"on test $i", v1, v2))
     }
 
     @inline private[this] def classify(s: IntAliasMethodSampler, value: Int) = {
@@ -110,13 +154,13 @@ class IntAliasMethodSamplerTest {
         s.sample(x, pp)
     }
 
-    def randomSeq(n: Int, sum: Double = 1)(implicit rand: Random) = {
+    private[this] def randomSeq(n: Int, sum: Double = 1)(implicit rand: Random) = {
         val xs = Seq.fill(n)(rand.nextDouble())
         val res = normalize(xs, sum)
         res
     }
 
-    def normalize(xs: Seq[Double], targetSum: Double = 1) = {
+    private[this] def normalize(xs: Seq[Double], targetSum: Double = 1) = {
         val z = targetSum / xs.sum
         xs.map(z *)
     }
@@ -135,7 +179,7 @@ class IntAliasMethodSamplerTest {
                 samples = Sample(ri, rf, y) :: samples
             }
         }
-        samples.reverse
+        samples.reverse // doesn't matter, but reverse since samples in reverse order of discovery
     }
 
     private[this] case class Sample(zeroToD: Int, zeroOne: Float, result: Int)
