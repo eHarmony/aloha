@@ -11,6 +11,7 @@ import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 import com.eharmony.matching.aloha.score.basic.ModelOutput
 import com.eharmony.matching.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.semantics.Semantics
+import grizzled.slf4j.Logging
 
 
 /** A model representing a categorical distribution.  This will return values with the probabilities prescribed by the
@@ -75,7 +76,7 @@ case class CategoricalDistibutionModel[-A, +B: ScoreConverter](
 object CategoricalDistibutionModel extends ParserProviderCompanion {
     private val missingMsg = Seq("Couldn't choose random output due to missing features")
 
-    object Parser extends ModelParserWithSemantics {
+    object Parser extends ModelParserWithSemantics with Logging {
         val modelType = "CategoricalDistribution"
 
         private case class Ast[B: JsonFormat : ScoreConverter](
@@ -92,7 +93,7 @@ object CategoricalDistibutionModel extends ParserProviderCompanion {
                 val id = getModelId(json).get
                 val ast = json.convertTo[Ast[B]]
                 val featuresX = ast.features.map(f => semantics.createFunction[Any](f))
-                val features = featuresX.map(_.right.get)
+                val features = featuresX.map(_.left.map(e => error("errors: " + e.mkString("\n") + "json: " + json.compactPrint)).right.get)
 
                 val m = CategoricalDistibutionModel[A, B](
                     id,
