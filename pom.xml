@@ -59,7 +59,7 @@
 
     <properties>
         <spray.json.version>1.2.3</spray.json.version>
-        <aloha.version>0.9.1</aloha.version>
+        <aloha.version>0.9.2</aloha.version>
     </properties>
 
     <dependencies>
