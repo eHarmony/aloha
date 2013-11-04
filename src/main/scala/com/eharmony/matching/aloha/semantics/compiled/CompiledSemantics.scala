@@ -1,7 +1,7 @@
 package com.eharmony.matching.aloha.semantics.compiled
 
 import scala.util.Try
-import scala.concurrent.{Await, ExecutionContext}
+import scala.concurrent.{Future, Await, ExecutionContext}
 import scala.concurrent.duration._
 
 import com.eharmony.matching.aloha.NoEvictionCache
@@ -204,6 +204,10 @@ object CompiledSemantics {
     private[compiled] val maxGenWaitInSec = 120
     private[compiled] val generatedAccessorClassName = GeneratedAccessor.getClass.getCanonicalName.replaceAll("""\$$""", "")
     private[compiled] val genFuncClassName = GenFunc.getClass.getCanonicalName.replaceAll("""\$$""", "")
+
+    private[compiled] sealed trait FunctionContainer[-A, +B]
+    private[compiled] case class RequiredFunctionContainer[-A, +B](f: GenAggFunc[A, B]) extends FunctionContainer[A, B]
+    private[compiled] case class OptionalFunctionContainer[-A, +B](f: GenAggFunc[A, Option[B]]) extends FunctionContainer[A, B]
 }
 
 sealed trait CompiledSemanticsLike[A]
@@ -217,7 +221,7 @@ sealed trait CompiledSemanticsLike[A]
     def retainGeneratedCode(): Boolean            // See comments in CompiledSemantics case class for documentation.
     protected implicit val ec: ExecutionContext   // See comments in CompiledSemantics case class for documentation.
 
-    import CompiledSemantics.{genFuncClassName, maxGenWaitInSec}
+    import CompiledSemantics.{genFuncClassName, maxGenWaitInSec, FunctionContainer, RequiredFunctionContainer, OptionalFunctionContainer}
 
     private[this] type VarSpecAndDefault = (String, Option[String])
 
@@ -264,13 +268,29 @@ sealed trait CompiledSemanticsLike[A]
     def createFunction[B: RefInfo](codeSpec: String, default: Option[B] = None): ENS[GenAggFunc[A, B]] = {
         // Future of return value of create function.  We try to cache if not present.
         val f = cache(codeSpec)(create(codeSpec, default))  // Try to pull from cache; otherwise create, cache, return.
-        val v = Await.result(f, maxGenWaitInSec.seconds)    // TODO: Remove this when API is changed.
 
-        // Log
+        // f represents a future of either a function containing only required accessors or a function with optional
+        // accessors.  If the function contains optional accessors, we use the default provided to this function.  That
+        // way we can cache the underlying function and if only the default changes, then we don't have to recompile;
+        // we just need ot supply the current default.
+        val functionFuture = applyDefault(f, codeSpec, default)
+
+        val v = Await.result(functionFuture, maxGenWaitInSec.seconds)    // TODO: Remove this when API is changed.
+
         v.left.foreach{ errMsgs => debug(s"Couldn't compile codeSpec: '$codeSpec': ${errMsgs.mkString("\n\t")}") }
         v.right.foreach{ func => s"constructed spec '$codeSpec' to function: $func" }
 
         v                                                   // TODO: Change API to actually return the future, f.
+    }
+
+    private[this] def applyDefault[B](ftr: Future[ENS[FunctionContainer[A, B]]], codeSpec: String, default: Option[B]) = {
+        ftr.map(_.right.flatMap {
+            case RequiredFunctionContainer(fn) => Right(fn)
+            case OptionalFunctionContainer(fn) =>
+                default map {d => Right(OptionalFunc(fn, d))} getOrElse {
+                    Left(Seq(s"No optional type provided for originally optional function with spec: $codeSpec", s"function: ${fn.toString()}"))
+                }
+        })
     }
 
     /** This is the main entry point for the function construction.  Steps include:
@@ -287,7 +307,7 @@ sealed trait CompiledSemanticsLike[A]
       * @tparam B the codomain of the generated function.
       * @return
       */
-    private[this] def create[B: RefInfo](codeSpec: String, default: Option[B]): ENS[GenAggFunc[A, B]] = {
+    private[this] def create[B: RefInfo](codeSpec: String, default: Option[B]): ENS[FunctionContainer[A, B]] = {
 
         // Construct the function with the following steps:
         //  1. Check that we can construct a function with the arity determined by the # of distinct variables.
@@ -299,7 +319,8 @@ sealed trait CompiledSemanticsLike[A]
             aok <- assertFunctionArityOk(codeSpec, descriptors.size).right
             acc <- createAccessors(codeSpec, descriptors, default.nonEmpty).right
             c <- constructFunctionCode[B](acc, codeSpec).right // c._1: code; c._2: function has optional accessors?
-            f <- compile[B](c._1, default.collect{case d if c._2 => d}).right
+//            f <- compile[B](c._1, default.collect{case d if c._2 => d}).right
+            f <- compile[B](c._1, c._2).right
         } yield f
 
         function
@@ -534,16 +555,18 @@ sealed trait CompiledSemanticsLike[A]
         newVac
     }
 
-    /** Compile the code.  default is a Some if and only if the code contains optional accessors.  If the code
+    /** Compile the code.  hasDefault is true if and only if the code contains optional accessors.  If the code
       * contains optional accessors, then the output is also optional.  In such a case, we need to give the output
-      * type of the compiled function Option[B] and wrap the function in an OptionalFunc with the provided default.
+      * type of the compiled function Option[B].  Then we make note of the so that in createFunction, we can add in a
+      * runtime default.
       * @param code code to be compiled.
-      * @param default a default value that is Some IFF code contains references to optional accessors.
+      * @param hasDefault whether this has a default (meaning the function produces an optional type).
       * @tparam B the output type of the function that is generated.
-      * @return a function A => B.
+      * @return a function A => B in a function container that tells whether it relies on optional data.
       */
-    private[this] def compile[B](code: String, default: Option[B]): ENS[GenAggFunc[A, B]] = {
-        val f = default.fold(compile[B](code))(d => compile[Option[B]](code).right.map(f => OptionalFunc(f, d)))
+    private[this] def compile[B](code: String, hasDefault: Boolean): ENS[FunctionContainer[A, B]] = {
+        val f = if (hasDefault) compile[Option[B]](code).right.map(OptionalFunctionContainer.apply[A, B])
+                else compile[B](code).right.map(RequiredFunctionContainer.apply[A, B])
         f
     }
 

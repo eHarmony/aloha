@@ -17,6 +17,7 @@ import com.eharmony.matching.aloha.FileLocations
 import com.eharmony.matching.aloha.reflect.RefInfo
 import org.junit.runners.BlockJUnit4ClassRunner
 import com.eharmony.matching.aloha.models.Model
+import scala.collection.immutable
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class RegressionModelTestCompiledSemanticsTest {
@@ -137,7 +138,7 @@ object RegressionModelTestCompiledSemanticsTest {
         //            )
         //        )
 
-        val features = Map(
+        val features = immutable.ListMap(
 
             "education" -> OptionalFunc(
                 GenFunc.f1(
@@ -171,7 +172,8 @@ object RegressionModelTestCompiledSemanticsTest {
             Map("education=4" -> 0, "income=1" -> 1) -> 0.1
         )).result()
 
-        RegressionModel(mId, features, w, identity, None, None)
+        // RegressionModel(mid, features, featureFunctions, beta, invLink, spline, numMissing)
+        RegressionModel(mId, features.keys.toIndexedSeq, features.values.toIndexedSeq, w, identity, None, None)
     }
 
 }

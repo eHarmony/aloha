@@ -4,6 +4,8 @@ import java.io.File
 import com.eharmony.matching.aloha.io.ContainerReadableByString
 import scala.util.Try
 import com.twitter.util.Eval
+import grizzled.slf4j.Logging
+import scala.util.hashing.MurmurHash3
 
 /** Compiles code using Twitter's Eval class from util-eval, wrapping the attempt in a Try.
   *
@@ -21,7 +23,9 @@ import com.twitter.util.Eval
   * @param imports import statements.
   */
 @throws[IllegalArgumentException]("When a class cache directory is specified but doesn't exist or is not RWX-able.")
-case class TwitterEvalCompiler(threadingModel: EvalThreadingModel = SingleThreadedEval, classCacheDir: Option[File] = None, imports: Seq[String] = Nil) extends ContainerReadableByString[Try] {
+case class TwitterEvalCompiler(threadingModel: EvalThreadingModel = SingleThreadedEval, classCacheDir: Option[File] = None, imports: Seq[String] = Nil)
+    extends ContainerReadableByString[Try]
+    with Logging {
 
     /** Java 0-param constructor.
       * @return
@@ -33,7 +37,6 @@ case class TwitterEvalCompiler(threadingModel: EvalThreadingModel = SingleThread
       * @return
       */
     def this(classCacheDir: File) = this(SingleThreadedEval, Option(classCacheDir), Nil)
-
 
     validateDirectory()
 
@@ -90,8 +93,17 @@ case class TwitterEvalCompiler(threadingModel: EvalThreadingModel = SingleThread
 
     private[this] sealed trait EvaluatorContainer extends Evaluator {
         def get(): Eval
-        final def apply[A](code: String) = Try { get.applyProcessed[A](className(code), code, shouldReset) }
-    }
+        override def apply[A](code: String) = {
+            debug(s"Attempting to compile code (with hash ${code.hashCode}): $code")
+
+            val x = Try { get().applyProcessed[A](className(code), code, shouldReset) }
+
+            if (x.isSuccess) debug(s"compiled code with hash code ${code.hashCode} to class ${x.get.getClass.getCanonicalName} with hash code ${x.get.hashCode}")
+            else debug(s"attempted to compile code with hash code ${code.hashCode} but failed.")
+
+            x
+        }
+   }
 
     private[this] class StandardEvaluator extends EvaluatorContainer {
         private[this] val e = new Eval(classCacheDir)

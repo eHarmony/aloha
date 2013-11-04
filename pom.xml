@@ -2,7 +2,7 @@
     <parent>
         <groupId>com.eharmony.matching</groupId>
         <artifactId>aloha</artifactId>
-        <version>0.9.2</version>
+        <version>0.9.3-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -57,7 +57,7 @@
     </developers>
 
     <properties>
-      <aloha.version>0.9.2</aloha.version>
+      <aloha.version>0.9.3-SNAPSHOT</aloha.version>
     </properties>
 
     <dependencies>
