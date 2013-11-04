@@ -157,7 +157,7 @@ object Tree {
 
 trait Tree[+A, +C[_] <: Iterable[_], +This <: Tree[_, C, _]] {
     val value: A
-    val descendants: C[_ <: This]
+    def descendants: C[_ <: This]
 
     // TODO: BFS iterator
     // TODO: DFS iterator
@@ -172,8 +172,8 @@ trait Tree[+A, +C[_] <: Iterable[_], +This <: Tree[_, C, _]] {
         s.push((this,0).asInstanceOf[(This, Int)])
         new Iterator[(This, Int)] {
             def hasNext = !s.isEmpty
-            def next = {
-                val n = s.pop
+            def next() = {
+                val n = s.pop()
                 s.pushAll(n._1.descendants.iterator.asInstanceOf[Iterator[This]].zip(Iterator.continually(n._2 + 1)))
                 n
             }

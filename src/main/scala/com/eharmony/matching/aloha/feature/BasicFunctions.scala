@@ -18,5 +18,5 @@ object BasicFunctions
     with RegressionModelValueToTupleConversions
     with DecisionTreeBoolToOptBoolConversions {
 
-    final protected[this] val DefaultForMissingDataInReg = Seq(("=UNK", 1.0))
+    final protected[feature] val DefaultForMissingDataInReg = Seq(("=UNK", 1.0))
 }

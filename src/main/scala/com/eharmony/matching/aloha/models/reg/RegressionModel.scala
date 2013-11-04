@@ -50,7 +50,8 @@ import grizzled.slf4j.Logging
   * For more information, see [[com.eharmony.matching.aloha.models.reg.RegressionModelValueToTupleConversions]].
   *
   * @param modelId An identifier for the model.  User in score and error reporting.
-  * @param features map of feature name to feature generator
+  * @param featureNames feature names (parallel to featureFunctions)
+  * @param featureFunctions feature extracting functions.
   * @param beta representation of the regression model parameters.
   * @param invLinkFunction a function applied to the inner product of the input vector and weight vector.
   * @param spline an optional calibration spline to
@@ -65,15 +66,14 @@ import grizzled.slf4j.Logging
   */
 case class RegressionModel[-A, +B: ScoreConverter](
         modelId: ModelIdentity,
-        features: Map[String, GenAggFunc[A, Iterable[(String, Double)]]],
+        featureNames: IndexedSeq[String],
+        featureFunctions: IndexedSeq[GenAggFunc[A, Iterable[(String, Double)]]],
         beta: PolynomialEvaluationAlgo,
         invLinkFunction: Double => B,
         spline: Option[Spline],
         numMissingThreshold: Option[Int])
     extends Model[A, B]
     with Logging {
-
-    private[this] val (featuresNames, featureFunctions) = features.toIndexedSeq.unzip
 
     debug({
         val rawFeatureDescriptors = (for {
@@ -83,8 +83,6 @@ case class RegressionModel[-A, +B: ScoreConverter](
         "raw feature names: " + rawFeatureDescriptors.mkString(",")
     })
 
-
-
     /** Get the score.
       * @param a the model input value.
       * @param audit whether to audit the output.
@@ -93,7 +91,7 @@ case class RegressionModel[-A, +B: ScoreConverter](
     private[aloha] def getScore(a: A)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = {
         val (x, missing, missingOk) = constructFeatures(a)
 
-        debug("x\n\t" + featuresNames.zip(x).map{ case(name, f) => s"$name -> $f"}.mkString("\n\t"))
+        debug("x\n\t" + featureNames.zip(x).map{ case(name, f) => s"$name -> $f"}.mkString("\n\t"))
 
         // Before determining the inner product, we know whether we actually should compute it or whether a
         // data error has occurred the will prevent the computation.
@@ -125,12 +123,12 @@ case class RegressionModel[-A, +B: ScoreConverter](
       */
     protected[this] final def constructFeatures(a: A): (IndexedSeq[Iterable[(String, Double)]], MMap[String, Seq[String]], Boolean) = {
         val missing = MMap.empty[String, Seq[String]]
-        val n = features.size
+        val n = featureNames.size
         val f = new Array[Iterable[(String, Double)]](n)
         var i = 0
 
         while(i < n) {
-            val name = featuresNames(i)
+            val name = featureNames(i)
             f(i) = featureFunctions(i)(a).map(p => (name + p._1, p._2))
 
             // If the feature is empty, it can't contribute to the inner product.  If it can't contribute to the
@@ -197,8 +195,8 @@ object RegressionModel extends ParserProviderCompanion with JsValuePimpz with Re
                     throw new DeserializationException("Couldn't find conversion function for RegressionModel with output type: " + RefInfoOps.toString(rib))
                 }
 
-                val f = features(featureMap, semantics).fold(f => throw new DeserializationException(f.mkString("\n")), identity)
-                val m = RegressionModel[A, B](d.modelId, f, beta, cf, d.spline, d.numMissingThreshold)
+                val (featureNames, featureFns) = features(featureMap, semantics).fold(f => throw new DeserializationException(f.mkString("\n")), identity).toIndexedSeq.unzip
+                val m = RegressionModel[A, B](d.modelId, featureNames, featureFns, beta, cf, d.spline, d.numMissingThreshold)
                 m
             }
         }
@@ -231,7 +229,8 @@ object RegressionModel extends ParserProviderCompanion with JsValuePimpz with Re
           * @param featureMap a map of feature name to feature specification
           * @param semantics a semantics with which feature specifications should be interpretted.
           * @tparam A model input type
-          * @return
+          * @return a mapping from feature name to feature function.  Note that the indices matter and that's why we
+          *         don't want to use a map.
           */
         private[this] def features[A](featureMap: Seq[(String, Spec)], semantics: Semantics[A]) =
             mapSeq(featureMap){
@@ -239,7 +238,7 @@ object RegressionModel extends ParserProviderCompanion with JsValuePimpz with Re
                     semantics.createFunction[Iterable[(String, Double)]](spec, default).
                         left.map { Seq(s"Error processing spec '$spec'") ++ _ }.  // Add the spec that errored.
                         right.map { f => (k, f) }
-            }.right.map(_.toMap)
+            }
 
         /** Translate the specification of higher order features to something a
           * [[com.eharmony.matching.aloha.models.reg.PolynomialEvaluator]].builder can understand.
@@ -248,15 +247,16 @@ object RegressionModel extends ParserProviderCompanion with JsValuePimpz with Re
           * @return
           */
         private[this] def higherOrderFeatures(d: RegData, featureNameToIndex: Map[String, Int]): Seq[(Seq[(String, Int)], Double)] = {
-            d.higherOrderFeatures.map(s =>
-                s.map(h => {
-                    val f = h.features.toSeq flatMap { case (k,v) => {
-                        val kI = featureNameToIndex(k)  // Will Throw if not present.
+            val hof = d.higherOrderFeatures.getOrElse(Nil).map{h => {
+                val f = h.features.toSeq.flatMap{
+                    case(k, v) =>
+                        val kI = featureNameToIndex(k)
                         v.zip(Stream continually kI)
-                    }}
-                    (f, h.wt)
-                })
-            ) getOrElse Nil
+                }
+                (f, h.wt)
+            }}
+
+            hof
         }
 
 

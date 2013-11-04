@@ -311,5 +311,7 @@ object PolynomialEvaluator {
             }
             h(MQueue(this), ArrayBuffer.empty[PolynomialEvaluatorBuilder], MMap.empty[Int, Seq[Int]], 0)
         }
+
+        override def toString() = (value, descendants).toString()
     }
 }

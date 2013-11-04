@@ -10,7 +10,7 @@ trait DefaultPossessor {
       * because (as the name suggests, it is mainly for regression models which have a specific format for generated
       * features.
       */
-    protected[this] val DefaultForMissingDataInReg: Iterable[(String, Double)]
+    protected[feature] val DefaultForMissingDataInReg: Iterable[(String, Double)]
 
-    final protected[this] val empty = Iterable(("", 1.0))
+    final protected[feature] val empty = Iterable(("", 1.0))
 }
