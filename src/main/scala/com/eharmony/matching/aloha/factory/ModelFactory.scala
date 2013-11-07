@@ -1,22 +1,24 @@
 package com.eharmony.matching.aloha.factory
 
-import scala.language.higherKinds
-import scala.util.{Success, Failure, Try}
-
 import java.{lang => jl}
+
+import scala.language.higherKinds
+import scala.util.{Try, Failure, Success}
 
 import org.apache.commons.vfs2.VFS
 
 import spray.json.{JsValue, JsonReader}
 import spray.json.pimpString
 
+import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 import com.eharmony.matching.aloha.factory.ex.{RecursiveModelDefinitionException, AlohaFactoryException}
 import com.eharmony.matching.aloha.factory.pimpz.JsValuePimpz
-import com.eharmony.matching.aloha.models.Model
-import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 import com.eharmony.matching.aloha.semantics.Semantics
 import com.eharmony.matching.aloha.reflect.RefInfo
 import com.eharmony.matching.aloha.interop.FactoryInfo
+import com.eharmony.matching.aloha.models.tree.decision.{ModelDecisionTree, BasicDecisionTree}
+import com.eharmony.matching.aloha.models.reg.RegressionModel
+import com.eharmony.matching.aloha.models._
 
 
 case class ModelFactory(modelParsers: ModelParser*) extends JsValuePimpz {
@@ -160,4 +162,28 @@ case class ModelFactory(modelParsers: ModelParser*) extends JsValuePimpz {
       */
     def toTypedFactory[A, B](fI: FactoryInfo[A, B]): TypedModelFactory[A, B] =
         toTypedFactory[A, B](fI.inRefInfo, fI.outRefInfo, fI.jsonReader, fI.scoreConverter)
+}
+
+object ModelFactory {
+
+    /** Provides a default factory capable of producing models defined in aloha-core.  The list of models come from
+      * the knownModelParsers method.
+      *
+      * This is useful to simplify the process of creating a factory capable of parsing the basic models provided by
+      * aloha.
+      */
+    def defaultFactory = ModelFactory(knownModelParsers():_*)
+
+    /** Get the list of models defined in aloha-core with parsers that can be used by a model factory.
+      * @return
+      */
+    def knownModelParsers(): Seq[ModelParser] = Seq(
+        ErrorModel.parser,
+        ConstantModel.parser,
+        CategoricalDistibutionModel.parser,
+        BasicDecisionTree.parser,
+        ModelDecisionTree.parser,
+        RegressionModel.parser,
+        SegmentationModel.parser
+    )
 }
