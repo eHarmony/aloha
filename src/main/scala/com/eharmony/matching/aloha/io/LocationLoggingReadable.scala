@@ -52,9 +52,9 @@ trait LocationLoggingReadable[A] extends FileReadableByInputStream[A] { self: Lo
       * @return the result
       */
     abstract override def fromVfs2(foVfs2: vfs2.FileObject): A = {
-        info(s"Reading object from Apache VFS 1 file object: ${foVfs2.getName.getFriendlyURI}")
+        info(s"Reading object from Apache VFS 2 file object: ${foVfs2.getName.getFriendlyURI}")
         val v = super.fromVfs2(foVfs2)
-        debug(s"object read from Apache VFS 1 file object (${foVfs2.getName.getFriendlyURI}): $v")
+        debug(s"object read from Apache VFS 2 file object (${foVfs2.getName.getFriendlyURI}): $v")
         v
     }
 }

@@ -1,5 +1,6 @@
 package com.eharmony.matching.aloha.util.rand
 
+import scala.language.postfixOps
 import scala.util.Random
 
 import org.junit.runners.BlockJUnit4ClassRunner

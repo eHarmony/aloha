@@ -3,6 +3,7 @@ package com.eharmony.matching.aloha.io
 import java.io.InputStream
 import java.util.zip.GZIPInputStream
 import grizzled.slf4j.Logging
+import com.eharmony.matching.aloha.io.multiple.MultipleFileReadable
 
 /** When mixed in with a [[com.eharmony.matching.aloha.io.NonFileReadable]][A], this will provide a method ''gz'' that
   * will read [[http://www.gzip.org/ gzipped]] versions of files.  This works by creating a private object that
@@ -28,8 +29,14 @@ import grizzled.slf4j.Logging
   * @tparam A
   */
 trait GZippedReadable[A] { self: NonFileReadable[A] =>
-    private[this] object gzip extends FileReadableByInputStream[A] with LocationLoggingReadable[A] with Logging {
+    private[this] object gzip
+        extends FileReadableByInputStream[A]
+        with MultipleFileReadable[A]
+        with LocationLoggingReadable[A]
+        with Logging {
+
         def fromInputStream(is: InputStream) = self.fromInputStream(new GZIPInputStream(is))
     }
-    def gz(): FileReadable[A] = gzip
+
+    def gz: FileReadableByInputStream[A] with MultipleFileReadable[A] = gzip
 }

@@ -36,7 +36,7 @@ class BigModelParseTest extends RegressionModelJson with Timing {
     }
 
     private[this] def getBigZippedData(resourcePath: String) = {
-        val s = StringReadable.gz().fromResource(resourcePath)
+        val s = StringReadable.gz.fromResource(resourcePath)
         (s, s.asJson.convertTo[RegData])
     }
 }

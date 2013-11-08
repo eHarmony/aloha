@@ -87,6 +87,7 @@ import com.eharmony.matching.aloha.io.multiple.{SequenceMultipleReadable, Multip
   */
 case class TypedModelFactory[A: RefInfo, B: RefInfo: JsonReader: ScoreConverter](factory: ModelFactory, semantics: Option[Semantics[A]] = None)
     extends ReadableByString[Try[Model[A, B]]]
+    with GZippedReadable[Try[Model[A, B]]]
     with LocationLoggingReadable[Try[Model[A, B]]]
     with MultipleAlohaReadable[Try[Model[A, B]]]
     with SequenceMultipleReadable[ReadableSource, Try, Model[A, B]]
@@ -96,12 +97,12 @@ case class TypedModelFactory[A: RefInfo, B: RefInfo: JsonReader: ScoreConverter]
       */
     val modelAndInfo =
         new ReadableByString[Try[ModelInfo[Model[A, B]]]]
+            with GZippedReadable[Try[ModelInfo[Model[A, B]]]]
             with MultipleAlohaReadable[Try[ModelInfo[Model[A, B]]]]
             with SequenceMultipleReadable[ReadableSource, Try, ModelInfo[Model[A, B]]]
             with LocationLoggingReadable[Try[ModelInfo[Model[A, B]]]]
             with Logging {
         def fromString(s: String): Try[ModelInfo[Model[A, B]]] = Try { throw new UnsupportedOperationException("modelAndInfo unsupported") }
-//            factory.getModelAndInfo[A, B](s.asJson, semantics)
     }
 
     /** The recommended API method from Java.  It's also equally valid to use any of the other methods provided by
@@ -111,5 +112,5 @@ case class TypedModelFactory[A: RefInfo, B: RefInfo: JsonReader: ScoreConverter]
       * @return [[http://www.scala-lang.org/api/current/index.html#scala.util.Try scala.util.Try]] of a
       *         [[com.eharmony.matching.aloha.models.Model]][A, B].
       */
-    def fromString(s: String): Try[Model[A, B]] = factory.getModel[A, B](s.asJson, semantics) // .asInstanceOf[Try[Model[A, B]]]
+    def fromString(s: String): Try[Model[A, B]] = factory.getModel[A, B](s.asJson, semantics)
 }

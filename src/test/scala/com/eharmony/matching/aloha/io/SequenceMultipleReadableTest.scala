@@ -21,7 +21,7 @@ import com.eharmony.matching.aloha.io.multiple.{SequenceMultipleReadable, Multip
 import scalaz.std.list.listInstance                      // Provides Traverse type class for List
 import scalaz.std.indexedSeq.indexedSeqInstance          // Provides Traverse type class for IndexedSeq
 import scalaz.std.stream.streamInstance                  // Provides (non-strict) Traverse type class for Stream
-import com.eharmony.matching.aloha.util.TryScalazMonad   // Provides Applicative type class for Try
+import com.eharmony.matching.aloha.algebra.tries.TryScalazMonad   // Provides Applicative type class for Try
 
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
