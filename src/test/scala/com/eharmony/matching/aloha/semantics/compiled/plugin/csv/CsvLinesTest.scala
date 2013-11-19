@@ -6,6 +6,7 @@ import scala.collection.GenTraversable
 import org.junit.runners.BlockJUnit4ClassRunner
 import org.junit.runner.RunWith
 import org.junit.Test
+import org.junit.Ignore
 import org.junit.Assert._
 
 import com.eharmony.matching.aloha.util.Timing
@@ -17,7 +18,7 @@ class CsvLinesTest extends Timing {
 
     /** Test that
       */
-    @Test def testParallelVsSequential() {
+    @Ignore @Test def testParallelVsSequential() {
         // Parameters (~2M = 20 * 1000 * 100 values)
         val trials = 20
         val samples = 1000
