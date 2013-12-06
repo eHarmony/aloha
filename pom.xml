@@ -59,7 +59,7 @@
 
     <properties>
         <spray.json.version>1.2.3</spray.json.version>
-        <aloha.version>0.9.3</aloha.version>
+        <aloha.proto.version>0.9.3</aloha.proto.version>
     </properties>
 
     <dependencies>
@@ -68,7 +68,7 @@
         <dependency>
             <groupId>com.eharmony.matching</groupId>
             <artifactId>aloha-proto_${protobuf.version}</artifactId>
-            <version>${aloha.version}</version>
+            <version>${aloha.proto.version}</version>
         </dependency>
 
         <dependency>
