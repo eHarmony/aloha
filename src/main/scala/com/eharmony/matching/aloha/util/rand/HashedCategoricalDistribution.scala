@@ -10,10 +10,6 @@ object HashedCategoricalDistribution {
 }
 
 class HashedCategoricalDistribution(sampler: IntAliasMethodSampler) extends (TraversableOnce[Any] => Int) {
-
-    var ps = List.empty[Float]
-    var ks = List.empty[Int]
-
     import HashedCategoricalDistribution.MaxVal
 
     /** The number of different classes in the distribution.
@@ -45,8 +41,6 @@ class HashedCategoricalDistribution(sampler: IntAliasMethodSampler) extends (Tra
         val hAbs = math.abs(h)
         val p = hAbs / MaxVal
         val k = hAbs % numClasses
-        ps = p :: ps
-        ks = k :: ks
         sampler.sample(k, p)
     }
 }
