@@ -71,8 +71,9 @@ object Node {
             case i if i < 0 =>
                 val em = interior.nodeSelector.processErrorAt(v, i)
                 Left(InteriorNodeResult(interior, em.errors, em.missing))
-            case i if i > n.descendants.size =>
-                Left(InteriorNodeResult(interior, Seq("childSelector returned i=" + i + ". Size = " + n.descendants.size), Nil))
+            case i if i >= n.descendants.size =>
+                val missing = interior.nodeSelector.processErrorAt(v, i).missing
+                Left(InteriorNodeResult(interior, Seq(s"childSelector returned i = $i. Size = ${n.descendants.size}"), missing))
             case i => getNode(n descendants i, v)  // Select child and recurse.
         }
     }
