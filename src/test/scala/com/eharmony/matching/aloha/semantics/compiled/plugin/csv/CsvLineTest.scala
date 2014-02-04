@@ -1415,13 +1415,13 @@ private[csv] object CsvLineTest {
         "repeated.double"            -> "vd",
         "repeated.string"            -> "vs",
 
-        "repeated.optional.enum"     -> "ove",
-        "repeated.optional.boolean"  -> "ovb",
-        "repeated.optional.int"      -> "ovi",
-        "repeated.optional.long"     -> "ovl",
-        "repeated.optional.float"    -> "ovf",
-        "repeated.optional.double"   -> "ovd",
-        "repeated.optional.string"   -> "ovs"
+        "repeated.optional.enum"     -> "voe",
+        "repeated.optional.boolean"  -> "vob",
+        "repeated.optional.int"      -> "voi",
+        "repeated.optional.long"     -> "vol",
+        "repeated.optional.float"    -> "vof",
+        "repeated.optional.double"   -> "vod",
+        "repeated.optional.string"   -> "vos"
     )
 
     val enums = Map(

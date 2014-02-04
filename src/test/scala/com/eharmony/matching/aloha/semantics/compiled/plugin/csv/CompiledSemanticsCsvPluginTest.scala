@@ -95,7 +95,11 @@ class CompiledSemanticsCsvPluginTest {
 }
 
 private object CompiledSemanticsCsvPluginTest {
-    val csvPlugin = new CompiledSemanticsCsvPlugin(CsvLineTest.types.toMap)
+    val csvPlugin = {
+        val m = CsvLineTest.types.toMap
+        val c = m.map{case(k, v) => println(s"$k\t$v"); (k, CsvTypes.withNameExtended(v))}
+        new CompiledSemanticsCsvPlugin(c)
+    }
     val compiler = TwitterEvalCompiler(classCacheDir = Option(FileLocations.testGeneratedClasses))
     val semantics = CompiledSemantics(compiler, csvPlugin, Seq("com.eharmony.matching.aloha.feature.BasicFunctions._"))
 }
