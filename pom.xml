@@ -59,7 +59,7 @@
     <properties>
         <org.springframework.version>3.0.5.RELEASE</org.springframework.version>
         <generated.classes.test>${build.outputDirectory}/test-classes/generated</generated.classes.test>
-        <aloha.version>0.9.5</aloha.version>
+        <aloha.version>0.9.6-SNAPSHOT</aloha.version>
         <aloha.proto.version>0.9.3</aloha.proto.version>
     </properties>
 
