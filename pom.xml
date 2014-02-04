@@ -57,7 +57,7 @@
     </developers>
 
     <properties>
-      <aloha.version>0.9.5</aloha.version>
+      <aloha.version>0.9.6-SNAPSHOT</aloha.version>
     </properties>
 
     <dependencies>
