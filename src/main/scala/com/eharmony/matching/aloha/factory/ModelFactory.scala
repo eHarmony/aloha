@@ -1,14 +1,12 @@
 package com.eharmony.matching.aloha.factory
 
-import java.{lang => jl}
-
 import scala.language.higherKinds
 import scala.util.{Try, Failure, Success}
 
-import org.apache.commons.vfs2.VFS
+import java.{lang => jl}
 
 import spray.json.{JsValue, JsonReader}
-import spray.json.pimpString
+import spray.json.DefaultJsonProtocol._
 
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 import com.eharmony.matching.aloha.factory.ex.{RecursiveModelDefinitionException, AlohaFactoryException}
@@ -20,11 +18,12 @@ import com.eharmony.matching.aloha.models.tree.decision.{ModelDecisionTree, Basi
 import com.eharmony.matching.aloha.models.reg.RegressionModel
 import com.eharmony.matching.aloha.models._
 
-
 case class ModelFactory(modelParsers: ModelParser*) extends JsValuePimpz {
     def this (modelParsers: jl.Iterable[ModelParser]) = this(collection.JavaConversions.iterableAsScalaIterable(modelParsers).toSeq:_*)
 
     val availableParsers = modelParsers.map(p => (p.modelType, p)).toMap
+
+    private[this] implicit val importedModelPlaceholderAstJsonFormat = jsonFormat2(ImportedModelPlaceholderAst)
 
     /**
       * {{{
@@ -60,20 +59,30 @@ case class ModelFactory(modelParsers: ModelParser*) extends JsValuePimpz {
             fileStack: List[String],
             semantics: Option[Semantics[A]]): Try[Model[A, B]] = jsonMaybe.flatMap{ json =>
 
-        if (1 == json.asJsObject.fields.size) {
-            json.s("import") map { im =>
-                if (fileStack contains im)
-                    recursionDetected(im :: fileStack)
-                else parseHelper[A, B](foToJs(im), im :: fileStack, semantics)
-            } getOrElse Failure(new AlohaFactoryException("No import field and only field: " + json.asJsObject.fields.head))
-        }
-        else {
-            for {
-                mt <- modelType(json)
-                p <- modelParser[A, B](mt, semantics)
-                m <- Try { p.parse(json) }
-            } yield m
-        }
+        val obj = json.asJsObject
+        val fields = obj.fields
+        val nFields = fields.size
+
+        val model =
+            if ((1 == nFields || 2 == nFields) && fields.contains("import")) {
+                for {
+                    ast <- Try { obj.convertTo[ImportedModelPlaceholderAst] }
+                    im = ast.`import`
+                    jsonPlaceholder <- if (!(fileStack contains im)) ast.toJsValue
+                                       else recursionDetected(im :: fileStack)
+                    json = jsonPlaceholder.resolveFileContents()
+                    m <- parseHelper[A, B](json, im :: fileStack, semantics)
+                } yield m
+            }
+            else {
+                for {
+                    mt <- modelType(json)
+                    p <- modelParser[A, B](mt, semantics)
+                    m <- Try { p.parse(json) }
+                } yield m
+            }
+
+        model
     }
 
     private[this] def recursionDetected(fileStack: List[String]) =
@@ -90,10 +99,6 @@ case class ModelFactory(modelParsers: ModelParser*) extends JsValuePimpz {
 
     private[this] def modelParser[A: RefInfo, B: RefInfo: JsonReader: ScoreConverter](modelType: String, semantics: Option[Semantics[A]]) =
         Try { availableParsers(modelType).getParser[A, B](this, semantics) }
-
-    private[this] def foToJs(vfsUrl: String) = Try {
-        io.Source.fromInputStream(VFS.getManager.resolveFile(vfsUrl).getContent.getInputStream).getLines().mkString("\n").asJson
-    }
 
     /** Get a model of the appropriate input and output types and implementation.  This method relies on the proper
       * implicits in the calling scope.

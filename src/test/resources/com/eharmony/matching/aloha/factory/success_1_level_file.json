@@ -1,0 +1,4 @@
+{
+  "import": "${project.build.testOutputDirectory}/com/eharmony/matching/aloha/factory/constant2.json",
+  "via": "file"
+}
