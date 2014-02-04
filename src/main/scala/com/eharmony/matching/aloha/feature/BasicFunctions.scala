@@ -15,6 +15,7 @@ object BasicFunctions
     with Indicator
     with Intercept
     with TimeConstants
+    with SparsityTransforms
     with RegressionModelValueToTupleConversions
     with DecisionTreeBoolToOptBoolConversions {
 
