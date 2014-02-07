@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.Collection;
 import java.util.Arrays;
 
+import com.eharmony.matching.aloha.models.conversion.DoubleToLongModel;
 import scala.collection.JavaConversions;
 import scala.collection.immutable.List;
 import scala.util.Try;
@@ -75,7 +76,8 @@ public class JavaDefaultModelFactoryTest {
                 BasicDecisionTree.parser().modelType(),
                 ModelDecisionTree.parser().modelType(),
                 RegressionModel.parser().modelType(),
-                SegmentationModel.parser().modelType()
+                SegmentationModel.parser().modelType(),
+                DoubleToLongModel.parser().modelType()
         };
 
         Arrays.sort(names);
