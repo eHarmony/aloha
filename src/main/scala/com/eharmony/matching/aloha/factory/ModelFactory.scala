@@ -17,6 +17,7 @@ import com.eharmony.matching.aloha.interop.FactoryInfo
 import com.eharmony.matching.aloha.models.tree.decision.{ModelDecisionTree, BasicDecisionTree}
 import com.eharmony.matching.aloha.models.reg.RegressionModel
 import com.eharmony.matching.aloha.models._
+import com.eharmony.matching.aloha.models.conversion.DoubleToLongModel
 
 case class ModelFactory(modelParsers: ModelParser*) extends JsValuePimpz {
     def this (modelParsers: jl.Iterable[ModelParser]) = this(collection.JavaConversions.iterableAsScalaIterable(modelParsers).toSeq:_*)
@@ -167,6 +168,25 @@ case class ModelFactory(modelParsers: ModelParser*) extends JsValuePimpz {
       */
     def toTypedFactory[A, B](fI: FactoryInfo[A, B]): TypedModelFactory[A, B] =
         toTypedFactory[A, B](fI.inRefInfo, fI.outRefInfo, fI.jsonReader, fI.scoreConverter)
+
+
+    /** Combine this model factory with ''mf''.
+      * @param mf a model factory to combine
+      * @throws AlohaFactoryException
+      * @return a ModelFactory with all of the parsers from this ModelFactory and the parsers in ''mf''.
+      */
+    @throws[AlohaFactoryException](cause = "When combining multiple factories with same parser names and different implementations.")
+    def combine(mf: ModelFactory): ModelFactory = {
+        val keyOverlap = modelParsers.map(_.modelType).toSet intersect mf.modelParsers.map(_.modelType).toSet
+
+        val differences = keyOverlap.foldLeft(List.empty[String])((l, k) => if (availableParsers(k) == mf.availableParsers(k)) l else k :: l)
+
+        if (differences.nonEmpty) {
+            throw new AlohaFactoryException(s"Couldn't combine ModelFactory instances because the following parsers have different implementations: ${differences.mkString(", ")}")
+        }
+
+        ModelFactory(modelParsers ++ mf.modelParsers.filterNot(keyOverlap contains _.modelType):_*)
+    }
 }
 
 object ModelFactory {
@@ -189,6 +209,7 @@ object ModelFactory {
         BasicDecisionTree.parser,
         ModelDecisionTree.parser,
         RegressionModel.parser,
-        SegmentationModel.parser
+        SegmentationModel.parser,
+        DoubleToLongModel.parser
     )
 }

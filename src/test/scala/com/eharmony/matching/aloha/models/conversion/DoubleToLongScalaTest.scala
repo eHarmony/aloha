@@ -95,8 +95,8 @@ class DoubleToLongScalaTest {
 
 object DoubleToLongScalaTest {
     private val semantics = EmptySemantics[Any]
-    private val scalaFactory = ModelFactory(DoubleToLong.parser, ConstantModel.parser).toTypedFactory[Any, Long](semantics)
-    private val javaFactory = ModelFactory(DoubleToLong.parser, ConstantModel.parser).toTypedFactory(semantics, new LongFactoryInfo[Any](classOf[Any]))
+    private val scalaFactory = ModelFactory(DoubleToLongModel.parser, ConstantModel.parser).toTypedFactory[Any, Long](semantics)
+    private val javaFactory = ModelFactory(DoubleToLongModel.parser, ConstantModel.parser).toTypedFactory(semantics, new LongFactoryInfo[Any](classOf[Any]))
 
     def getScalaLongFactory = scalaFactory
     def getJavaLongFactory = javaFactory

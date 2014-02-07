@@ -26,7 +26,7 @@ import com.eharmony.matching.aloha.models.Model
   * @param round whether to round (true) or floor (false)
   * @tparam A model input type
   */
-case class DoubleToLong[-A](modelId: ModelIdentity,
+case class DoubleToLongModel[-A](modelId: ModelIdentity,
                             submodel: Model[A, Double],
                             scale: Double = 1,
                             translation: Double = 0,
@@ -56,13 +56,13 @@ case class DoubleToLong[-A](modelId: ModelIdentity,
   * @param round whether to round (true) or floor (false)
   * @tparam A model input type
   */
-case class DoubleToJavaLong[-A](modelId: ModelIdentity,
-                                submodel: Model[A, Double],
-                                scale: Double = 1,
-                                translation: Double = 0,
-                                clampLower: Long = Long.MinValue,
-                                clampUpper: Long = Long.MaxValue,
-                                round: Boolean = false)
+case class DoubleToJavaLongModel[-A](modelId: ModelIdentity,
+                                     submodel: Model[A, Double],
+                                     scale: Double = 1,
+                                     translation: Double = 0,
+                                     clampLower: Long = Long.MinValue,
+                                     clampUpper: Long = Long.MaxValue,
+                                     round: Boolean = false)
     extends ConversionModel[A, Double, jl.Long] with Logging {
 
     require(clampLower <= clampUpper, s"clampLower ($clampLower) must be less than or equal to clampUpper ($clampUpper)")
@@ -77,7 +77,7 @@ case class DoubleToJavaLong[-A](modelId: ModelIdentity,
     val conversion = (x: Double) => jl.Long.valueOf(math.max(clampLower, math.min(rounder(scale * x + translation), clampUpper)))
 }
 
-object DoubleToLong extends ParserProviderCompanion {
+object DoubleToLongModel extends ParserProviderCompanion {
     object Parser extends ModelParser {
 
         case class DoubleToLongAst(modelId: ModelId,
@@ -130,10 +130,10 @@ object DoubleToLong extends ParserProviderCompanion {
 
                         // This is all-encompassing because we checked above that the type is either java or scala.
                         if (riB == RefInfo[Long]) {
-                            DoubleToLong(ast.modelId, sm, scale, translation, clampLower, clampUpper, round).asInstanceOf[ConversionModel[A, Double, B]]
+                            DoubleToLongModel(ast.modelId, sm, scale, translation, clampLower, clampUpper, round).asInstanceOf[ConversionModel[A, Double, B]]
                         }
                         else {
-                            DoubleToJavaLong(ast.modelId, sm, scale, translation, clampLower, clampUpper, round).asInstanceOf[ConversionModel[A, Double, B]]
+                            DoubleToJavaLongModel(ast.modelId, sm, scale, translation, clampLower, clampUpper, round).asInstanceOf[ConversionModel[A, Double, B]]
                         }
                     })
 
