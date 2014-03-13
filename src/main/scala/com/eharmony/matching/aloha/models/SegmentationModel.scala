@@ -23,7 +23,7 @@ case class SegmentationModel[A, B, C](
         subModel: Model[A, B],
         thresholds: immutable.IndexedSeq[B],
         labels: immutable.IndexedSeq[C])(implicit bOrd: Ordering[B], scB: ScoreConverter[B], scC: ScoreConverter[C])
-    extends Model[A, C] {
+    extends BaseModel[A, C] {
 
     require(thresholds.size + 1 == labels.size, s"thresholds size (${thresholds.size}}) should be one less than labels size (${labels.size}})")
     require(thresholds == thresholds.sorted, s"thresholds must be sorted. Found ${thresholds.mkString(", ")}")

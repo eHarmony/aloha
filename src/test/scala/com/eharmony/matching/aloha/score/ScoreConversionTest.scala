@@ -8,7 +8,7 @@ import com.google.protobuf.GeneratedMessage
 import com.google.protobuf.GeneratedMessage.GeneratedExtension
 
 import com.eharmony.matching.aloha.id.ModelId
-import com.eharmony.matching.aloha.models.Model
+import com.eharmony.matching.aloha.models.{BaseModel, Model}
 import com.eharmony.matching.aloha.score.conversions.rich.RichScore
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter.Implicits._
@@ -195,49 +195,49 @@ object ScoreConversionTest {
     }
 
 
-    object BooleanConv extends Model[String, Boolean] {
+    object BooleanConv extends BaseModel[String, Boolean] {
         private[aloha] def getScore(s: String)(implicit audit: Boolean) =
             try { success(s.toBoolean) } catch {case e: IllegalArgumentException => failure(Seq(e.getMessage)) }
         val modelId = ModelId(1, "true")
     }
 
-    object ByteConv extends Model[String, Byte] {
+    object ByteConv extends BaseModel[String, Byte] {
         private[aloha] def getScore(s: String)(implicit audit: Boolean) =
             try { success(s.toByte) } catch {case e: NumberFormatException => failure(Seq(e.getMessage)) }
         val modelId = ModelId(2, "20")
     }
 
-    object ShortConv extends Model[String, Short] {
+    object ShortConv extends BaseModel[String, Short] {
         private[aloha] def getScore(s: String)(implicit audit: Boolean) =
             try { success(s.toShort) } catch {case e: NumberFormatException => failure(Seq(e.getMessage)) }
         val modelId = ModelId(3, "30")
     }
 
-    object IntConv extends Model[String, Int] {
+    object IntConv extends BaseModel[String, Int] {
         private[aloha] def getScore(s: String)(implicit audit: Boolean) =
             try { success(s.toInt) } catch {case e: NumberFormatException => failure(Seq(e.getMessage)) }
         val modelId = ModelId(4, "40")
     }
 
-    object LongConv extends Model[String, Long] {
+    object LongConv extends BaseModel[String, Long] {
         private[aloha] def getScore(s: String)(implicit audit: Boolean) =
             try { success(s.toLong) } catch {case e: NumberFormatException => failure(Seq(e.getMessage)) }
         val modelId = ModelId(5, "50")
     }
 
-    object FloatConv extends Model[String, Float] {
+    object FloatConv extends BaseModel[String, Float] {
         private[aloha] def getScore(s: String)(implicit audit: Boolean) =
             try { success(s.toFloat) } catch {case e: NumberFormatException => failure(Seq(e.getMessage)) }
         val modelId = ModelId(6, "60")
     }
 
-    object DoubleConv extends Model[String, Double] {
+    object DoubleConv extends BaseModel[String, Double] {
         private[aloha] def getScore(s: String)(implicit audit: Boolean) =
             try { success(s.toDouble) } catch {case e: NumberFormatException => failure(Seq(e.getMessage)) }
         val modelId = ModelId(7, "70")
     }
 
-    object StringConv extends Model[String, String] {
+    object StringConv extends BaseModel[String, String] {
         private[aloha] def getScore(s: String)(implicit audit: Boolean) = success(s)
         val modelId = ModelId(8, "80")
     }
@@ -280,7 +280,7 @@ object ScoreConversionTest {
 
     import Implicits._
 
-    object ContainerXConv extends Model[String, ContainerX[String]] {
+    object ContainerXConv extends BaseModel[String, ContainerX[String]] {
         //         private[aloha] def getScore(s: String)(implicit audit: Boolean) = \/-(s).toScoreTuple
 
         private[aloha] def getScore(s: String)(implicit audit: Boolean) =
@@ -288,7 +288,7 @@ object ScoreConversionTest {
         val modelId = ModelId(9, "90")
     }
 
-    object ContainerYConv extends Model[String, ContainerY[String]] {
+    object ContainerYConv extends BaseModel[String, ContainerY[String]] {
         private[aloha] def getScore(s: String)(implicit audit: Boolean) =
             try { success(new ContainerY(s)) } catch {case e: NumberFormatException => failure(Seq(e.getMessage)) }
         val modelId = ModelId(10, "100")

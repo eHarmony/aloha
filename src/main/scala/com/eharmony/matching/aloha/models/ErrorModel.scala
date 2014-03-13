@@ -8,7 +8,7 @@ import spray.json.{DeserializationException, JsValue, JsonReader}
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 
 
-case class ErrorModel(modelId: ModelIdentity, errors: Seq[String]) extends Model[Any, Nothing] {
+case class ErrorModel(modelId: ModelIdentity, errors: Seq[String]) extends BaseModel[Any, Nothing] {
     private[this] val (w, wo) = {
         val Seq(_w, _wo) = Seq(true, false) map { audit => failure(errors)(audit) }
         (_w, _wo)

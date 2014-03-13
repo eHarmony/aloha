@@ -1,13 +1,13 @@
 package com.eharmony.matching.aloha.models.ensemble
 
 import scala.collection.GenTraversableOnce
-import com.eharmony.matching.aloha.models.Model
+import com.eharmony.matching.aloha.models.{BaseModel, Model}
 import com.eharmony.matching.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 import com.eharmony.matching.aloha.score.basic.ModelOutput
 
 
-trait Ensemble[-A, B, C, +D] { self: Model[A, D] =>
+trait Ensemble[-A, B, C, +D] { self: BaseModel[A, D] =>
 
     // This allows us to have an implicit in the trait even though we can't explicitly specify that we need D to have
     // an implicit.  For more, see:

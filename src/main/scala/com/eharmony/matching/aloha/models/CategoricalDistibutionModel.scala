@@ -32,7 +32,7 @@ case class CategoricalDistibutionModel[-A, +B: ScoreConverter](
         features: Seq[GenAggFunc[A, Any]],
         distribution: HashedCategoricalDistribution,
         labels: immutable.IndexedSeq[B],
-        missingOk: Boolean = false) extends Model[A, B] {
+        missingOk: Boolean = false) extends BaseModel[A, B] {
 
     import CategoricalDistibutionModel.missingMsg
 

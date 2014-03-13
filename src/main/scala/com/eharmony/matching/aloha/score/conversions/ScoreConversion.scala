@@ -1,7 +1,7 @@
 package com.eharmony.matching.aloha.score.conversions
 
 import collection.JavaConversions.{asJavaIterable, asScalaBuffer}
-import com.eharmony.matching.aloha.id.Identifiable
+import com.eharmony.matching.aloha.id.{ModelIdentity, Identifiable}
 import com.eharmony.matching.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.score.Scores.Score.{ModelId, ScoreError, MissingRequiredFields}
 import com.eharmony.matching.aloha.score.basic.ModelOutput
@@ -29,7 +29,7 @@ import com.eharmony.matching.aloha.score.basic.ModelOutput
   * }}}
   * @tparam A model output type
   */
-trait ScoreConversion[+A] { self: Identifiable =>
+trait ScoreConversion[+A] { self: Identifiable[ModelIdentity] =>
 
     private[this] def mId = ModelId.newBuilder.setId(modelId.getId()).setName(modelId.getName()).build
 

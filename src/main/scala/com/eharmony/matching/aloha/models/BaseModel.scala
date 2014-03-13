@@ -1,12 +1,11 @@
 package com.eharmony.matching.aloha.models
 
-import com.eharmony.matching.aloha.id.{ModelIdentity, Identifiable}
 import com.eharmony.matching.aloha.score.conversions.ScoreConversion
 import com.eharmony.matching.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.score.basic.ModelOutput
 
 /** A ''Model'', in the context of a prediction task, should be thought of as a unit of work whose result should
-  * be recorded.  To this end, models return a '''com.eharmony.matching.aloha.score.Scores.Score''' defined in the
+  * be recorded.  To this end, models return a com.eharmony.matching.aloha.score.Scores.Score defined in the
   * ''aloha-proto'' project.  This data type can actually contain a tree of typed scores, where each score contains a
   * prediction value and a model identifier.  Because of this, models need to be
   * [[com.eharmony.matching.aloha.id.Identifiable]] and need to provide
@@ -19,29 +18,13 @@ import com.eharmony.matching.aloha.score.basic.ModelOutput
   * @tparam A model input type
   * @tparam B model output type
   */
-trait Model[-A, +B] extends Identifiable[ModelIdentity] {
+trait BaseModel[-A, +B]
+extends Model[A, B]
+   with ScoreConversion[B] {
 
-    /** Get a model prediction.
-      * @param a An input to the model.
-      * @return An option containing a value provided that the model prediction succeeds; otherwise None.
-      */
-    def apply(a: A): Option[B]
-
-    /** Get a model prediction.  This provides slightly more information on failure on the left.  Successes will be
-      * present on the right.  For information about the structure of ModelOutput, see
-      * [[com.eharmony.matching.aloha.score.basic.ModelOutput]]
-      * @param a An input to the model.
-      * @return a ModelOutput
-      */
-    def scoreAsEither(a: A): ModelOutput[B]
-
-    /** This is the most heavyweight very of the score.  It will return a Score protocol buffer with the score and
-      * error information.  The benefit is that it can contain a trace of sub-scores along with errors and missing
-      * features.
-      * @param a An input to the model.
-      * @return a full score object that may or may not contain score, sub-score and error information.
-      */
-    def score(a: A): Score
+    @inline final def apply(a: A) = scoreAsEither(a).right.toOption
+    @inline final def scoreAsEither(a: A) = getScore(a)(audit = false)._1
+    @inline final def score(a: A) = getScore(a)(audit = true)._2.get
 
     /** Produce a score.
       * @param a an input to the model representing covariate data.

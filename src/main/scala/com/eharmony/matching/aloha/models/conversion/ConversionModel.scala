@@ -1,10 +1,10 @@
 package com.eharmony.matching.aloha.models.conversion
 
-import com.eharmony.matching.aloha.models.Model
+import com.eharmony.matching.aloha.models.{BaseModel, Model}
 import com.eharmony.matching.aloha.id.ModelIdentity
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 
-trait ConversionModel[-A, B, C] extends Model[A, C] {
+trait ConversionModel[-A, B, C] extends BaseModel[A, C] {
     val modelId: ModelIdentity
     val submodel: Model[A, B]
     val conversion: B => C

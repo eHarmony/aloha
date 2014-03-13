@@ -16,7 +16,7 @@ object TransformedModelOps {
       * @return a new model with the new desired domain that creates the domain object using ''f'' and delegates to
       *         ''model''.
       */
-    def mapDomain[A, B, C](model: Model[A, C], f: B => A): Model[B, C] = new Model[B, C] {
+    def mapDomain[A, B, C](model: Model[A, C], f: B => A): Model[B, C] = new BaseModel[B, C] {
         require(null != model, "model cannot be null")
         require(null != f, "f cannot be null")
         val modelId = model.modelId

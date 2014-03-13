@@ -4,7 +4,7 @@ import java.{lang => jl}
 import scala.language.{higherKinds, implicitConversions}
 import scala.collection.mutable.{Map => MMap}
 
-import com.eharmony.matching.aloha.models.Model
+import com.eharmony.matching.aloha.models.BaseModel
 import com.eharmony.matching.aloha.id.ModelIdentity
 import com.eharmony.matching.aloha.semantics.func.GenAggFunc
 import com.eharmony.matching.aloha.score.Scores.Score
@@ -72,7 +72,7 @@ case class RegressionModel[-A, +B: ScoreConverter](
         invLinkFunction: Double => B,
         spline: Option[Spline],
         numMissingThreshold: Option[Int])
-    extends Model[A, B]
+    extends BaseModel[A, B]
     with Logging {
 
     debug({

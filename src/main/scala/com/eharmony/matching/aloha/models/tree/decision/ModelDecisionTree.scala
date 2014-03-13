@@ -4,7 +4,7 @@ import scala.collection.immutable
 import scala.language.higherKinds
 import spray.json.{JsValue, JsonReader}
 
-import com.eharmony.matching.aloha.models.Model
+import com.eharmony.matching.aloha.models.{BaseModel, Model}
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 import com.eharmony.matching.aloha.id.ModelIdentity
 import com.eharmony.matching.aloha.score.Scores.Score
@@ -39,7 +39,7 @@ case class ModelDecisionTree[-A, +B: ScoreConverter](
         modelId: ModelIdentity,
         root: Node[A, Model[A, B]],
         returnBest: Boolean)
-    extends Model[A, B] {
+    extends BaseModel[A, B] {
 
     private[aloha] def getScore(a: A)(implicit audit: Boolean) = {
         // Find the proper node.

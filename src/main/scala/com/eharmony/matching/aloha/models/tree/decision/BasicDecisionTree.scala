@@ -2,7 +2,7 @@ package com.eharmony.matching.aloha.models.tree.decision
 
 import scala.collection.immutable
 
-import com.eharmony.matching.aloha.models.Model
+import com.eharmony.matching.aloha.models.BaseModel
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 import com.eharmony.matching.aloha.id.ModelIdentity
 import com.eharmony.matching.aloha.score.Scores.Score
@@ -24,7 +24,7 @@ case class BasicDecisionTree[-A, +B: ScoreConverter](
         modelId: ModelIdentity,
         root: Node[A, B],
         returnBest: Boolean)
-    extends Model[A, B] {
+    extends BaseModel[A, B] {
 
     /** Produce a score.
       * @param a an input to the model representing covariate data.
