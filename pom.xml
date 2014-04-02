@@ -7,7 +7,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>aloha-compiled-semantics-proto-plugin${artifact.ext}</artifactId>
-    <version>0.9.8</version>
+    <version>0.9.9-SNAPSHOT</version>
     <name>${project.artifactId}</name>
 
     <licenses>
