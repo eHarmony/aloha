@@ -3,12 +3,12 @@
     <parent>
         <groupId>com.eharmony.matching</groupId>
         <artifactId>aloha</artifactId>
-        <version>0.9.3</version>
+        <version>0.9.8</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>aloha-core${artifact.ext}</artifactId>
-    <version>0.9.6-SNAPSHOT</version>
+    <version>0.9.8-SNAPSHOT</version>
     <name>${project.artifactId}</name>
 
     <licenses>
@@ -59,7 +59,7 @@
 
     <properties>
         <spray.json.version>1.2.3</spray.json.version>
-        <aloha.proto.version>0.9.3</aloha.proto.version>
+        <aloha.proto.version>0.9.8</aloha.proto.version>
     </properties>
 
     <dependencies>
