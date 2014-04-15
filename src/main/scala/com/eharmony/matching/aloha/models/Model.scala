@@ -16,6 +16,11 @@ import com.eharmony.matching.aloha.score.basic.ModelOutput
   * new model implementation, is package private to the '''com.eharmony.matching.aloha''' package.  While the license
   * of this project is much more liberal than the GPL, this stipulation in the API may have a similar effect.
   *
+  * '''NOTE''': ''These functions may throw exceptions.  While the aloha code based should not cause
+  *               any exceptions to be thrown, it also does NOT actively attempt to catch exceptions
+  *               thrown by those creating models or user-defined functions that are used inside of 
+  *               feature specifications within the models.''
+  *
   * @tparam A model input type
   * @tparam B model output type
   */
