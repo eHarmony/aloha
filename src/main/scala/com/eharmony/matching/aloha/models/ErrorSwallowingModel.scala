@@ -25,6 +25,13 @@ import com.eharmony.matching.aloha.factory.ex.AlohaFactoryException
   - [[com.eharmony.matching.aloha.models.ErrorSwallowingModel.ExMsgThrewMsg]]
   - [[com.eharmony.matching.aloha.models.ErrorSwallowingModel.StackTraceOmitted]]
   *
+  * If the exception that is caught is a [[com.eharmony.matching.aloha.semantics.SemanticsUdfException]], then
+  * 3 additional fields are added to the end of the errors list in indices 3, 4, 5:
+  *
+  - The specification of the feature in error.
+  - The feature accessors in the feature that are in err.
+  - The feature accessors in the feature that are missing an output value.
+  *
   * @param submodel the submodel to which the score calculations are delegated.
   * @param recordErrorStackTraces whether stack traces should be recorded.
   * @tparam A model input type
