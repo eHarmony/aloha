@@ -77,7 +77,8 @@ public class JavaDefaultModelFactoryTest {
                 ModelDecisionTree.parser().modelType(),
                 RegressionModel.parser().modelType(),
                 SegmentationModel.parser().modelType(),
-                DoubleToLongModel.parser().modelType()
+                DoubleToLongModel.parser().modelType(),
+                ErrorSwallowingModel.parser().modelType()
         };
 
         Arrays.sort(names);

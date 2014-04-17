@@ -210,6 +210,7 @@ object ModelFactory {
         ModelDecisionTree.parser,
         RegressionModel.parser,
         SegmentationModel.parser,
-        DoubleToLongModel.parser
+        DoubleToLongModel.parser,
+        ErrorSwallowingModel.parser
     )
 }
