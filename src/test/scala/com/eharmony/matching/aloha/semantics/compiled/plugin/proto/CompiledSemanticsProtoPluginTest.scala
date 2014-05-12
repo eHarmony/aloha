@@ -84,6 +84,21 @@ class CompiledSemanticsProtoPluginTest {
         assertEquals(Seq(2, 3), f(protos.last))
     }
 
+    /** An optional list of an optional field should map to a list of options.
+      */
+    @Test def test_OLO() {
+        val testCase = protos(4)
+        val exp = testCase.getOptC1.getRepC2List.map(c2 => Option(c2.getOptInt3))
+
+        // Because opt_int_3 is an 'optional int32' in the proto definition, and rep_c2 is repeated
+        // the resulting type is a sequence of Option of Int.
+        val s = "${opt_c1.rep_c2.opt_int_3}"
+        val f = semantics.createFunction[Seq[Option[Int]]](s).right.toOption.get
+
+        val act = f(testCase)
+        assertEquals(exp, act)
+    }
+
     @Test def test_OROLOOR() {
         val s = "${opt_c1.req_c2.opt_c3.rep_c4.opt_c5.opt_c6.req_int_7}"
         val f = semantics.createFunction[Seq[Option[Int]]](s).right.toOption.get
