@@ -1,11 +1,11 @@
 package com.eharmony.matching.aloha.feature
 
-import org.junit.runners.BlockJUnit4ClassRunner
-import org.junit.runner.RunWith
-import org.junit.Test
-import org.junit.Assert._
-
 import com.eharmony.matching.notaloha.AnEnum
+import org.junit.Assert._
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.BlockJUnit4ClassRunner
+
 import scala.util.Random
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
@@ -124,6 +124,11 @@ class IndicatorTest {
         tests foreach { t => assertEquals(s"For some string '$t': ", expected(t.get), BasicFunctions.ind(t)) }
     }
 
+    @Test def testSomeStringList() {
+      val tests = IndexedSeq.fill(numRandTests)((BigInt(rand.nextString(100).getBytes).toString(32)))
+      assertEquals(s"For list of strings: ", expected(tests), BasicFunctions.ind(tests))
+    }
+
     @Test def testNoneEnum(): Unit = testMissingOption[AnEnum]()
     @Test def testNoneUnit(): Unit = testMissingOption[Unit]()
     @Test def testNoneBoolean(): Unit = testMissingOption[Boolean]()
@@ -143,4 +148,6 @@ class IndicatorTest {
     }
 
     private[this] def expected[A](a: A): Iterable[(String, Double)] = Seq((s"=$a", 1d))
+
+    private[this] def expected[A](a: IndexedSeq[String]): Iterable[(String, Double)] = a.map(b => ((s"=$b", 1.0)))
 }
