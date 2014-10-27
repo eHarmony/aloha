@@ -1,188 +1,232 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <parent>
-        <groupId>com.eharmony.matching</groupId>
-        <artifactId>aloha</artifactId>
-        <version>0.9.9-SNAPSHOT</version>
-    </parent>
+	<parent>
+		<groupId>com.eharmony.matching</groupId>
+		<artifactId>aloha</artifactId>
+		<version>0.9.8</version>
+	</parent>
 
-    <modelVersion>4.0.0</modelVersion>
-    <artifactId>aloha-core${artifact.ext}</artifactId>
-    <version>0.9.9-SNAPSHOT</version>
-    <name>${project.artifactId}</name>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>aloha-core${artifact.ext}</artifactId>
+	<version>0.9.9-SNAPSHOT</version>
+	<name>${project.artifactId}</name>
 
-    <licenses>
-        <license>
-            <name>MIT License</name>
-            <url>http://opensource.org/licenses/MIT</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>http://opensource.org/licenses/MIT</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
-    <scm>
-        <connection>scm:git:git@github.corp.eharmony.com:matching/aloha-core.git</connection>
-        <url>git@github.corp.eharmony.com:matching/aloha-core.git</url>
-        <developerConnection>scm:git:git@github.corp.eharmony.com:matching/aloha-core.git</developerConnection>
-    </scm>
+	<scm>
+		<connection>scm:git:git@github.corp.eharmony.com:matching/aloha-core.git</connection>
+		<url>git@github.corp.eharmony.com:matching/aloha-core.git</url>
+		<developerConnection>scm:git:git@github.corp.eharmony.com:matching/aloha-core.git</developerConnection>
+	</scm>
 
-    <distributionManagement>
-        <repository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>internal-releases</id>
-            <name>Internal Releases</name>
-            <url>https://repository.corp.eharmony.com/nexus/content/repositories/internal-releases</url>
-            <layout>default</layout>
-        </repository>
-        <snapshotRepository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>internal-snapshots</id>
-            <name>Internal Snapshots</name>
-            <url>https://repository.corp.eharmony.com/nexus/content/repositories/internal-snapshots</url>
-            <layout>default</layout>
-        </snapshotRepository>
-    </distributionManagement>
+	<distributionManagement>
+		<repository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>internal-releases</id>
+			<name>Internal Releases</name>
+			<url>https://repository.corp.eharmony.com/nexus/content/repositories/internal-releases</url>
+			<layout>default</layout>
+		</repository>
+		<snapshotRepository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>internal-snapshots</id>
+			<name>Internal Snapshots</name>
+			<url>https://repository.corp.eharmony.com/nexus/content/repositories/internal-snapshots</url>
+			<layout>default</layout>
+		</snapshotRepository>
+	</distributionManagement>
 
-    <developers>
-        <developer>
-            <id>ryan</id>
-            <name>Ryan Deak</name>
-            <email>rdeak@eharmony.com</email>
-            <organization>eHarmony</organization>
-            <organizationUrl>http://www.eharmony.com</organizationUrl>
-            <roles>
-                <role>creator</role>
-                <role>developer</role>
-            </roles>
-            <timezone>-8</timezone>
-        </developer>
-    </developers>
+	<developers>
+		<developer>
+			<id>ryan</id>
+			<name>Ryan Deak</name>
+			<email>rdeak@eharmony.com</email>
+			<organization>eHarmony</organization>
+			<organizationUrl>http://www.eharmony.com</organizationUrl>
+			<roles>
+				<role>creator</role>
+				<role>developer</role>
+			</roles>
+			<timezone>-8</timezone>
+		</developer>
+	</developers>
 
-    <properties>
-        <spray.json.version>1.2.3</spray.json.version>
-        <aloha.proto.version>0.9.8</aloha.proto.version>
-    </properties>
+	<properties>
+		<spray.json.version>1.2.3</spray.json.version>
+		<aloha.proto.version>0.9.8</aloha.proto.version>
+	</properties>
 
-    <dependencies>
+	<dependencies>
 
-        <!-- Dependencies in under aloha's dependency management. -->
-        <dependency>
-            <groupId>com.eharmony.matching</groupId>
-            <artifactId>aloha-proto_${protobuf.version}</artifactId>
-            <version>${aloha.proto.version}</version>
-        </dependency>
+		<!-- Dependencies in under aloha's dependency management. -->
+		<dependency>
+			<groupId>com.eharmony.matching</groupId>
+			<artifactId>aloha-proto_${protobuf.version}</artifactId>
+			<version>${aloha.proto.version}</version>
+		</dependency>
 
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-reflect</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.scalaz</groupId>
-            <artifactId>scalaz-core_${scala.major.version}</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-reflect</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.scalaz</groupId>
+			<artifactId>scalaz-core_${scala.major.version}</artifactId>
+		</dependency>
 
-        <dependency>
-            <groupId>commons-vfs</groupId>
-            <artifactId>commons-vfs</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-vfs2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.protobuf</groupId>
-            <artifactId>protobuf-java</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>commons-vfs</groupId>
+			<artifactId>commons-vfs</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-vfs2</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.github.axel22</groupId>
+			<artifactId>scalameter_2.10</artifactId>
+			<version>0.4</version>
+		</dependency>
 
-        <dependency>
-            <groupId>org.clapper</groupId>
-            <artifactId>grizzled-slf4j_${scala.major.version}</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>org.clapper</groupId>
+			<artifactId>grizzled-slf4j_${scala.major.version}</artifactId>
+		</dependency>
 
-        <dependency>
-            <groupId>cc.mallet</groupId>
-            <artifactId>mallet</artifactId>
-            <version>2.0.7</version>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>cc.mallet</groupId>
+			<artifactId>mallet</artifactId>
+			<version>2.0.7</version>
+			<scope>test</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!-- Dependencies in under aloha's dependency management. -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- Dependencies in under aloha's dependency management. -->
 
-        <!-- Java type information using super type tokens -->
-        <!-- See https://github.com/cowtowncoder/java-classmate -->
-        <dependency>
-            <groupId>com.fasterxml</groupId>
-            <artifactId>classmate</artifactId>
-            <version>0.5.4</version>
-        </dependency>
+		<!-- Java type information using super type tokens -->
+		<!-- See https://github.com/cowtowncoder/java-classmate -->
+		<dependency>
+			<groupId>com.fasterxml</groupId>
+			<artifactId>classmate</artifactId>
+			<version>0.5.4</version>
+		</dependency>
 
-        <!-- Spray JSON deps. -->
-        <dependency>
-            <groupId>io.spray</groupId>
-            <artifactId>spray-json_${scala.major.version}</artifactId>
-            <version>${spray.json.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.scala-lang</groupId>
-                    <artifactId>scala-library</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-    </dependencies>
+		<!-- Spray JSON deps. -->
+		<dependency>
+			<groupId>io.spray</groupId>
+			<artifactId>spray-json_${scala.major.version}</artifactId>
+			<version>${spray.json.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.scala-lang</groupId>
+					<artifactId>scala-library</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-            </plugin>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+			</plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.3</version>
-                <executions>
-                    <execution>
-                        <id>copy-test-resources</id>
-                        <phase>process-test-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>target/test-classes</outputDirectory>
-                            <encoding>UTF-8</encoding>
-                            <resources>
-                                <resource>
-                                    <directory>src/test/resources</directory>
-                                    <filtering>true</filtering>
-                                    <includes>
-                                        <include>**/success_1_level_file.json</include>
-                                    </includes>
-                                </resource>
-                                <resource>
-                                    <directory>src/test/resources</directory>
-                                    <filtering>false</filtering>
-                                    <excludes>
-                                        <exclude>**/success_1_level_file.json</exclude>
-                                    </excludes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.3</version>
+				<executions>
+					<execution>
+						<id>copy-test-resources</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/test-classes</outputDirectory>
+							<encoding>UTF-8</encoding>
+							<resources>
+								<resource>
+									<directory>src/test/resources</directory>
+									<filtering>true</filtering>
+									<includes>
+										<include>**/success_1_level_file.json</include>
+									</includes>
+								</resource>
+								<resource>
+									<directory>src/test/resources</directory>
+									<filtering>false</filtering>
+									<excludes>
+										<exclude>**/success_1_level_file.json</exclude>
+									</excludes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-resources-plugin
+										</artifactId>
+										<versionRange>
+											[2.3,)
+										</versionRange>
+										<goals>
+											<goal>testResources</goal>
+											<goal>copy-resources</goal>
+											<goal>resources</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 </project>
