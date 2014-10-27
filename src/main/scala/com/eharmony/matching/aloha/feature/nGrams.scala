@@ -7,6 +7,8 @@ import scala.collection.mutable.ListBuffer
  *
  * Implements k-skip-n-grams e.g
  *
+ * from http://homepages.inf.ed.ac.uk/ballison/pdf/lrec_skipgrams.pdf
+ *
  * "Insurgents killed in ongoing fighting.”
  * Bi-grams = {insurgents killed, killed in, in ongoing, ongoing fighting}.
  * 2-skip-2-grams = {insurgents killed, insurgents in, insurgents ongoing, killed in, killed ongoing, killed fighting, in ongoing, in fighting, ongoing fighting} Tri-grams = {insurgents killed in, killed in ongoing, in ongoing fighting}.
