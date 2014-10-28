@@ -17,7 +17,8 @@ object BasicFunctions
     with TimeConstants
     with SparsityTransforms
     with RegressionModelValueToTupleConversions
-    with DecisionTreeBoolToOptBoolConversions {
+    with DecisionTreeBoolToOptBoolConversions
+    with nGrams {
 
     final protected[feature] val DefaultForMissingDataInReg = Seq(("=UNK", 1.0))
 }
