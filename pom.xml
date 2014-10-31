@@ -60,17 +60,16 @@
 
 	<properties>
 		<spray.json.version>1.2.3</spray.json.version>
-		<aloha.proto.version>0.9.8</aloha.proto.version>
 	</properties>
 
 	<dependencies>
 
 		<!-- Dependencies in under aloha's dependency management. -->
-		<dependency>
-			<groupId>com.eharmony.matching</groupId>
-			<artifactId>aloha-proto_${protobuf.version}</artifactId>
-			<version>${aloha.proto.version}</version>
-		</dependency>
+        <dependency>
+            <groupId>com.eharmony.matching</groupId>
+            <artifactId>aloha-proto_2.4.1</artifactId>
+            <version>0.9.8</version>
+        </dependency>
 
 		<dependency>
 			<groupId>org.scala-lang</groupId>
@@ -127,7 +126,7 @@
 		<dependency>
 			<groupId>com.fasterxml</groupId>
 			<artifactId>classmate</artifactId>
-			<version>0.5.4</version>
+			<version>1.0.0</version>
 		</dependency>
 
 		<!-- Spray JSON deps. -->
