@@ -14,7 +14,7 @@ import scala.collection.mutable.ListBuffer
  * 2-skip-2-grams = {insurgents killed, insurgents in, insurgents ongoing, killed in, killed ongoing, killed fighting, in ongoing, in fighting, ongoing fighting} Tri-grams = {insurgents killed in, killed in ongoing, in ongoing fighting}.
  * 2-skip-3-grams = {insurgents killed in, insurgents killed ongoing, insurgents killed fighting, insurgents in ongoing, insurgents in fighting, insurgents ongoing fighting, killed in ongoing, killed in fighting, killed ongoing fighting, in ongoing fighting}.
  */
-trait nGrams {
+trait BagOfWords {
   def skipGrams(s: String, n: Int, k: Int): Iterable[(String, Double)] = {
     s.split(" ").sliding(n + k).foldLeft(Set.empty[(String, Double)])((acc, l) => acc ++ l.combinations(n).map(e => e.mkString("_") -> 1.0).toMap)
   }
@@ -26,4 +26,4 @@ trait nGrams {
   }
 }
 
-object nGrams extends nGrams
+object BagOfWords extends BagOfWords
