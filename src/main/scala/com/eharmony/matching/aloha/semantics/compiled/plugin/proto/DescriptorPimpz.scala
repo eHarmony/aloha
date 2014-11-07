@@ -3,7 +3,7 @@ package com.eharmony.matching.aloha.semantics.compiled.plugin.proto
 import scalaz.ValidationNel
 import scalaz.std.list._
 import scalaz.syntax.traverse._
-import scalaz.syntax.validation.ToValidationV
+import scalaz.syntax.validation.ToValidationOps
 
 import com.google.protobuf.Descriptors.{FieldDescriptor, Descriptor}
 

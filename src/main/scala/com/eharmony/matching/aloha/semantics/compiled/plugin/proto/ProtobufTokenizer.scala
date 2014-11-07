@@ -3,7 +3,7 @@ package com.eharmony.matching.aloha.semantics.compiled.plugin.proto
 import scala.util.parsing.combinator.JavaTokenParsers
 
 import scalaz.ValidationNel
-import scalaz.syntax.validation.ToValidationV
+import scalaz.syntax.validation.ToValidationOps
 
 /** This tokenizer extracts sequences of Field and Index tokens which are then used in conjunction with the reflection
   * APIs in the Protocol Buffers library to synthesize code for high-performance, type-safe accessor functions.
