@@ -1,583 +1,518 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.eharmony.matching</groupId>
-    <artifactId>aloha</artifactId>
-    <version>0.9.9-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <name>${project.artifactId}</name>
-    <description>Scala-based machine learning library with generic models and lazily created features.</description>
-    <inceptionYear>2013</inceptionYear>
-    <licenses>
-        <license>
-            <name>MIT License</name>
-            <url>http://opensource.org/licenses/MIT</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.eharmony.matching</groupId>
+	<artifactId>aloha</artifactId>
+	<version>0.9.9-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>${project.artifactId}</name>
+	<description>Scala-based machine learning library with generic models and lazily created features.</description>
+	<inceptionYear>2013</inceptionYear>
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>http://opensource.org/licenses/MIT</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
-    <scm>
-        <connection>scm:git:git@github.corp.eharmony.com:matching/aloha.git</connection>
-        <url>git@github.corp.eharmony.com:matching/aloha.git</url>
-        <developerConnection>scm:git:git@github.corp.eharmony.com:matching/aloha.git</developerConnection>
-    </scm>
+	<scm>
+		<connection>scm:git:git@github.corp.eharmony.com:matching/aloha.git</connection>
+		<url>git@github.corp.eharmony.com:matching/aloha.git</url>
+		<developerConnection>scm:git:git@github.corp.eharmony.com:matching/aloha.git</developerConnection>
+	</scm>
 
-    <distributionManagement>
-        <repository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>internal-releases</id>
-            <name>Internal Releases</name>
-            <url>https://repository.corp.eharmony.com/nexus/content/repositories/internal-releases</url>
-            <layout>default</layout>
-        </repository>
-        <snapshotRepository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>internal-snapshots</id>
-            <name>Internal Snapshots</name>
-            <url>https://repository.corp.eharmony.com/nexus/content/repositories/internal-snapshots</url>
-            <layout>default</layout>
-        </snapshotRepository>
-    </distributionManagement>
+	<distributionManagement>
+		<repository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>internal-releases</id>
+			<name>Internal Releases</name>
+			<url>https://repository.corp.eharmony.com/nexus/content/repositories/internal-releases</url>
+			<layout>default</layout>
+		</repository>
+		<snapshotRepository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>internal-snapshots</id>
+			<name>Internal Snapshots</name>
+			<url>https://repository.corp.eharmony.com/nexus/content/repositories/internal-snapshots</url>
+			<layout>default</layout>
+		</snapshotRepository>
+	</distributionManagement>
 
-    <developers>
-        <developer>
-            <id>ryan</id>
-            <name>Ryan Deak</name>
-            <email>RyanDeak@eharmony.com</email>
-            <organization>eHarmony</organization>
-            <organizationUrl>http://www.eharmony.com</organizationUrl>
-            <roles>
-                <role>creator</role>
-                <role>developer</role>
-            </roles>
-            <timezone>-8</timezone>
-        </developer>
-    </developers>
+	<developers>
+		<developer>
+			<id>ryan</id>
+			<name>Ryan Deak</name>
+			<email>RyanDeak@eharmony.com</email>
+			<organization>eHarmony</organization>
+			<organizationUrl>http://www.eharmony.com</organizationUrl>
+			<roles>
+				<role>creator</role>
+				<role>developer</role>
+			</roles>
+			<timezone>-8</timezone>
+		</developer>
+	</developers>
 
-    <profiles>
+	<profiles>
 
-        <!--
-            Require a protocol buffer version to be specified at build time.  Currently, the available options are:
+		<!-- Require a protocol buffer version to be specified at build time. Currently, 
+			the available options are: - 2.5.0 - 2.4.1 - 2.3.0 To specify the version 
+			at compilation time for a child project, do (with proto v. 2.4.1 for example): 
+			mvn -Dproto=2.4.1 clean install The default is protocol buffers 2.5.0 so 
+			there is no profile. Just a property in the global properties that appears 
+			below. -->
+		<!-- <profile> <id>proto-2.4.1</id> <activation> <property> <name>proto</name> 
+			<value>2.4.1</value> </property> </activation> <properties> <protobuf.version>2.4.1</protobuf.version> 
+			</properties> </profile> -->
+		<profile>
+			<id>proto-2.5.0</id>
+			<activation>
+				<property>
+					<name>proto</name>
+					<value>2.5.0</value>
+				</property>
+			</activation>
+			<properties>
+				<protobuf.version>2.5.0</protobuf.version>
+			</properties>
+		</profile>
 
-                - 2.5.0
-                - 2.4.1
-                - 2.3.0
+		<profile>
+			<id>proto-2.3.0</id>
+			<activation>
+				<property>
+					<name>proto</name>
+					<value>2.3.0</value>
+				</property>
+			</activation>
+			<properties>
+				<protobuf.version>2.3.0</protobuf.version>
+			</properties>
+		</profile>
 
-            To specify the version at compilation time for a child project, do (with proto v. 2.4.1 for example):
+		<profile>
+			<!-- Trick to differentiate maven 2.x and maven 3.x. This employs that 
+				the basedir expression is only recognized by Maven 3.x (see MNG-2363) http://maven.apache.org/plugins/maven-site-plugin/maven-3.html#\ 
+				Using_maven-site-plugin_2.x_with_Maven_2_and_maven-site-plugin_3.x_with_Maven_3 -->
+			<id>maven-2</id>
+			<activation>
+				<file>
+					<missing>${basedir}</missing>
+				</file>
+			</activation>
 
-                mvn -Dproto=2.4.1 clean install
+			<pluginRepositories>
+				<pluginRepository>
+					<id>dtrott-protoc-plugin</id>
+					<url>http://maven.davidtrott.com/repository</url>
+					<layout>default</layout>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+				</pluginRepository>
+			</pluginRepositories>
 
-            The default is protocol buffers 2.5.0 so there is no profile.  Just a property in the global properties
-            that appears below.
-        -->
-<!--
-        <profile>
-            <id>proto-2.4.1</id>
-            <activation>
-                <property>
-                    <name>proto</name>
-                    <value>2.4.1</value>
-                </property>
-            </activation>
-            <properties>
-                <protobuf.version>2.4.1</protobuf.version>
-            </properties>
-        </profile>
--->
-        <profile>
-            <id>proto-2.5.0</id>
-            <activation>
-                <property>
-                    <name>proto</name>
-                    <value>2.5.0</value>
-                </property>
-            </activation>
-            <properties>
-                <protobuf.version>2.5.0</protobuf.version>
-            </properties>
-        </profile>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.scala-tools</groupId>
+							<artifactId>maven-scala-plugin</artifactId>
+							<version>2.15.2</version>
+							<configuration>
+								<scalaVersion>${scala.version}</scalaVersion>
+								<displayCmd>true</displayCmd>
+								<verbose>true</verbose>
+								<addToClasspath>${project.build.directory}/generated-sources</addToClasspath>
+								<failOnMultipleScalaVersions>true</failOnMultipleScalaVersions>
+								<args>
+									<arg>-target:jvm-1.7</arg>
+									<arg>-feature</arg>
+									<arg>-deprecation</arg>
+									<arg>-Ycheck:jvm</arg>
+									<arg>${scala.optmize.flag}</arg>
+									<arg>-dependencyfile</arg>
+									<arg>${project.build.directory}/.scala_dependencies</arg>
+								</args>
+								<jvmArgs>
+								</jvmArgs>
+							</configuration>
+						</plugin>
 
-        <profile>
-            <id>proto-2.3.0</id>
-            <activation>
-                <property>
-                    <name>proto</name>
-                    <value>2.3.0</value>
-                </property>
-            </activation>
-            <properties>
-                <protobuf.version>2.3.0</protobuf.version>
-            </properties>
-        </profile>
+						<plugin>
+							<groupId>com.google.protobuf.tools</groupId>
+							<artifactId>maven-protoc-plugin</artifactId>
+							<version>0.1.10</version>
+							<executions>
+								<execution>
+									<phase>generate-sources</phase>
+									<goals>
+										<goal>compile</goal>
+										<goal>testCompile</goal>
+									</goals>
+								</execution>
+							</executions>
+						</plugin>
 
-        <profile>
-            <!--
-                Trick to differentiate maven 2.x and maven 3.x.
+					</plugins>
+				</pluginManagement>
+				<plugins>
+					<plugin>
+						<groupId>org.scala-tools</groupId>
+						<artifactId>maven-scala-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>scala-compile-first</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>add-source</goal>
+									<goal>compile</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>scala-test-compile</id>
+								<phase>process-test-resources</phase>
+								<goals>
+									<goal>testCompile</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 
-                This employs that the basedir expression is only recognized by Maven 3.x (see MNG-2363)
+		<profile>
+			<!-- Trick to differentiate maven 2.x and maven 3.x. This employs that 
+				the basedir expression is only recognized by Maven 3.x (see MNG-2363) http://maven.apache.org/plugins/maven-site-plugin/maven-3.html#\ 
+				Using_maven-site-plugin_2.x_with_Maven_2_and_maven-site-plugin_3.x_with_Maven_3 -->
+			<id>maven-3</id>
+			<activation>
+				<file>
+					<exists>${basedir}</exists>
+				</file>
+			</activation>
 
-                http://maven.apache.org/plugins/maven-site-plugin/maven-3.html#\
-                Using_maven-site-plugin_2.x_with_Maven_2_and_maven-site-plugin_3.x_with_Maven_3
-            -->
-            <id>maven-2</id>
-            <activation>
-                <file>
-                    <missing>${basedir}</missing>
-                </file>
-            </activation>
+			<pluginRepositories>
+				<pluginRepository>
+					<id>protoc-plugin</id>
+					<url>http://sergei-ivanov.github.com/maven-protoc-plugin/repo/releases/</url>
+				</pluginRepository>
+			</pluginRepositories>
 
-            <pluginRepositories>
-                <pluginRepository>
-                    <id>dtrott-protoc-plugin</id>
-                    <url>http://maven.davidtrott.com/repository</url>
-                    <layout>default</layout>
-                    <releases>
-                        <enabled>true</enabled>
-                    </releases>
-                </pluginRepository>
-            </pluginRepositories>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<!-- see http://davidb.github.com/scala-maven-plugin -->
 
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.scala-tools</groupId>
-                            <artifactId>maven-scala-plugin</artifactId>
-                            <version>2.15.2</version>
-                            <configuration>
-                                <scalaVersion>${scala.version}</scalaVersion>
-                                <displayCmd>true</displayCmd>
-                                <verbose>true</verbose>
-                                <addToClasspath>${project.build.directory}/generated-sources</addToClasspath>
-                                <failOnMultipleScalaVersions>true</failOnMultipleScalaVersions>
-                                <args>
-                                    <arg>-target:jvm-1.6</arg>
-                                    <arg>-feature</arg>
-                                    <arg>-deprecation</arg>
-                                    <arg>-Ycheck:jvm</arg>
-                                    <arg>-Ywarn-all</arg>
-                                    <arg>${scala.optmize.flag}</arg>
-                                    <arg>-dependencyfile</arg>
-                                    <arg>${project.build.directory}/.scala_dependencies</arg>
-                                </args>
-                                <jvmArgs>
-                                </jvmArgs>
-                            </configuration>
-                        </plugin>
+							<!-- # Use zinc for incremental compilation: See http://typesafe.com/blog/zinc-and-incremental-compilation 
+								*************** INSTALLING ZINC *************** ZINC_VERSION=0.2.5 curl "http://repo.typesafe.com/typesafe/zinc/com/typesafe/zinc/dist/0.2.5/zinc-${ZINC_VERSION}.tgz" 
+								> zinc-${ZINC_VERSION}.tgz tar -zxvf zinc-${ZINC_VERSION}.tgz sudo mkdir 
+								-p /usr/share/java 2>/dev/null sudo mv zinc-${ZINC_VERSION} /usr/share/java/zinc-${ZINC_VERSION} 
+								cd /usr/share/java sudo ln -s zinc-${ZINC_VERSION} zinc cd /usr/local/bin 
+								sudo ln -s /usr/share/java/zinc/bin/zinc zinc *************** RUNNING ZINC 
+								*************** zinc -start -nailed -->
 
-                        <plugin>
-                            <groupId>com.google.protobuf.tools</groupId>
-                            <artifactId>maven-protoc-plugin</artifactId>
-                            <version>0.1.10</version>
-                            <executions>
-                                <execution>
-                                    <phase>generate-sources</phase>
-                                    <goals>
-                                        <goal>compile</goal>
-                                        <goal>testCompile</goal>
-                                    </goals>
-                                </execution>
-                            </executions>
-                        </plugin>
+							<groupId>net.alchim31.maven</groupId>
+							<artifactId>scala-maven-plugin</artifactId>
+							<version>3.1.5</version>
+							<configuration>
+								<recompileMode>incremental</recompileMode>
+								<useZincServer>true</useZincServer>
+								<scalaVersion>${scala.version}</scalaVersion>
+								<displayCmd>true</displayCmd>
+								<verbose>true</verbose>
+								<addToClasspath>${project.build.directory}/generated-sources</addToClasspath>
+								<failOnMultipleScalaVersions>true</failOnMultipleScalaVersions>
+								<args>
+									<arg>-target:jvm-1.7</arg>
+									<arg>-feature</arg>
+									<arg>-deprecation</arg>
+									<arg>-Ycheck:jvm</arg>
+									<arg>${scala.optmize.flag}</arg>
+									<arg>-dependencyfile</arg>
+									<arg>${project.build.directory}/.scala_dependencies</arg>
+								</args>
+								<jvmArgs>
+								</jvmArgs>
+							</configuration>
+						</plugin>
 
-                    </plugins>
-                </pluginManagement>
-                <plugins>
-                    <plugin>
-                        <groupId>org.scala-tools</groupId>
-                        <artifactId>maven-scala-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>scala-compile-first</id>
-                                <phase>process-resources</phase>
-                                <goals>
-                                    <goal>add-source</goal>
-                                    <goal>compile</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>scala-test-compile</id>
-                                <phase>process-test-resources</phase>
-                                <goals>
-                                    <goal>testCompile</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
+						<plugin>
+							<groupId>com.google.protobuf.tools</groupId>
+							<artifactId>maven-protoc-plugin</artifactId>
+							<version>0.3.1</version>
+							<executions>
+								<execution>
+									<phase>generate-sources</phase>
+									<goals>
+										<goal>compile</goal>
+										<goal>testCompile</goal>
+									</goals>
+								</execution>
+							</executions>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+				<plugins>
+					<plugin>
+						<groupId>net.alchim31.maven</groupId>
+						<artifactId>scala-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>scala-compile-first</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>add-source</goal>
+									<goal>compile</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>scala-test-compile</id>
+								<phase>process-test-resources</phase>
+								<goals>
+									<goal>testCompile</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>doc-jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+			<reporting>
+				<plugins>
+					<plugin>
+						<groupId>net.alchim31.maven</groupId>
+						<artifactId>scala-maven-plugin</artifactId>
+						<version>3.1.5</version>
+					</plugin>
+				</plugins>
+			</reporting>
+		</profile>
 
-        <profile>
-            <!--
-                Trick to differentiate maven 2.x and maven 3.x.
+		<!-- Scala compiler optimization -->
+		<profile>
+			<id>scala-compiler-optimizer-activated</id>
+			<activation>
+				<property>
+					<name>optimize</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<properties>
+				<scala.optmize.flag>-optimise</scala.optmize.flag>
+			</properties>
+		</profile>
+	</profiles>
 
-                This employs that the basedir expression is only recognized by Maven 3.x (see MNG-2363)
+	<properties>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
+		<encoding>UTF-8</encoding>
+		<scala.version>2.11.2</scala.version>
+		<jackson.version>1.9.9</jackson.version>
+		<protostuff.version>1.0.7</protostuff.version>
+		<protobuf.version>2.4.1</protobuf.version>
 
-                http://maven.apache.org/plugins/maven-site-plugin/maven-3.html#\
-                Using_maven-site-plugin_2.x_with_Maven_2_and_maven-site-plugin_3.x_with_Maven_3
-            -->
-            <id>maven-3</id>
-            <activation>
-                <file>
-                    <exists>${basedir}</exists>
-                </file>
-            </activation>
+		<!-- For child artifacts, the artifact name should be "[my-artifact-name-here]${artifact.ext}". 
+			This allows us to build different artifact names for different maven profiles. -->
+		<artifact.ext>_${scala.version}_proto-${protobuf.version}</artifact.ext>
 
-            <pluginRepositories>
-                <pluginRepository>
-                    <id>protoc-plugin</id>
-                    <url>http://sergei-ivanov.github.com/maven-protoc-plugin/repo/releases/</url>
-                </pluginRepository>
-            </pluginRepositories>
+		<scala.optmize.flag />
+	</properties>
 
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <!-- see http://davidb.github.com/scala-maven-plugin -->
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.0</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.apache.maven.scm</groupId>
+							<artifactId>maven-scm-provider-gitexe</artifactId>
+							<version>1.3</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>2.0.2</version>
+					<configuration>
+						<source>${maven.compiler.source}</source>
+						<target>${maven.compiler.target}</target>
+						<compilerVersion>${maven.compiler.target}</compilerVersion>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.13</version>
+					<executions>
+						<execution>
+							<id>surefire-test</id>
+							<phase>test</phase>
+							<goals>
+								<goal>test</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<redirectTestOutputToFile>true</redirectTestOutputToFile>
+						<includes>
+							<include>**/*Test.java</include>
+							<include>**/*Test.scala</include>
+						</includes>
+						<forkMode>once</forkMode>
+					</configuration>
+				</plugin>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>net.alchim31.maven</groupId>
+										<artifactId>
+											scala-maven-plugin
+										</artifactId>
+										<versionRange>[3.1.5,)</versionRange>
+										<goals>
+											<goal>testCompile</goal>
+											<goal>add-source</goal>
+											<goal>compile</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.0</version>
+			</plugin>
+		</plugins>
+	</build>
 
-                            <!--
-                                 # Use zinc for incremental compilation: See http://typesafe.com/blog/zinc-and-incremental-compilation
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.7</version>
+			</plugin>
+		</plugins>
+	</reporting>
 
-                                 *************** INSTALLING ZINC ***************
+	<dependencyManagement>
+		<dependencies>
 
-                                 ZINC_VERSION=0.2.5
-                                 curl "http://repo.typesafe.com/typesafe/zinc/com/typesafe/zinc/dist/0.2.5/zinc-${ZINC_VERSION}.tgz" > zinc-${ZINC_VERSION}.tgz
-                                 tar -zxvf zinc-${ZINC_VERSION}.tgz
-                                 sudo mkdir -p /usr/share/java 2>/dev/null
-                                 sudo mv zinc-${ZINC_VERSION} /usr/share/java/zinc-${ZINC_VERSION}
-                                 cd /usr/share/java
-                                 sudo ln -s zinc-${ZINC_VERSION} zinc
-                                 cd /usr/local/bin
-                                 sudo ln -s /usr/share/java/zinc/bin/zinc zinc
+			<!-- Language deps -->
+			<dependency>
+				<groupId>org.scala-lang</groupId>
+				<artifactId>scala-library</artifactId>
+				<version>${scala.version}</version>
+			</dependency>
 
+			<dependency>
+				<groupId>org.scala-lang</groupId>
+				<artifactId>scala-reflect</artifactId>
+				<version>${scala.version}</version>
+			</dependency>
 
-                                 *************** RUNNING ZINC ***************
+			<dependency>
+				<groupId>org.scala-lang</groupId>
+				<artifactId>scala-compiler</artifactId>
+				<version>${scala.version}</version>
+			</dependency>
 
-                                 zinc -start -nailed
-                              -->
+			<!-- ScalaZ language extensions: Type classes, etc. -->
+			<dependency>
+				<groupId>org.scalaz</groupId>
+				<artifactId>scalaz-core_2.11</artifactId>
+				<version>7.1.0</version>
+			</dependency>
 
-                            <groupId>net.alchim31.maven</groupId>
-                            <artifactId>scala-maven-plugin</artifactId>
-                            <version>3.1.5</version>
-                            <configuration>
-                                <recompileMode>incremental</recompileMode>
-                                <useZincServer>true</useZincServer>
-                                <scalaVersion>${scala.version}</scalaVersion>
-                                <displayCmd>true</displayCmd>
-                                <verbose>true</verbose>
-                                <addToClasspath>${project.build.directory}/generated-sources</addToClasspath>
-                                <failOnMultipleScalaVersions>true</failOnMultipleScalaVersions>
-                                <args>
-                                    <arg>-target:jvm-1.6</arg>
-                                    <arg>-feature</arg>
-                                    <arg>-deprecation</arg>
-                                    <arg>-Ycheck:jvm</arg>
-                                    <arg>-Ywarn-all</arg>
-                                    <arg>${scala.optmize.flag}</arg>
-                                    <arg>-dependencyfile</arg>
-                                    <arg>${project.build.directory}/.scala_dependencies</arg>
-                                </args>
-                                <jvmArgs>
-                                </jvmArgs>
-                            </configuration>
-                        </plugin>
+			<!-- File System deps -->
+			<dependency>
+				<groupId>commons-vfs</groupId>
+				<artifactId>commons-vfs</artifactId>
+				<version>1.0</version>
+			</dependency>
 
-                        <plugin>
-                            <groupId>com.google.protobuf.tools</groupId>
-                            <artifactId>maven-protoc-plugin</artifactId>
-                            <version>0.3.1</version>
-                            <executions>
-                                <execution>
-                                    <phase>generate-sources</phase>
-                                    <goals>
-                                        <goal>compile</goal>
-                                        <goal>testCompile</goal>
-                                    </goals>
-                                </execution>
-                            </executions>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-                <plugins>
-                    <plugin>
-                        <groupId>net.alchim31.maven</groupId>
-                        <artifactId>scala-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>scala-compile-first</id>
-                                <phase>process-resources</phase>
-                                <goals>
-                                    <goal>add-source</goal>
-                                    <goal>compile</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>scala-test-compile</id>
-                                <phase>process-test-resources</phase>
-                                <goals>
-                                    <goal>testCompile</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>doc-jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-            <reporting>
-                <plugins>
-                    <plugin>
-                        <groupId>net.alchim31.maven</groupId>
-                        <artifactId>scala-maven-plugin</artifactId>
-                        <version>3.1.5</version>
-                    </plugin>
-                </plugins>
-            </reporting>
-        </profile>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-vfs2</artifactId>
+				<version>2.0</version>
+			</dependency>
 
-        <!-- Scala compiler optimization -->
-        <profile>
-            <id>scala-compiler-optimizer-activated</id>
-            <activation>
-                <property>
-                    <name>optimize</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <properties>
-                <scala.optmize.flag>-optimise</scala.optmize.flag>
-            </properties>
-        </profile>
-    </profiles>
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>2.0.1</version>
+			</dependency>
 
-    <properties>
-        <maven.compiler.source>1.6</maven.compiler.source>
-        <maven.compiler.target>1.6</maven.compiler.target>
-        <encoding>UTF-8</encoding>
-        <scala.version>2.10.2</scala.version>
-        <scala.major.version>2.10</scala.major.version>
-        <jackson.version>1.9.9</jackson.version>
-        <protostuff.version>1.0.7</protostuff.version>
-        <protobuf.version>2.4.1</protobuf.version>
+			<!-- Logging deps -->
+			<dependency>
+				<groupId>org.clapper</groupId>
+				<artifactId>grizzled-slf4j_2.11</artifactId>
+				<version>1.0.2</version>
+			</dependency>
 
-        <!--
-            For child artifacts, the artifact name should be "[my-artifact-name-here]${artifact.ext}".  This allows
-            us to build different artifact names for different maven profiles.
-        -->
-        <artifact.ext>_${scala.version}_proto-${protobuf.version}</artifact.ext>
+			<dependency>
+				<groupId>com.google.protobuf</groupId>
+				<artifactId>protobuf-java</artifactId>
+				<version>${protobuf.version}</version>
+			</dependency>
 
-        <scala.optmize.flag />
-    </properties>
-
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>2.0</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.apache.maven.scm</groupId>
-                            <artifactId>maven-scm-provider-gitexe</artifactId>
-                            <version>1.3</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>2.0.2</version>
-                    <configuration>
-                        <source>${maven.compiler.source}</source>
-                        <target>${maven.compiler.target}</target>
-                        <compilerVersion>${maven.compiler.target}</compilerVersion>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.13</version>
-                    <executions>
-                        <execution>
-                            <id>surefire-test</id>
-                            <phase>test</phase>
-                            <goals>
-                                <goal>test</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                        <includes>
-                            <include>**/*Test.java</include>
-                            <include>**/*Test.scala</include>
-                        </includes>
-                        <forkMode>once</forkMode>
-                    </configuration>
-                </plugin>
-                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-                <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>net.alchim31.maven</groupId>
-                                        <artifactId>
-                                            scala-maven-plugin
-                                        </artifactId>
-                                        <versionRange>[3.1.5,)</versionRange>
-                                        <goals>
-                                            <goal>testCompile</goal>
-                                            <goal>add-source</goal>
-                                            <goal>compile</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore />
-                                    </action>
-                                </pluginExecution>
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.0</version>
-            </plugin>
-        </plugins>
-    </build>
-
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.7</version>
-            </plugin>
-        </plugins>
-    </reporting>
-
-    <dependencyManagement>
-        <dependencies>
-
-            <!-- Language deps -->
-            <dependency>
-                <groupId>org.scala-lang</groupId>
-                <artifactId>scala-library</artifactId>
-                <version>${scala.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.scala-lang</groupId>
-                <artifactId>scala-reflect</artifactId>
-                <version>${scala.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.scala-lang</groupId>
-                <artifactId>scala-compiler</artifactId>
-                <version>${scala.version}</version>
-            </dependency>
-
-            <!-- ScalaZ language extensions: Type classes, etc. -->
-            <dependency>
-                <groupId>org.scalaz</groupId>
-                <artifactId>scalaz-core_${scala.major.version}</artifactId>
-                <version>7.0.0</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.scala-lang</groupId>
-                        <artifactId>scala-library</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <!-- File System deps -->
-            <dependency>
-                <groupId>commons-vfs</groupId>
-                <artifactId>commons-vfs</artifactId>
-                <version>1.0</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-vfs2</artifactId>
-                <version>2.0</version>
-            </dependency>
-
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>2.0.1</version>
-            </dependency>
-
-            <!-- Logging deps -->
-            <dependency>
-                <groupId>org.clapper</groupId>
-                <artifactId>grizzled-slf4j_${scala.major.version}</artifactId>
-                <version>1.0.1</version>
-
-                <!-- Grizzled SLF4J 2.10 1.0.1 uses a Scala RC version.  Don't use that version. -->
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.scala-lang</groupId>
-                        <artifactId>scala-library</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.scala-lang</groupId>
-                        <artifactId>scala-actors</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <dependency>
-                <groupId>com.google.protobuf</groupId>
-                <artifactId>protobuf-java</artifactId>
-                <version>${protobuf.version}</version>
-            </dependency>
-
-            <!--
-                3 dependencies for adding JSON serialization to protocol buffers via protostuff.  For more info, see:
-                    http://code.google.com/p/protostuff/wiki/JsonSerialization#java_v2protoc_schema
-            -->
-            <dependency>
-                <groupId>com.dyuproject.protostuff</groupId>
-                <artifactId>protostuff-api</artifactId>
-                <version>${protostuff.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.dyuproject.protostuff</groupId>
-                <artifactId>protostuff-json</artifactId>
-                <version>${protostuff.version}</version>
-            </dependency>
-            <dependency>
-                <artifactId>jackson-core-asl</artifactId>
-                <groupId>org.codehaus.jackson</groupId>
-                <version>${jackson.version}</version>
-            </dependency>
+			<!-- 3 dependencies for adding JSON serialization to protocol buffers 
+				via protostuff. For more info, see: http://code.google.com/p/protostuff/wiki/JsonSerialization#java_v2protoc_schema -->
+			<dependency>
+				<groupId>com.dyuproject.protostuff</groupId>
+				<artifactId>protostuff-api</artifactId>
+				<version>${protostuff.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.dyuproject.protostuff</groupId>
+				<artifactId>protostuff-json</artifactId>
+				<version>${protostuff.version}</version>
+			</dependency>
+			<dependency>
+				<artifactId>jackson-core-asl</artifactId>
+				<groupId>org.codehaus.jackson</groupId>
+				<version>${jackson.version}</version>
+			</dependency>
 
 
-            <!-- Testing deps -->
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.5</version>
-                <scope>test</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+			<!-- Testing deps -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.11</version>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>
