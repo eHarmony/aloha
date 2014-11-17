@@ -16,7 +16,7 @@ import scala.collection.mutable.ListBuffer
  */
 trait BagOfWords {
   def skipGrams(s: String, n: Int, k: Int): Iterable[(String, Double)] = {
-    s.split(" ").sliding(n + k).foldLeft(Set.empty[(String, Double)])((acc, l) => acc ++ l.combinations(n).map(e => "=" + e.mkString("_") -> 1.0).toMap)
+    s.split(" ").sliding(n + k).foldLeft(Iterable.empty[(String, Double)])((acc, l) => acc ++ l.combinations(n).map(e => "=" + e.mkString("_") -> 1.0).toMap)
   }
   def nGrams(s: String, n: Int): Iterable[(String, Double)] = {
     skipGrams(s, n, 0)
