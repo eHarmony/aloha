@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.eharmony.matching</groupId>
-	<artifactId>aloha-new</artifactId>
+	<artifactId>aloha</artifactId>
 	<version>0.9.9-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>${project.artifactId}</name>
@@ -316,7 +316,7 @@
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
 		<encoding>UTF-8</encoding>
-		<scala.major.version>2.11</scala.major.version>
+		<scala.major.version>2.10</scala.major.version>
 		<scala.version>${scala.major.version}.2</scala.version>
 		<jackson.version>1.9.9</jackson.version>
 		<protostuff.version>1.0.7</protostuff.version>
