@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
 		<groupId>com.eharmony.matching</groupId>
-		<artifactId>aloha</artifactId>
+		<artifactId>aloha-new</artifactId>
 		<version>0.9.10-SNAPSHOT</version>
 	</parent>
 
@@ -59,7 +59,7 @@
 	<properties>
 		<org.springframework.version>4.1.1.RELEASE</org.springframework.version>
 		<generated.classes.test>${build.outputDirectory}/test-classes/generated</generated.classes.test>
-		<aloha.version>0.9.9-SNAPSHOT</aloha.version>
+		<aloha.version>0.9.10-SNAPSHOT</aloha.version>
 	</properties>
 
 	<dependencies>
