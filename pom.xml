@@ -3,7 +3,7 @@
 
 	<parent>
 		<groupId>com.eharmony.matching</groupId>
-		<artifactId>aloha</artifactId>
+		<artifactId>aloha-new</artifactId>
 		<version>0.9.10-SNAPSHOT</version>
 	</parent>
 
