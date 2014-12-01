@@ -1,14 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
 	<parent>
 		<groupId>com.eharmony.matching</groupId>
-		<artifactId>aloha</artifactId>
+		<artifactId>aloha-new</artifactId>
 		<version>0.9.10-SNAPSHOT</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>aloha-compiled-semantics${artifact.ext}</artifactId>
 	<name>${project.artifactId}</name>
+
+	<properties>
+		<aloha.version>0.9.10-SNAPSHOT</aloha.version>
+	</properties>
 
 	<licenses>
 		<license>
@@ -56,15 +61,31 @@
 		</developer>
 	</developers>
 
-	<properties>
-		<aloha.version>0.9.9-SNAPSHOT</aloha.version>
-	</properties>
-
 	<dependencies>
 		<!-- Dependencies in under aloha's dependency management. -->
 		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-compiler</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.scalaz</groupId>
+			<artifactId>scalaz-core_${scala.major.version}</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-vfs</groupId>
+			<artifactId>commons-vfs</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-vfs2</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
 		</dependency>
 
 		<!-- Version can be changed independently of grizzled-slf4j version -->
@@ -73,6 +94,11 @@
 			<artifactId>log4j</artifactId>
 			<version>1.2.16</version>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.clapper</groupId>
+			<artifactId>grizzled-slf4j_${scala.major.version}</artifactId>
 		</dependency>
 
 		<!-- Dictated by grizzled-slf4j version -->
