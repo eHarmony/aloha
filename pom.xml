@@ -316,7 +316,8 @@
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
 		<encoding>UTF-8</encoding>
-		<scala.version>2.11.2</scala.version>
+		<scala.major.version>2.11</scala.major.version>
+		<scala.version>${scala.major.version}.2</scala.version>
 		<jackson.version>1.9.9</jackson.version>
 		<protostuff.version>1.0.7</protostuff.version>
 		<protobuf.version>2.4.1</protobuf.version>
@@ -324,8 +325,6 @@
 		<!-- For child artifacts, the artifact name should be "[my-artifact-name-here]${artifact.ext}". 
 			This allows us to build different artifact names for different maven profiles. -->
 		<artifact.ext>_${scala.version}_proto-${protobuf.version}</artifact.ext>
-
-		<scala.optmize.flag />
 	</properties>
 
 	<build>
@@ -411,7 +410,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>2.0</version>
 			</plugin>
 		</plugins>
 	</build>
@@ -451,7 +449,7 @@
 			<!-- ScalaZ language extensions: Type classes, etc. -->
 			<dependency>
 				<groupId>org.scalaz</groupId>
-				<artifactId>scalaz-core_2.11</artifactId>
+				<artifactId>scalaz-core_${scala.major.version}</artifactId>
 				<version>7.1.0</version>
 			</dependency>
 
@@ -477,7 +475,7 @@
 			<!-- Logging deps -->
 			<dependency>
 				<groupId>org.clapper</groupId>
-				<artifactId>grizzled-slf4j_2.11</artifactId>
+				<artifactId>grizzled-slf4j_${scala.major.version}</artifactId>
 				<version>1.0.2</version>
 			</dependency>
 
