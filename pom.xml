@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.eharmony.matching</groupId>
 	<artifactId>aloha</artifactId>
-	<version>0.9.9-SNAPSHOT</version>
+	<version>0.9.10-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>${project.artifactId}</name>
 	<description>Scala-based machine learning library with generic models and lazily created features.</description>
