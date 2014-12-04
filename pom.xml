@@ -93,7 +93,7 @@
 
 					<groupId>net.alchim31.maven</groupId>
 					<artifactId>scala-maven-plugin</artifactId>
-					<version>3.1.5</version>
+					<version>3.2.0</version>
 					<configuration>
 						<recompileMode>incremental</recompileMode>
 						<useZincServer>true</useZincServer>
@@ -189,7 +189,7 @@
 										<artifactId>
 											scala-maven-plugin
 										</artifactId>
-										<versionRange>[3.1.5,)</versionRange>
+										<versionRange>[3.2.0,)</versionRange>
 										<goals>
 											<goal>testCompile</goal>
 											<goal>add-source</goal>
