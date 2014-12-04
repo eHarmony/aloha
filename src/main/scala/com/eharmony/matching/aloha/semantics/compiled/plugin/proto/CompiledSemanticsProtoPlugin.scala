@@ -126,7 +126,7 @@ case class CompiledSemanticsProtoPlugin[A <: GeneratedMessage](dereferenceAsOpti
   /**
    * The descriptor associated with type A.
    */
-  private val descriptor: ValidationNel[String, Descriptor] =
+  private lazy val descriptor: ValidationNel[String, Descriptor] =
     toValidationNel(RefInfoOps.execStaticNoArgFunc[A]("getDescriptor")).map(_.asInstanceOf[Descriptor])
 
   /**
