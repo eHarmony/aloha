@@ -124,11 +124,14 @@ case class CompiledSemanticsProtoPlugin[A <: GeneratedMessage](dereferenceAsOpti
   require(refInfoA != null, "Implicit RefInfo refInfoA cannot be null.")
 
   /**
-   * The descriptor associated with type A.
+   * The descriptor associated with type A.  This class needs to be serialized to work with Spark.  Because
+   * of this descriptor must be serializable, however it is not in protobuf (outside of our code).  This will
+   * say "memoize this variable when possible, but if it's not possible don't worry about it."
    */
-  private lazy val descriptor: ValidationNel[String, Descriptor] =
+  @transient private lazy val descriptor: ValidationNel[String, Descriptor] =
     toValidationNel(RefInfoOps.execStaticNoArgFunc[A]("getDescriptor")).map(_.asInstanceOf[Descriptor])
 
+  //def descriptor() = toValidationNel(RefInfoOps.execStaticNoArgFunc[A]("getDescriptor")).map(_.asInstanceOf[Descriptor])
   /**
    * The string representation of the function arguments.
    */
