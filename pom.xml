@@ -70,6 +70,7 @@
 		<jackson.version>1.9.9</jackson.version>
 		<protostuff.version>1.0.7</protostuff.version>
 		<protobuf.version>2.4.1</protobuf.version>
+		<scalamvn.version>3.1.0</scalamvn.version>
 
 		<!-- For child artifacts, the artifact name should be "[my-artifact-name-here]${artifact.ext}". 
 			This allows us to build different artifact names for different maven profiles. -->
@@ -93,7 +94,7 @@
 
 					<groupId>net.alchim31.maven</groupId>
 					<artifactId>scala-maven-plugin</artifactId>
-					<version>3.2.0</version>
+					<version>${scalamvn.version}</version>
 					<configuration>
 						<recompileMode>incremental</recompileMode>
 						<useZincServer>true</useZincServer>
@@ -189,7 +190,7 @@
 										<artifactId>
 											scala-maven-plugin
 										</artifactId>
-										<versionRange>[3.2.0,)</versionRange>
+										<versionRange>[${scalamvn.version},)</versionRange>
 										<goals>
 											<goal>testCompile</goal>
 											<goal>add-source</goal>
@@ -246,7 +247,7 @@
 			<plugin>
 				<groupId>net.alchim31.maven</groupId>
 				<artifactId>scala-maven-plugin</artifactId>
-				<version>3.2.0</version>
+				<version>${scalamvn.version}</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
