@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>com.eharmony.matching</groupId>
 		<artifactId>aloha-new</artifactId>
-		<version>0.9.10-SNAPSHOT</version>
+		<version>0.9.15</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -59,7 +59,7 @@
 	<properties>
 		<org.springframework.version>4.1.1.RELEASE</org.springframework.version>
 		<generated.classes.test>${build.outputDirectory}/test-classes/generated</generated.classes.test>
-		<aloha.version>0.9.10-SNAPSHOT</aloha.version>
+		<aloha.version>0.9.15</aloha.version>
 	</properties>
 
 	<dependencies>
@@ -122,7 +122,7 @@
 		<dependency>
 			<groupId>com.eharmony.matching</groupId>
 			<artifactId>aloha-proto</artifactId>
-			<version>${aloha.version}</version>
+			<version>0.9.13</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
