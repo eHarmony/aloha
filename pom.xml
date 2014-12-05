@@ -124,7 +124,6 @@
 								<displayCmd>true</displayCmd>
 								<verbose>true</verbose>
 								<addToClasspath>${project.build.directory}/generated-sources</addToClasspath>
-								<failOnMultipleScalaVersions>true</failOnMultipleScalaVersions>
 								<args>
 									<arg>-target:jvm-1.6</arg>
 									<arg>-feature</arg>
@@ -218,13 +217,10 @@
 							<artifactId>scala-maven-plugin</artifactId>
 							<version>3.1.5</version>
 							<configuration>
-								<recompileMode>incremental</recompileMode>
-								<useZincServer>true</useZincServer>
 								<scalaVersion>${scala.version}</scalaVersion>
 								<displayCmd>true</displayCmd>
 								<verbose>true</verbose>
 								<addToClasspath>${project.build.directory}/generated-sources</addToClasspath>
-								<failOnMultipleScalaVersions>true</failOnMultipleScalaVersions>
 								<args>
 									<arg>-target:jvm-1.6</arg>
 									<arg>-feature</arg>
