@@ -24,7 +24,7 @@ class ConstantModelParserTest {
               |  "modelId": {"id": 0, "name": ""},
               |  "value": 1
               |}
-            """.stripMargin.asJson
+            """.stripMargin.parseJson
 
         val f = ModelFactory(ConstantModel.parser)
         val m = f.getModel[String, Int](js).get
@@ -40,7 +40,7 @@ class ConstantModelParserTest {
               |  "modelType": "Constant",
               |  "modelId": {"id": 0, "name": ""}
               |}
-            """.stripMargin.asJson
+            """.stripMargin.parseJson
 
         val f = ModelFactory(ConstantModel.parser)
         val m = f.getModel[String, Int](js).get
@@ -54,7 +54,7 @@ class ConstantModelParserTest {
               |  "modelType": "Constant",
               |  "value": 1
               |}
-            """.stripMargin.asJson
+            """.stripMargin.parseJson
 
         val f = ModelFactory(ConstantModel.parser)
         val m = f.getModel[String, Int](js).get
@@ -66,7 +66,7 @@ class ConstantModelParserTest {
             """
               |{
               |}
-            """.stripMargin.asJson
+            """.stripMargin.parseJson
 
         val f = ModelFactory(ConstantModel.parser)
         val m = f.getModel[String, Int](js).get

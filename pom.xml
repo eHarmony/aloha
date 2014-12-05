@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.eharmony.matching</groupId>
 		<artifactId>aloha-new</artifactId>
-		<version>0.9.10-SNAPSHOT</version>
+		<version>0.9.15</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -62,8 +62,8 @@
 		<!-- Dependencies in under aloha's dependency management. -->
 		<dependency>
 			<groupId>com.eharmony.matching</groupId>
-			<artifactId>aloha-proto_2.4.1</artifactId>
-			<version>0.9.9-SNAPSHOT</version>
+			<artifactId>aloha-proto</artifactId>
+			<version>0.9.13</version>
 		</dependency>
 
 		<dependency>

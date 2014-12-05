@@ -19,7 +19,7 @@ class ErrorModelParserTest {
               |  "modelType": "Error",
               |  "modelId": {"id":0, "name": ""}
               |}
-            """.stripMargin.asJson
+            """.stripMargin.parseJson
 
         val p = ModelFactory(ErrorModel.parser)
         val m = p.getModel[String, Int](js).get
@@ -36,7 +36,7 @@ class ErrorModelParserTest {
               |  "modelId": {"id":0, "name": ""},
               |  "errors": []
               |}
-            """.stripMargin.asJson
+            """.stripMargin.parseJson
 
         val p = ModelFactory(ErrorModel.parser)
         val m = p.getModel[String, Int](js).get
@@ -53,7 +53,7 @@ class ErrorModelParserTest {
               |    "error 1"
               |  ]
               |}
-            """.stripMargin.asJson
+            """.stripMargin.parseJson
 
         val p = ModelFactory(ErrorModel.parser)
         val m = p.getModel[String, Int](js).get
@@ -73,7 +73,7 @@ class ErrorModelParserTest {
               |    "error 2"
               |  ]
               |}
-            """.stripMargin.asJson
+            """.stripMargin.parseJson
 
         val p = ModelFactory(ErrorModel.parser)
         val m = p.getModel[String, Int](js).get

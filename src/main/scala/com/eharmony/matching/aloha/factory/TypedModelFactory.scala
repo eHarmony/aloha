@@ -112,5 +112,5 @@ case class TypedModelFactory[A: RefInfo, B: RefInfo: JsonReader: ScoreConverter]
       * @return [[http://www.scala-lang.org/api/current/index.html#scala.util.Try scala.util.Try]] of a
       *         [[com.eharmony.matching.aloha.models.Model]][A, B].
       */
-    def fromString(s: String): Try[Model[A, B]] = factory.getModel[A, B](s.asJson, semantics)
+    def fromString(s: String): Try[Model[A, B]] = factory.getModel[A, B](s.parseJson, semantics)
 }

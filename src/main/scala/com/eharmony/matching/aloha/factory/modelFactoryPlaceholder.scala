@@ -53,7 +53,7 @@ private[factory] case class Vfs2ImportedModelPlaceholder(fileDescriptor: String)
             case f => Failure { new AlohaFactoryException(s"Couldn't resolve VFS2 file: $fileDescriptor", f) }
         }
         json <- Try {
-            StringReadable.fromVfs2(file).asJson
+            StringReadable.fromVfs2(file).parseJson
         } recoverWith {
             case f => Failure { new AlohaFactoryException(s"Couldn't get JSON for VFS2 file: $file", f) }
         }
@@ -68,7 +68,7 @@ private[factory] case class Vfs1ImportedModelPlaceholder(fileDescriptor: String)
             case f => Failure { new AlohaFactoryException(s"Couldn't resolve VFS1 file: $fileDescriptor", f) }
         }
         json <- Try {
-            StringReadable.fromVfs1(file).asJson
+            StringReadable.fromVfs1(file).parseJson
         } recoverWith {
             case f => Failure { new AlohaFactoryException(s"Couldn't get JSON for VFS1 file: $file", f) }
         }
@@ -83,7 +83,7 @@ private[factory] case class FileImportedModelPlaceholder(fileDescriptor: String)
             case f => Failure { new AlohaFactoryException(s"Couldn't resolve file: $fileDescriptor", f) }
         }
         json <- Try {
-            StringReadable.fromFile(file).asJson
+            StringReadable.fromFile(file).parseJson
         } recoverWith {
             case f => Failure { new AlohaFactoryException(s"Couldn't get JSON for file: $file", f) }
         }

@@ -200,7 +200,7 @@ class BasicDecisionTreeFullTest {
               |    { "id": 4, "value": 2 }
               |  ]
               |}
-            """.stripMargin.trim.asJson
+            """.stripMargin.trim.parseJson
         json
     }
 }

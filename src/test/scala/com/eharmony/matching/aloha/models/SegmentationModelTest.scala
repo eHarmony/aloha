@@ -87,7 +87,7 @@ class SegmentationModelTest {
                    |}
                  """.stripMargin.trim
 
-        val js = j.asJson
+        val js = j.parseJson
         js
     }
 }
