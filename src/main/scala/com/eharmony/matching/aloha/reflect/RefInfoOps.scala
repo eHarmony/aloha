@@ -2,7 +2,7 @@ package com.eharmony.matching.aloha.reflect
 
 import scala.language.higherKinds
 import scalaz.{ Validation, ValidationNel }
-import scalaz.syntax.validation.ToValidationOps
+import scalaz.syntax.validation.ToValidationV // scalaz.syntax.validation.ToValidationOps for latest scalaz
 
 import java.lang.reflect.Modifier
 import com.eharmony.matching.aloha.semantics.func.GenAggFunc

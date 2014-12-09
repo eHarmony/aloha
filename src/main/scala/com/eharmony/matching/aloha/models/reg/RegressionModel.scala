@@ -127,9 +127,7 @@ case class RegressionModel[-A, +B: ScoreConverter](
     val missing = MMap.empty[String, Seq[String]]
     val n = featureNames.size
     val f = new Array[Iterable[(String, Double)]](n)
-    var i = 0
-
-    while (i < n) {
+    for (i <- 0 until n) {
       val name = featureNames(i)
 
       // We use concat based on http://stackoverflow.com/questions/5076740/whats-the-fastest-way-to-concatenate-two-strings-in-java
@@ -145,7 +143,6 @@ case class RegressionModel[-A, +B: ScoreConverter](
       // hit is acceptable.
       if (f(i).isEmpty)
         missing += (featureFunctions(i).specification -> featureFunctions(i).accessorOutputMissing(a))
-      i += 1
     }
 
     val numMissingOk = numMissingThreshold map { missing.size < _ } getOrElse true
@@ -153,10 +150,8 @@ case class RegressionModel[-A, +B: ScoreConverter](
     // If we are going to err out, allow a linear scan (with repeated work so that we can get richer error
     // diagnostics.
     if (!numMissingOk) {
-      i = 0
-      while (i < n) {
+      for (i <- 0 until n) {
         missing += (featureFunctions(i).specification -> featureFunctions(i).accessorOutputMissing(a))
-        i += 1
       }
     }
 
