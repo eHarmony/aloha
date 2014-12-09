@@ -11,8 +11,10 @@ import javax.annotation.Resource;
 
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.VFS;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import scala.util.Try;
 
@@ -22,10 +24,8 @@ import com.eharmony.matching.aloha.score.Scores.Score;
 import com.eharmony.matching.aloha.score.conversions.StrictConversions;
 import com.eharmony.matching.aloha.semantics.compiled.plugin.proto.TestProtoBuffs.TestProto;
 
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(locations = { "classpath:spring/model.cfg.xml" })
-// @PropertySource("classpath:mvn_gen_test.properties")
-// @PropertySource("classpath:spring_test/spring_test.properties")
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath:spring/model.cfg.xml" })
 public class SpringModelFactoryTest {
 
 	static final double TOLERANCE = 1.0e-7;
@@ -61,7 +61,6 @@ public class SpringModelFactoryTest {
 	@Resource
 	private List<Model<TestProto, Double>> models = null;
 
-	@Ignore
 	@Test
 	public void testUsingModelFactoryPulledFromSpringCtxAndCallingFileObject() {
 		final Model<TestProto, Double> model = modelFactory
@@ -72,7 +71,6 @@ public class SpringModelFactoryTest {
 		assertEquals(EXPECTED_1, d, TOLERANCE);
 	}
 
-	@Ignore
 	@Test
 	public void testUsingModelPulledFromSpringCtx() {
 		final TestProto p = PROTOS.get(1);
