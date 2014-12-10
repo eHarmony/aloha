@@ -1,7 +1,7 @@
 package com.eharmony.matching.aloha.semantics.compiled.plugin.proto
 
 import scalaz.ValidationNel
-import scalaz.syntax.validation.ToValidationOps
+import scalaz.syntax.validation.ToValidationV // scalaz.syntax.validation.ToValidationOps for latest scalaz
 
 import com.google.protobuf.GeneratedMessage
 import com.google.protobuf.Descriptors.{ FieldDescriptor, Descriptor }
