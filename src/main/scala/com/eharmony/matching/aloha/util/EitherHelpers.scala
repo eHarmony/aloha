@@ -2,7 +2,7 @@ package com.eharmony.matching.aloha.util
 
 import scalaz.{ Validation, ValidationNel, NonEmptyList }
 
-trait EitherHelpers extends Serializable {
+trait EitherHelpers {
 
   /**
    * Either of Non-empty Seq (Like poor man's version of ValidationNel from scalaz)
