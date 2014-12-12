@@ -59,7 +59,7 @@
 	<properties>
 		<org.springframework.version>3.1.4.RELEASE</org.springframework.version>
 		<generated.classes.test>${build.outputDirectory}/test-classes/generated</generated.classes.test>
-		<aloha.version>[1.0,2.0)</aloha.version>
+		<aloha.version>1.0.1</aloha.version>
 	</properties>
 
 	<dependencies>
@@ -99,16 +99,9 @@
 
 
 		<!-- Version can be changed independently of grizzled-slf4j version -->
-
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-vfs2</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.16</version>
 			<scope>test</scope>
 		</dependency>
 
