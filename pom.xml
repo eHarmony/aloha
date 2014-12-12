@@ -8,7 +8,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>aloha-compiled-semantics-proto-plugin${artifact.ext}</artifactId>
 	<name>${project.artifactId}</name>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.3-SNAPSHOT</version>
 
 	<licenses>
 		<license>
@@ -59,7 +59,7 @@
 	<properties>
 		<org.springframework.version>3.1.4.RELEASE</org.springframework.version>
 		<generated.classes.test>${build.outputDirectory}/test-classes/generated</generated.classes.test>
-		<aloha.version>RELEASE</aloha.version>
+		<aloha.version>[1.0,2.0)</aloha.version>
 	</properties>
 
 	<dependencies>
