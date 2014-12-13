@@ -2,8 +2,8 @@
 
 	<parent>
 		<groupId>com.eharmony.matching</groupId>
-		<artifactId>aloha-new</artifactId>
-		<version>1.0.2</version>
+		<artifactId>aloha</artifactId>
+		<version>1.0.4</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -124,7 +124,7 @@
 
 		<dependency>
 			<groupId>com.twitter</groupId>
-			<artifactId>util-core_2.10</artifactId>
+			<artifactId>util-core_${scala.major.version}</artifactId>
 			<version>6.22.1</version>
 		</dependency>
 
