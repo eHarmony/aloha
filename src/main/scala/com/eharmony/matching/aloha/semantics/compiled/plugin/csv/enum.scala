@@ -16,6 +16,12 @@ import scala.language.dynamics
   * @param constantsAndNumbers the enum constant names and their number (returned by get number).
   */
 case class Enum(className: String, private val constantsAndNumbers: (String, Int)*) extends Dynamic {
+
+    {
+        val dups = constantsAndNumbers.groupBy(_._2).collect{ case (n, lst) if lst.size > 1 => (n, lst.map(_._1)) }
+        require(dups.isEmpty, s"no enum constants should have the same associated number: $dups")
+    }
+
     private[this] val _values: Array[EnumConstant] = constantsAndNumbers.zipWithIndex.map{ case((s, n), o) => EnumConstantImpl(s, o, n) }.toArray
 
     private[this] val valueMap: Map[String, EnumConstant] = _values.map(v => v.name -> v).toMap

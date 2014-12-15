@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+# Example:
+#
+#   ./bin/model-runner                                                            \
+#     --missing ""                                                                \
+#     --sep "\t"                                                                  \
+#     --ifs ","                                                                   \
+#     --imports scala.math._,com.eharmony.matching.aloha.feature.BasicFunctions._ \
+#     --input-file $(pwd)/src/test/resources/fizzbuzz_testinput.csv               \
+#     -i profile.user_id                                                          \
+#     $(pwd)/src/test/resources/fizzbuzz.json
+#
+
+# Notes: the classpath file will contain the conf directory which will have a 
+#        log4j config that will surpress logging.
+#
+
+cd ${0%/*}/..   # Make sure everything is relative to the projects root dir.
+PWD=$(pwd)
+
+# If maven build directory doesn't exist, create it.
+if [ ! -d "$PWD/target" ]; then
+  mvn clean compile 1>/dev/null
+fi
+
+# Create temp dir if necessary
+if [ ! -d "$PWD/tmp" ]; then
+  mkdir $PWD/tmp
+fi
+
+# Check if classpath file target exists
+CP_FILE=$(find tmp -name classpath.txt 2>/dev/null)
+
+# If classpath file doesn't exist, create it.
+if [ -z "$CP_FILE" ]; then
+  (mvn dependency:build-classpath | grep '^/.*' | tr -d '\n'; echo ":$PWD/tmp/:$PWD/conf:$PWD/target/classes") > tmp/classpath.txt
+fi
+
+# execute the application and pass arguments.
+java -cp $(cat $PWD/tmp/classpath.txt) com.eharmony.matching.aloha.semantics.compiled.plugin.csv.CsvModelRunner "$@"

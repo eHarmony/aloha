@@ -1,6 +1,5 @@
 package com.eharmony.matching.aloha.semantics.compiled.plugin.csv
 
-import java.net.URL
 
 import org.junit.runners.BlockJUnit4ClassRunner
 import org.junit.runner.RunWith
@@ -16,7 +15,7 @@ import com.eharmony.matching.aloha.models.reg.RegressionModel
 class ExampleTest {
     import ExampleTest._
 
-    @Test def test1() {
+    def getModel() = {
         import scala.concurrent.ExecutionContext.Implicits.global
         import spray.json.DefaultJsonProtocol.DoubleJsonFormat
         import com.eharmony.matching.aloha.score.conversions.ScoreConverter.Implicits.DoubleScoreConverter
@@ -25,8 +24,13 @@ class ExampleTest {
         val plugin = CompiledSemanticsCsvPlugin(columnTypes)
         val semantics = CompiledSemantics(compiler, plugin, Seq("com.eharmony.matching.aloha.feature.BasicFunctions._"))
         val factory = ModelFactory(RegressionModel.parser).toTypedFactory[CsvLine, Double](semantics)
-        val url = new URL("file:///Users/rdeak/git/matching-model-conversions/src/test/resources/models/matchmaker/3001.json")
+        val url = getClass.getClassLoader.getResource("3001.json")
         val model = factory.fromUrl(url).get
+        model
+    }
+
+    @Test def test1() {
+        val model = getModel()
         samples.zip(results).zipWithIndex.foreach { case ((x, yExp), i) => {
             val y = model(x)
             assertTrue(s"for test $i: score should exists. ", None != y)
@@ -60,7 +64,7 @@ object ExampleTest {
         "pairing.user_relaxed_state" -> "oe",
         "gender_relaxed.female_relaxed_state" -> "oe",
         "gender_relaxed.male_relaxed_state" -> "oe"
-    )
+    ).map{case (k, v) => (k, CsvTypes.withNameExtended(v))}
 
     val columnTypes = orderedColumnTypes.toMap
 
@@ -101,11 +105,11 @@ object ExampleTest {
         "gender_relaxed.male_relaxed_state" -> PairingRelaxTypeProto
     )
 
-    val csvLines = CsvLines(orderedColumnTypes.unzip._1.zipWithIndex.toMap, enums, "\t", ",", _.isEmpty, false, false)
+    val csvLines = CsvLines(orderedColumnTypes.unzip._1.zipWithIndex.toMap, enums, "\t", ",", _.isEmpty, errorOnOptMissingField = false, errorOnOptMissingEnum = false)
 
     private[this] val DistInd = 14
 
-    val samples = csvLines.apply(io.Source.fromFile("/Users/rdeak/git/aloha-conversions/final_dataset_3001.tsv").getLines().take(10).map(l => {
+    val samples = csvLines.apply(io.Source.fromURL(getClass.getClassLoader.getResource("3001_data.tsv")).getLines().take(10).map(l => {
         val a = l.split("\t", -1)
         try {
             if (a(DistInd).toInt < 0) a(DistInd) = "10"
