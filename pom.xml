@@ -72,6 +72,12 @@
             <artifactId>grizzled-slf4j_${scala.major.version}</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
+
         <!-- Version can be changed independently of grizzled-slf4j version -->
         <dependency>
             <groupId>log4j</groupId>

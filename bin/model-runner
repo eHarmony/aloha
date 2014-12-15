@@ -3,6 +3,7 @@
 # Example:
 #
 #   ./bin/model-runner                                                            \
+#     -B                                                                          \
 #     --missing ""                                                                \
 #     --sep "\t"                                                                  \
 #     --ifs ","                                                                   \

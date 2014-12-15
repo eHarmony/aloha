@@ -9,6 +9,7 @@ import java.io.{PrintStream, File}
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter.Implicits._
 import spray.json.DefaultJsonProtocol._
 import scala.concurrent.ExecutionContext.Implicits.global
+import org.apache.commons.lang.StringEscapeUtils
 
 private[csv] sealed trait EnumGen {
     def withClassName(canonicalClassName: String): Enum
@@ -62,7 +63,7 @@ object InputPosition extends Enumeration {
 
 object OutputType extends Enumeration {
     type OutputType = Value
-    implicit val BooleanType, ByteType, ShortType, IntType, StringType, FloatType, DoubleType = Value
+    implicit val BooleanType, ByteType, ShortType, IntType, LongType, StringType, FloatType, DoubleType = Value
 }
 
 import InputPosition._
@@ -74,6 +75,7 @@ case class CsvModelRunnerConfig(
     classCacheDir: Option[File] = None,
     model: Option[String] = None,
     inputFile: Option[String] = None,
+    outputFile: Option[String] = None,
     missing: String = "",
     outputType: OutputType.Value = OutputType.IntType,
     separator: String = "\t",
@@ -161,6 +163,7 @@ object CsvModelRunnerConfig {
         } text "Produce an error when an optional enum field is request for a column not associated with any enum."
 
         opt[String]("ifs") action { (ifs, c) =>
+
             c.copy(intraFieldSeparator = ifs)
         } text "intra-field separator string"
 
@@ -173,8 +176,12 @@ object CsvModelRunnerConfig {
         } text "string indicating missing value"
 
         opt[String]("output-type") action { (ot, c) =>
-            c.copy(outputType = OutputType.withName(ot))
-        } text "string score output type"
+            c.copy(outputType = OutputType.withName(s"${ot}Type"))
+        } text "Model score output type.  One of { Boolean, Byte, Double, Float, Int, Long, Short, String }"
+
+        opt[String]("output-file") action { (f, c) =>
+            c.copy(outputFile = Option(f))
+        } text "Apache VFS URL for output.  If not specified, data will go to STDOUT."
 
         opt[String]("sep") action { (s, c) =>
             c.copy(separator = s)
@@ -349,17 +356,21 @@ object CsvModelRunner {
             case OutputType.DoubleType => ModelFactory.defaultFactory.toTypedFactory[CsvLine, Double](semantics)
             case OutputType.FloatType => ModelFactory.defaultFactory.toTypedFactory[CsvLine, Float](semantics)
             case OutputType.IntType => ModelFactory.defaultFactory.toTypedFactory[CsvLine, Int](semantics)
+            case OutputType.LongType => ModelFactory.defaultFactory.toTypedFactory[CsvLine, Long](semantics)
             case OutputType.ShortType => ModelFactory.defaultFactory.toTypedFactory[CsvLine, Short](semantics)
             case OutputType.StringType => ModelFactory.defaultFactory.toTypedFactory[CsvLine, String](semantics)
         }
 
         val model = factory.fromVfs2(VFS.getManager.resolveFile(conf.model.get)).get
 
+        val out = conf.outputFile.map(f => VFS.getManager.resolveFile(f).getContent.getOutputStream).getOrElse(System.out)
+        val closeOut = conf.outputFile.isDefined
+
         val is = conf.inputFile.map(f => VFS.getManager.resolveFile(f).getContent.getInputStream).getOrElse(System.in)
         val in = io.Source.fromInputStream(is).getLines()
         val input = csvLines(in)  // Iterator so lazy.  Need to foreach at the end.
 
-        (conf, input, model)
+        (conf, input, model, out, closeOut)
     }
 
     /**
@@ -387,20 +398,35 @@ object CsvModelRunner {
         System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog")
 
         // Get the configuration.
-        val config = getConf(args)
+        // When reading in from the shell script, the shell script escapes the control characters, so we unescape.
+        // Don't do this in
+        val config = getConf(args).map{ c =>
+            c.copy(
+                separator = StringEscapeUtils.unescapeJava(c.separator),
+                intraFieldSeparator = StringEscapeUtils.unescapeJava(c.intraFieldSeparator)
+            )
+        }
 
         // Extract to named parameters and if the necessary information exists, run each line
         // through the model and write out the output to STDOUT.
-        getRunnableInfo(config) foreach { case (conf, lines, model) =>
-            // Create a writing function.  The first function parameter is the input, the second is the model output.
-            val writingFunc: (String, String) => String = conf.inputPosInOutput match {
-                case InputPosition.Neither => (i, o) => o
-                case InputPosition.Before => (i, o) => s"$i${conf.separator}$o"
-                case InputPosition.After => (i, o) => s"$o${conf.separator}$i"
-                case InputPosition.Both => throw new IllegalStateException("Can't output input before and after output.")
-            }
+        getRunnableInfo(config) foreach { case (conf, lines, model, out, closeOut) =>
+            try {
+                val pStream = new PrintStream(out)
 
-            lines.foreach{ line => println(writingFunc(line.line, model(line).map(_.toString).getOrElse(conf.missing))) }
+                // Create a writing function.  The first function parameter is the input, the second is the model output.
+                val writingFunc: (String, String) => String = conf.inputPosInOutput match {
+                    case InputPosition.Neither => (i, o) => o
+                    case InputPosition.Before => (i, o) => s"$i${conf.separator}$o"
+                    case InputPosition.After => (i, o) => s"$o${conf.separator}$i"
+                    case InputPosition.Both => throw new IllegalStateException("Can't output input before and after output.")
+                }
+
+                lines.foreach{ line => pStream.println(writingFunc(line.line, model(line).map(_.toString).getOrElse(conf.missing))) }
+            }
+            finally {
+                if (closeOut)
+                    org.apache.commons.io.IOUtils.closeQuietly(out)
+            }
         }
     }
 }
