@@ -2,13 +2,12 @@ package com.eharmony.matching.aloha.semantics.compiled.plugin.csv
 
 import com.eharmony.matching.aloha.semantics.compiled.{RequiredAccessorCode, OptionalAccessorCode, VariableAccessorCode, CompiledSemanticsPlugin}
 import com.eharmony.matching.aloha.reflect.RefInfo
-import com.eharmony.matching.aloha.semantics.compiled.plugin.csv.CsvTypes.CsvTypes
 
 /**
   * Create a plugin that can generate code for TSV lines.
   * @param colNamesToTypes a mapping from field name to field type.
   */
-case class CompiledSemanticsCsvPlugin(colNamesToTypes: Map[String, CsvTypes] = Map.empty) extends CompiledSemanticsPlugin[CsvLine] {
+case class CompiledSemanticsCsvPlugin(colNamesToTypes: Map[String, CsvTypes.CsvType] = Map.empty) extends CompiledSemanticsPlugin[CsvLine] {
 
     /**
      * @return a [[scala.reflect.runtime.universe.TypeTag]] for input type A.
