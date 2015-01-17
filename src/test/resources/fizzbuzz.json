@@ -1,0 +1,21 @@
+{
+  "modelType": "Regression",
+  "modelId": { "id": 0, "name": "abs_fizzbuzz" },
+  "notes": [
+    ""
+  ],
+  "features": {
+    "intercept": "intercept",
+    "uid_present": "ind(${profile.user_id} == ${profile.user_id})",
+    "fizz": "ind(abs(${profile.user_id}) % 3 == 0)",
+    "buzz": "ind(abs(${profile.user_id}) % 5 == 0)",
+    "non_fizz_buzz": "Seq(scala.math.abs(${profile.user_id})).collect{case x if x % 3 != 0 && x % 5 != 0 => (\"\", x.toDouble)}"
+  },
+  "weights": {
+    "intercept": -1,
+    "uid_present=true": 1,
+    "fizz=true": -2,
+    "buzz=true": -4,
+    "non_fizz_buzz": 1
+  }
+}
