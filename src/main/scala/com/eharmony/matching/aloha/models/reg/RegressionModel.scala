@@ -1,11 +1,8 @@
 package com.eharmony.matching.aloha.models.reg
 
 import java.{ lang => jl }
-import org.slf4j.LoggerFactory
-
 import scala.language.{ higherKinds, implicitConversions }
 import scala.collection.mutable.{ Map => MMap }
-
 import com.eharmony.matching.aloha.models.BaseModel
 import com.eharmony.matching.aloha.id.ModelIdentity
 import com.eharmony.matching.aloha.semantics.func.GenAggFunc
@@ -17,7 +14,7 @@ import com.eharmony.matching.aloha.semantics.Semantics
 import com.eharmony.matching.aloha.factory.pimpz.JsValuePimpz
 import com.eharmony.matching.aloha.util.EitherHelpers
 import com.eharmony.matching.aloha.reflect.{ RefInfoOps, RefInfo }
-import grizzled.slf4j.Logging
+import com.eharmony.matching.aloha.util.Logging
 
 /**
  * A regression model capable of doing not only linear regression but polynomial regression in general.
@@ -75,15 +72,15 @@ case class RegressionModel[-A, +B: ScoreConverter](
   invLinkFunction: Double => B,
   spline: Option[Spline],
   numMissingThreshold: Option[Int])
-  extends BaseModel[A, B] {
+  extends BaseModel[A, B] with Logging {
 
-  /*debug({
+  debug({
     val rawFeatureDescriptors = (for {
       ff <- featureFunctions
       a <- ff.accessors
     } yield a.descriptor).sorted
     "raw feature names: " + rawFeatureDescriptors.mkString(",")
-  })*/
+  })
 
   /**
    * Get the score.
@@ -94,18 +91,18 @@ case class RegressionModel[-A, +B: ScoreConverter](
   private[aloha] def getScore(a: A)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = {
     val (x, missing, missingOk) = constructFeatures(a)
 
-    //debug("x\n\t" + featureNames.zip(x).map { case (name, f) => s"$name -> $f" }.mkString("\n\t"))
+    debug("x\n\t" + featureNames.zip(x).map { case (name, f) => s"$name -> $f" }.mkString("\n\t"))
 
     // Before determining the inner product, we know whether we actually should compute it or whether a
     // data error has occurred the will prevent the computation.
     val out =
       if (missingOk) {
         val eta = beta at x
-        //debug(s"eta: $eta")
+        debug(s"eta: $eta")
         val splinedEta = spline.map(_(eta)) getOrElse eta
-        //debug(s"splined eta: $splinedEta")
+        debug(s"splined eta: $splinedEta")
         val mu = invLinkFunction(splinedEta) // Currently, really just a casting operation.
-        //debug(s"mu: $mu")
+        debug(s"mu: $mu")
 
         success(mu, missing.values.flatten)
       } else {
