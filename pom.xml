@@ -301,26 +301,6 @@
 				<version>2.0.1</version>
 			</dependency>
 
-			<!-- Logging deps -->
-			<dependency>
-				<groupId>org.clapper</groupId>
-				<artifactId>grizzled-slf4j_${scala.major.version}</artifactId>
-				<version>1.0.1</version>
-
-				<!-- Grizzled SLF4J 2.10 1.0.1 uses a Scala RC version. Don't use that 
-					version. -->
-				<exclusions>
-					<exclusion>
-						<groupId>org.scala-lang</groupId>
-						<artifactId>scala-library</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.scala-lang</groupId>
-						<artifactId>scala-actors</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-
 			<dependency>
 				<groupId>com.google.protobuf</groupId>
 				<artifactId>protobuf-java</artifactId>
@@ -345,6 +325,12 @@
 				<version>${jackson.version}</version>
 			</dependency>
 
+			<!-- Logging -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>1.7.10</version>
+			</dependency>
 
 			<!-- Testing deps -->
 			<dependency>
