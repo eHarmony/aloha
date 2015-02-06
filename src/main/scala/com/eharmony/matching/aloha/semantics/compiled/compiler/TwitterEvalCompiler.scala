@@ -3,8 +3,8 @@ package com.eharmony.matching.aloha.semantics.compiled.compiler
 import java.io.File
 import com.eharmony.matching.aloha.io.ContainerReadableByString
 import scala.util.Try
-import grizzled.slf4j.Logging
 import scala.util.hashing.MurmurHash3
+import com.eharmony.matching.aloha.util.Logging
 
 /**
  * Compiles code using Twitter's Eval class from util-eval, wrapping the attempt in a Try.

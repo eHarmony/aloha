@@ -88,17 +88,11 @@
 			<artifactId>commons-io</artifactId>
 		</dependency>
 
-		<!-- Version can be changed independently of grizzled-slf4j version -->
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.16</version>
 			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.clapper</groupId>
-			<artifactId>grizzled-slf4j_${scala.major.version}</artifactId>
 		</dependency>
 
         <dependency>
@@ -112,14 +106,6 @@
             <artifactId>scopt_${scala.major.version}</artifactId>
             <version>3.2.0</version>
         </dependency>
-
-		<!-- Dictated by grizzled-slf4j version -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.1</version>
-			<scope>test</scope>
-		</dependency>
 
 		<dependency>
 			<groupId>junit</groupId>
