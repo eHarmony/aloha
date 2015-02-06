@@ -98,7 +98,6 @@
 		</dependency>
 
 
-		<!-- Version can be changed independently of grizzled-slf4j version -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-vfs2</artifactId>
