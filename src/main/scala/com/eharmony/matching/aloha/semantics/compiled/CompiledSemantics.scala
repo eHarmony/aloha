@@ -205,7 +205,7 @@ object CompiledSemantics {
   /**
    * This won't be necessary once we can return a future rather than waiting on the future before returning.
    */
-  private[compiled] val maxGenWaitInSec = 120
+  private[compiled] val maxGenWaitInSec = 300
   private[compiled] val generatedAccessorClassName = GeneratedAccessor.getClass.getCanonicalName.replaceAll("""\$$""", "")
   private[compiled] val genFuncClassName = GenFunc.getClass.getCanonicalName.replaceAll("""\$$""", "")
 
