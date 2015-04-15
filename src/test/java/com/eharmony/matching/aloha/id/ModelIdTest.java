@@ -24,7 +24,7 @@ public class ModelIdTest {
         final String json = "{\"id\": " + MODEL_NUMERIC_ID + ", \"name\": \"" + MODEL_NAME + "\"}";
         final ModelId modelId =
                 new PimpedString(json)
-                    .asJson()
+                    .parseJson()
                     .convertTo(ModelIdentityJson.modelIdJsonFormat());
 
         assertEquals(ModelId.class.getCanonicalName(), modelId.getClass().getCanonicalName());

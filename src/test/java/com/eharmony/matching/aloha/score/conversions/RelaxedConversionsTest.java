@@ -1,8 +1,9 @@
 package com.eharmony.matching.aloha.score.conversions;
 
 import org.junit.Test;
-import org.junit.internal.runners.JUnit4ClassRunner;
 import org.junit.runner.RunWith;
+import org.junit.runners.BlockJUnit4ClassRunner;
+
 import static org.junit.Assert.assertEquals;
 import static com.eharmony.matching.aloha.score.conversions.StrictConversionsTest.*;
 import static org.junit.Assert.assertNull;
@@ -13,7 +14,7 @@ import static org.junit.Assert.assertNull;
  * definition of score but rather create separate type classes for short, byte.  These can be up-cast because they are
  * all stored as 32-bit integers.  The rest of the types are properly differentiated.
  */
-@RunWith(JUnit4ClassRunner.class)
+@RunWith(BlockJUnit4ClassRunner.class)
 public class RelaxedConversionsTest {
     @Test public void booleanBoolean() { assertEquals(Boolean.valueOf(BOOLEAN_SCORE), RelaxedConversions.asJavaBoolean(getBooleanScore())); }
     @Test public void booleanByte() { assertNull(RelaxedConversions.asJavaByte(getBooleanScore())); }

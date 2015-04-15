@@ -11,8 +11,8 @@ import com.eharmony.matching.aloha.score.Scores.Score.FloatScore;
 import com.eharmony.matching.aloha.score.Scores.Score.DoubleScore;
 import com.eharmony.matching.aloha.score.Scores.Score.StringScore;
 import org.junit.Test;
-import org.junit.internal.runners.JUnit4ClassRunner;
 import org.junit.runner.RunWith;
+import org.junit.runners.BlockJUnit4ClassRunner;
 
 import static org.junit.Assert.assertEquals;
 import static com.eharmony.matching.aloha.score.Scores.Score.BaseScore.ScoreType.*;
@@ -23,7 +23,7 @@ import static com.eharmony.matching.aloha.score.Scores.Score.BaseScore.ScoreType
  * definition of score but rather create separate type classes for short, byte.  These can be up-cast because they are
  * all stored as 32-bit integers.  The rest of the types are properly differentiated.
  */
-@RunWith(JUnit4ClassRunner.class)
+@RunWith(BlockJUnit4ClassRunner.class)
 public class StrictConversionsTest {
     static final byte BYTE_SCORE = (byte) 2;
     static final short SHORT_SCORE = (short) 256;
