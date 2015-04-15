@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+# =================================================================================================
+#  model-runner                            R. M. Deak                                   2014-09-27
+#
+#  Provides a command line interface to running models using CSV data that can emulate 
+#  hierarchical data.
+# =================================================================================================
+
 # Example:
 #
 #   ./bin/model-runner                                                            \
