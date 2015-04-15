@@ -29,7 +29,7 @@ PWD=$(pwd)
 
 # If maven build directory doesn't exist, create it.
 if [ ! -d "$PWD/target" ]; then
-  mvn clean compile 1>/dev/null
+  mvn clean compile 1>$PWD/tmp/log.txt
 fi
 
 # Create temp dir if necessary
