@@ -60,6 +60,14 @@
 		<org.springframework.version>3.1.4.RELEASE</org.springframework.version>
 		<generated.classes.test>${build.outputDirectory}/test-classes/generated</generated.classes.test>
 		<aloha.version>1.0.5</aloha.version>
+		
+		<!-- 
+			Make the path to the proto compiler a property so that it can be overridden on the 
+			command line like this: 
+			
+				mvn -Dprotoc=/opt/local/bin/protoc clean test
+		-->
+		<protoc>/usr/local/bin/protoc</protoc>
 	</properties>
 
 	<dependencies>
@@ -225,7 +233,7 @@
 								<!-- This required protoc to be installed INSTRUCTIONS: wget http://protobuf.googlecode.com/files/protobuf-2.4.1.tar.gz 
 									tar -xzf protobuf-2.4.1.tar.gz cd protobuf-2.4.1 sudo ./configure sudo make 
 									sudo make install If on a mac, sudo port install protobuf-java -->
-								<exec executable="/usr/local/bin/protoc" failonerror="true">
+								<exec executable="${protoc}" failonerror="true">
 									<arg value="--java_out=${basedir}/target/generated-test-sources" />
 									<arg value="-I${project.basedir}/src/test/proto" />
 									<arg line="${proto.files}" />
