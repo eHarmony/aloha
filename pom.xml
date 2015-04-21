@@ -63,7 +63,7 @@
 		<protostuff.version>1.0.7</protostuff.version>
 		<protobuf.version>2.4.1</protobuf.version>
 		<scala.optmize.flag>-optimise</scala.optmize.flag>
-
+ 
 		<!-- For child artifacts, the artifact name should be "[my-artifact-name-here]${artifact.ext}". 
 			This allows us to build different artifact names for different maven profiles. -->
 		<artifact.ext>_${scala.version}_proto-${protobuf.version}</artifact.ext>
