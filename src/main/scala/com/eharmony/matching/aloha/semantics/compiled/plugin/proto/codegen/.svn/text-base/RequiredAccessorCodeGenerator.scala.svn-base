@@ -1,0 +1,7 @@
+package com.eharmony.matching.model.v3.semantics.impl.proto.codegen
+
+import com.eharmony.matching.model.v3.semantics.impl.proto.accessor.FieldAccessor
+
+trait RequiredAccessorCodeGenerator[A <: FieldAccessor] {
+    def generateGet(a: A): String
+}

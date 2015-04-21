@@ -1,0 +1,36 @@
+{
+	"modelType": "Regression",
+	"modelId" : { "id" : 2, "name" : "SPRING_TEST_REVERSED_2" },
+	"features": {
+		"intercept":               "intercept",
+		"num_c3s":                 "ind(${opt_c1.opt_c2.rep_c3}.size)",
+		"required_int_value":      "ind(${req_int_1})",
+		"distinct_chars":          "ind(${req_str_1}.groupBy(identity).keys.size)",
+		"optional_defaulted":      "ind(${opt_c1.opt_c2.req_int_3:-1})"
+	},
+	"spline": {
+		"type": "regular",
+		"min": 0,
+		"max": 1,
+		"knots": [0, 0.5, 1]
+	},
+	"weights": {
+		"intercept":            0.00001,
+		"num_c3s=0":            0.10000,
+		"num_c3s=1":            0.20000,
+		"num_c3s=2":            0.30000,
+		"num_c3s=3":            0.40000,
+		"required_int_value=0": 0.01000,
+		"required_int_value=1": 0.02000,
+		"required_int_value=2": 0.03000,
+		"required_int_value=3": 0.04000,
+		"distinct_chars=0":     0.00100,
+		"distinct_chars=2":     0.00200,
+		"distinct_chars=3":     0.00300,
+		"distinct_chars=3":     0.00400,
+		"optional_defaulted=0": 0.00010,
+		"optional_defaulted=1": 0.00020,
+		"optional_defaulted=2": 0.00030,
+		"optional_defaulted=3": 0.00040
+	}
+}
