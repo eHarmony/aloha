@@ -1,5 +1,6 @@
 package com.eharmony.matching.featureSpecExtractor.util
 
+import scala.language.implicitConversions
 import com.google.common.{base => guava}
 
 object FunctionConversions {

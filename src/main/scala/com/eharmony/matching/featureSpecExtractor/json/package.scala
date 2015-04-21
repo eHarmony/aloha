@@ -1,8 +1,7 @@
 package com.eharmony.matching.featureSpecExtractor
 
-import spray.json.pimpString
-import spray.json.DefaultJsonProtocol.jsonFormat9
-import scala.collection.{immutable => im}
+import spray.json._, DefaultJsonProtocol._
+import scala.collection.{immutable => sci}
 import com.eharmony.matching.aloha.models.reg.RegressionModelJson
 import com.eharmony.matching.aloha.factory.ScalaJsonFormats.listMapFormat
 
@@ -41,22 +40,22 @@ package object json extends RegressionModelJson {
      * @param normalizeFeatures
      */
     case class JsonSpec(
-        imports: Seq[String] = Seq.empty,
-        features: im.ListMap[String, Spec] = im.ListMap.empty,
-        namespaces: im.ListMap[String, Seq[String]] = im.ListMap.empty,
-        label: Option[String] = None,
-        importance: Option[String] = None,
-        cbAction: Option[String] = None,
-        cbCost:  Option[String] = None,
-        cbProbability:  Option[String] = None,
-        normalizeFeatures: Option[Boolean] = None
+            imports: Seq[String] = Seq.empty,
+            features: sci.ListMap[String, Spec] = sci.ListMap.empty,
+            namespaces: sci.ListMap[String, Seq[String]] = sci.ListMap.empty,
+            label: Option[String] = None,
+            importance: Option[String] = None,
+            cbAction: Option[String] = None,
+            cbCost:  Option[String] = None,
+            cbProbability:  Option[String] = None,
+            normalizeFeatures: Option[Boolean] = None
     ) {
+
         /**
          * indexed sequence of FeatureSpec determined from features.
          */
-        lazy val namedFeatures: im.IndexedSeq[FeatureSpec] =
-            features.view.map{ case(k, v) => FeatureSpec(k, v.spec, v.defVal.getOrElse(Nil)) }.toIndexedSeq
-
+        lazy val namedFeatures: sci.IndexedSeq[FeatureSpec] =
+            features.view.map{ case(k, v) => FeatureSpec(k, v.spec, v.defVal) }.toIndexedSeq
     }
 
     implicit val jsonSpecFormat = jsonFormat9(JsonSpec)

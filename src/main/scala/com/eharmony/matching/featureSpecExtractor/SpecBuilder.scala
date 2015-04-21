@@ -316,26 +316,6 @@ object SpecBuilder {
         createSpecs(specs.toList, Nil).map(FeatureExtractorFunction.apply[A])
     }
 
-/*
-
-    // Refactor this to take in a Semantics<T> and then build up from there
-    protected final static <T> MissingFeaturesFunction<T> toFunction(
-            Collection<String> imports, List<JavaFeatureSpec> specs,
-            CompiledSemanticsPlugin<T> plugin,
-            File preCompiledDirectory) {
-        final FeatureExpander<T> fe = new FeatureExpander<T>(plugin, specs, imports, preCompiledDirectory, false);
-
-        final IndexedSeq<Tuple2<String, GenAggFunc<T, scala.collection.Iterable<Tuple2<String, Object>>>>> features = fe.features();
-
-        // this is the function that actually returns the features that will be converted to vw input
-        final Function<T, List<Iterable<Map.Entry<String, Double>>>> theRealFunctionToApply = fe.javaConverter();
-
-        // but before returning that function we wrap it so we can detect which features in the passed in proto instance
-        // are missing or erroneous in some way.
-        return new MissingFeaturesFunction(features, theRealFunctionToApply);
-    }
-
-*/
 
     @throws[IOException]
     def buildFromJson[A](
@@ -345,7 +325,9 @@ object SpecBuilder {
             specType: SpecType,
             numBits: Option[Int]
     ): Spec[A] = {
-
+        ???
+    }
+}
 
 
                 /**
@@ -414,5 +396,3 @@ public static final <T> Spec<T> buildFromJson(
 
 
   */
-
-}

@@ -9,7 +9,7 @@ import com.eharmony.matching.aloha.semantics.func.GenAggFunc
  * @tparam A
  */
 case class FeatureExtractorFunction[-A](features: sci.IndexedSeq[(String, GenAggFunc[A, Iterable[(String, Double)]])])
-    extends (A => (MissingAndErroneousFeatureInfo, sci.IndexedSeq[Iterable[(String, Double)]])) {
+    extends (A => (MissingAndErroneousFeatureInfo, IndexedSeq[Iterable[(String, Double)]])) {
 
     /**
      * @param a an input
