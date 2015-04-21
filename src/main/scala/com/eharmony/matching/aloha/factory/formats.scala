@@ -60,10 +60,19 @@ trait ScalaJsonFormats {
                 }
             }
         }
+
+        @throws[DeserializationException](cause = "When duplicate keys are detected in the map to be created.")
         def read(value: JsValue) = value match {
-            case x: JsObject => x.fields.map { field =>
-                (JsString(field._1).convertTo[K], field._2.convertTo[V])
-            } (collection.breakOut)
+            case x: JsObject =>
+                val duplicateKeys =
+                    x.fields.view.unzip._1.groupBy(identity).collect{ case (k, v) if v.size > 1 => k }.toSeq.sorted
+
+                if (duplicateKeys.nonEmpty)
+                    deserializationError(s"ListMap to be deserialized has duplicate keys: ${duplicateKeys.mkString(", ")}.")
+
+                x.fields.map {
+                    field => (JsString(field._1).convertTo[K], field._2.convertTo[V])
+                } (collection.breakOut)
             case x => deserializationError("Expected Map as JsObject, but got " + x)
         }
     }

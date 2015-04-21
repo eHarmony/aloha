@@ -44,9 +44,7 @@ sealed trait GenAggFunc[-A, +B] extends (A => B) { self: Product =>
       * @param a the input
       * @return a map from each accessor's descriptor to the value produced by the accessor.
       */
-//    def accessorOutput(a: A): Map[String, Any] = accessors.map(acc => (acc.descriptor, acc(a))).toMap
-
-    def accessorOutput(a: A): Map[String, Try[Any]] = accessors.map(acc => (acc.descriptor, Try{acc(a)})).toMap
+    def accessorOutput(a: A): Map[String, Try[Any]] = accessors.map(acc => (acc.descriptor, Try{acc(a)}))(collection.breakOut)
 
     /** Like Function1.andThen except it returns a GenAggFunc.
       * @param g a function to execute after this
@@ -63,6 +61,11 @@ sealed trait GenAggFunc[-A, +B] extends (A => B) { self: Product =>
     def accessorOutputMissing(a: A): List[String] = accessorsWithMissing(accessorOutput(a))
 
     def accessorOutputWithError(a: A): List[String] = accessorsInErr(accessorOutput(a))
+
+    def accessorOutputProblems(a: A): GenAggFuncAccessorProblems = {
+        val ao = accessorOutput(a)
+        GenAggFuncAccessorProblems(accessorsWithMissing(ao), accessorsInErr(ao))
+    }
 
     /** Produce a list of accessor descriptors where the accessor results in missing data.  This is determined applying
       * accessorOutput and collecting keys whose values are None or Left(_).
@@ -89,6 +92,8 @@ sealed trait GenAggFunc[-A, +B] extends (A => B) { self: Product =>
 
     override def toString() = accessors.map(a => "${" + a.descriptor + "}").mkString("GenAggFunc((", ", ", ") => ") + specification + ")"
 }
+
+case class GenAggFuncAccessorProblems(missing: Seq[String], errors: Seq[String])
 
 /** Provides a series of functions that create instances of GenFuncN.  These are preferable to calling the class
   * constructors directly because we can completely avoid specifying typing information do to the multiple argument
