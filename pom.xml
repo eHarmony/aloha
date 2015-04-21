@@ -2,13 +2,13 @@
 	<parent>
 		<groupId>com.eharmony.matching</groupId>
 		<artifactId>aloha</artifactId>
-		<version>1.0.5</version>
+		<version>1.0.7-SNAPSHOT</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>aloha-compiled-semantics-proto-plugin${artifact.ext}</artifactId>
 	<name>${project.artifactId}</name>
-	<version>1.0.6-SNAPSHOT</version>
+	<version>1.0.7-SNAPSHOT</version>
 
 	<licenses>
 		<license>
@@ -59,7 +59,7 @@
 	<properties>
 		<org.springframework.version>3.1.4.RELEASE</org.springframework.version>
 		<generated.classes.test>${build.outputDirectory}/test-classes/generated</generated.classes.test>
-		<aloha.version>1.0.5</aloha.version>
+		<aloha.version>${project.parent.version}</aloha.version>
 		
 		<!-- 
 			Make the path to the proto compiler a property so that it can be overridden on the 
