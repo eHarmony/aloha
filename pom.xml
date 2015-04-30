@@ -286,7 +286,7 @@ noteworthy phases:
 					<scalaVersion>${scala.version}</scalaVersion>
 					<displayCmd>true</displayCmd>
 					<verbose>true</verbose>
-					<addToClasspath>${project.build.directory}/generated-sources</addToClasspath>
+					<!--<addToClasspath>${project.build.directory}/generated-sources</addToClasspath>-->
 					<failOnMultipleScalaVersions>true</failOnMultipleScalaVersions>
 					<args>
 						<arg>-target:jvm-1.6</arg>

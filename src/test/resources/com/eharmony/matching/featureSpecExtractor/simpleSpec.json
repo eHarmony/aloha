@@ -1,0 +1,16 @@
+{
+  "imports":[
+    "com.eharmony.matching.aloha.feature.BasicFunctions._",
+    "com.eharmony.matching.aloha.feature.OptionMath.Syntax._",
+    "scala.math._"
+  ],
+  "features":[
+    {"name":"name", "spec":"bag(${profile.first_name})", "defVal":[["=UNK",1.0]]},
+    {"name":"marriages", "spec":"ind(${profile.number_of_marriages})", "defVal":[["=UNK",1.0]]}
+  ],
+
+  "namespaces":[
+    {"name":"A", "features":["name","marriages"]}
+  ],
+  "label":"${profile.user_id}"
+}
