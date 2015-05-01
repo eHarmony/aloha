@@ -2,16 +2,20 @@ package com.eharmony.matching.featureSpecExtractor.vw.unlabeled
 
 import java.text.DecimalFormat
 
+import com.eharmony.matching.featureSpecExtractor.density.Sparse
 import com.eharmony.matching.featureSpecExtractor.{FeatureExtractorFunction, MissingAndErroneousFeatureInfo, Spec}
 
 import scala.collection.{immutable => sci}
 
 
 class VwSpec[A](
-        featuresFunction: FeatureExtractorFunction[A],
-        defaultNamespace: sci.IndexedSeq[Int],
-        namespaces: sci.IndexedSeq[(String, sci.IndexedSeq[Int])],
-        normalizer: Option[CharSequence => String]) extends Spec[A] with java.io.Serializable {
+        val featuresFunction: FeatureExtractorFunction[A, Sparse],
+        val defaultNamespace: sci.IndexedSeq[Int],
+        val namespaces: sci.IndexedSeq[(String, sci.IndexedSeq[Int])],
+        val normalizer: Option[CharSequence => String])
+extends Spec[A]
+with java.io.Serializable {
+
 
     def toInput(data: A) = toInput(data, includeZeroValues = false)
 
@@ -34,7 +38,7 @@ class VwSpec[A](
     private[this] def addValuesToVwLine(
             sb: StringBuilder,
             indices: Seq[Int],
-            features: IndexedSeq[Iterable[(String, Double)]],
+            features: IndexedSeq[Sparse],
             includeZeroValues: Boolean) {
 
         indices.foreach { i =>

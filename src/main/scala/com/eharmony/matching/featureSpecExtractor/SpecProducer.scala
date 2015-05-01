@@ -1,34 +1,30 @@
 package com.eharmony.matching.featureSpecExtractor
 
-import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
-import com.eharmony.matching.featureSpecExtractor.json.JsonSpec
-
 import scala.util.Try
+import spray.json.JsValue
+import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
 
 /**
  * SpecProducer is used to create different kinds of [[Spec]] instances.
+ * @tparam A type of input passed to the spec.
+ * @tparam B implementation of the Spec[A] that is returned by the getSpec function.
  */
-trait SpecProducer {
-
-    /**
-     * Should be getClass.getSimpleName for uniformity.
-     * @return
-     */
+trait SpecProducer[A, B <: Spec[A]] {
+    type JsonType
     def specProducerName: String
 
     /**
-     * Whether this spec producer can be applied to the given JsonSpec.
-     * @param jsonSpec a JSON specification.
+     * Attempt to parse the JSON AST to an intermediate representation that is used
+     * @param json
      * @return
      */
-    def appliesTo(jsonSpec: JsonSpec): Boolean
+    def parse(json: JsValue): Try[JsonType]
 
     /**
      * Attempt to produce a Spec.
      * @param semantics semantics used to make sense of the features in the JsonSpec
      * @param jsonSpec a JSON specification to transform into a Spec.
-     * @tparam A type of input passed to the spec.
      * @return
      */
-    def getSpec[A](semantics: CompiledSemantics[A], jsonSpec: JsonSpec): Try[Spec[A]]
+    def getSpec(semantics: CompiledSemantics[A], jsonSpec: JsonType): Try[B]
 }
