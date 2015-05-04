@@ -5,7 +5,7 @@ import com.eharmony.matching.featureSpecExtractor.json.{CovariateJson, Namespace
 
 import scala.collection.{immutable => sci, SeqView}
 
-trait UnlabeledVwJsonLike
+trait VwUnlabeledJsonLike
 extends CovariateJson[Sparse] {
 
     val imports: Seq[String]
@@ -57,12 +57,4 @@ extends CovariateJson[Sparse] {
 
     def shouldNormalizeFeatures: Boolean = normalizeFeatures.getOrElse(false)
 }
-
-case class UnlabeledVwJson(
-        imports: Seq[String],
-        features: sci.IndexedSeq[SparseSpec],
-        namespaces: Option[Seq[Namespace]] = None,
-        normalizeFeatures: Option[Boolean] = Some(false))
-extends UnlabeledVwJsonLike
-
 

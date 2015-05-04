@@ -9,7 +9,7 @@ import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
  * @tparam A type of input passed to the spec.
  * @tparam B implementation of the Spec[A] that is returned by the getSpec function.
  */
-trait SpecProducer[A, B <: Spec[A]] {
+trait SpecProducer[A, +B <: Spec[A]] {
     type JsonType
     def specProducerName: String
 

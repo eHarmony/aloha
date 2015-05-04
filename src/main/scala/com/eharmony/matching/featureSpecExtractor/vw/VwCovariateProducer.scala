@@ -2,7 +2,7 @@ package com.eharmony.matching.featureSpecExtractor.vw
 
 import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.matching.featureSpecExtractor.SparseCovariateProducer
-import com.eharmony.matching.featureSpecExtractor.vw.unlabeled.json.UnlabeledVwJsonLike
+import com.eharmony.matching.featureSpecExtractor.vw.unlabeled.json.VwUnlabeledJsonLike
 
 trait VwCovariateProducer[A] { self: SparseCovariateProducer =>
 
@@ -11,7 +11,7 @@ trait VwCovariateProducer[A] { self: SparseCovariateProducer =>
      * @param json
      * @return (covariates, default, namespaces, optional normalizer)
      */
-    protected[this] def getVwData(semantics: CompiledSemantics[A], json: UnlabeledVwJsonLike) = {
+    protected[this] def getVwData(semantics: CompiledSemantics[A], json: VwUnlabeledJsonLike) = {
 
         // Attempt to create the covariate data.
         val covariates = getCovariates(semantics, json)

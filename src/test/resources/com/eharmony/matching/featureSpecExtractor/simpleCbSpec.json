@@ -1,0 +1,20 @@
+{
+  "imports":[
+    "com.eharmony.matching.aloha.feature.BasicFunctions._",
+    "com.eharmony.matching.aloha.feature.OptionMath.Syntax._",
+    "scala.math._"
+  ],
+  "features":[
+    {"name":"state", "spec":"ind(${profile.matching_address.state})", "defVal":[["=UNK",1.0]]},
+    {"name":"education", "spec":"ind(${profile.education})", "defVal":[["=UNK",1.0]]},
+    {"name":"income", "spec":"ind(${profile.income})", "defVal":[["=UNK",1.0]]}
+  ],
+
+  "namespaces":[
+    {"name":"A", "features":["state","education","income"]}
+  ],
+
+  "cbAction":"${dv.matches}",
+  "cbCost":"${dv.converted}",
+  "cbProbability":"${dv.match_odds}"
+}

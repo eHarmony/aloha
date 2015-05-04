@@ -1,33 +1,53 @@
 package com.eharmony.matching.featureSpecExtractor.vw.cb
-//import com.eharmony.matching.featureSpecExtractor.json.JsonSpec
 
-//class VwContextualBanditSpecProducer extends VwSpecProducer with DvProducer {
-//    override def specProducerName = getClass.getSimpleName
-//    override def appliesTo(jsonSpec: JsonSpec): Boolean = jsonSpec.specType.exists(_ == Vw.identifier) && jsonSpec.cbAction.isDefined
-//    override def getSpec[A](semantics: CompiledSemantics[A], jsonSpec: JsonSpec): Try[Spec[A]] = {
-//        val (covariates, default, nss, normalizer) = getInputs(semantics, jsonSpec)
-//
-//        val spec = for {
-//            cov <- covariates
-//            sem = addStringImplicitsToSemantics(semantics, jsonSpec.imports)
-//            action <- getAction(sem, jsonSpec.cbAction)
-//            cost <- getCost(sem, jsonSpec.cbCost)
-//            prob <- getProbability(sem, jsonSpec.cbCost)
-//        } yield new VwContextualBanditSpec(cov, default, nss, normalizer, action, cost, prob)
-//
-//        spec
-//    }
-//
-//
-//    protected[this] def getAction[A](semantics: CompiledSemantics[A], spec: Option[String]): Try[GenAggFunc[A, String]] =
-//        getDv(semantics, "cbAction", spec, Some(""))
-//
-//    protected[this] def getCost[A](semantics: CompiledSemantics[A], spec: Option[String]): Try[GenAggFunc[A, String]] =
-//        getDv(semantics, "cbCost", spec, Some(""))
-//
-//    protected[this] def getProbability[A](semantics: CompiledSemantics[A], spec: Option[String]): Try[GenAggFunc[A, String]] =
-//        getDv(semantics, "cbProbability", spec, Some(""))
-//
-//    protected[this] def getImportance[A](semantics: CompiledSemantics[A], spec: Option[String]): Option[GenAggFunc[A, String]] = {
-//        getDv(semantics, "importance", spec, Some("")).map(Option.apply).getOrElse(None)
-//    }}
+import scala.util.Try
+
+import spray.json.{DefaultJsonProtocol, JsValue}
+
+import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
+import com.eharmony.matching.aloha.semantics.func.GenAggFunc
+import com.eharmony.matching.featureSpecExtractor.vw.VwCovariateProducer
+import com.eharmony.matching.featureSpecExtractor.vw.cb.json.VwContextualBanditJson
+import com.eharmony.matching.featureSpecExtractor.{CompilerFailureMessages, DvProducer, SparseCovariateProducer, SpecProducer}
+
+
+final class VwContextualBanditSpecProducer[A]
+extends SpecProducer[A, VwContextualBanditSpec[A]]
+   with VwCovariateProducer[A]
+   with DvProducer
+   with DefaultJsonProtocol
+   with SparseCovariateProducer
+   with CompilerFailureMessages {
+
+
+    type JsonType = VwContextualBanditJson
+    private[this] implicit val labeledVwJsonFormat = jsonFormat7(VwContextualBanditJson)
+
+    def specProducerName = getClass.getSimpleName
+
+    def parse(json: JsValue): Try[VwContextualBanditJson] = Try { json.convertTo[VwContextualBanditJson] }
+
+
+    def getSpec(semantics: CompiledSemantics[A], jsonSpec: VwContextualBanditJson): Try[VwContextualBanditSpec[A]] = {
+        val (covariates, default, nss, normalizer) = getVwData(semantics, jsonSpec)
+
+        val spec = for {
+            cov <- covariates
+            sem = addStringImplicitsToSemantics(semantics, jsonSpec.imports)
+            action <- getAction(sem, jsonSpec.cbAction)
+            cost <- getCost(sem, jsonSpec.cbCost)
+            prob <- getProbability(sem, jsonSpec.cbCost)
+        } yield new VwContextualBanditSpec(cov, default, nss, normalizer, action, cost, prob)
+
+        spec
+    }
+
+    protected[this] def getAction(semantics: CompiledSemantics[A], spec: String): Try[GenAggFunc[A, String]] =
+        getDv(semantics, "cbAction", Some(spec), Some(""))
+
+    protected[this] def getCost(semantics: CompiledSemantics[A], spec: String): Try[GenAggFunc[A, String]] =
+        getDv(semantics, "cbCost", Some(spec), Some(""))
+
+    protected[this] def getProbability(semantics: CompiledSemantics[A], spec: String): Try[GenAggFunc[A, String]] =
+        getDv(semantics, "cbProbability", Some(spec), Some(""))
+}
