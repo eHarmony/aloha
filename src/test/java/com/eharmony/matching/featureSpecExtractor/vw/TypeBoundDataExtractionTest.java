@@ -27,10 +27,10 @@ public class TypeBoundDataExtractionTest {
         final List<? extends SpecProducer<CsvLine, ? extends VwSpec<CsvLine>>> producers =
                 Arrays.asList(new VwContextualBanditSpecProducer<CsvLine>(), new VwLabelSpecProducer<CsvLine>());
 
-        final SpecBuilder<CsvLine, VwSpec<CsvLine>> sb = SpecBuilder.apply(semantics, producers);
-
-        final Try<VwSpec<CsvLine>> vwSpecTry = sb.fromClasspathResource("com/eharmony/matching/featureSpecExtractor/simpleCbSpec.json");
-
-        vwSpecTry.get();
+//        final SpecBuilder<CsvLine, VwSpec<CsvLine>> sb = SpecBuilder.apply(semantics, producers);
+//
+//        final Try<VwSpec<CsvLine>> vwSpecTry = sb.fromClasspathResource("com/eharmony/matching/featureSpecExtractor/simpleCbSpec.json");
+//
+//        vwSpecTry.get();
     }
 }

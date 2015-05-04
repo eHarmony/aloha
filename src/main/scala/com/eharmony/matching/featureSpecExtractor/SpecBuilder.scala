@@ -7,8 +7,6 @@ import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.matching.featureSpecExtractor.SpecType.SpecType
 import spray.json._
 
-import scala.annotation.varargs
-import scala.collection.JavaConversions.asScalaBuffer
 import scala.util.{Failure, Try}
 
 
@@ -54,10 +52,10 @@ with ReadableByString[Try[B]] {
         Failure { new NoSuchElementException(s"No applicable producer found.  Given ${ps.map(_.name).mkString(", ")}") }
 }
 
-object SpecBuilder {
-    @varargs
-    def apply[A, B <: Spec[A]](
-            semantics: CompiledSemantics[A],
-            producers: ju.List[_ <: SpecProducer[A, _ <: B]]): SpecBuilder[A, B] =
-        SpecBuilder(semantics, None, None, producers.toSeq)
-}
+//object SpecBuilder {
+//    @varargs
+//    def apply[A, B <: Spec[A]](
+//            semantics: CompiledSemantics[A],
+//            producers: ju.List[_ <: SpecProducer[A, _ <: B]]): SpecBuilder[A, B] =
+//        SpecBuilder(semantics, None, None, producers.toSeq)
+//}
