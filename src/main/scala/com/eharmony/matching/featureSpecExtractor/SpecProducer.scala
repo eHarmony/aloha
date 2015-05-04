@@ -10,8 +10,17 @@ import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
  * @tparam B implementation of the Spec[A] that is returned by the getSpec function.
  */
 trait SpecProducer[A, +B <: Spec[A]] {
+
+    /**
+     * Type of parsed JSON object.
+     */
     type JsonType
-    def specProducerName: String
+
+    /**
+     * Name of this producer.
+     * @return
+     */
+    def name: String
 
     /**
      * Attempt to parse the JSON AST to an intermediate representation that is used

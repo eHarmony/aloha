@@ -23,7 +23,7 @@ extends SpecProducer[A, VwContextualBanditSpec[A]]
     type JsonType = VwContextualBanditJson
     private[this] implicit val labeledVwJsonFormat = jsonFormat7(VwContextualBanditJson)
 
-    def specProducerName = getClass.getSimpleName
+    def name = getClass.getSimpleName
 
     def parse(json: JsValue): Try[VwContextualBanditJson] = Try { json.convertTo[VwContextualBanditJson] }
 

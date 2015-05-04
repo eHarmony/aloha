@@ -64,21 +64,21 @@ class VwParsingAndChainOfRespTest {
     }
 
     private[this] def verifySpecType[A, S <: Spec[A]: ClassTag, P <: SpecProducer[A, S]: ClassTag](producers: Seq[SpecProducer[A, VwSpec[A]]], spec: VwSpec[A]) {
-        val unlabeled = producers.indexWhere(_.specProducerName == classOf[VwSpecProducer[A]].getSimpleName)
+        val unlabeled = producers.indexWhere(_.name == classOf[VwSpecProducer[A]].getSimpleName)
         assertTrue(classOf[VwSpecProducer[A]].getSimpleName + " not found in producers", unlabeled != -1)
 
         val pName = classTag[P].runtimeClass.getSimpleName
-        val p = producers.indexWhere(_.specProducerName == pName)
+        val p = producers.indexWhere(_.name == pName)
         assertTrue(pName + " not found in producers", p != -1)
 
         // If negative, unlabeled occurs earlier in the list so the the spec should be unlabeled.
         (unlabeled - p).signum match {
             case -1 => assertEquals(
-                            s"Error for producers: ${producers.map(_.specProducerName).mkString(", ")}",
+                            s"Error for producers: ${producers.map(_.name).mkString(", ")}",
                             classOf[VwSpec[A]].getCanonicalName,
                             spec.getClass.getCanonicalName)
             case 1 => assertEquals(
-                            s"Error for producers: ${producers.map(_.specProducerName).mkString(", ")}",
+                            s"Error for producers: ${producers.map(_.name).mkString(", ")}",
                             classTag[S].runtimeClass.getCanonicalName,
                             spec.getClass.getCanonicalName)
         }

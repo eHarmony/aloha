@@ -20,7 +20,7 @@ extends SpecProducer[A, VwLabelSpec[A]]
     type JsonType = VwLabeledJson
     private[this] implicit val labeledVwJsonFormat = jsonFormat6(VwLabeledJson)
 
-    def specProducerName = getClass.getSimpleName
+    def name = getClass.getSimpleName
 
     def parse(json: JsValue): Try[VwLabeledJson] = Try { json.convertTo[VwLabeledJson] }
 

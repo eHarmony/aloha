@@ -18,7 +18,7 @@ extends SpecProducer[A, VwSpec[A]]
 
     type JsonType = VwUnlabeledJson
     private[this] implicit val unlabeledVwJsonFormat = jsonFormat4(VwUnlabeledJson)
-    def specProducerName = getClass.getSimpleName
+    def name = getClass.getSimpleName
     def parse(json: JsValue): Try[VwUnlabeledJson] = Try { json.convertTo[VwUnlabeledJson] }
     def getSpec(semantics: CompiledSemantics[A], jsonSpec: VwUnlabeledJson): Try[VwSpec[A]] = {
         val (covariates, default, nss, normalizer) = getVwData(semantics, jsonSpec)
