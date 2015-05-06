@@ -1,43 +1,21 @@
 package com.eharmony.matching.featureSpecExtractor.vw.unlabeled.json
 
 import com.eharmony.matching.featureSpecExtractor.density.Sparse
-import com.eharmony.matching.featureSpecExtractor.json.{CovariateJson, Namespace, SparseSpec}
+import com.eharmony.matching.featureSpecExtractor.json.validation.{NsValidation, FeatureValidation, Validation}
+import com.eharmony.matching.featureSpecExtractor.json.{CovariateJson, Namespace}
 
-import scala.collection.{immutable => sci, SeqView}
+import scala.collection.{immutable => sci}
 
 trait VwUnlabeledJsonLike
-extends CovariateJson[Sparse] {
+extends CovariateJson[Sparse]
+   with Validation
+   with FeatureValidation[Sparse]
+   with NsValidation {
 
-    val imports: Seq[String]
-    val features: sci.IndexedSeq[SparseSpec]
     val namespaces: Option[Seq[Namespace]]
     val normalizeFeatures: Option[Boolean]
 
-    final def validate(): Option[String] = {
-        lazy val dupFeatNames = findDupicates(features.view)(_.name)
-        lazy val ns = namespaces.getOrElse(Seq.empty)
-        lazy val dupNsNames = findDupicates(ns.view)(_.name)
-        lazy val dupNsFeats = ns.flatMap{ n =>
-            val x = findDupicates(n.features.view)(identity)
-            if (x.nonEmpty) Seq((n.name, x)) else Seq.empty
-        }
-
-        if (dupFeatNames.nonEmpty) Option(s"duplicate feature names detected: $dupFeatNames.")
-        else if (dupNsNames.nonEmpty) Option(s"duplicate namespace names detected: $dupNsNames.")
-        else if (dupNsFeats.nonEmpty) Option(s"duplicate namespace features detected: $dupNsFeats")
-        else None
-    }
-
-    /**
-     * Find duplicates in xs based on some criteria.
-     * @param xs where to look for duplicates
-     * @param criteria the criteria used to determine duplicates.
-     * @tparam A type of
-     * @tparam K
-     * @return
-     */
-    private[this] final def findDupicates[A, K](xs: SeqView[A, Seq[A]])(criteria: A => K) =
-        xs.groupBy(criteria).collect{case (k, v) if v.size > 1 => k }(collection.breakOut)
+    def validate() = validateFeatureNames orElse validateNsNames orElse validateNsFeatures
 
     /**
      * Get the default namespace index mapping and the mapping from each namespace name to the feature index.

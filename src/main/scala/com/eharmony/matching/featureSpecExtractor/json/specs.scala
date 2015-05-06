@@ -7,7 +7,7 @@ import spray.json.DefaultJsonProtocol
  *
  * @tparam Density
  */
-trait Spec[Density] {
+trait Spec[+Density] {
 
     /**
      * The feature name.

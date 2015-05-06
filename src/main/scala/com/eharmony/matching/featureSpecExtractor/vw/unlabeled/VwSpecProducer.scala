@@ -12,12 +12,10 @@ import scala.util.Try
 final class VwSpecProducer[A]
 extends SpecProducer[A, VwSpec[A]]
    with VwCovariateProducer[A]
-   with DefaultJsonProtocol
    with SparseCovariateProducer
    with CompilerFailureMessages {
 
     type JsonType = VwUnlabeledJson
-    private[this] implicit val unlabeledVwJsonFormat = jsonFormat4(VwUnlabeledJson)
     def name = getClass.getSimpleName
     def parse(json: JsValue): Try[VwUnlabeledJson] = Try { json.convertTo[VwUnlabeledJson] }
     def getSpec(semantics: CompiledSemantics[A], jsonSpec: VwUnlabeledJson): Try[VwSpec[A]] = {

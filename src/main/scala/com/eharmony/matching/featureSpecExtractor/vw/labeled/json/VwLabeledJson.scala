@@ -1,5 +1,7 @@
 package com.eharmony.matching.featureSpecExtractor.vw.labeled.json
 
+import spray.json.DefaultJsonProtocol
+
 import scala.collection.{immutable => sci}
 import scala.util.Try
 
@@ -24,4 +26,8 @@ extends VwUnlabeledJsonLike {
             case _ => false
         }.getOrElse(true)
     }
+}
+
+object VwLabeledJson extends DefaultJsonProtocol {
+    implicit val labeledVwJsonFormat = jsonFormat6(VwLabeledJson.apply)
 }

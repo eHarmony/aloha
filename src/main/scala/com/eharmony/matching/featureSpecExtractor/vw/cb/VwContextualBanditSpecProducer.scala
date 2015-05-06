@@ -1,27 +1,24 @@
 package com.eharmony.matching.featureSpecExtractor.vw.cb
 
-import scala.util.Try
-
-import spray.json.{DefaultJsonProtocol, JsValue}
-
 import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.matching.aloha.semantics.func.GenAggFunc
 import com.eharmony.matching.featureSpecExtractor.vw.VwCovariateProducer
 import com.eharmony.matching.featureSpecExtractor.vw.cb.json.VwContextualBanditJson
 import com.eharmony.matching.featureSpecExtractor.{CompilerFailureMessages, DvProducer, SparseCovariateProducer, SpecProducer}
+import spray.json.JsValue
+
+import scala.util.Try
 
 
 final class VwContextualBanditSpecProducer[A]
 extends SpecProducer[A, VwContextualBanditSpec[A]]
    with VwCovariateProducer[A]
    with DvProducer
-   with DefaultJsonProtocol
    with SparseCovariateProducer
    with CompilerFailureMessages {
 
 
     type JsonType = VwContextualBanditJson
-    private[this] implicit val labeledVwJsonFormat = jsonFormat7(VwContextualBanditJson)
 
     def name = getClass.getSimpleName
 

@@ -48,7 +48,7 @@ class VwParsingAndChainOfRespTest {
 
 
     def test[S <: Spec[CsvLine]: ClassTag, P <: SpecProducer[CsvLine, S]: ClassTag](jsonResourceLoc: String) {
-        val producers = Seq[SpecProducer[CsvLine, VwSpec[CsvLine]]](
+        val producers = List(
             new VwContextualBanditSpecProducer[CsvLine],
             new VwLabelSpecProducer[CsvLine],
             new VwSpecProducer[CsvLine]

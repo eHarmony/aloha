@@ -5,7 +5,7 @@ import com.eharmony.matching.aloha.semantics.func.GenAggFunc
 import com.eharmony.matching.featureSpecExtractor.vw.VwCovariateProducer
 import com.eharmony.matching.featureSpecExtractor.vw.labeled.json.VwLabeledJson
 import com.eharmony.matching.featureSpecExtractor.{CompilerFailureMessages, DvProducer, SparseCovariateProducer, SpecProducer}
-import spray.json.{DefaultJsonProtocol, JsValue}
+import spray.json.JsValue
 
 import scala.util.Try
 
@@ -13,12 +13,10 @@ final class VwLabelSpecProducer[A]
 extends SpecProducer[A, VwLabelSpec[A]]
    with VwCovariateProducer[A]
    with DvProducer
-   with DefaultJsonProtocol
    with SparseCovariateProducer
    with CompilerFailureMessages {
 
     type JsonType = VwLabeledJson
-    private[this] implicit val labeledVwJsonFormat = jsonFormat6(VwLabeledJson)
 
     def name = getClass.getSimpleName
 

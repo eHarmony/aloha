@@ -1,8 +1,9 @@
 package com.eharmony.matching.featureSpecExtractor.vw.unlabeled.json
 
-import scala.collection.{immutable => sci}
 import com.eharmony.matching.featureSpecExtractor.json.{Namespace, SparseSpec}
+import spray.json.DefaultJsonProtocol
 
+import scala.collection.{immutable => sci}
 
 case class VwUnlabeledJson(
         imports: Seq[String],
@@ -11,3 +12,6 @@ case class VwUnlabeledJson(
         normalizeFeatures: Option[Boolean] = Some(false))
 extends VwUnlabeledJsonLike
 
+object VwUnlabeledJson extends DefaultJsonProtocol {
+    implicit val unlabeledVwJsonFormat = jsonFormat4(VwUnlabeledJson.apply)
+}

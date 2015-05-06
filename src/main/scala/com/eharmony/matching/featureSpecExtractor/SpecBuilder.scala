@@ -4,14 +4,16 @@ import java.io.{File, InputStream, Reader}
 import java.net.URL
 import java.{util => ju}
 
+import com.eharmony.matching.aloha.AlohaException
 import com.eharmony.matching.aloha.io.{AlohaReadable, ReadableByString}
 import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
-import com.eharmony.matching.featureSpecExtractor.SpecType.SpecType
+import com.eharmony.matching.featureSpecExtractor.json.validation.Validation
 import org.apache.commons.{vfs, vfs2}
 import spray.json._
 
+import scala.annotation.tailrec
 import scala.collection.JavaConversions.asScalaBuffer
-import scala.util.{Failure, Try}
+import scala.util.{Failure, Success, Try}
 
 
 /**
@@ -21,16 +23,12 @@ import scala.util.{Failure, Try}
  * @param producers an ordered sequence of SpecProducers.  These producers form the basis of a
  *                  [[http://en.wikipedia.org/wiki/Chain-of-responsibility_pattern chain of responsibility pattern]].
  *                  Therefore, '''the order is important'''.
- * @param specType
- * @param numBits
  * @tparam A the result type produced by reading from one of the readable formats.
  * @tparam B the implementation of Spec[A] used.
  */
 final case class SpecBuilder[A, B <: Spec[A]](
         semantics: CompiledSemantics[A],
-        producers: Seq[SpecProducer[A, B]],
-        specType: Option[SpecType] = None,
-        numBits: Option[Int] = None)
+        producers: List[SpecProducer[A, B]])
 extends AlohaReadable[Try[B]] {
 
     /**
@@ -58,22 +56,44 @@ extends AlohaReadable[Try[B]] {
     def fromString(s: String): Try[B] = specReadable.fromString(s)
 
     def fromJson(json: JsValue): Try[B] = {
-        // Create a view so that the map function is applied lazily and so find attempts to create Spec
-        // instances only until it finds one that works.  If no producers are successful, return a failure.
-        val spec = producers.view map { p =>
-            for {
-                typedData <- p.parse(json)
-                spec <- p.getSpec(semantics, typedData)
-            } yield spec
-        } find {
-            _.isSuccess
-        } getOrElse { fail(producers) }
 
-        spec
+        /**
+         * Attempt to find a spec that can be instantiated.  Along the way, aggregate the failures so they can be
+         * returned and logged.  If a spec can be instantiated, search no more.  Just return it and the failures
+         * so far.
+         * @param prod spec producers
+         * @param failures the aggregated failures encountered so far.
+         * @return failures and a possible success.
+         */
+        @tailrec
+        def find(prod: List[SpecProducer[A, B]], failures: List[Failure[B]]): (List[Failure[B]], Option[B]) = {
+            prod match {
+                case Nil => (failures.reverse, None)
+                case p :: tail =>
+                    val spec = for {
+                        typedData <- p.parse(json)                           // Get the intermediate repr (IR).
+                        _ <- typedData match {                               // Validate if possible.
+                            case v: Validation => v.validate().fold(Try(())){f => Failure(new AlohaException(f)) }
+                            case _ => Try(())
+                        }
+                        spec <- p.getSpec(semantics, typedData)              // Attempt to produce the spec from IR.
+                    } yield spec
+
+                    spec match {
+                        case Success(s) => (failures.reverse, Option(s))     // Done.
+                        case f@Failure(e) => find(tail, f :: failures)       // Keep searching.  Recurse.
+                    }
+            }
+        }
+
+        val (failures, possibleSuccess) = find(producers, Nil)
+        possibleSuccess map {s => Try(s)} getOrElse fail(producers, failures)
     }
 
-    private[this] def fail(ps: Seq[SpecProducer[A, B]]): Failure[B] =
+    private[this] def fail(ps: Seq[SpecProducer[A, B]], failures: List[Failure[B]]): Failure[B] = {
+        // TODO: Log failures.
         Failure { new NoSuchElementException(s"No applicable producer found.  Given ${ps.map(_.name).mkString(", ")}") }
+    }
 }
 
 object SpecBuilder {
@@ -90,5 +110,5 @@ object SpecBuilder {
     def apply[A, B <: Spec[A]](
             semantics: CompiledSemantics[A],
             producers: ju.List[_ <: SpecProducer[A, _ <: B]]): SpecBuilder[A, B] =
-        SpecBuilder[A, B](semantics, producers.toSeq)
+        SpecBuilder[A, B](semantics, producers.toList)
 }
