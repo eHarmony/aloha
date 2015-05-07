@@ -11,18 +11,25 @@ class VwContextualBanditSpec[A](
         featuresFunction: FeatureExtractorFunction[A, Sparse],
         defaultNamespace: sci.IndexedSeq[Int],
         namespaces: sci.IndexedSeq[(String, sci.IndexedSeq[Int])],
-        normalizer: Option[CharSequence => String],
+        normalizer: Option[CharSequence => CharSequence],
         cbAction: GenAggFunc[A, String],
         cbCost: GenAggFunc[A, String],
-        cbProbability: GenAggFunc[A, String])
-extends VwSpec[A](featuresFunction, defaultNamespace, namespaces, normalizer)
+        cbProbability: GenAggFunc[A, String],
+        includeZeroValues: Boolean = false)
+extends VwSpec[A](featuresFunction, defaultNamespace, namespaces, normalizer, includeZeroValues)
 with java.io.Serializable  {
 
-    override def toInput(data: A, includeZeroValues: Boolean) = {
+    override def apply(data: A) = {
         val actionVal = cbAction(data)
         val costVal = cbCost(data)
         val probabilityVal = cbProbability(data)
-        val sb = new StringBuilder().append(actionVal).append(":").append(costVal).append(":").append(probabilityVal)
-        toInput(data, includeZeroValues, sb)
+        val (missing, iv) = super.apply(data)
+        val sb = new StringBuilder().
+                 append(actionVal).append(":").
+                 append(costVal).append(":").
+                 append(probabilityVal).append("|").
+                 append(iv)
+
+        (missing, sb)
     }
 }

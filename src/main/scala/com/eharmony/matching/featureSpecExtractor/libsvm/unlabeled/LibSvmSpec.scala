@@ -11,11 +11,7 @@ class LibSvmSpec[A](covariates: FeatureExtractorFunction[A, Sparse], hash: HashF
 
     private[this] val mask = (1 << numBits) - 1
 
-    def toInput(data: A) = toInput(data, includeZeroValues = false)
-
-    def toInput(data: A, includeZeroValues: Boolean) = toInput(data, includeZeroValues, new StringBuilder)
-
-    def toInput(data: A, includeZeroValues: Boolean, sb: StringBuilder): (MissingAndErroneousFeatureInfo, String) = {
+    def apply(data: A): (MissingAndErroneousFeatureInfo, CharSequence) = {
         val (missingInfo, cov) = covariates(data)
 
         // Get the features into key-value pairs where the keys are the hashed strings and the values
@@ -36,7 +32,7 @@ class LibSvmSpec[A](covariates: FeatureExtractorFunction[A, Sparse], hash: HashF
             (m1, m2) => m1 ++ m2
         )
 
-        val out = sortedDeduped.foldLeft(sb){ case (b, (k, v)) => b.append(k).append(":").append(v).append(" ") }.toString()
+        val out = sortedDeduped.view.map { case(k, v) => s"$k:$v" }.mkString(" ")
         (missingInfo, out)
     }
 }

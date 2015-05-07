@@ -12,9 +12,10 @@ class LibSvmLabelSpec[A](
         hash: HashFunction,
         numBits: Int = LibSvmSpec.DefaultBits)
 extends LibSvmSpec[A](covariates, hash, numBits) {
-    override def toInput(data: A, includeZeroValues: Boolean, sb: StringBuilder) = {
+    override def apply(data: A) = {
+        val (missing, iv) = super.apply(data)
         val lab = label(data)
-        val b = sb.append(lab).append(" ")
-        super.toInput(data, includeZeroValues, b)
+        val sb = new StringBuilder().append(lab).append(" ").append(iv)
+        (missing, sb)
     }
 }

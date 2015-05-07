@@ -3,19 +3,19 @@ package com.eharmony.matching.featureSpecExtractor.vw
 import java.text.DecimalFormat
 import java.util.regex.Pattern
 
-class VwFeatureNormalizer extends (CharSequence => String) with java.io.Serializable {
+class VwFeatureNormalizer extends (CharSequence => CharSequence) with java.io.Serializable {
     private[this] val lineRegex = Pattern.compile("\\|(\\w)\\s+([^\\|]+)")
     private[this] val namespaceRegex = ".+:(.+)".r
     private[this] val format = new DecimalFormat("0.00000")
 
-    def apply(vwLine: CharSequence): String = {
+    def apply(vwLine: CharSequence): CharSequence = {
         val matcher = lineRegex.matcher(vwLine)
         val sb = new StringBuffer
         while(matcher.find) {
             matcher.appendReplacement(sb, "|" + matcher.group(1) + ":" + format.format(normalizeNamespace(matcher.group(2))) + " " + matcher.group(2))
         }
         matcher.appendTail(sb)
-        sb.toString
+        sb
     }
 
     private[this] def normalizeNamespace(namespace: String): Double = {

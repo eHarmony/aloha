@@ -5,10 +5,8 @@ import com.eharmony.matching.featureSpecExtractor.{FeatureExtractorFunction, Spe
 
 final case class CsvSpec[A](features: FeatureExtractorFunction[A, Dense], separator: String = ",")
 extends Spec[A] {
-    override def toInput(data: A) = {
+    def apply(data: A) = {
         val (missing, values) = features(data)
         (missing, values.mkString(separator))
     }
-
-    override def toInput(data: A, includeZeroValues: Boolean) = toInput(data)
 }

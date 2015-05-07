@@ -68,7 +68,7 @@ class SpecBuilderTest {
 
         val sb = SpecBuilder(semantics, List(new VwSpecProducer[CsvLine]))
         val spec = sb.fromResource("com/eharmony/matching/featureSpecExtractor/simpleSpec.json").get
-        val outs = lines.map(spec.toInput)
+        val outs = lines.map(spec.apply)
 
         // Test correctness.
         outs.zip(expected).zipWithIndex.foreach{ case (((MissingAndErroneousFeatureInfo(missing, error), act), exp), i) =>

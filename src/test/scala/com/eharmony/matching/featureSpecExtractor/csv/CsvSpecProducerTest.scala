@@ -56,7 +56,7 @@ class CsvSpecProducerTest {
 
         val spec = specBuilder.fromString(json).get
 
-        val actual = lines.map(row => spec.toInput(row))
+        val actual = lines.map(row => spec(row))
 
         assertEquals(expected, actual)
     }

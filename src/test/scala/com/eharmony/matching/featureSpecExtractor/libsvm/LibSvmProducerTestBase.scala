@@ -28,7 +28,7 @@ trait LibSvmProducerTestBase {
         val expected = Seq(f1Hash -> one, f2Hash -> two).sorted.map{ case(k, v) => s"$k:$v" }.mkString(
             if (label.isEmpty) "" else s"$label ",
             " ",
-            " "
+            ""
         )
 
         // Note that we need the import here to make the json work because of the conversions from scalars
@@ -61,8 +61,8 @@ trait LibSvmProducerTestBase {
         val line: CsvLine = CsvLines(Map.empty)("").head
 
         // Compute the actual value.
-        val (missing, actual) = libSvmSpec.toInput(line)
+        val (missing, actual) = libSvmSpec(line)
 
-        assertEquals(expected, actual)
+        assertEquals(expected, actual.toString)
     }
 }
