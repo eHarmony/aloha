@@ -1,12 +1,12 @@
-package com.eharmony.matching.featureSpecExtractor.vw.unlabeled.json
+package com.eharmony.matching.featureSpecExtractor.vw.json
 
-import com.eharmony.matching.featureSpecExtractor.density.Sparse
-import com.eharmony.matching.featureSpecExtractor.json.validation.{NsValidation, FeatureValidation, Validation}
+import com.eharmony.matching.featureSpecExtractor.density._
+import com.eharmony.matching.featureSpecExtractor.json.validation.{FeatureValidation, NsValidation, Validation}
 import com.eharmony.matching.featureSpecExtractor.json.{CovariateJson, Namespace}
-
 import scala.collection.{immutable => sci}
 
-trait VwUnlabeledJsonLike
+
+trait VwJsonLike
 extends CovariateJson[Sparse]
    with Validation
    with FeatureValidation[Sparse]
@@ -35,4 +35,3 @@ extends CovariateJson[Sparse]
 
     def shouldNormalizeFeatures: Boolean = normalizeFeatures.getOrElse(false)
 }
-

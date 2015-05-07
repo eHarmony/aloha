@@ -1,12 +1,12 @@
 package com.eharmony.matching.featureSpecExtractor.vw.labeled.json
 
+import com.eharmony.matching.featureSpecExtractor.vw.json.VwJsonLike
 import spray.json.DefaultJsonProtocol
 
 import scala.collection.{immutable => sci}
 import scala.util.Try
 
 import com.eharmony.matching.featureSpecExtractor.json.{Namespace, SparseSpec}
-import com.eharmony.matching.featureSpecExtractor.vw.unlabeled.json.VwUnlabeledJsonLike
 
 
 case class VwLabeledJson(
@@ -16,7 +16,7 @@ case class VwLabeledJson(
         normalizeFeatures: Option[Boolean] = Some(false),
         label: String,
         importance: Option[String] = Some("1"))
-extends VwUnlabeledJsonLike {
+extends VwJsonLike {
 
     def validateImportance(): Boolean = {
         importance.nonEmpty || Try {

@@ -1,7 +1,7 @@
 package com.eharmony.matching.featureSpecExtractor.vw.cb.json
 
 import com.eharmony.matching.featureSpecExtractor.json.{Namespace, SparseSpec}
-import com.eharmony.matching.featureSpecExtractor.vw.unlabeled.json.VwUnlabeledJsonLike
+import com.eharmony.matching.featureSpecExtractor.vw.json.VwJsonLike
 import spray.json.DefaultJsonProtocol
 
 import scala.collection.{immutable => sci}
@@ -15,7 +15,7 @@ case class VwContextualBanditJson(
         cbAction: String,
         cbCost: String,
         cbProbability: String)
-extends VwUnlabeledJsonLike
+extends VwJsonLike
 
 
 object VwContextualBanditJson extends DefaultJsonProtocol {
