@@ -7,6 +7,7 @@ import java.{util => ju}
 import com.eharmony.matching.aloha.AlohaException
 import com.eharmony.matching.aloha.io.{AlohaReadable, ReadableByString}
 import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
+import com.eharmony.matching.aloha.util.Logging
 import com.eharmony.matching.featureSpecExtractor.json.validation.Validation
 import org.apache.commons.{vfs, vfs2}
 import spray.json._
@@ -29,7 +30,8 @@ import scala.util.{Failure, Success, Try}
 final case class SpecBuilder[A, B <: Spec[A]](
         semantics: CompiledSemantics[A],
         producers: List[SpecProducer[A, B]])
-extends AlohaReadable[Try[B]] {
+extends AlohaReadable[Try[B]]
+   with Logging {
 
     /**
      * Private inner reader delegates to the fromJson method.  All factory (''from*'') functions in the
@@ -87,12 +89,15 @@ extends AlohaReadable[Try[B]] {
         }
 
         val (failures, possibleSuccess) = find(producers, Nil)
-        possibleSuccess map {s => Try(s)} getOrElse fail(producers, failures)
+        possibleSuccess map {s => Try(s)} getOrElse fail(failures)
     }
 
-    private[this] def fail(ps: Seq[SpecProducer[A, B]], failures: List[Failure[B]]): Failure[B] = {
-        // TODO: Log failures.
-        Failure { new NoSuchElementException(s"No applicable producer found.  Given ${ps.map(_.name).mkString(", ")}") }
+    private[this] def fail(failures: List[Failure[B]]): Failure[B] = {
+        info {
+            val msgs = producers.zip(failures).zipWithIndex.map{ case ((p, e), i) => s"$i)\t${p.name}: ${e.failed.get.getMessage}"}
+            msgs.mkString(s"${failures.size} failure${ if (failures.size == 1) "" else "s" } occurred while attempting to produce spec:\n\t", "\n\t", "")
+        }
+        Failure { new NoSuchElementException(s"No applicable producer found.  Given ${producers.map(_.name).mkString(", ")}") }
     }
 }
 
