@@ -72,7 +72,7 @@ class SpecBuilderTest {
 
         // Test correctness.
         outs.zip(expected).zipWithIndex.foreach{ case (((MissingAndErroneousFeatureInfo(missing, error), act), exp), i) =>
-            assertEquals("for test $i: ", exp, act)
+            assertEquals("for test $i: ", exp, act.toString)
         }
     }
 }

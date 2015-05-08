@@ -14,7 +14,7 @@ class VwFeatureNormalizerTest {
     }
 
     @Test def testBlank() {
-        assertEquals("", normalizer(""))
+        assertEquals("", normalizer("").toString)
     }
 
     @Test def testSimple() {
