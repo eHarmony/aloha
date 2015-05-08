@@ -94,7 +94,7 @@ extends AlohaReadable[Try[B]]
 
     private[this] def fail(failures: List[Failure[B]]): Failure[B] = {
         info {
-            val msgs = producers.zip(failures).zipWithIndex.map{ case ((p, e), i) => s"$i)\t${p.name}: ${e.failed.get.getMessage}"}
+            val msgs = producers.zip(failures).zipWithIndex.map{ case ((p, e), i) => s"$i)\t${p.name}: ${e.failed.get.getMessage}\n\t\t${e.failed.get.getStackTraceString.replaceAll("\n", "\n\t\t")}"}
             msgs.mkString(s"${failures.size} failure${ if (failures.size == 1) "" else "s" } occurred while attempting to produce spec:\n\t", "\n\t", "")
         }
         Failure { new NoSuchElementException(s"No applicable producer found.  Given ${producers.map(_.name).mkString(", ")}") }

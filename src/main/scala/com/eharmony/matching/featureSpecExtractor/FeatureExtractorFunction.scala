@@ -18,6 +18,12 @@ final case class DenseFeatureExtractorFunction[A](features: sci.IndexedSeq[(Stri
     protected[this] implicit def ctB(): ClassTag[Dense] = classTag[Dense]
 }
 
+final case class StringFeatureExtractorFunction[A](features: sci.IndexedSeq[(String, GenAggFunc[A, String])])
+    extends FeatureExtractorFunction[A, String] {
+    protected[this] val postProcessingFunction = (_: String, b: String) => b
+    protected[this] implicit def ctB(): ClassTag[String] = classTag[String]
+}
+
 /**
  * A function that takes a value and returns extracted features and information on missing and erring features.
  * @tparam A
