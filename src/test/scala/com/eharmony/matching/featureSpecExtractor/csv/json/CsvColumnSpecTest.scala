@@ -13,7 +13,7 @@ class CsvColumnSpecTest {
             """{ "name": "long",       "type": "long",   "spec": "${long}" }""",
             """{ "name": "opt_double", "type": "double", "spec": "${opt_double}" }""",
             """{ "name": "syn_enum",   "type": "enum",   "spec": "${opt_string}", "values":    [ "e1v1" ] }""",
-            """{ "name": "enum",       "type": "enum",   "spec": "${string}", "className": "com.eharmony.matching.notaloha.AnEnum" }"""
+            """{ "name": "enum",       "type": "enum",   "spec": "${string}", "enumClass": "com.eharmony.matching.notaloha.AnEnum" }"""
         )
 
         val expected = Seq(
