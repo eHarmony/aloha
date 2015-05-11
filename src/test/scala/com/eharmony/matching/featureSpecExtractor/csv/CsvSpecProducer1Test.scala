@@ -1,5 +1,7 @@
 package com.eharmony.matching.featureSpecExtractor.csv
 
+import com.eharmony.matching.featureSpecExtractor.csv.encoding.Encoding
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import com.eharmony.matching.aloha.FileLocations
@@ -39,10 +41,16 @@ class CsvSpecProducer1Test {
               |      "spec": "${opt_string}"
               |    },
               |    {
+              |      "name": "syn_enum1",
+              |      "type": "enum",
+              |      "values": [ "e2v1" ],
+              |      "spec": "${string}"
+              |    },
+              |    {
               |      "name": "enum",
               |      "type": "enum",
               |      "enumClass": "com.eharmony.matching.notaloha.AnEnum",
-              |      "spec": "com.eharmony.matching.notaloha.AnEnum.valueOf(${string})"
+              |      "spec": "com.eharmony.matching.notaloha.AnEnum.valueOf(${string1})"
               |    }
               |  ]
               |}
@@ -51,10 +59,10 @@ class CsvSpecProducer1Test {
         val spec = specBuilder.fromString(json).get
 
         val expected = Seq(
-            (MissingAndErroneousFeatureInfo(List(),List()),             "1,2.0,e1v1,VALUE_2"),
-            (MissingAndErroneousFeatureInfo(List("opt_double"),List()), "1,null,null,VALUE_2"),
-            (MissingAndErroneousFeatureInfo(List(),List()),             "1,2.0,null,VALUE_2"),
-            (MissingAndErroneousFeatureInfo(List(),List()),             "1,2.0,e1v1,VALUE_3")
+            (MissingAndErroneousFeatureInfo(List(),List()),             "1,2.0,e1v1,e2v1,VALUE_2"),
+            (MissingAndErroneousFeatureInfo(List("opt_double"),List()), "1,null,null,e2v1,VALUE_2"),
+            (MissingAndErroneousFeatureInfo(List(),List()),             "1,2.0,null,null,VALUE_2"),
+            (MissingAndErroneousFeatureInfo(List(),List()),             "1,2.0,e1v1,null,VALUE_3")
         )
 
         val actual = lines.map(spec.apply)
@@ -70,7 +78,8 @@ object CsvSpecProducer1Test {
             "long" -> CsvTypes.LongType,
             "opt_double" -> CsvTypes.DoubleOptionType,
             "opt_string" -> CsvTypes.StringOptionType,
-            "string" -> CsvTypes.StringType
+            "string" -> CsvTypes.StringType,
+            "string1" -> CsvTypes.StringType
         )
 
         val plugin = CompiledSemanticsCsvPlugin(types.toMap)
@@ -78,13 +87,13 @@ object CsvSpecProducer1Test {
         val csvLines = CsvLines(indices = types.unzip._1.zipWithIndex.toMap, fs = ",")
 
         val lines = csvLines(
-            """1,2.0,e1v1,VALUE_2""",
-            """1,,,VALUE_2""",
-            """1,2.0,e1v2,VALUE_2""",
-            """1,2.0,e1v1,VALUE_3"""
+            """1,2.0,e1v1,e2v1,VALUE_2""",
+            """1,,,e2v1,VALUE_2""",
+            """1,2.0,e1v2,e2v2,VALUE_2""",
+            """1,2.0,e1v1,e2v2,VALUE_3"""
         )
 
-        val sb = SpecBuilder(semantics, List(new CsvSpecProducer1[CsvLine]("null", ",")))
+        val sb = SpecBuilder(semantics, List(new CsvSpecProducer1[CsvLine]("null", ",", Encoding.regular)))
         (lines, sb)
     }
 }
