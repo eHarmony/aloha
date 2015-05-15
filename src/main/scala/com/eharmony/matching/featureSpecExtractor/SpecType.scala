@@ -7,5 +7,5 @@ package com.eharmony.matching.featureSpecExtractor
  */
 object SpecType extends Enumeration {
     type SpecType = Value
-    val VW, LibSVM = Value
+    val VW, LibSVM, CSV = Value
 }

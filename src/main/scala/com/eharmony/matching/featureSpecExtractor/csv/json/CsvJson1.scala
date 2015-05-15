@@ -8,7 +8,7 @@ Document why need to wrap in option in wrappedSpec.
 import com.eharmony.matching.aloha.reflect.{RefInfoOps, RefInfo}
 import com.eharmony.matching.aloha.util.Logging
 import com.eharmony.matching.featureSpecExtractor.csv.encoding.Encoding
-import com.eharmony.matching.featureSpecExtractor.csv.finalizer.{NaryFinalizer, UnaryFinalizer, Finalizer}
+import com.eharmony.matching.featureSpecExtractor.csv.finalizer.{EncodingBasedFinalizer, BasicFinalizer, Finalizer}
 import spray.json._
 
 import scala.collection.{immutable => sci}
@@ -70,7 +70,7 @@ final case class StringCsvColumnSpec(name: String, spec: String, defVal: Option[
 
     type ColType = String
     def refInfo = RefInfo[Option[ColType]]
-    def finalizer(sep: String, nullString: String) = UnaryFinalizer(_.getOrElse(nullString))
+    def finalizer(sep: String, nullString: String) = BasicFinalizer(_.getOrElse(nullString))
 }
 
 
@@ -78,14 +78,14 @@ final case class DoubleCsvColumnSpec(name: String, spec: String, defVal: Option[
 
     type ColType = Double
     def refInfo = RefInfo[Option[ColType]]
-    def finalizer(sep: String, nullString: String): Finalizer[ColType] = UnaryFinalizer(_.fold(nullString)(_.toString))
+    def finalizer(sep: String, nullString: String): Finalizer[ColType] = BasicFinalizer(_.fold(nullString)(_.toString))
 }
 
 final case class LongCsvColumnSpec(name: String, spec: String, defVal: Option[Long] = None) extends CsvColumnSpec {
 
     type ColType = Long
     def refInfo = RefInfo[Option[ColType]]
-    def finalizer(sep: String, nullString: String) = UnaryFinalizer(_.fold(nullString)(_.toString))
+    def finalizer(sep: String, nullString: String) = BasicFinalizer(_.fold(nullString)(_.toString))
 }
 
 
@@ -100,12 +100,12 @@ extends CsvColumnSpec {
     private[this] def values = clazz.getEnumConstants.map(_.name)
     def refInfo = RefInfoOps.option(RefInfoOps.fromSimpleClass(clazz))
     def defVal: Option[Enum[_]] = None
-    def finalizer(sep: String, nullString: String) = NaryFinalizer((e: Encoding) => e.finalizer(sep, nullString, values))
+    def finalizer(sep: String, nullString: String) = EncodingBasedFinalizer((e: Encoding) => e.finalizer(sep, nullString, values))
 }
 
 final case class SyntheticEnumCsvColumnSpec(name: String, spec: String, values: Seq[String], defVal: Option[String] = None)
 extends CsvColumnSpec {
     type ColType = String
     def refInfo = RefInfo[Option[ColType]]
-    def finalizer(sep: String, nullString: String) = NaryFinalizer((e: Encoding) => e.finalizer(sep, nullString, values))
+    def finalizer(sep: String, nullString: String) = EncodingBasedFinalizer((e: Encoding) => e.finalizer(sep, nullString, values))
 }

@@ -18,7 +18,7 @@ noteworthy phases:
 	<groupId>com.eharmony.matching</groupId>
 	<artifactId>aloha</artifactId>
 	<version>1.0.7-SNAPSHOT</version>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 	<name>${project.artifactId}</name>
 	<description>Scala-based machine learning library with generic models and lazily created features.</description>
 	<inceptionYear>2013</inceptionYear>

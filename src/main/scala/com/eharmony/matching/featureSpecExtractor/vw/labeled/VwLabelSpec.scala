@@ -1,7 +1,7 @@
 package com.eharmony.matching.featureSpecExtractor.vw.labeled
 
 import com.eharmony.matching.aloha.semantics.func.{GenAggFunc, GenFunc0}
-import com.eharmony.matching.featureSpecExtractor.FeatureExtractorFunction
+import com.eharmony.matching.featureSpecExtractor.{LabelSpec, FeatureExtractorFunction}
 import com.eharmony.matching.featureSpecExtractor.density.Sparse
 import com.eharmony.matching.featureSpecExtractor.vw.unlabeled.VwSpec
 
@@ -12,10 +12,12 @@ class VwLabelSpec[A](
         defaultNamespace: sci.IndexedSeq[Int],
         namespaces: sci.IndexedSeq[(String, sci.IndexedSeq[Int])],
         normalizer: Option[CharSequence => CharSequence],
-        label: GenAggFunc[A, String],
+        val label: GenAggFunc[A, String],
         importance: Option[GenAggFunc[A, String]],
-        includeZeroValues: Boolean = false
-) extends VwSpec[A](featuresFunction, defaultNamespace, namespaces, normalizer, includeZeroValues) {
+        includeZeroValues: Boolean = false)
+extends VwSpec[A](featuresFunction, defaultNamespace, namespaces, normalizer, includeZeroValues)
+   with LabelSpec[A] {
+
     private[this] val _importance = importance.getOrElse(GenFunc0[Any, String]("1", _ => "1"))
 
     def getLabelValue(data: A): String = label(data)

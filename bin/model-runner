@@ -23,13 +23,18 @@
 # Notes: the classpath file will contain the conf directory which will have a 
 #        log4j config that will surpress logging.
 #
+MVN=$(which mvn3)
+
+if [[ -z "$MVN" ]]; then
+  MVN=$(which mvn)
+fi
 
 cd ${0%/*}/..   # Make sure everything is relative to the projects root dir.
 PWD=$(pwd)
 
 # If maven build directory doesn't exist, create it.
 if [ ! -d "$PWD/target" ]; then
-  mvn clean compile 1>$PWD/tmp/log.txt
+  $MVN clean compile 1>$PWD/tmp/log.txt
 fi
 
 # Create temp dir if necessary
@@ -42,7 +47,7 @@ CP_FILE=$(find tmp -name classpath.txt 2>/dev/null)
 
 # If classpath file doesn't exist, create it.
 if [ -z "$CP_FILE" ]; then
-  (mvn dependency:build-classpath | grep '^/.*' | tr -d '\n'; echo ":$PWD/tmp/:$PWD/conf:$PWD/target/classes") > tmp/classpath.txt
+  ($MVN dependency:build-classpath | grep '^/.*' | tr -d '\n'; echo ":$PWD/tmp/:$PWD/conf:$PWD/target/classes") > tmp/classpath.txt
 fi
 
 # execute the application and pass arguments.

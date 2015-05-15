@@ -3,7 +3,7 @@ package com.eharmony.matching.featureSpecExtractor.csv
 import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.matching.aloha.semantics.func.GenAggFunc
 import com.eharmony.matching.featureSpecExtractor.csv.encoding.{Encoding, RegularEncoding}
-import com.eharmony.matching.featureSpecExtractor.csv.finalizer.{NaryFinalizer, UnaryFinalizer}
+import com.eharmony.matching.featureSpecExtractor.csv.finalizer.{EncodingBasedFinalizer, BasicFinalizer}
 import com.eharmony.matching.featureSpecExtractor.csv.json.{CsvColumnSpec, CsvJson1}
 import com.eharmony.matching.featureSpecExtractor.{CompilerFailureMessages, FeatureExtractorFunction, SpecProducer, StringFeatureExtractorFunction}
 import spray.json.JsValue
@@ -44,8 +44,8 @@ case class CsvSpecProducer1[A](nullString: String, separator: String, encoding: 
                         // Get the finalizer.  This is based on the encoding in the case of categorical variables
                         // but not in the case of scalars.
                         val finalizer = spec.finalizer(separator, nullString) match {
-                            case UnaryFinalizer(fnl) => fnl
-                            case NaryFinalizer(fnl) => fnl(encoding)
+                            case BasicFinalizer(fnl) => fnl
+                            case EncodingBasedFinalizer(fnl) => fnl(encoding)
                         }
 
                         val strFunc = success.andThenGenAggFunc(finalizer)
