@@ -34,9 +34,10 @@ object CsvColumnSpec
 extends DefaultJsonProtocol
    with Logging {
 
-    private[this] implicit val stringCsvColumnSpecFormat: RootJsonFormat[StringCsvColumnSpec] = jsonFormat3(StringCsvColumnSpec.apply)
-    private[this] implicit val doubleCsvColumnSpecFormat: RootJsonFormat[DoubleCsvColumnSpec] = jsonFormat3(DoubleCsvColumnSpec.apply)
-    private[this] implicit val longCsvColumnSpecFormat: RootJsonFormat[LongCsvColumnSpec] = jsonFormat3(LongCsvColumnSpec.apply)
+    private[this] implicit val stringCsvColumnSpecFormat: RootJsonFormat[CsvColumnSpecWithDefault[String]] = jsonFormat(CsvColumnSpecWithDefault.apply[String], "name", "spec", "defVal")
+    private[this] implicit val doubleCsvColumnSpecFormat: RootJsonFormat[CsvColumnSpecWithDefault[Double]] = jsonFormat(CsvColumnSpecWithDefault.apply[Double], "name", "spec", "defVal")
+    private[this] implicit val longCsvColumnSpecFormat: RootJsonFormat[CsvColumnSpecWithDefault[Long]] = jsonFormat(CsvColumnSpecWithDefault.apply[Long], "name", "spec", "defVal")
+    private[this] implicit val defaultCsvColumnSpecFormat: RootJsonFormat[DefaultCsvColumnSpec] = jsonFormat(DefaultCsvColumnSpec.apply, "name", "spec")
 
     // Need to for some reason name the fields explicitly here...
     private[this] implicit val enumCsvColumnSpecFormat: RootJsonFormat[EnumCsvColumnSpec] = jsonFormat(EnumCsvColumnSpec.apply, "name", "spec", "enumClass")
@@ -50,44 +51,34 @@ extends DefaultJsonProtocol
             val o = j.asJsObject
             val fieldType = o.getFields("type").collectFirst { case JsString(s) => s.toLowerCase }
             val spec = fieldType match {
-                case Some("string") => o.convertTo[StringCsvColumnSpec]
-                case Some("double") => o.convertTo[DoubleCsvColumnSpec]
-                case Some("long") => o.convertTo[LongCsvColumnSpec]
+                case Some("string") => o.convertTo[CsvColumnSpecWithDefault[String]]
+                case Some("double") => o.convertTo[CsvColumnSpecWithDefault[Double]]
+                case Some("long") => o.convertTo[CsvColumnSpecWithDefault[Long]]
                 case Some("enum") if o.getFields("enumClass").exists { case JsString(_) => true; case _ => false } =>
                     o.convertTo[EnumCsvColumnSpec]
                 case Some("enum") if o.getFields("values").exists { case JsArray(_) => true; case _ => false } =>
                     o.convertTo[SyntheticEnumCsvColumnSpec]
                 case None =>
-                    debug(s"No type provided.  Assuming Double.  Given: ${o.compactPrint}")
-                    o.convertTo[DoubleCsvColumnSpec]
+                    debug(s"No type provided.  Assuming Any.  Given: ${o.compactPrint}")
+                    o.convertTo[DefaultCsvColumnSpec]
             }
             spec
         }
     })
 }
 
-final case class StringCsvColumnSpec(name: String, spec: String, defVal: Option[String] = None) extends CsvColumnSpec {
-
-    type ColType = String
-    def refInfo = RefInfo[Option[ColType]]
-    def finalizer(sep: String, nullString: String) = BasicFinalizer(_.getOrElse(nullString))
-}
-
-
-final case class DoubleCsvColumnSpec(name: String, spec: String, defVal: Option[Double] = None) extends CsvColumnSpec {
-
-    type ColType = Double
-    def refInfo = RefInfo[Option[ColType]]
-    def finalizer(sep: String, nullString: String): Finalizer[ColType] = BasicFinalizer(_.fold(nullString)(_.toString))
-}
-
-final case class LongCsvColumnSpec(name: String, spec: String, defVal: Option[Long] = None) extends CsvColumnSpec {
-
-    type ColType = Long
-    def refInfo = RefInfo[Option[ColType]]
+final case class CsvColumnSpecWithDefault[C: RefInfo: JsonReader](name: String, spec: String, defVal: Option[C] = None) extends CsvColumnSpec {
+    type ColType = C
+    val refInfo = RefInfoOps.option[C]
     def finalizer(sep: String, nullString: String) = BasicFinalizer(_.fold(nullString)(_.toString))
 }
 
+final case class DefaultCsvColumnSpec(name: String, spec: String) extends CsvColumnSpec {
+    type ColType = Any
+    def defVal: Option[ColType] = None
+    val refInfo = RefInfo[Option[Any]]
+    def finalizer(sep: String, nullString: String) = BasicFinalizer(_.fold(nullString)(_.toString))
+}
 
 final case class EnumCsvColumnSpec(name: String, spec: String, enumClass: String)
 extends CsvColumnSpec {

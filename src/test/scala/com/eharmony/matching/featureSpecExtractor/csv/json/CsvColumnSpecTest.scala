@@ -4,6 +4,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 import spray.json._
+import spray.json.DefaultJsonProtocol.{DoubleJsonFormat, LongJsonFormat}
 
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
@@ -17,8 +18,8 @@ class CsvColumnSpecTest {
         )
 
         val expected = Seq(
-            LongCsvColumnSpec("long", "${long}"),
-            DoubleCsvColumnSpec("opt_double", "${opt_double}"),
+            CsvColumnSpecWithDefault[Long]("long", "${long}"),
+            CsvColumnSpecWithDefault[Double]("opt_double", "${opt_double}"),
             SyntheticEnumCsvColumnSpec("syn_enum", "${opt_string}", Seq("e1v1")),
             EnumCsvColumnSpec("enum", "${string}", "com.eharmony.matching.notaloha.AnEnum")
         )

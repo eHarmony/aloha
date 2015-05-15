@@ -1,18 +1,17 @@
 package com.eharmony.matching.featureSpecExtractor.csv
 
-import com.eharmony.matching.featureSpecExtractor.csv.encoding.Encoding
-
-import scala.concurrent.ExecutionContext.Implicits.global
-
 import com.eharmony.matching.aloha.FileLocations
 import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.matching.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import com.eharmony.matching.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine, CsvLines, CsvTypes}
+import com.eharmony.matching.featureSpecExtractor.csv.encoding.Encoding
 import com.eharmony.matching.featureSpecExtractor.{MissingAndErroneousFeatureInfo, SpecBuilder}
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class CsvSpecProducer1Test {
@@ -24,6 +23,10 @@ class CsvSpecProducer1Test {
               |{
               |  "imports": [],
               |  "features": [
+              |    {
+              |      "name": "default_field",
+              |      "spec": "${opt_double}"
+              |    },
               |    {
               |      "name": "long",
               |      "type": "long",
@@ -59,10 +62,10 @@ class CsvSpecProducer1Test {
         val spec = specBuilder.fromString(json).get
 
         val expected = Seq(
-            (MissingAndErroneousFeatureInfo(List(),List()),             "1,2.0,e1v1,e2v1,VALUE_2"),
-            (MissingAndErroneousFeatureInfo(List("opt_double"),List()), "1,null,null,e2v1,VALUE_2"),
-            (MissingAndErroneousFeatureInfo(List(),List()),             "1,2.0,null,null,VALUE_2"),
-            (MissingAndErroneousFeatureInfo(List(),List()),             "1,2.0,e1v1,null,VALUE_3")
+            (MissingAndErroneousFeatureInfo(List(),List()),                              "2.0,1,2.0,e1v1,e2v1,VALUE_2"),
+            (MissingAndErroneousFeatureInfo(List("default_field", "opt_double"),List()), "null,1,null,null,e2v1,VALUE_2"),
+            (MissingAndErroneousFeatureInfo(List(),List()),                              "2.0,1,2.0,null,null,VALUE_2"),
+            (MissingAndErroneousFeatureInfo(List(),List()),                              "2.0,1,2.0,e1v1,null,VALUE_3")
         )
 
         val actual = lines.map(spec.apply)

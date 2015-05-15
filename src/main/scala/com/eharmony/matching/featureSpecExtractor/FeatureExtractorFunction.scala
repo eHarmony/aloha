@@ -41,7 +41,7 @@ trait FeatureExtractorFunction[A, @specialized(Double) Density] extends (A => (M
     def apply(a: A): (MissingAndErroneousFeatureInfo, IndexedSeq[Density]) = {
         def h(l: Array[Density], i: Int, n: Int, missing: List[String], erring: List[String]): (MissingAndErroneousFeatureInfo, IndexedSeq[Density]) = {
             if (i >= n)
-                (MissingAndErroneousFeatureInfo(missing, erring), l)
+                (MissingAndErroneousFeatureInfo(missing.reverse, erring.reverse), l)
             else {
                 val (name, feature) = features(i)
                 // Prefix the feature value tuple key by the feature name.
