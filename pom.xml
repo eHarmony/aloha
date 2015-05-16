@@ -72,6 +72,7 @@ noteworthy phases:
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
 		<encoding>UTF-8</encoding>
+		<java.version>1.6</java.version>
 		<scala.version>2.10.4</scala.version>
 		<scala.major.version>2.10</scala.major.version>
 		<spray.json.version>1.3.1</spray.json.version>
@@ -79,10 +80,22 @@ noteworthy phases:
 		<jackson.version>1.9.9</jackson.version>
 		<protostuff.version>1.0.7</protostuff.version>
 		<protobuf.version>2.4.1</protobuf.version>
-		<!--<scala.optimize.flag>-optimise</scala.optimize.flag>-->
-		<scala.optimize.flag />
+
+		<!--
+		Use zinc scala compilation server for scala compilation.  This defaults to false.  The reason the default
+		is false because when zinc is not running, the scala-maven-plugin throws an NPE.  This can be overridden
+		on the command line by doing:
+
+			mvn test -Dcompile=incremental
+		-->
+		<compile>all</compile>
+
 		<!--<generated.classes.test>${build.outputDirectory}/test-classes/generated</generated.classes.test>-->
 		<generated.classes.test>${project.build.directory}/test-classes/generated</generated.classes.test>
+
+
+		<proto.test.sources>${project.build.directory}/generated-test-sources</proto.test.sources>
+
 
 		<!-- For child artifacts, the artifact name should be "[my-artifact-name-here]${artifact.ext}".
 			This allows us to build different artifact names for different maven profiles. -->
@@ -246,20 +259,6 @@ noteworthy phases:
 
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-jms</artifactId>
-			<version>${org.springframework.version}</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-orm</artifactId>
-			<version>${org.springframework.version}</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 			<version>${org.springframework.version}</version>
 			<scope>test</scope>
@@ -268,72 +267,7 @@ noteworthy phases:
 
 	<build>
 		<plugins>
-			<!-- scala compilation -->
-			<plugin>
-				<!-- see http://davidb.github.com/scala-maven-plugin -->
-
-				<!-- # Use zinc for incremental compilation: See http://typesafe.com/blog/zinc-and-incremental-compilation
-                    *************** INSTALLING ZINC *************** ZINC_VERSION=0.2.5 curl "http://repo.typesafe.com/typesafe/zinc/com/typesafe/zinc/dist/0.2.5/zinc-${ZINC_VERSION}.tgz"
-                    > zinc-${ZINC_VERSION}.tgz tar -zxvf zinc-${ZINC_VERSION}.tgz sudo mkdir
-                    -p /usr/share/java 2>/dev/null sudo mv zinc-${ZINC_VERSION} /usr/share/java/zinc-${ZINC_VERSION}
-                    cd /usr/share/java sudo ln -s zinc-${ZINC_VERSION} zinc cd /usr/local/bin
-                    sudo ln -s /usr/share/java/zinc/bin/zinc zinc *************** RUNNING ZINC
-                    *************** zinc -start -nailed -->
-
-				<groupId>net.alchim31.maven</groupId>
-				<artifactId>scala-maven-plugin</artifactId>
-				<version>3.1.5</version>
-				<configuration>
-					<scalaVersion>${scala.version}</scalaVersion>
-					<displayCmd>true</displayCmd>
-					<verbose>true</verbose>
-					<!--<addToClasspath>${project.build.directory}/generated-sources</addToClasspath>-->
-					<failOnMultipleScalaVersions>true</failOnMultipleScalaVersions>
-					<args>
-						<arg>-target:jvm-1.6</arg>
-						<arg>${scala.optimize.flag}</arg>
-						<arg>-feature</arg>
-						<arg>-deprecation</arg>
-						<arg>-Ycheck:jvm</arg>
-						<arg>-Ywarn-all</arg>
-						<arg>-dependencyfile</arg>
-						<arg>-unchecked</arg>
-						<!--<arg>-Yinline-warnings</arg>-->
-						<!--<arg>${project.build.directory}/.scala_dependencies</arg>-->
-					</args>
-					<jvmArgs>
-					</jvmArgs>
-				</configuration>
-				<executions>
-					<execution>
-						<!--
-						Normal compile phase because there is no java in the src/main directory.  If there was a
-						java subdirectory, then change the phase to process-resources.  Additionally, might need to
-						add the goal add-source.
-						-->
-						<id>scala-compile</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-					</execution>
-
-					<!-- Maven Phase is changed here because we have mixed java / scala in the test directory. -->
-					<execution>
-						<id>scala-test-compile</id>
-						<phase>process-test-resources</phase>
-						<goals>
-							<goal>testCompile</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>doc-jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+			<!-- scala compile plugin is mvn version specific and is in profiles. -->
 
 			<!-- Java compilation.  Currently just for tests. -->
 			<plugin>
@@ -445,6 +379,8 @@ noteworthy phases:
 									tar -xzf protobuf-2.4.1.tar.gz cd protobuf-2.4.1 sudo ./configure sudo make
 									sudo make install If on a mac, sudo port install protobuf-java
 								-->
+
+								<echo message="Creating protobuf instance source"/>
 								<exec executable="${protoc}" failonerror="true">
 									<arg value="--java_out=${project.build.directory}/generated-test-sources" />
 									<arg value="-I${project.basedir}/src/test/proto" />
@@ -457,6 +393,7 @@ noteworthy phases:
 								 TODO: Fix this by using an appropriate maven-compiler-plugin execution. (RMD 2015-04-23)
 								=======================================================================================
 								-->
+								<echo message="Compiling protobuf source to .class files."/>
 								<exec executable="javac" failonerror="true" >
 									<arg line="-d ${project.build.testOutputDirectory} -classpath ${settings.localRepository}/com/google/protobuf/protobuf-java/${protobuf.version}/protobuf-java-${protobuf.version}.jar ${project.build.directory}/generated-test-sources/com/eharmony/matching/aloha/semantics/compiled/plugin/proto/TestProtoBuffs.java" />
 								</exec>
@@ -468,6 +405,26 @@ noteworthy phases:
 					</execution>
 				</executions>
 			</plugin>
+
+			<!-- This is necessary for compiling under maven 3 without -Drecompile.mode=incremental -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-test-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${proto.test.sources}</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -536,14 +493,9 @@ noteworthy phases:
 	<reporting>
 		<plugins>
 			<plugin>
-				<groupId>net.alchim31.maven</groupId>
-				<artifactId>scala-maven-plugin</artifactId>
-				<version>3.1.5</version>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>2.7</version>
+				<version>2.4</version>
 			</plugin>
 		</plugins>
 	</reporting>
@@ -626,23 +578,6 @@ noteworthy phases:
 				<version>${protobuf.version}</version>
 			</dependency>
 
-			<!-- 3 dependencies for adding JSON serialization to protocol buffers 
-				via protostuff. For more info, see: http://code.google.com/p/protostuff/wiki/JsonSerialization#java_v2protoc_schema -->
-			<dependency>
-				<groupId>com.dyuproject.protostuff</groupId>
-				<artifactId>protostuff-api</artifactId>
-				<version>${protostuff.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.dyuproject.protostuff</groupId>
-				<artifactId>protostuff-json</artifactId>
-				<version>${protostuff.version}</version>
-			</dependency>
-			<dependency>
-				<artifactId>jackson-core-asl</artifactId>
-				<groupId>org.codehaus.jackson</groupId>
-				<version>${jackson.version}</version>
-			</dependency>
 
 			<!-- Logging -->
 			<dependency>
@@ -660,4 +595,192 @@ noteworthy phases:
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+
+	<profiles>
+		<profile>
+			<!--
+                Trick to differentiate maven 2.x and maven 3.x.
+
+                This employs that the basedir expression is only recognized by Maven 3.x (see MNG-2363)
+
+                http://maven.apache.org/plugins/maven-site-plugin/maven-3.html#\
+                Using_maven-site-plugin_2.x_with_Maven_2_and_maven-site-plugin_3.x_with_Maven_3
+            -->
+			<id>maven-2</id>
+			<activation>
+				<file>
+					<missing>${basedir}</missing>
+				</file>
+			</activation>
+
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.scala-tools</groupId>
+							<artifactId>maven-scala-plugin</artifactId>
+							<version>2.15.2</version>
+							<configuration>
+								<scalaVersion>${scala.version}</scalaVersion>
+								<displayCmd>true</displayCmd>
+								<verbose>true</verbose>
+								<failOnMultipleScalaVersions>true</failOnMultipleScalaVersions>
+								<args>
+									<arg>-target:jvm-${java.version}</arg>
+									<arg>-feature</arg>
+									<arg>-deprecation</arg>
+									<arg>-Ycheck:jvm</arg>
+									<arg>-Ywarn-all</arg>
+									<arg>-unchecked</arg>
+								</args>
+								<jvmArgs>
+								</jvmArgs>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+				<plugins>
+					<plugin>
+						<groupId>org.scala-tools</groupId>
+						<artifactId>maven-scala-plugin</artifactId>
+						<executions>
+							<execution>
+								<!--
+                                Normal compile phase because there is no java in the src/main directory.  If there was a
+                                java subdirectory, then change the phase to process-resources.  Additionally, might need to
+                                add the goal add-source.
+                                -->
+								<id>scala-compile</id>
+								<phase>compile</phase>
+								<goals><goal>compile</goal></goals>
+							</execution>
+
+							<!-- Maven Phase is changed here because we have mixed java / scala in the test directory. -->
+							<execution>
+								<id>scala-test-compile</id>
+								<phase>process-test-resources</phase>
+								<goals><goal>testCompile</goal></goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+			<reporting>
+				<plugins>
+					<plugin>
+						<groupId>org.scala-tools</groupId>
+						<artifactId>maven-scala-plugin</artifactId>
+						<version>2.15.2</version>
+					</plugin>
+				</plugins>
+			</reporting>
+		</profile>
+
+		<profile>
+			<!--
+                Trick to differentiate maven 2.x and maven 3.x.
+
+                This employs that the basedir expression is only recognized by Maven 3.x (see MNG-2363)
+
+                http://maven.apache.org/plugins/maven-site-plugin/maven-3.html#\
+                Using_maven-site-plugin_2.x_with_Maven_2_and_maven-site-plugin_3.x_with_Maven_3
+            -->
+			<id>maven-3</id>
+			<activation>
+				<file>
+					<exists>${basedir}</exists>
+				</file>
+			</activation>
+
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<!-- see http://davidb.github.com/scala-maven-plugin -->
+
+							<!--
+                                 # Use zinc for incremental compilation: See http://typesafe.com/blog/zinc-and-incremental-compilation
+
+                                 *************** INSTALLING ZINC ***************
+
+                                 ZINC_VERSION=0.2.5
+                                 curl "http://repo.typesafe.com/typesafe/zinc/com/typesafe/zinc/dist/0.2.5/zinc-${ZINC_VERSION}.tgz" > zinc-${ZINC_VERSION}.tgz
+                                 tar -zxvf zinc-${ZINC_VERSION}.tgz
+                                 sudo mkdir -p /usr/share/java 2>/dev/null
+                                 sudo mv zinc-${ZINC_VERSION} /usr/share/java/zinc-${ZINC_VERSION}
+                                 cd /usr/share/java
+                                 sudo ln -s zinc-${ZINC_VERSION} zinc
+                                 cd /usr/local/bin
+                                 sudo ln -s /usr/share/java/zinc/bin/zinc zinc
+
+
+                                 *************** RUNNING ZINC ***************
+
+                                 zinc -start -nailed
+                              -->
+
+							<groupId>net.alchim31.maven</groupId>
+							<artifactId>scala-maven-plugin</artifactId>
+							<version>3.2.0</version>
+							<configuration>
+								<recompileMode>${compile}</recompileMode>
+								<useZincServer>true</useZincServer>
+								<scalaVersion>${scala.version}</scalaVersion>
+								<displayCmd>true</displayCmd>
+								<verbose>true</verbose>
+								<failOnMultipleScalaVersions>true</failOnMultipleScalaVersions>
+								<args>
+									<arg>-target:jvm-${java.version}</arg>
+									<arg>-feature</arg>
+									<arg>-deprecation</arg>
+									<arg>-Ycheck:jvm</arg>
+									<arg>-Ywarn-all</arg>
+									<arg>-unchecked</arg>
+								</args>
+								<jvmArgs>
+								</jvmArgs>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+				<plugins>
+					<plugin>
+						<groupId>net.alchim31.maven</groupId>
+						<artifactId>scala-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>scala-compile-first</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>add-source</goal>
+									<goal>compile</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>scala-test-compile</id>
+								<phase>process-test-resources</phase>
+								<goals>
+									<goal>testCompile</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals><goal>doc-jar</goal></goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+			<reporting>
+				<plugins>
+					<plugin>
+						<groupId>net.alchim31.maven</groupId>
+						<artifactId>scala-maven-plugin</artifactId>
+						<version>3.1.5</version>
+					</plugin>
+				</plugins>
+			</reporting>
+		</profile>
+	</profiles>
 </project>
