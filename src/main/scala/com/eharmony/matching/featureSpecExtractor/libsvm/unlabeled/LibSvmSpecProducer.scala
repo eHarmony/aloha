@@ -10,23 +10,22 @@ import spray.json.JsValue
 import scala.util.Try
 
 
-class LibSvmSpecProducer[A](seed: Int)
+final case class LibSvmSpecProducer[A]()
 extends SpecProducer[A, LibSvmSpec[A]]
    with SparseCovariateProducer
    with CompilerFailureMessages {
-
-    def this() = this(LibSvmSpecProducer.Seed)
 
     type JsonType = LibSvmUnlabeledJson
     def name = getClass.getSimpleName
     def parse(json: JsValue): Try[LibSvmUnlabeledJson] = Try { json.convertTo[LibSvmUnlabeledJson] }
     def getSpec(semantics: CompiledSemantics[A], jsonSpec: LibSvmUnlabeledJson): Try[LibSvmSpec[A]] = {
         val covariates: Try[FeatureExtractorFunction[A, Sparse]] = getCovariates(semantics, jsonSpec)
+        val salt = jsonSpec.salt.getOrElse(LibSvmSpecProducer.Salt)
         // TODO: Log seed on warn level.
-        covariates.map(c => jsonSpec.numBits.fold(new LibSvmSpec(c, murmur3_32(seed)))(b => new LibSvmSpec(c, murmur3_32(seed), b)))
+        covariates.map(c => jsonSpec.numBits.fold(new LibSvmSpec(c, murmur3_32(salt)))(b => new LibSvmSpec(c, murmur3_32(salt), b)))
     }
 }
 
 object LibSvmSpecProducer {
-    private val Seed = 0
+    private[libsvm] val Salt = 0
 }

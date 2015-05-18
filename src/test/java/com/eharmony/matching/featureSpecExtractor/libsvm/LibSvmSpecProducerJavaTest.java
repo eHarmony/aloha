@@ -11,9 +11,4 @@ public class LibSvmSpecProducerJavaTest {
     public void testNoParamConstructor() {
         new LibSvmSpecProducer();
     }
-
-    @Test
-    public void testOneParamConstructor() {
-        new LibSvmSpecProducer(0);
-    }
 }

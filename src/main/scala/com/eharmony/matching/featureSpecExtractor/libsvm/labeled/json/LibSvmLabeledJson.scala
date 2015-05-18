@@ -10,9 +10,10 @@ case class LibSvmLabeledJson(
         imports: Seq[String],
         features: sci.IndexedSeq[SparseSpec],
         numBits: Option[Int],
+        salt: Option[Int],
         label: String)
 extends LibSvmJsonLike
 
 object LibSvmLabeledJson extends DefaultJsonProtocol {
-    implicit val libSvmLabeledFormat = jsonFormat4(LibSvmLabeledJson.apply)
+    implicit val libSvmLabeledFormat = jsonFormat5(LibSvmLabeledJson.apply)
 }

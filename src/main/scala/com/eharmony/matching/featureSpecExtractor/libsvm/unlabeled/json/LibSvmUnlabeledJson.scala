@@ -6,9 +6,13 @@ import spray.json._
 
 import scala.collection.{immutable => sci}
 
-case class LibSvmUnlabeledJson(imports: Seq[String], features: sci.IndexedSeq[SparseSpec], numBits: Option[Int])
+case class LibSvmUnlabeledJson(
+        imports: Seq[String],
+        features: sci.IndexedSeq[SparseSpec],
+        numBits: Option[Int],
+        salt: Option[Int])
 extends LibSvmJsonLike
 
 object LibSvmUnlabeledJson extends DefaultJsonProtocol {
-    implicit val libSvmUnlabeledFormat = jsonFormat3(LibSvmUnlabeledJson.apply)
+    implicit val libSvmUnlabeledFormat = jsonFormat4(LibSvmUnlabeledJson.apply)
 }

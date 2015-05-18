@@ -10,6 +10,6 @@ import com.eharmony.matching.featureSpecExtractor.libsvm.unlabeled.LibSvmSpecPro
 class LibSvmSpecProducerTest extends LibSvmProducerTestBase {
     @Test def testCorrectFormatting() {
         val seed = 0
-        test(seed, new LibSvmSpecProducer(seed))
+        test(seed, LibSvmSpecProducer())
     }
 }
