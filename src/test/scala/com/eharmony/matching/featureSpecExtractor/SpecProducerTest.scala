@@ -1,5 +1,7 @@
 package com.eharmony.matching.featureSpecExtractor
 
+import java.lang.reflect.Modifier
+
 import scala.collection.JavaConversions.asScalaSet
 import org.junit.Assert._
 import org.junit.Test
@@ -20,6 +22,14 @@ class SpecProducerTest {
                 val nParams = c.getParameterTypes.length
                 assertEquals(s"The constructor for ${clazz.getCanonicalName} should take 0 arguments.  It takes $nParams.", 0, nParams)
             }
+        }
+    }
+
+    @Test def testAllSpecProducersAreFinalClasses() {
+        val reflections = new Reflections("com.eharmony.matching.featureSpecExtractor")
+        val specProdClasses = reflections.getSubTypesOf(classOf[SpecProducer[_, _]]).toSet
+        specProdClasses.foreach { clazz =>
+            assertTrue(s"${clazz.getCanonicalName} needs to be declared final.", Modifier.isFinal(clazz.getModifiers))
         }
     }
 }
