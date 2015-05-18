@@ -4,7 +4,6 @@ import com.eharmony.matching.aloha.FileLocations
 import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.matching.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import com.eharmony.matching.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine, CsvLines, CsvTypes}
-import com.eharmony.matching.featureSpecExtractor.csv.encoding.Encoding
 import com.eharmony.matching.featureSpecExtractor.{MissingAndErroneousFeatureInfo, SpecBuilder}
 import org.junit.Assert._
 import org.junit.Test
@@ -22,6 +21,8 @@ class CsvSpecProducerTest {
             """
               |{
               |  "imports": [],
+              |  "separator": ",",
+              |  "nullValue": "null",
               |  "features": [
               |    {
               |      "name": "default_field",
@@ -96,7 +97,7 @@ object CsvSpecProducerTest {
             """1,2.0,e1v1,e2v2,VALUE_3"""
         )
 
-        val sb = SpecBuilder(semantics, List(new CsvSpecProducer[CsvLine]("null", ",", Encoding.regular)))
+        val sb = SpecBuilder(semantics, List(CsvSpecProducer[CsvLine]()))
         (lines, sb)
     }
 }

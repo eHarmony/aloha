@@ -1,5 +1,8 @@
 package com.eharmony.matching.featureSpecExtractor.csv.encoding
 
+import spray.json._
+import spray.json.DefaultJsonProtocol.lift
+
 sealed trait Encoding {
     def finalizer[A](sep: String, nullString: String, values: Iterable[String]): Option[A] => String
 }
@@ -7,8 +10,17 @@ sealed trait Encoding {
 object Encoding {
     def hotOne: Encoding = HotOneEncoding
     def regular: Encoding = RegularEncoding
-}
+    def thermometer: Encoding = ThermometerEncoding
 
+    implicit val encodingJsonFormat: JsonFormat[Encoding] = lift(new JsonReader[Encoding] {
+        override def read(json: JsValue): Encoding = json match {
+            case JsString("regular") => RegularEncoding
+            case JsString("hotOne") => HotOneEncoding
+            case JsString("thermometer") => ThermometerEncoding
+            case d => deserializationError(s"The following encodings are supported: 'regular', 'hotOne', 'thermometer'.  Given: '${d.compactPrint}'." )
+        }
+    })
+}
 
 // TODO: Fill in
 case object ThermometerEncoding extends Encoding {

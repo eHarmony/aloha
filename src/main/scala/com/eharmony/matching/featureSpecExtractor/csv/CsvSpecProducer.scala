@@ -2,7 +2,7 @@ package com.eharmony.matching.featureSpecExtractor.csv
 
 import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.matching.aloha.semantics.func.GenAggFunc
-import com.eharmony.matching.featureSpecExtractor.csv.encoding.{Encoding, RegularEncoding}
+import com.eharmony.matching.featureSpecExtractor.csv.encoding.Encoding
 import com.eharmony.matching.featureSpecExtractor.csv.finalizer.{BasicFinalizer, EncodingBasedFinalizer}
 import com.eharmony.matching.featureSpecExtractor.csv.json.{CsvColumnSpec, CsvJson}
 import com.eharmony.matching.featureSpecExtractor.{CompilerFailureMessages, FeatureExtractorFunction, SpecProducer, StringFeatureExtractorFunction}
@@ -11,24 +11,33 @@ import spray.json.JsValue
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success, Try}
 
-case class CsvSpecProducer[A](nullString: String, separator: String, encoding: Encoding)
+final case class CsvSpecProducer[A]()
     extends SpecProducer[A, CsvSpec[A]]
     with CompilerFailureMessages {
-
-    def this() = this(CsvSpecProducer.NullString, CsvSpecProducer.Separator, CsvSpecProducer.Encoding)
 
     type JsonType = CsvJson
     def name = getClass.getSimpleName
     def parse(json: JsValue): Try[CsvJson] = Try { json.convertTo[CsvJson] }
     def getSpec(semantics: CompiledSemantics[A], jsonSpec: CsvJson): Try[CsvSpec[A]] = {
-        val spec = getCovariates(semantics, jsonSpec) map { cov => CsvSpec(cov, separator) }
+        val nullString = jsonSpec.nullValue.getOrElse(CsvSpecProducer.NullString)
+        val separator = jsonSpec.separator.getOrElse(CsvSpecProducer.Separator)
+        val encoding = jsonSpec.encoding.getOrElse(CsvSpecProducer.Encoding)
+
+        val spec = getCovariates(semantics, jsonSpec, nullString, separator, encoding) map { cov => CsvSpec(cov, separator) }
         spec
     }
 
-    protected[this] def getCovariates(semantics: CompiledSemantics[A], cj: CsvJson): Try[FeatureExtractorFunction[A, String]] = {
+    protected[this] def getCovariates(
+            semantics: CompiledSemantics[A],
+            cj: CsvJson,
+            nullString: String,
+            separator: String,
+            encoding: Encoding): Try[FeatureExtractorFunction[A, String]] = {
+
         // Get a new semantics with the imports changed to reflect the imports from the Json Spec
         // Import of ExecutionContext.Implicits.global is necessary.
         val semanticsWithImports = semantics.copy[A](imports = cj.imports)
+
 
         def compile(it: Iterator[CsvColumnSpec], successes: List[(String, GenAggFunc[A, String])]): Try[FeatureExtractorFunction[A, String]] = {
             if (!it.hasNext)
@@ -58,8 +67,12 @@ case class CsvSpecProducer[A](nullString: String, separator: String, encoding: E
     }
 }
 
-object CsvSpecProducer {
-    private val NullString = ""
-    private val Separator = ","
-    private val Encoding = RegularEncoding
+private object CsvSpecProducer {
+
+    /**
+     * Tab is the default separator to be consistent with *nix tools like cut, paste.
+     */
+    val Separator = "\t"
+    val NullString = ""
+    val Encoding = encoding.Encoding.regular
 }

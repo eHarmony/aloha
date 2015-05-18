@@ -24,10 +24,16 @@ sealed trait CsvColumnSpec {
     def finalizer(sep: String, nullString: String): Finalizer[ColType]
 }
 
-case class CsvJson(imports: Seq[String], features: sci.IndexedSeq[CsvColumnSpec])
+final case class CsvJson(
+    imports: Seq[String],
+    features: sci.IndexedSeq[CsvColumnSpec],
+    separator: Option[String],
+    nullValue: Option[String],
+    encoding: Option[Encoding]
+)
 
 object CsvJson extends DefaultJsonProtocol {
-    implicit val csvJson1Format: RootJsonFormat[CsvJson] = jsonFormat2(CsvJson.apply)
+    implicit val csvJson1Format: RootJsonFormat[CsvJson] = jsonFormat5(CsvJson.apply)
 }
 
 object CsvColumnSpec
