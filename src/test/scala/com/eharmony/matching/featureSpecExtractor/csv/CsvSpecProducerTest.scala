@@ -14,8 +14,8 @@ import org.junit.runners.BlockJUnit4ClassRunner
 import scala.concurrent.ExecutionContext.Implicits.global
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
-class CsvSpecProducer1Test {
-    import CsvSpecProducer1Test._
+class CsvSpecProducerTest {
+    import CsvSpecProducerTest._
 
     @Test def test1() {
         val json =
@@ -74,7 +74,7 @@ class CsvSpecProducer1Test {
     }
 }
 
-object CsvSpecProducer1Test {
+object CsvSpecProducerTest {
 
     private lazy val (lines, specBuilder) = {
         val types = Seq(
@@ -96,7 +96,7 @@ object CsvSpecProducer1Test {
             """1,2.0,e1v1,e2v2,VALUE_3"""
         )
 
-        val sb = SpecBuilder(semantics, List(new CsvSpecProducer1[CsvLine]("null", ",", Encoding.regular)))
+        val sb = SpecBuilder(semantics, List(new CsvSpecProducer[CsvLine]("null", ",", Encoding.regular)))
         (lines, sb)
     }
 }
