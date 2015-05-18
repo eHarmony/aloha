@@ -5,7 +5,11 @@ import spray.json.JsValue
 import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
 
 /**
- * SpecProducer is used to create different kinds of [[Spec]] instances.
+ * SpecProducer is used to create different kinds of [[Spec]] instances.  '''Classes that extend SpecProducer should
+ * only have zero-arg constructors.'''  This is because Spec instances should only be parametrized by the JSON
+ * specification.  Otherwise, one JSON specification could produce non-equivalent Spec instances in different
+ * environments.  It is a design goal for this not to happen.
+ *
  * @tparam A type of input passed to the spec.
  * @tparam B implementation of the Spec[A] that is returned by the getSpec function.
  */
