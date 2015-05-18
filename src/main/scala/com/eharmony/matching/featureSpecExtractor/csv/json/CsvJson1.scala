@@ -33,10 +33,7 @@ object CsvJson1 extends DefaultJsonProtocol {
 object CsvColumnSpec
 extends DefaultJsonProtocol
    with Logging {
-
-    private[this] implicit val stringCsvColumnSpecFormat: RootJsonFormat[CsvColumnSpecWithDefault[String]] = jsonFormat(CsvColumnSpecWithDefault.apply[String], "name", "spec", "defVal")
-    private[this] implicit val doubleCsvColumnSpecFormat: RootJsonFormat[CsvColumnSpecWithDefault[Double]] = jsonFormat(CsvColumnSpecWithDefault.apply[Double], "name", "spec", "defVal")
-    private[this] implicit val longCsvColumnSpecFormat: RootJsonFormat[CsvColumnSpecWithDefault[Long]] = jsonFormat(CsvColumnSpecWithDefault.apply[Long], "name", "spec", "defVal")
+    private[this] implicit def csvColumnSpecWithDefaultFormat[A: RefInfo: JsonFormat]: RootJsonFormat[CsvColumnSpecWithDefault[A]] = jsonFormat(CsvColumnSpecWithDefault.apply[A], "name", "spec", "defVal")
     private[this] implicit val defaultCsvColumnSpecFormat: RootJsonFormat[DefaultCsvColumnSpec] = jsonFormat(DefaultCsvColumnSpec.apply, "name", "spec")
 
     // Need to for some reason name the fields explicitly here...
@@ -53,7 +50,13 @@ extends DefaultJsonProtocol
             val spec = fieldType match {
                 case Some("string") => o.convertTo[CsvColumnSpecWithDefault[String]]
                 case Some("double") => o.convertTo[CsvColumnSpecWithDefault[Double]]
+                case Some("float") => o.convertTo[CsvColumnSpecWithDefault[Float]]
                 case Some("long") => o.convertTo[CsvColumnSpecWithDefault[Long]]
+                case Some("int") => o.convertTo[CsvColumnSpecWithDefault[Int]]
+                case Some("short") => o.convertTo[CsvColumnSpecWithDefault[Short]]
+                case Some("byte") => o.convertTo[CsvColumnSpecWithDefault[Byte]]
+                case Some("char") => o.convertTo[CsvColumnSpecWithDefault[Char]]
+                case Some("boolean") => o.convertTo[CsvColumnSpecWithDefault[Boolean]]
                 case Some("enum") if o.getFields("enumClass").exists { case JsString(_) => true; case _ => false } =>
                     o.convertTo[EnumCsvColumnSpec]
                 case Some("enum") if o.getFields("values").exists { case JsArray(_) => true; case _ => false } =>
