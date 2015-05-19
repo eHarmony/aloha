@@ -1,6 +1,7 @@
 package com.eharmony.matching.featureSpecExtractor
 
 import com.eharmony.matching.aloha.AlohaException
+import com.eharmony.matching.aloha.reflect.RefInfo
 import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.matching.aloha.semantics.func.{GenAggFunc, GenFunc0}
 
@@ -12,15 +13,13 @@ import scala.util.{Failure, Success, Try}
  */
 trait DvProducer { self: CompilerFailureMessages =>
 
-    protected[this] def emptyDv[A] = GenFunc0("\"\"", (_: A) => "")
+//    protected[this] def emptyDv[A] = GenFunc0("\"\"", (_: A) => "")
 
-    protected[this] def getDv[A](semantics: CompiledSemantics[A], dvName: String, spec: Option[String], defVal: Option[String]): Try[GenAggFunc[A, String]] =
+    protected[this] def getDv[A, B: RefInfo](semantics: CompiledSemantics[A], dvName: String, spec: Option[String], defVal: Option[B]): Try[GenAggFunc[A, B]] =
         spec map { s =>
-            semantics.createFunction[String](s, defVal) match {
-                case Left(msgs) => Failure {
-                    failure(dvName, msgs)
-                }
-                case Right(f) => Success(f)
+            semantics.createFunction[B](s, defVal) match {
+                case Left(msgs) => Failure(failure(dvName, msgs))
+                case Right(f)   => Success(f)
             }
         } getOrElse { Failure(new AlohaException(s"dependent variable $dvName is not defined.")) }
 

@@ -6,8 +6,8 @@ import spray.json._
 
 import scala.collection.{immutable => sci}
 
-case class LibSvmLabeledJson(
-        imports: Seq[String],
+final case class LibSvmLabeledJson(
+        imports: sci.Seq[String],
         features: sci.IndexedSeq[SparseSpec],
         numBits: Option[Int],
         salt: Option[Int],

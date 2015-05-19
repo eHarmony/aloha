@@ -24,7 +24,6 @@ extends SpecProducer[A, VwContextualBanditSpec[A]]
 
     def parse(json: JsValue): Try[VwContextualBanditJson] = Try { json.convertTo[VwContextualBanditJson] }
 
-
     def getSpec(semantics: CompiledSemantics[A], jsonSpec: VwContextualBanditJson): Try[VwContextualBanditSpec[A]] = {
         val (covariates, default, nss, normalizer) = getVwData(semantics, jsonSpec)
 
@@ -39,12 +38,13 @@ extends SpecProducer[A, VwContextualBanditSpec[A]]
         spec
     }
 
-    protected[this] def getAction(semantics: CompiledSemantics[A], spec: String): Try[GenAggFunc[A, String]] =
-        getDv(semantics, "cbAction", Some(spec), Some(""))
 
-    protected[this] def getCost(semantics: CompiledSemantics[A], spec: String): Try[GenAggFunc[A, String]] =
-        getDv(semantics, "cbCost", Some(spec), Some(""))
+    protected[this] def getAction(semantics: CompiledSemantics[A], spec: String): Try[GenAggFunc[A, Option[Long]]] =
+        getDv[A, Option[Long]](semantics, "cbAction", Some(s"Option($spec)"), Some(None))
 
-    protected[this] def getProbability(semantics: CompiledSemantics[A], spec: String): Try[GenAggFunc[A, String]] =
-        getDv(semantics, "cbProbability", Some(spec), Some(""))
+    protected[this] def getCost(semantics: CompiledSemantics[A], spec: String): Try[GenAggFunc[A, Option[Double]]] =
+        getDv[A, Option[Double]](semantics, "cbCost", Some(s"Option($spec)"), Some(None))
+
+    protected[this] def getProbability(semantics: CompiledSemantics[A], spec: String): Try[GenAggFunc[A, Option[Double]]] =
+        getDv[A, Option[Double]](semantics, "cbProbability", Some(s"Option($spec)"), Some(None))
 }

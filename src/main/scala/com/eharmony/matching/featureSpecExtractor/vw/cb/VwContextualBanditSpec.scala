@@ -1,5 +1,7 @@
 package com.eharmony.matching.featureSpecExtractor.vw.cb
 
+import com.eharmony.matching.aloha.util.Logging
+
 import scala.collection.{immutable => sci}
 
 import com.eharmony.matching.aloha.semantics.func.GenAggFunc
@@ -7,29 +9,37 @@ import com.eharmony.matching.featureSpecExtractor.vw.unlabeled.VwSpec
 import com.eharmony.matching.featureSpecExtractor.FeatureExtractorFunction
 import com.eharmony.matching.featureSpecExtractor.density.Sparse
 
-class VwContextualBanditSpec[A](
-        featuresFunction: FeatureExtractorFunction[A, Sparse],
-        defaultNamespace: sci.IndexedSeq[Int],
-        namespaces: sci.IndexedSeq[(String, sci.IndexedSeq[Int])],
-        normalizer: Option[CharSequence => CharSequence],
-        cbAction: GenAggFunc[A, String],
-        cbCost: GenAggFunc[A, String],
-        cbProbability: GenAggFunc[A, String],
-        includeZeroValues: Boolean = false)
+final case class VwContextualBanditSpec[A](
+        override val featuresFunction: FeatureExtractorFunction[A, Sparse],
+        override val defaultNamespace: sci.IndexedSeq[Int],
+        override val namespaces: sci.IndexedSeq[(String, sci.IndexedSeq[Int])],
+        override val normalizer: Option[CharSequence => CharSequence],
+        cbAction: GenAggFunc[A, Option[Long]],
+        cbCost: GenAggFunc[A, Option[Double]],
+        cbProbability: GenAggFunc[A, Option[Double]],
+        override val includeZeroValues: Boolean = false)
 extends VwSpec[A](featuresFunction, defaultNamespace, namespaces, normalizer, includeZeroValues)
-with java.io.Serializable  {
+   with Logging
+   with java.io.Serializable  {
 
     override def apply(data: A) = {
-        val actionVal = cbAction(data)
-        val costVal = cbCost(data)
-        val probabilityVal = cbProbability(data)
         val (missing, iv) = super.apply(data)
-        val sb = new StringBuilder().
-                 append(actionVal).append(":").
-                 append(costVal).append(":").
-                 append(probabilityVal).append("|").
-                 append(iv)
 
-        (missing, sb)
+        val lineOpt = for {
+            action <- cbAction(data)
+            cost <- cbCost(data)
+            prob <- cbProbability(data)
+        } yield {
+            new StringBuilder().
+                append(action).append(":").
+                append(cost).append(":").
+                append(prob).append("|").
+                append(iv)
+        }
+
+        if (lineOpt.isEmpty) debug("Contextual Bandit label information is missing. Creating a line with no label.")
+
+        val line = lineOpt.getOrElse(iv)
+        (missing, line)
     }
 }

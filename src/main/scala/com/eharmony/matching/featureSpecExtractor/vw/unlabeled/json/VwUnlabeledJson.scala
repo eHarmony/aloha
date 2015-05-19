@@ -6,8 +6,8 @@ import spray.json.DefaultJsonProtocol
 
 import scala.collection.{immutable => sci}
 
-case class VwUnlabeledJson(
-        imports: Seq[String],
+final case class VwUnlabeledJson(
+        imports: sci.Seq[String],
         features: sci.IndexedSeq[SparseSpec],
         namespaces: Option[Seq[Namespace]] = None,
         normalizeFeatures: Option[Boolean] = Some(false))

@@ -7,8 +7,8 @@ import spray.json.DefaultJsonProtocol
 import scala.collection.{immutable => sci}
 
 
-case class VwContextualBanditJson(
-        imports: Seq[String],
+final case class VwContextualBanditJson(
+        imports: sci.Seq[String],
         features: sci.IndexedSeq[SparseSpec],
         namespaces: Option[Seq[Namespace]] = Some(Nil),
         normalizeFeatures: Option[Boolean] = Some(false),

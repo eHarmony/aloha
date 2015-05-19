@@ -1,7 +1,7 @@
 package com.eharmony.matching.featureSpecExtractor.vw.labeled
 
 import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
-import com.eharmony.matching.aloha.semantics.func.GenAggFunc
+import com.eharmony.matching.aloha.semantics.func.{GenAggFunc, GenFunc0}
 import com.eharmony.matching.featureSpecExtractor.vw.VwCovariateProducer
 import com.eharmony.matching.featureSpecExtractor.vw.labeled.json.VwLabeledJson
 import com.eharmony.matching.featureSpecExtractor.{CompilerFailureMessages, DvProducer, SparseCovariateProducer, SpecProducer}
@@ -25,19 +25,28 @@ extends SpecProducer[A, VwLabelSpec[A]]
     def getSpec(semantics: CompiledSemantics[A], jsonSpec: VwLabeledJson): Try[VwLabelSpec[A]] = {
         val (covariates, default, nss, normalizer) = getVwData(semantics, jsonSpec)
 
+        val importance = getImportance(semantics, jsonSpec.importance)
         val spec = for {
             cov <- covariates
             sem = addStringImplicitsToSemantics(semantics, jsonSpec.imports)
             lab <- getLabel(sem, jsonSpec.label)
-            importance = getImportance(semantics, jsonSpec.importance)
-        } yield new VwLabelSpec(cov, default, nss, normalizer, lab, importance)
+            tag <- getTag(sem, jsonSpec.tag, lab)
+        } yield new VwLabelSpec(cov, default, nss, normalizer, lab, importance, tag)
 
         spec
     }
 
-    protected[this] def getLabel(semantics: CompiledSemantics[A], spec: String): Try[GenAggFunc[A, String]] =
-        getDv(semantics, "label", Some(spec), Some(""))
+    protected[this] def getLabel(semantics: CompiledSemantics[A], spec: String): Try[GenAggFunc[A, Option[Double]]] =
+        getDv[A, Option[Double]](semantics, "label", Some(s"Option($spec)"), Some(None))
 
-    protected[this] def getImportance(semantics: CompiledSemantics[A], spec: Option[String]): Option[GenAggFunc[A, String]] =
-        getDv(semantics, "importance", spec, Some("")).map(Option.apply).getOrElse(None)
+    protected[this] def getImportance(semantics: CompiledSemantics[A], spec: Option[String]): GenAggFunc[A, Option[Double]] =
+        getDv[A, Option[Double]](semantics, "importance", spec.map(s => s"Option($s)"), Some(None)) getOrElse {
+            GenFunc0[A, Option[Double]]("1", _ => Some(1d))
+        }
+
+    protected[this] def getTag(semantics: CompiledSemantics[A], spec: Option[String], label: GenAggFunc[A, Option[Double]]): Try[GenAggFunc[A, Option[String]]] = {
+        spec.fold(Try{label.andThenGenAggFunc(_.map(_.toString))})(sp =>
+            getDv[A, Option[String]](semantics, "tag", Some(s"Option($sp)"), Some(None))
+        )
+    }
 }

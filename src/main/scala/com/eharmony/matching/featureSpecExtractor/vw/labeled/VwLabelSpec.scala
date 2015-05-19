@@ -1,41 +1,55 @@
 package com.eharmony.matching.featureSpecExtractor.vw.labeled
 
-import com.eharmony.matching.aloha.semantics.func.{GenAggFunc, GenFunc0}
-import com.eharmony.matching.featureSpecExtractor.{LabelSpec, FeatureExtractorFunction}
+import com.eharmony.matching.aloha.semantics.func.GenAggFunc
+import com.eharmony.matching.aloha.util.Logging
 import com.eharmony.matching.featureSpecExtractor.density.Sparse
 import com.eharmony.matching.featureSpecExtractor.vw.unlabeled.VwSpec
+import com.eharmony.matching.featureSpecExtractor.{FeatureExtractorFunction, LabelSpec}
 
 import scala.collection.{immutable => sci}
 
-class VwLabelSpec[A](
-        featuresFunction: FeatureExtractorFunction[A, Sparse],
-        defaultNamespace: sci.IndexedSeq[Int],
-        namespaces: sci.IndexedSeq[(String, sci.IndexedSeq[Int])],
-        normalizer: Option[CharSequence => CharSequence],
-        val label: GenAggFunc[A, String],
-        importance: Option[GenAggFunc[A, String]],
-        includeZeroValues: Boolean = false)
+final case class VwLabelSpec[A](
+        override val featuresFunction: FeatureExtractorFunction[A, Sparse],
+        override val defaultNamespace: sci.IndexedSeq[Int],
+        override val namespaces: sci.IndexedSeq[(String, sci.IndexedSeq[Int])],
+        override val normalizer: Option[CharSequence => CharSequence],
+        label: GenAggFunc[A, Option[Double]],
+        importance: GenAggFunc[A, Option[Double]],
+        tag: GenAggFunc[A, Option[String]],
+        override val includeZeroValues: Boolean = false)
 extends VwSpec[A](featuresFunction, defaultNamespace, namespaces, normalizer, includeZeroValues)
-   with LabelSpec[A] {
-
-    private[this] val _importance = importance.getOrElse(GenFunc0[Any, String]("1", _ => "1"))
-
-    def getLabelValue(data: A): String = label(data)
-
+   with LabelSpec[A]
+   with Logging {
     override def apply(data: A) = {
-        val labelVal = getLabelValue(data)
-        val i = _importance(data)
         val (missing, iv) = super.apply(data)
-        val sb = new StringBuilder().append(labelVal).append(" ")
 
-        val out = (if (i != "1" && i != "1.0")
-                       sb.append(i).append(" ")
-                   else sb
-                  ).
-                  append(labelVal).
-                  append("|").
-                  append(iv)
+        // If importance or label is missing, this will return None.
+        // Otherwise, It'll be the entire line with dep vars and indep vars.
+        val lineOpt = for {
+            imp <- importance(data)
+            lab <- label(data)
+            t <- tag(data)  // If there's no tag in the JSON, t = lab.toString.
+        } yield {
+            val sb = new StringBuilder().
+                append(lab). // VW input format [Label].
+                append(" ")
 
-        (missing, out)
+            (if (imp == 1) sb
+             else sb.
+                append(imp). // VW input format [Importance].
+                append(" ")
+            ).append(t).     // VW input format [Tag].
+              append("|").   // There must be NO leading space b/c the tag must touch the pipe.
+              append(iv)     // Features.
+        }
+
+        if (lineOpt.isEmpty) debug("Label information is missing. Creating a line with no label.")
+
+        // If label information is missing, just return the indep vars.  This will cause vw
+        // to ignore the line for training.
+        val line = lineOpt.getOrElse(iv)
+        (missing, line)
     }
+
+    override val stringLabel = label.andThenGenAggFunc(labOpt => labOpt.map(lab => lab.toString))
 }

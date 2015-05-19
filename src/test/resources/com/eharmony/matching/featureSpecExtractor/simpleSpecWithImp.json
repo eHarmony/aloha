@@ -11,5 +11,6 @@
   "namespaces":[
     {"name":"A", "features":["name","marriages"]}
   ],
-  "label":"${profile.user_id}"
+  "label":"${profile.user_id}",
+  "importance":"${profile.education}"
 }

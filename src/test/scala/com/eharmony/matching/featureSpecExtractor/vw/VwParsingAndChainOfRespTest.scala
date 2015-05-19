@@ -12,7 +12,7 @@ import org.junit.runners.BlockJUnit4ClassRunner
 import com.eharmony.matching.aloha.FileLocations
 import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.matching.aloha.semantics.compiled.compiler.TwitterEvalCompiler
-import com.eharmony.matching.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine, CsvTypes}
+import com.eharmony.matching.aloha.semantics.compiled.plugin.csv.{CsvLines, CompiledSemanticsCsvPlugin, CsvLine, CsvTypes}
 import com.eharmony.matching.featureSpecExtractor.vw.cb.{VwContextualBanditSpec, VwContextualBanditSpecProducer}
 import com.eharmony.matching.featureSpecExtractor.vw.labeled.{VwLabelSpec, VwLabelSpecProducer}
 import com.eharmony.matching.featureSpecExtractor.vw.unlabeled.{VwSpec, VwSpecProducer}
@@ -87,21 +87,20 @@ class VwParsingAndChainOfRespTest {
 
 object VwParsingAndChainOfRespTest {
 
+    private[this] val features = Seq(
+        "profile.first_name" -> CsvTypes.StringOptionType,
+        "profile.number_of_marriages" -> CsvTypes.IntOptionType,
+        "profile.user_id" -> CsvTypes.LongOptionType,
+        "profile.matching_address.state" -> CsvTypes.IntOptionType,
+        "profile.education" -> CsvTypes.IntOptionType,
+        "profile.income" -> CsvTypes.IntOptionType,
+        "profile.matching_address.state" -> CsvTypes.IntOptionType,
+        "dv.matches" -> CsvTypes.IntOptionType,
+        "dv.converted" -> CsvTypes.IntOptionType,
+        "dv.match_odds" -> CsvTypes.DoubleOptionType
+    )
+
     val semantics: CompiledSemantics[CsvLine] = {
-
-        val features = Seq(
-            "profile.first_name" -> CsvTypes.StringOptionType,
-            "profile.number_of_marriages" -> CsvTypes.IntOptionType,
-            "profile.user_id" -> CsvTypes.LongOptionType,
-            "profile.matching_address.state" -> CsvTypes.IntOptionType,
-            "profile.education" -> CsvTypes.IntOptionType,
-            "profile.income" -> CsvTypes.IntOptionType,
-            "profile.matching_address.state" -> CsvTypes.IntOptionType,
-            "dv.matches" -> CsvTypes.IntOptionType,
-            "dv.converted" -> CsvTypes.IntOptionType,
-            "dv.match_odds" -> CsvTypes.DoubleOptionType
-        )
-
         val csvPlugin = CompiledSemanticsCsvPlugin(features.toMap)
 
         CompiledSemantics(
@@ -109,4 +108,6 @@ object VwParsingAndChainOfRespTest {
             csvPlugin,
             Seq.empty)
     }
+
+    val csvLines = CsvLines(indices = features.unzip._1.zipWithIndex.toMap, fs = ",")
 }

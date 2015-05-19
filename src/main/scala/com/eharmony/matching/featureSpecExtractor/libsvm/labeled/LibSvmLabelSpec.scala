@@ -8,7 +8,7 @@ import com.google.common.hash.HashFunction
 
 class LibSvmLabelSpec[A](
         covariates: FeatureExtractorFunction[A, Sparse],
-        val label: GenAggFunc[A, String],
+        label: GenAggFunc[A, String],
         hash: HashFunction,
         numBits: Int = LibSvmSpec.DefaultBits)
 extends LibSvmSpec[A](covariates, hash, numBits)
@@ -20,4 +20,6 @@ extends LibSvmSpec[A](covariates, hash, numBits)
         val sb = new StringBuilder().append(lab).append(" ").append(iv)
         (missing, sb)
     }
+
+    override def stringLabel = label.andThenGenAggFunc(Option.apply)
 }

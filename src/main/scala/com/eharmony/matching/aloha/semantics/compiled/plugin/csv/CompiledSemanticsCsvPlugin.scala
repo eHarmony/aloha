@@ -3,13 +3,15 @@ package com.eharmony.matching.aloha.semantics.compiled.plugin.csv
 import com.eharmony.matching.aloha.semantics.compiled.{RequiredAccessorCode, OptionalAccessorCode, VariableAccessorCode, CompiledSemanticsPlugin}
 import com.eharmony.matching.aloha.reflect.RefInfo
 
+import scala.annotation.varargs
+
 /**
   * Create a plugin that can generate code for TSV lines.
   * @param colNamesToTypes a mapping from field name to field type.
   */
 case class CompiledSemanticsCsvPlugin(colNamesToTypes: Map[String, CsvTypes.CsvType] = Map.empty) extends CompiledSemanticsPlugin[CsvLine] {
 
-    /**
+   /**
      * @return a [[scala.reflect.runtime.universe.TypeTag]] for input type A.
      */
     val refInfoA = RefInfo[CsvLine]
@@ -30,4 +32,9 @@ case class CompiledSemanticsCsvPlugin(colNamesToTypes: Map[String, CsvTypes.CsvT
     }
 
     private[this] def escape(s: String) = s.replace("\\", "\\\\").replace("\"", "\\\"")
+}
+
+object CompiledSemanticsCsvPlugin {
+    @varargs def apply(colNamesToTypes: (String, CsvTypes.CsvType)*): CompiledSemanticsCsvPlugin =
+        CompiledSemanticsCsvPlugin(colNamesToTypes.toMap)
 }

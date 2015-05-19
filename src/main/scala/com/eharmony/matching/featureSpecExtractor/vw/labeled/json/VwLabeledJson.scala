@@ -9,13 +9,14 @@ import scala.util.Try
 import com.eharmony.matching.featureSpecExtractor.json.{Namespace, SparseSpec}
 
 
-case class VwLabeledJson(
-        imports: Seq[String],
+final case class VwLabeledJson(
+        imports: sci.Seq[String],
         features: sci.IndexedSeq[SparseSpec],
         namespaces: Option[Seq[Namespace]] = Some(Nil),
         normalizeFeatures: Option[Boolean] = Some(false),
         label: String,
-        importance: Option[String] = Some("1"))
+        importance: Option[String] = Some("1"),
+        tag: Option[String] = None)
 extends VwJsonLike {
 
     def validateImportance(): Boolean = {
@@ -29,5 +30,5 @@ extends VwJsonLike {
 }
 
 object VwLabeledJson extends DefaultJsonProtocol {
-    implicit val labeledVwJsonFormat = jsonFormat6(VwLabeledJson.apply)
+    implicit val labeledVwJsonFormat = jsonFormat7(VwLabeledJson.apply)
 }
