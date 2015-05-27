@@ -1,5 +1,6 @@
 package com.eharmony.matching.featureSpecExtractor.vw.labeled
 
+import com.eharmony.matching.aloha.semantics.compiled.plugin.csv.{CsvLines, CsvLine}
 import com.eharmony.matching.aloha.semantics.func.GenFunc.f0
 import com.eharmony.matching.featureSpecExtractor.SparseFeatureExtractorFunction
 import org.junit.Assert._
@@ -59,4 +60,45 @@ final class VwLabelSpecTest {
     @Test def testS12_() = testLabelRemoval(spec(lab = lab, imp = imp2), "3 2 | ")
     @Test def testS12e() = testLabelRemoval(spec(lab = lab, imp = imp2, tag = emptyTag), "3 2 | ")
     @Test def testS12t() = testLabelRemoval(spec(lab = lab, imp = imp2, tag = tag), "3 2 t| ")
+
+
+    @Test def testStringLabel() {
+        val fef = new SparseFeatureExtractorFunction(Vector("f1" -> f0("Empty", (_: CsvLine) => Nil)))
+        val spec = new VwLabelSpec(fef, 0 to 0, Vector.empty, None, f0("", (c: CsvLine) => c.od("lab")), f0("", (c: CsvLine) => Option(1d)), f0("", (c: CsvLine) => None))
+
+        val csvLines = CsvLines(indices = Map("lab" -> 0))
+        val lines = csvLines(
+            "-1.0",
+            "-0.99999999999999999",
+            "-0.9999999999999999",
+            "-0.0000000000000001",
+            "-0.00000000000000001",
+            "-0.000000000000000001",
+             "0",
+             "0.000000000000000001",
+             "0.00000000000000001",
+             "0.0000000000000001",
+             "0.9999999999999999",
+             "0.99999999999999999",
+             "1.0"
+        )
+
+        val exp = Seq(
+            "-1",
+            "-1",
+            "-0.9999999999999999",
+            "-0.0000000000000001",
+            "-0.00000000000000001",
+            "-0",
+            "0",
+            "0",
+            "0.00000000000000001",
+            "0.0000000000000001",
+            "0.9999999999999999",
+            "1",
+            "1"
+        )
+
+        lines.zip(exp) foreach { case(line, ex) => assertEquals(s"for line: ${line.line}", Option(ex), spec.stringLabel(line)) }
+    }
 }
