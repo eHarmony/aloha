@@ -51,5 +51,5 @@ extends VwSpec[A](featuresFunction, defaultNamespace, namespaces, normalizer, in
         (missing, line)
     }
 
-    override val stringLabel = label.andThenGenAggFunc(labOpt => labOpt.map(lab => VwSpec.LabelDecimalFormatter.format(lab.toString)))
+    override val stringLabel = label.andThenGenAggFunc(labOpt => labOpt.map(lab => VwSpec.LabelDecimalFormatter.format(lab)))
 }
