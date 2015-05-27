@@ -25,9 +25,10 @@ trait Spec[+Density] {
     val defVal: Option[Density]
 }
 
-final case class SparseSpec(name: String, spec: String, defVal: Option[Sparse] = Option(Nil)) extends Spec[Sparse]
+final case class SparseSpec(name: String, spec: String, defVal: Option[Sparse] = SparseSpec.defVal) extends Spec[Sparse]
 
 object SparseSpec extends DefaultJsonProtocol {
+    val defVal: Option[Sparse] = Option(Nil)
     implicit val sparseSpecFormat = jsonFormat3(SparseSpec.apply)
 }
 

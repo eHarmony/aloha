@@ -41,7 +41,8 @@ final case class LibSvmLabelSpecProducer[A]()
     }
 
     private[this] def getLabel(semantics: CompiledSemantics[A], jsonSpec: LibSvmLabeledJson): Try[GenAggFunc[A, String]] = {
-        val sem = this.addStringImplicitsToSemantics(semantics, jsonSpec.imports)
-        getDv(sem, "label", Option(jsonSpec.label), Option(""))
+//        val sem = this.addStringImplicitsToSemantics(semantics, jsonSpec.imports)
+//        getDv(sem, "label", Option(jsonSpec.label), Option(""))
+        getDv(semantics, "label", Option(jsonSpec.label), Option(""))
     }
 }

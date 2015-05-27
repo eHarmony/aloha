@@ -6,7 +6,7 @@ import com.google.common.hash.HashFunction
 
 import scala.collection.{immutable => sci}
 
-class LibSvmSpec[A](covariates: FeatureExtractorFunction[A, Sparse], hash: HashFunction, numBits: Int = LibSvmSpec.DefaultBits) extends Spec[A] {
+class LibSvmSpec[-A](covariates: FeatureExtractorFunction[A, Sparse], hash: HashFunction, numBits: Int = LibSvmSpec.DefaultBits) extends Spec[A] {
     require(1 <= numBits && numBits <= 31, s"numBits must be in {1, 2, ..., 31}.  Found $numBits")
 
     private[this] val mask = (1 << numBits) - 1

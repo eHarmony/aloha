@@ -8,7 +8,7 @@ import com.eharmony.matching.featureSpecExtractor.{FeatureExtractorFunction, Lab
 
 import scala.collection.{immutable => sci}
 
-final case class VwLabelSpec[A](
+final case class VwLabelSpec[-A](
         override val featuresFunction: FeatureExtractorFunction[A, Sparse],
         override val defaultNamespace: sci.IndexedSeq[Int],
         override val namespaces: sci.IndexedSeq[(String, sci.IndexedSeq[Int])],
@@ -28,15 +28,15 @@ extends VwSpec[A](featuresFunction, defaultNamespace, namespaces, normalizer, in
         val lineOpt = for {
             imp <- importance(data)
             lab <- label(data)
-            t <- tag(data)  // If there's no tag in the JSON, t = lab.toString.
+            t = tag(data).getOrElse("").trim
+
         } yield {
             val sb = new StringBuilder().
-                append(lab). // VW input format [Label].
+                append(VwSpec.LabelDecimalFormatter.format(lab)).  // VW input format [Label].
                 append(" ")
-
             (if (imp == 1) sb
              else sb.
-                append(imp). // VW input format [Importance].
+                append(VwSpec.LabelDecimalFormatter.format(imp)).  // VW input format [Importance].
                 append(" ")
             ).append(t).     // VW input format [Tag].
               append("|").   // There must be NO leading space b/c the tag must touch the pipe.

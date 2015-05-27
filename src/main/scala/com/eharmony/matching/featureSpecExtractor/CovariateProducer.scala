@@ -18,7 +18,7 @@ sealed trait CovariateProducer[@specialized(Double) Density] { self: CompilerFai
     protected[this] def featExtFuncProd[A](successes: IndexedSeq[(String, GenAggFunc[A, Density])]): FeatureExtractorFunction[A, Density]
     protected[this] def refInfoB(): RefInfo[Density]
 
-    protected[this] def getCovariates[A](semantics: CompiledSemantics[A], cj: CovariateJson[Density]): Try[FeatureExtractorFunction[A, Density]] = {
+    protected[this] def getCovariates[A](semantics: CompiledSemantics[A], cj: CovariateJson[Density], defDefault: Option[Density] = None): Try[FeatureExtractorFunction[A, Density]] = {
         // Get a new semantics with the imports changed to reflect the imports from the Json Spec
         // Import of ExecutionContext.Implicits.global is necessary.
         val semanticsWithImports = semantics.copy[A](imports = cj.imports)
@@ -28,7 +28,7 @@ sealed trait CovariateProducer[@specialized(Double) Density] { self: CompilerFai
                 Success{ featExtFuncProd(successes.reverse.toIndexedSeq) }
             else {
                 val spec = it.next()
-                val f = semanticsWithImports.createFunction[Density](spec.spec, spec.defVal)(refInfoB())
+                val f = semanticsWithImports.createFunction[Density](spec.spec, spec.defVal orElse defDefault)(refInfoB())
                 f match {
                     case Left(msgs) => Failure { failure(spec.name, msgs) }
                     case Right(success) => compile(it, (spec.name, success) :: successes)

@@ -9,7 +9,7 @@ import com.eharmony.matching.featureSpecExtractor.vw.unlabeled.VwSpec
 import com.eharmony.matching.featureSpecExtractor.FeatureExtractorFunction
 import com.eharmony.matching.featureSpecExtractor.density.Sparse
 
-final case class VwContextualBanditSpec[A](
+final case class VwContextualBanditSpec[-A](
         override val featuresFunction: FeatureExtractorFunction[A, Sparse],
         override val defaultNamespace: sci.IndexedSeq[Int],
         override val namespaces: sci.IndexedSeq[(String, sci.IndexedSeq[Int])],
@@ -26,14 +26,14 @@ extends VwSpec[A](featuresFunction, defaultNamespace, namespaces, normalizer, in
         val (missing, iv) = super.apply(data)
 
         val lineOpt = for {
-            action <- cbAction(data)
-            cost <- cbCost(data)
-            prob <- cbProbability(data)
+            a <- action(data)
+            c <- cost(data)
+            p <- probability(data)
         } yield {
             new StringBuilder().
-                append(action).append(":").
-                append(cost).append(":").
-                append(prob).append("|").
+                append(a).append(":").
+                append(VwSpec.LabelDecimalFormatter.format(c)).append(":").
+                append(VwSpec.LabelDecimalFormatter.format(p)).append("|").
                 append(iv)
         }
 
@@ -42,4 +42,8 @@ extends VwSpec[A](featuresFunction, defaultNamespace, namespaces, normalizer, in
         val line = lineOpt.getOrElse(iv)
         (missing, line)
     }
+
+    private[this] def action(data: A): Option[Long] = cbAction(data).filter(_ > 0)
+    private[this] def cost(data: A): Option[Double] = cbCost(data)
+    private[this] def probability(data: A): Option[Double] = cbProbability(data).filter(p => 0 <= p && p <= 1)
 }

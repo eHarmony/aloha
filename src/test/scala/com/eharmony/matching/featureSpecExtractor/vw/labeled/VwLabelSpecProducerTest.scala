@@ -11,7 +11,7 @@ import org.junit.runners.BlockJUnit4ClassRunner
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class VwLabelSpecProducerTest {
 
-    @Test def testNonDefaultTagThatsMissingRemovesLabel() {
+    @Test def testNonDefaultTagThatsMissingDoesntRemoveLabel() {
         val semantics = VwParsingAndChainOfRespTest.semantics
 
         val sb = SpecBuilder(semantics, List(new VwLabelSpecProducer[CsvLine]))
@@ -25,10 +25,10 @@ class VwLabelSpecProducerTest {
         )
 
         val expected = Seq(
-            "1.0 2| |A name=Alex marriages=UNK",
-            "2.0 3| |A name=Bill marriages=UNK",
-            " |A name=Carl marriages=UNK",  // Omitting the tag variable removes the entire label.
-            "3.0 1| |A name=Dale marriages=UNK"
+            "1 2| |A name=Alex marriages=UNK",
+            "2 3| |A name=Bill marriages=UNK",
+            "0 | |A name=Carl marriages=UNK",
+            "3 1| |A name=Dale marriages=UNK"
         )
 
         lines.zip(expected).foreach{
@@ -55,10 +55,10 @@ class VwLabelSpecProducerTest {
         )
 
         val expected = Seq(
-            "1.0 2.0 1.0| |A name=Alex marriages=UNK",
-            "2.0 3.0 2.0| |A name=Bill marriages=UNK",
+            "1 2 1| |A name=Alex marriages=UNK",
+            "2 3 2| |A name=Bill marriages=UNK",
             " |A name=Carl marriages=UNK",  // Omitting the importance variable removes the entire label.
-            "3.0 3.0| |A name=Dale marriages=UNK"
+            "3 3| |A name=Dale marriages=UNK"
         )
 
         lines.zip(expected).foreach{
@@ -84,8 +84,8 @@ class VwLabelSpecProducerTest {
         )
 
         val expected = Seq(
-            "1.0 1.0| |A name=Alex marriages=UNK",
-            "2.0 2.0| |A name=Bill marriages=UNK",
+            "1 1| |A name=Alex marriages=UNK",
+            "2 2| |A name=Bill marriages=UNK",
             " |A name=Carl marriages=UNK"
         )
 

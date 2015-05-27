@@ -6,7 +6,7 @@ import com.eharmony.matching.featureSpecExtractor.density.Sparse
 import com.eharmony.matching.featureSpecExtractor.libsvm.unlabeled.LibSvmSpec
 import com.google.common.hash.HashFunction
 
-class LibSvmLabelSpec[A](
+class LibSvmLabelSpec[-A](
         covariates: FeatureExtractorFunction[A, Sparse],
         label: GenAggFunc[A, String],
         hash: HashFunction,

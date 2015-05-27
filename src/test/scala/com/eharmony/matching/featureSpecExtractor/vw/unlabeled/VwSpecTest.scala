@@ -1,20 +1,39 @@
 package com.eharmony.matching.featureSpecExtractor.vw.unlabeled
 
 import com.eharmony.matching.aloha.FileLocations
+import com.eharmony.matching.aloha.feature.BasicFunctions
 import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.matching.aloha.semantics.compiled.compiler.TwitterEvalCompiler
-import com.eharmony.matching.aloha.semantics.compiled.plugin.csv.{CsvLines, CsvLine, CsvTypes, CompiledSemanticsCsvPlugin}
-import com.eharmony.matching.aloha.semantics.func.{GeneratedAccessor, GenFunc}
+import com.eharmony.matching.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine, CsvLines, CsvTypes}
+import com.eharmony.matching.aloha.semantics.func.{GenFunc, GeneratedAccessor}
 import com.eharmony.matching.featureSpecExtractor.SparseFeatureExtractorFunction
-import com.eharmony.matching.featureSpecExtractor.vw.unlabeled.VwSpecTest.{Precision, csvLines}
+import com.eharmony.matching.featureSpecExtractor.vw.unlabeled.VwSpecTest._
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
+
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.Try
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class VwSpecTest {
+
+    @Test def testFeatureNotInANamespaceFailsRequirement() {
+        val nFeatures = 5
+        for {
+            nNamespaces <- 0 to nFeatures
+            removal <-  Seq(DontDrop, DropDefault) ++ (0 until nNamespaces map Drop.apply)
+            spec = createSpec(nFeatures, nNamespaces, removal)
+        } {
+            // If the number of namespaces equals the number of features, there are no features in the default
+            // namespace so removing from the default should not cause a failure.  Otherwise, removing an item
+            // from any namespace, including the default, should result in an error.
+            if (nNamespaces == nFeatures && removal == DropDefault)
+                assertTrue(s"#namespaces: $nNamespaces, removal: $removal: ", spec.isSuccess)
+            else assertEquals(s"#namespaces: $nNamespaces, removal: $removal: ", removal == DontDrop, spec.isSuccess)
+        }
+    }
 
     /**
      *
@@ -107,4 +126,47 @@ private object VwSpecTest {
         indices = Map("i" -> 0, "d" -> 1),
         fs = ","
     )
+
+    sealed trait Removal
+    case class Drop(ns: Int) extends Removal
+    case object DropDefault extends Removal
+    case object DontDrop extends Removal
+
+    /**
+     * Attempt to create a VwSpec.  This will fail when the constructor requirements are violated.
+     * @param nFeatures
+     * @param nNamespaces
+     * @param removal
+     * @return
+     */
+    def createSpec(nFeatures: Int, nNamespaces: Int, removal: Removal): Try[VwSpec[CsvLine]] = {
+
+        val features = (('a' to 'z') ++ ('A' to 'Z') ++ ('0' to '9')).take(nFeatures).map{ c =>
+            val name = s"a$c"
+            name -> GenFunc.f1(GeneratedAccessor(name, (c: CsvLine) => c.oi(name)))("ind($" + name + ")", x => x.map(BasicFunctions.ind).getOrElse(Nil))
+        }
+
+        val (nssi, defi) = features.indices.splitAt(nNamespaces) match {
+            case (nss, defNs) =>
+
+                val nssi = nss.grouped(1).map { x =>
+                    val i = x.head
+                    removal match {
+                        case Drop(n) if n == i => i.toString -> Vector.empty
+                        case _                 => i.toString -> Vector(i)
+                    }
+                }.toIndexedSeq
+
+                val defi = removal match {
+                    case DropDefault if defNs.isEmpty => defNs
+                    case DropDefault                  => defNs.tail
+                    case _                            => defNs
+                }
+
+                (nssi, defi)
+        }
+
+        val specTry = Try { new VwSpec(SparseFeatureExtractorFunction(features), defi, nssi, None) }
+        specTry
+    }
 }

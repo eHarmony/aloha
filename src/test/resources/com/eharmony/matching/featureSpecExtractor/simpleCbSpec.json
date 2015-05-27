@@ -5,13 +5,15 @@
     "scala.math._"
   ],
   "features":[
-    {"name":"state", "spec":"ind(${profile.matching_address.state})", "defVal":[["=UNK",1.0]]},
-    {"name":"education", "spec":"ind(${profile.education})", "defVal":[["=UNK",1.0]]},
-    {"name":"income", "spec":"ind(${profile.income})", "defVal":[["=UNK",1.0]]}
+    {"name":"name", "spec": "ind(${profile.first_name})"},
+    {"name":"state", "spec":"ind(${profile.matching_address.state})"},
+    {"name":"education", "spec":"ind(${profile.education})"},
+    {"name":"income", "spec":"ind(${profile.income})"}
   ],
 
   "namespaces":[
-    {"name":"A", "features":["state","education","income"]}
+    {"name":"A", "features":["name"]},
+    {"name":"B", "features":["state","education","income"]}
   ],
 
   "cbAction":"${dv.matches}",

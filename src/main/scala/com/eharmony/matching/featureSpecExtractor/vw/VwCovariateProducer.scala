@@ -2,6 +2,7 @@ package com.eharmony.matching.featureSpecExtractor.vw
 
 import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.matching.featureSpecExtractor.SparseCovariateProducer
+import com.eharmony.matching.featureSpecExtractor.json.SparseSpec
 import com.eharmony.matching.featureSpecExtractor.vw.json.VwJsonLike
 
 trait VwCovariateProducer[A] { self: SparseCovariateProducer =>
@@ -13,8 +14,8 @@ trait VwCovariateProducer[A] { self: SparseCovariateProducer =>
      */
     protected[this] def getVwData(semantics: CompiledSemantics[A], json: VwJsonLike) = {
 
-        // Attempt to create the covariate data.
-        val covariates = getCovariates(semantics, json)
+        // Attempt to create the covariate data.  When no default is given, default to an empty sequence of KV Pairs.
+        val covariates = getCovariates(semantics, json, SparseSpec.defVal)
 
         // Get the namespace information.
         val (default, nss) = json.namespaceIndices()

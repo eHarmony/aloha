@@ -7,7 +7,6 @@ import org.junit.runners.BlockJUnit4ClassRunner
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class VwSpecProducerTest {
-    // test all optional missing ok
     @Ignore @Test def test() {
         fail()
     }

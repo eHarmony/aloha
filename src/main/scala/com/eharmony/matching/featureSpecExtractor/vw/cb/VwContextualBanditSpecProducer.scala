@@ -29,10 +29,9 @@ extends SpecProducer[A, VwContextualBanditSpec[A]]
 
         val spec = for {
             cov <- covariates
-            sem = addStringImplicitsToSemantics(semantics, jsonSpec.imports)
-            action <- getAction(sem, jsonSpec.cbAction)
-            cost <- getCost(sem, jsonSpec.cbCost)
-            prob <- getProbability(sem, jsonSpec.cbCost)
+            action <- getAction(semantics, jsonSpec.cbAction)
+            cost <- getCost(semantics, jsonSpec.cbCost)
+            prob <- getProbability(semantics, jsonSpec.cbProbability)
         } yield new VwContextualBanditSpec(cov, default, nss, normalizer, action, cost, prob)
 
         spec

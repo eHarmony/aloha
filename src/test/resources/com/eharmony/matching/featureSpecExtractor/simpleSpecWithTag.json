@@ -1,4 +1,7 @@
 {
+  "notes": [
+    "Notice the tag field has toString at the end."
+  ],
   "imports":[
     "com.eharmony.matching.aloha.feature.BasicFunctions._",
     "com.eharmony.matching.aloha.feature.OptionMath.Syntax._",

@@ -6,19 +6,19 @@ import com.eharmony.matching.featureSpecExtractor.density.{Dense, Sparse}
 import scala.collection.{immutable => sci, mutable => scm}
 import scala.reflect.{ClassTag, classTag}
 
-final case class SparseFeatureExtractorFunction[A](features: sci.IndexedSeq[(String, GenAggFunc[A, Iterable[(String, Double)]])])
+final case class SparseFeatureExtractorFunction[-A](features: sci.IndexedSeq[(String, GenAggFunc[A, Iterable[(String, Double)]])])
 extends FeatureExtractorFunction[A, Iterable[(String, Double)]] {
     protected[this] val postProcessingFunction = (name: String, b: Sparse) => b.map(p => (name + p._1, p._2))
     protected[this] implicit def ctB(): ClassTag[Sparse] = classTag[Sparse]
 }
 
-final case class DenseFeatureExtractorFunction[A](features: sci.IndexedSeq[(String, GenAggFunc[A, Double])])
+final case class DenseFeatureExtractorFunction[-A](features: sci.IndexedSeq[(String, GenAggFunc[A, Double])])
     extends FeatureExtractorFunction[A, Double] {
     protected[this] val postProcessingFunction = (_: String, b: Dense) => b
     protected[this] implicit def ctB(): ClassTag[Dense] = classTag[Dense]
 }
 
-final case class StringFeatureExtractorFunction[A](features: sci.IndexedSeq[(String, GenAggFunc[A, String])])
+final case class StringFeatureExtractorFunction[-A](features: sci.IndexedSeq[(String, GenAggFunc[A, String])])
     extends FeatureExtractorFunction[A, String] {
     protected[this] val postProcessingFunction = (_: String, b: String) => b
     protected[this] implicit def ctB(): ClassTag[String] = classTag[String]
@@ -29,7 +29,7 @@ final case class StringFeatureExtractorFunction[A](features: sci.IndexedSeq[(Str
  * @tparam A
  * @tparam Density
  */
-trait FeatureExtractorFunction[A, @specialized(Double) Density] extends (A => (MissingAndErroneousFeatureInfo, IndexedSeq[Density])) {
+trait FeatureExtractorFunction[-A, @specialized(Double) Density] extends (A => (MissingAndErroneousFeatureInfo, IndexedSeq[Density])) {
     val features: sci.IndexedSeq[(String, GenAggFunc[A, Density])]
     protected[this] val postProcessingFunction: (String, Density) => Density
     protected[this] implicit def ctB(): ClassTag[Density]

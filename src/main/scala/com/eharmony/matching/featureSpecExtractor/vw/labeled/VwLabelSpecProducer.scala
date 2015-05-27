@@ -4,6 +4,7 @@ import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.matching.aloha.semantics.func.{GenAggFunc, GenFunc0}
 import com.eharmony.matching.featureSpecExtractor.vw.VwCovariateProducer
 import com.eharmony.matching.featureSpecExtractor.vw.labeled.json.VwLabeledJson
+import com.eharmony.matching.featureSpecExtractor.vw.unlabeled.VwSpec
 import com.eharmony.matching.featureSpecExtractor.{CompilerFailureMessages, DvProducer, SparseCovariateProducer, SpecProducer}
 import spray.json.JsValue
 
@@ -26,10 +27,14 @@ extends SpecProducer[A, VwLabelSpec[A]]
         val (covariates, default, nss, normalizer) = getVwData(semantics, jsonSpec)
 
         val importance = getImportance(semantics, jsonSpec.importance)
+
+        // Notice that we create a new semantics for the tag because it has a string output type.  This new
+        // semantics implicitly coerces values of any type to string by calling toString since all objects
+        // have a toString method.  This allows more sloppy specifications but makes them work.
         val spec = for {
             cov <- covariates
+            lab <- getLabel(semantics, jsonSpec.label)
             sem = addStringImplicitsToSemantics(semantics, jsonSpec.imports)
-            lab <- getLabel(sem, jsonSpec.label)
             tag <- getTag(sem, jsonSpec.tag, lab)
         } yield new VwLabelSpec(cov, default, nss, normalizer, lab, importance, tag)
 
@@ -45,7 +50,7 @@ extends SpecProducer[A, VwLabelSpec[A]]
         }
 
     protected[this] def getTag(semantics: CompiledSemantics[A], spec: Option[String], label: GenAggFunc[A, Option[Double]]): Try[GenAggFunc[A, Option[String]]] = {
-        spec.fold(Try{label.andThenGenAggFunc(_.map(_.toString))})(sp =>
+        spec.fold(Try{label.andThenGenAggFunc(_.map(v => VwSpec.LabelDecimalFormatter.format(v)))})(sp =>
             getDv[A, Option[String]](semantics, "tag", Some(s"Option($sp)"), Some(None))
         )
     }

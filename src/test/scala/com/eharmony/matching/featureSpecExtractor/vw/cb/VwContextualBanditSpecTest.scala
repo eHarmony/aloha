@@ -1,14 +1,30 @@
 package com.eharmony.matching.featureSpecExtractor.vw.cb
 
+import com.eharmony.matching.aloha.semantics.func.GenFunc
+import com.eharmony.matching.featureSpecExtractor.SparseFeatureExtractorFunction
+import com.eharmony.matching.featureSpecExtractor.vw.unlabeled.VwSpec
 import org.junit.Assert._
-import org.junit.{Ignore, Test}
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class VwContextualBanditSpecTest {
-    // Test when all optionals are missing
-    @Ignore @Test def test() {
-        fail()
+    @Test def testMissingCbLabelInfoRemovesLabelOutput() {
+        val fef = new SparseFeatureExtractorFunction(Vector("f1" -> GenFunc.f0("Empty", (_: Any) => Nil)))
+
+        for {
+            va <- Seq(None, Some(10L))
+            vc <- Seq(None, Some(1d))
+            vp <- Seq(None, Some(0.1))
+            a = GenFunc.f0("action", (_: Any) => va)
+            c = GenFunc.f0("cost", (_: Any) => vc)
+            p = GenFunc.f0("prob", (_: Any) => vp)
+            spec = VwContextualBanditSpec(fef, 0 to 0, Vector.empty, None, a, c, p)
+            exp = (va, vc, vp) match {
+                case (Some(av), Some(cv), Some(pv)) => s"$av:${VwSpec.LabelDecimalFormatter.format(cv)}:${VwSpec.LabelDecimalFormatter.format(pv)}| "
+                case _ => " "
+            }
+        } assertEquals(exp, spec(())._2.toString)
     }
 }
