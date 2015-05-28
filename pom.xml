@@ -17,7 +17,7 @@ noteworthy phases:
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.eharmony.matching</groupId>
 	<artifactId>aloha</artifactId>
-	<version>1.1.0-SNAPSHOT</version>
+	<version>1.1.0</version>
 	<packaging>jar</packaging>
 	<name>${project.artifactId}</name>
 	<description>Scala-based machine learning library with generic models and lazily created features.</description>
@@ -387,7 +387,7 @@ noteworthy phases:
 									sudo make install If on a mac, sudo port install protobuf-java
 								-->
 
-								<echo message="Creating protobuf instance source"/>
+								<echo message="Creating protobuf instance source" />
 								<exec executable="${protoc}" failonerror="true">
 									<arg value="--java_out=${project.build.directory}/generated-test-sources" />
 									<arg value="-I${project.basedir}/src/test/proto" />
@@ -400,8 +400,8 @@ noteworthy phases:
 								 TODO: Fix this by using an appropriate maven-compiler-plugin execution. (RMD 2015-04-23)
 								=======================================================================================
 								-->
-								<echo message="Compiling protobuf source to .class files."/>
-								<exec executable="javac" failonerror="true" >
+								<echo message="Compiling protobuf source to .class files." />
+								<exec executable="javac" failonerror="true">
 									<arg line="-d ${project.build.testOutputDirectory} -classpath ${settings.localRepository}/com/google/protobuf/protobuf-java/${protobuf.version}/protobuf-java-${protobuf.version}.jar ${project.build.directory}/generated-test-sources/com/eharmony/matching/aloha/semantics/compiled/plugin/proto/TestProtoBuffs.java" />
 								</exec>
 							</tasks>
