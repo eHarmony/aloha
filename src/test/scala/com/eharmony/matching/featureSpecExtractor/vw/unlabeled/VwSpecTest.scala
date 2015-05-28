@@ -1,5 +1,7 @@
 package com.eharmony.matching.featureSpecExtractor.vw.unlabeled
 
+import java.text.DecimalFormat
+
 import com.eharmony.matching.aloha.FileLocations
 import com.eharmony.matching.aloha.feature.BasicFunctions
 import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
@@ -14,10 +16,87 @@ import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.Try
+import scala.util.{Random, Try}
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
-class VwSpecTest {
+final class VwSpecTest {
+
+    /**
+     * Test that truncation ''ALWAYS'' happens close to one or negative one but that the truncated value is within
+     * &epsilon; of the original value, where &epsilon; = 10^-''VwSpec.FeatureDecimalDigits''^ / 2.
+     */
+    @Test def testFeatureFormatterOneMinusEpsilonInterval() {
+        val denom = math.pow(10, VwSpec.FeatureDecimalDigits - 1)
+        val eps = math.pow(10, -VwSpec.FeatureDecimalDigits) / 2
+        val r = new Random(0)
+
+        val counts = 1 to 10000 flatMap { i =>
+            val x = 1 - r.nextDouble() / denom
+            Seq( x -> VwSpec.DecimalFormatter.format(x).toDouble,
+                -x -> VwSpec.DecimalFormatter.format(-x).toDouble)
+        } collect {
+            case(d, s) if s == d => (d, s)                // If the values are equal, that's bad.
+            case(d, s) if math.abs(s - d) > eps => (d, s) // If the values differ too much, that's bad.
+        }
+
+        assertEquals(s"counts size should be 0, not ${counts.size}.  Found ${counts.distinct.take(10)} ...", 0, counts.size)
+    }
+
+    /**
+     * Test that truncation ''NEVER'' happens close to one or negative one.  Truncation only happens in the string only if
+     * it happens in the double version.  For instance, for all ''D'', where
+     *
+     * 1 - 10^VwSpec.LabelDecimalDigits - 1^ < D < 1
+     *
+     * {{{
+     * LabelDecimalFormatter.format(D).toDouble == D
+     * }}}
+     */
+    @Test def testLabelFormatterOneMinusEpsilonInterval() {
+        val denom = math.pow(10, VwSpec.LabelDecimalDigits - 1)
+        val r = new Random(0)
+
+        val counts = 1 to 10000 flatMap { i =>
+            val x = 1 - r.nextDouble() / denom
+            Seq( x -> VwSpec.LabelDecimalFormatter.format(x),
+                -x -> VwSpec.LabelDecimalFormatter.format(-x))
+        } collect { case(d, s) if s.toDouble != d => (d, s) }
+
+        assertEquals(s"counts should be empty.  Found ${counts.distinct.take(10)} ...", 0, counts.size)
+    }
+
+    /**
+     * Test that for all ''D'',
+     * {{{
+     * VwSpec.labelInEpsilonInterval(D) == (Set("-0", "0") contains VwSpec.LabelDecimalFormatter.format(D))
+     * }}}
+     */
+    @Test def testLabelFormatterEpsilonInterval() {
+        testEpsilonInterval(VwSpec.LabelDecimalDigits, VwSpec.labelInEpsilonInterval, VwSpec.LabelDecimalFormatter)
+    }
+
+    /**
+     * Test that for all ''D'',
+     * {{{
+     * VwSpec.labelInEpsilonInterval(D) == (Set("-0", "0") contains VwSpec.LabelDecimalFormatter.format(D))
+     * }}}
+     */
+    @Test def testFeatureFormatterEpsilonInterval() {
+        testEpsilonInterval(VwSpec.FeatureDecimalDigits, VwSpec.inEpsilonInterval, VwSpec.DecimalFormatter)
+    }
+
+    private[this] def testEpsilonInterval(digits: Int, inEpsFunc: Double => Boolean, formatter: DecimalFormat) {
+        val denom = math.pow(10, digits - 1)
+        val r = new Random(0)
+        val allowed = "^-?0$"
+
+        val counts = 1 to 10000 map { i =>
+            val x = (2 * r.nextDouble() - 1) / denom
+            (inEpsFunc(x), formatter.format(x) matches allowed)
+        } groupBy identity mapValues { _.size }
+
+        assertEquals(s"for counts - $counts:  ", Seq((false, false), (true, true)), counts.keys.toSeq.sorted)
+    }
 
     @Test def testFeatureNotInANamespaceFailsRequirement() {
         val nFeatures = 5
@@ -134,9 +213,9 @@ private object VwSpecTest {
 
     /**
      * Attempt to create a VwSpec.  This will fail when the constructor requirements are violated.
-     * @param nFeatures
-     * @param nNamespaces
-     * @param removal
+     * @param nFeatures number of features
+     * @param nNamespaces number of namespaces (not including the default namespace)
+     * @param removal how to remove an element from a namespace.
      * @return
      */
     def createSpec(nFeatures: Int, nNamespaces: Int, removal: Removal): Try[VwSpec[CsvLine]] = {
@@ -166,6 +245,7 @@ private object VwSpecTest {
                 (nssi, defi)
         }
 
+        // This is intended to fail most of the time (to achieve the testing goal).
         val specTry = Try { new VwSpec(SparseFeatureExtractorFunction(features), defi, nssi, None) }
         specTry
     }

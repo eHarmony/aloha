@@ -1,6 +1,5 @@
 package com.eharmony.matching.featureSpecExtractor.vw.labeled
 
-import com.eharmony.matching.aloha.semantics.compiled.plugin.csv.{CsvLines, CsvLine}
 import com.eharmony.matching.aloha.semantics.func.GenFunc.f0
 import com.eharmony.matching.featureSpecExtractor.SparseFeatureExtractorFunction
 import org.junit.Assert._
@@ -63,42 +62,31 @@ final class VwLabelSpecTest {
 
 
     @Test def testStringLabel() {
-        val fef = new SparseFeatureExtractorFunction(Vector("f1" -> f0("Empty", (_: CsvLine) => Nil)))
-        val spec = new VwLabelSpec(fef, 0 to 0, Vector.empty, None, f0("", (c: CsvLine) => c.od("lab")), f0("", (c: CsvLine) => Option(1d)), f0("", (c: CsvLine) => None))
+        val spec = new VwLabelSpec(
+            new SparseFeatureExtractorFunction(Vector("f1" -> f0("Empty", (_: Double) => Nil))),
+            0 to 0,
+            Vector.empty,
+            None,
+            f0("", (s: Double) => Option(s)),  // Label
+            f0("", (_: Double) => Option(1d)), // Importance
+            f0("", (_: Double) => None))       // Tag
 
-        val csvLines = CsvLines(indices = Map("lab" -> 0))
-        val lines = csvLines(
-            "-1.0",
-            "-0.99999999999999999",
-            "-0.9999999999999999",
-            "-0.0000000000000001",
-            "-0.00000000000000001",
-            "-0.000000000000000001",
-             "0",
-             "0.000000000000000001",
-             "0.00000000000000001",
-             "0.0000000000000001",
-             "0.9999999999999999",
-             "0.99999999999999999",
-             "1.0"
+        val values = Seq(
+            -1.0                 -> "-1",
+            -0.99999999999999999 -> "-1",
+            -0.9999999999999999  -> "-0.9999999999999999",
+            -1.0E-16             -> "-0.0000000000000001",
+            -1.0E-17             -> "-0.00000000000000001",
+            -1.0E-18             -> "-0",
+             0.0                 ->  "0",
+             1.0E-18             ->  "0",
+             1.0E-17             ->  "0.00000000000000001",
+             1.0E-16             ->  "0.0000000000000001",
+             0.9999999999999999  ->  "0.9999999999999999",
+             0.99999999999999999 ->  "1",
+             1.0                 ->  "1"
         )
 
-        val exp = Seq(
-            "-1",
-            "-1",
-            "-0.9999999999999999",
-            "-0.0000000000000001",
-            "-0.00000000000000001",
-            "-0",
-            "0",
-            "0",
-            "0.00000000000000001",
-            "0.0000000000000001",
-            "0.9999999999999999",
-            "1",
-            "1"
-        )
-
-        lines.zip(exp) foreach { case(line, ex) => assertEquals(s"for line: ${line.line}", Option(ex), spec.stringLabel(line)) }
+        values foreach { case(v, ex) => assertEquals(s"for line: $v", Option(ex), spec.stringLabel(v)) }
     }
 }
