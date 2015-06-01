@@ -23,17 +23,17 @@ import java.security.MessageDigest
 import java.util.Random
 import java.util.jar.JarFile
 
+import com.twitter.io.StreamIO
+
 import scala.collection.mutable
 import scala.io.Source
+import scala.language.reflectiveCalls
 import scala.tools.nsc.interpreter.AbstractFileClassLoader
-import scala.tools.nsc.io.{ AbstractFile, VirtualDirectory }
+import scala.tools.nsc.io.{AbstractFile, VirtualDirectory}
 import scala.tools.nsc.reporters.AbstractReporter
-import scala.tools.nsc.util.{ BatchSourceFile, Position }
-import scala.tools.nsc.{ Global, Settings }
+import scala.tools.nsc.util.{BatchSourceFile, Position}
+import scala.tools.nsc.{Global, Settings}
 import scala.util.matching.Regex
-
-import com.twitter.conversions.string
-import com.twitter.io.StreamIO
 
 /**
  * Evaluate a file or string and return the result.

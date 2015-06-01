@@ -1,20 +1,21 @@
 package com.eharmony.matching.aloha.models.reg
 
-import java.{ lang => jl }
-import scala.language.{ higherKinds, implicitConversions }
-import scala.collection.mutable.{ Map => MMap }
-import com.eharmony.matching.aloha.models.BaseModel
+import java.{lang => jl}
+
+import com.eharmony.matching.aloha.factory.pimpz.JsValuePimpz
+import com.eharmony.matching.aloha.factory.{ModelParser, ModelParserWithSemantics, ParserProviderCompanion}
 import com.eharmony.matching.aloha.id.ModelIdentity
-import com.eharmony.matching.aloha.semantics.func.GenAggFunc
+import com.eharmony.matching.aloha.models.BaseModel
+import com.eharmony.matching.aloha.reflect.{RefInfo, RefInfoOps}
 import com.eharmony.matching.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.score.basic.ModelOutput
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter
-import com.eharmony.matching.aloha.factory.{ ModelParser, ModelParserWithSemantics, ParserProviderCompanion }
 import com.eharmony.matching.aloha.semantics.Semantics
-import com.eharmony.matching.aloha.factory.pimpz.JsValuePimpz
-import com.eharmony.matching.aloha.util.EitherHelpers
-import com.eharmony.matching.aloha.reflect.{ RefInfoOps, RefInfo }
-import com.eharmony.matching.aloha.util.Logging
+import com.eharmony.matching.aloha.semantics.func.GenAggFunc
+import com.eharmony.matching.aloha.util.{EitherHelpers, Logging}
+
+import scala.collection.{immutable => sci}
+import scala.language.{higherKinds, implicitConversions}
 
 /**
  * A regression model capable of doing not only linear regression but polynomial regression in general.
@@ -66,13 +67,15 @@ import com.eharmony.matching.aloha.util.Logging
  */
 case class RegressionModel[-A, +B: ScoreConverter](
   modelId: ModelIdentity,
-  featureNames: IndexedSeq[String],
-  featureFunctions: IndexedSeq[GenAggFunc[A, Iterable[(String, Double)]]],
+  featureNames: sci.IndexedSeq[String],
+  featureFunctions: sci.IndexedSeq[GenAggFunc[A, Iterable[(String, Double)]]],
   beta: PolynomialEvaluationAlgo,
   invLinkFunction: Double => B,
   spline: Option[Spline],
   numMissingThreshold: Option[Int])
-  extends BaseModel[A, B] with Logging {
+extends BaseModel[A, B]
+   with RegressionFeatures[A]
+   with Logging {
 
   debug({
     val rawFeatureDescriptors = (for {
@@ -89,7 +92,7 @@ case class RegressionModel[-A, +B: ScoreConverter](
    * @return
    */
   private[aloha] def getScore(a: A)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = {
-    val (x, missing, missingOk) = constructFeatures(a)
+    val Features(x, missing, missingOk) = constructFeatures(a)
 
     debug("x\n\t" + featureNames.zip(x).map { case (name, f) => s"$name -> $f" }.mkString("\n\t"))
 
@@ -110,50 +113,6 @@ case class RegressionModel[-A, +B: ScoreConverter](
       }
 
     out
-  }
-
-  /**
-   * Extract the features from the raw data.  Intentionally, ''protected[this] final'' so that we can extend this
-   * class
-   * @param a raw input data of the model input type.
-   * @return a Tuple3 with the following:
-   *           1 the transformed input vector
-   *           1 the map of bad features to the missing values in the raw data that were needed to compute the feature
-   *           1 whether the amount of missing data is acceptable to still continue
-   */
-  protected[this] final def constructFeatures(a: A): (IndexedSeq[Iterable[(String, Double)]], MMap[String, Seq[String]], Boolean) = {
-    val missing = MMap.empty[String, Seq[String]]
-    val n = featureNames.size
-    val f = new Array[Iterable[(String, Double)]](n)
-    for (i <- 0 until n) {
-      val name = featureNames(i)
-
-      // We use concat based on http://stackoverflow.com/questions/5076740/whats-the-fastest-way-to-concatenate-two-strings-in-java
-      f(i) = featureFunctions(i)(a).map(p => (name.concat(p._1), p._2))
-
-      // If the feature is empty, it can't contribute to the inner product.  If it can't contribute to the
-      // inner product but appears in the inner product specification, there are two possibilities:
-      //
-      //   1) The specifier doesn't care about performance and needlessly added a NoOp.
-      //   2) The feature could emit a value because data necessary to do so is missing.
-      //
-      // In either case, we take those opportunities to check for missing data and assume the performance
-      // hit is acceptable.
-      if (f(i).isEmpty)
-        missing += (featureFunctions(i).specification -> featureFunctions(i).accessorOutputMissing(a))
-    }
-
-    val numMissingOk = numMissingThreshold map { missing.size < _ } getOrElse true
-
-    // If we are going to err out, allow a linear scan (with repeated work so that we can get richer error
-    // diagnostics.
-    if (!numMissingOk) {
-      for (i <- 0 until n) {
-        missing += (featureFunctions(i).specification -> featureFunctions(i).accessorOutputMissing(a))
-      }
-    }
-
-    (new collection.mutable.WrappedArray.ofRef(f), missing, numMissingOk)
   }
 }
 
