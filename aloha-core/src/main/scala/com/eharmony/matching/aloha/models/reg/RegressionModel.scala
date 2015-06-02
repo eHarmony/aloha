@@ -6,6 +6,7 @@ import com.eharmony.matching.aloha.factory.pimpz.JsValuePimpz
 import com.eharmony.matching.aloha.factory.{ModelParser, ModelParserWithSemantics, ParserProviderCompanion}
 import com.eharmony.matching.aloha.id.ModelIdentity
 import com.eharmony.matching.aloha.models.BaseModel
+import com.eharmony.matching.aloha.models.reg.json.RegressionModelJson
 import com.eharmony.matching.aloha.reflect.{RefInfo, RefInfoOps}
 import com.eharmony.matching.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.score.basic.ModelOutput

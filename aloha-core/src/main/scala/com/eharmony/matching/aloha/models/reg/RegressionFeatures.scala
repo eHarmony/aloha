@@ -56,7 +56,7 @@ trait RegressionFeatures[-A] {
                 missing += (featureFunctions(i).specification -> featureFunctions(i).accessorOutputMissing(a))
         }
 
-        val numMissingOk = numMissingThreshold map { missing.size < _ } getOrElse true
+        val numMissingOk = numMissingThreshold map { missing.size <= _ } getOrElse true
 
         // If we are going to err out, allow a linear scan (with repeated work so that we can get richer error
         // diagnostics.

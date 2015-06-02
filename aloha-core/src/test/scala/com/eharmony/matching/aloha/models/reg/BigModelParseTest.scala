@@ -1,5 +1,6 @@
 package com.eharmony.matching.aloha.models.reg
 
+import com.eharmony.matching.aloha.models.reg.json.RegressionModelJson
 import spray.json.pimpString
 import com.eharmony.matching.aloha.io.StringReadable
 import org.junit.runners.BlockJUnit4ClassRunner

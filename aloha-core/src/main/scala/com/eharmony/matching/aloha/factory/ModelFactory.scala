@@ -1,23 +1,21 @@
 package com.eharmony.matching.aloha.factory
 
-import scala.language.higherKinds
-import scala.util.{Try, Failure, Success}
-
 import java.{lang => jl}
 
-import spray.json.{JsValue, JsonReader}
-import spray.json.DefaultJsonProtocol._
-
-import com.eharmony.matching.aloha.score.conversions.ScoreConverter
-import com.eharmony.matching.aloha.factory.ex.{RecursiveModelDefinitionException, AlohaFactoryException}
+import com.eharmony.matching.aloha
+import com.eharmony.matching.aloha.factory.ex.{AlohaFactoryException, RecursiveModelDefinitionException}
 import com.eharmony.matching.aloha.factory.pimpz.JsValuePimpz
-import com.eharmony.matching.aloha.semantics.Semantics
-import com.eharmony.matching.aloha.reflect.RefInfo
 import com.eharmony.matching.aloha.interop.FactoryInfo
-import com.eharmony.matching.aloha.models.tree.decision.{ModelDecisionTree, BasicDecisionTree}
-import com.eharmony.matching.aloha.models.reg.RegressionModel
 import com.eharmony.matching.aloha.models._
-import com.eharmony.matching.aloha.models.conversion.DoubleToLongModel
+import com.eharmony.matching.aloha.reflect.RefInfo
+import com.eharmony.matching.aloha.score.conversions.ScoreConverter
+import com.eharmony.matching.aloha.semantics.Semantics
+import org.reflections.Reflections
+import spray.json.DefaultJsonProtocol._
+import spray.json.{JsValue, JsonReader}
+
+import scala.language.higherKinds
+import scala.util.{Failure, Success, Try}
 
 case class ModelFactory(modelParsers: ModelParser*) extends JsValuePimpz {
     def this (modelParsers: jl.Iterable[ModelParser]) = this(collection.JavaConversions.iterableAsScalaIterable(modelParsers).toSeq:_*)
@@ -199,18 +197,24 @@ object ModelFactory {
       */
     def defaultFactory = ModelFactory(knownModelParsers():_*)
 
-    /** Get the list of models defined in aloha-core with parsers that can be used by a model factory.
+    /** Get the list of models on the classpath with parsers that can be used by a model factory.
       * @return
       */
-    def knownModelParsers(): Seq[ModelParser] = Seq(
-        ErrorModel.parser,
-        ConstantModel.parser,
-        CategoricalDistibutionModel.parser,
-        BasicDecisionTree.parser,
-        ModelDecisionTree.parser,
-        RegressionModel.parser,
-        SegmentationModel.parser,
-        DoubleToLongModel.parser,
-        ErrorSwallowingModel.parser
-    )
+    def knownModelParsers(): Seq[ModelParser] = {
+        val reflections = new Reflections(aloha.pkgName)
+        import scala.collection.JavaConversions.asScalaSet
+        val parserProviderCompanions = reflections.getSubTypesOf(classOf[ParserProviderCompanion]).toSeq
+
+        parserProviderCompanions.flatMap {
+            case ppc if ppc.getCanonicalName.endsWith("$") =>
+                Try {
+                    val c = Class.forName(ppc.getCanonicalName.dropRight(1))
+                    c.getMethod("parser").invoke(null) match {
+                        case mp: ModelParser => mp
+                        case _ => throw new IllegalStateException()
+                    }
+                }.toOption
+            case _ => None
+        }
+    }
 }

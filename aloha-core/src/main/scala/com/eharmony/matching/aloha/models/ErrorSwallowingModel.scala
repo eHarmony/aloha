@@ -4,7 +4,7 @@ import scala.util.Try
 import java.io.{ByteArrayOutputStream, PrintStream}
 import com.eharmony.matching.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.score.basic.ModelOutput
-import com.eharmony.matching.aloha.factory.{ModelFactory, ModelParser}
+import com.eharmony.matching.aloha.factory.{ParserProviderCompanion, ModelFactory, ModelParser}
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 import com.eharmony.matching.aloha.semantics.{SemanticsUdfException, Semantics}
 import com.eharmony.matching.aloha.factory.ex.AlohaFactoryException
@@ -107,7 +107,7 @@ case class ErrorSwallowingModel[-A, +B](submodel: Model[A, B], recordErrorStackT
         Try { ex.getMessage }.recover { case e => ErrorSwallowingModel.ExMsgThrewMsg }.get
 }
 
-object ErrorSwallowingModel {
+object ErrorSwallowingModel extends ParserProviderCompanion {
     private[models] val ExMsgThrewMsg = "exception getMessage function threw exception.  Message Omitted."
     private[models] val StackTraceOmitted = "Stack trace omitted."
 
