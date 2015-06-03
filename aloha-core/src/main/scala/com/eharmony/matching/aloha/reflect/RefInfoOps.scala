@@ -18,6 +18,15 @@ import com.eharmony.matching.aloha.util.EitherHelpers
 sealed trait RefInfoOps[RefInfoType[_]] {
 
   /**
+   * Is Sub a subtype of Super
+   * @param sub RefInfo instance of type A
+   * @param sup RefInfo instance of type A
+   * @tparam Sub subtype in test
+   * @tparam Super supertype in test
+   */
+  def isSubType[Sub, Super](implicit sub: RefInfo[Sub], sup: RefInfo[Super]): Boolean
+
+  /**
    * Provides a generic way of lifting A into a container for which a RefInfoType instance can be retrieved.
    * @tparam A type to be lifted.
    */
@@ -143,6 +152,16 @@ sealed trait RefInfoOps[RefInfoType[_]] {
  * in the library should use this facade and should not use Manifests or TypeTags.
  */
 object RefInfoOps extends RefInfoOps[RefInfo] with EitherHelpers {
+
+  /**
+   * Is Sub a subtype of Super
+   * @param sub RefInfo instance of type A
+   * @param sup RefInfo instance of type A
+   * @tparam Sub subtype in test
+   * @tparam Super supertype in test
+   */
+  @SuppressWarnings(Array("deprecation"))
+  def isSubType[Sub, Super](implicit sub: RefInfo[Sub], sup: RefInfo[Super]): Boolean = sub <:< sup
 
   /**
    * Get reflection info from a simple Class.  Will throw an exception if we find that the type is parametrized.

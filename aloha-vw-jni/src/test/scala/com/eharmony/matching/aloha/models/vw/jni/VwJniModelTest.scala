@@ -1,31 +1,48 @@
 package com.eharmony.matching.aloha.models.vw.jni
 
+import scala.concurrent.ExecutionContext.Implicits.global
+
+import spray.json._
+import spray.json.DefaultJsonProtocol._
+
+import org.junit.Assert._
+import org.junit.{Ignore, Test}
+import org.junit.runner.RunWith
+import org.junit.runners.BlockJUnit4ClassRunner
+
 import com.eharmony.matching.aloha.factory.ModelFactory
 import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.matching.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import com.eharmony.matching.aloha.semantics.compiled.plugin.csv.{CsvLines, CsvTypes, CompiledSemanticsCsvPlugin, CsvLine}
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.BlockJUnit4ClassRunner
-
-import VwJniModelTest._
-import spray.json._
-import spray.json.DefaultJsonProtocol._
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter.Implicits._
-import scala.concurrent.ExecutionContext.Implicits.global
+import VwJniModelTest._
 
-/**
- * Created by rdeak on 6/2/15.
- */
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class VwJniModelTest {
 
-    // TODO: Test numMissingThreshold = Some(0) with CSV lines: "155,100,red",  "180,225,brown",  ",300,gray"
-    // TODO: Test numMissingThreshold = None with CSV lines: "155,100,red",  "180,225,brown",  ",300,gray"
-    // TODO: Test namespace with features not in features keyset.
-    // TODO: Test when namespaces doesn't cover all features.
-    // TODO: Test bad VW arguments throw exception.
-    // TODO: Test output types: Byte, Short, Integer, Long, Float, Double, String, JavaByte, JavaShort, JavaInteger, JavaLong, JavaFloat, JavaDouble
+    @Ignore @Test def testByteOutputType(): Unit = { fail() }
+    @Ignore @Test def testShortOutputType(): Unit = { fail() }
+    @Ignore @Test def testIntOutputType(): Unit = { fail() }
+    @Ignore @Test def testLongOutputType(): Unit = { fail() }
+    @Ignore @Test def testFloatOutputType(): Unit = { fail() }
+    @Ignore @Test def testDoubleOutputType(): Unit = { fail() }
+    @Ignore @Test def testStringOutputType(): Unit = { fail() }
+    @Ignore @Test def testJavaByteOutputType(): Unit = { fail() }
+    @Ignore @Test def testJavaShortOutputType(): Unit = { fail() }
+    @Ignore @Test def testJavaIntegerOutputType(): Unit = { fail() }
+    @Ignore @Test def testJavaLongOutputType(): Unit = { fail() }
+    @Ignore @Test def testJavaFloatOutputType(): Unit = { fail() }
+    @Ignore @Test def testJavaDoubleOutputType(): Unit = { fail() }
+
+    @Ignore @Test def testNoThreshWithMissing(): Unit = { fail() }
+    @Ignore @Test def testExceededThresh(): Unit = { fail() }
+
+    @Ignore @Test def testNsWithUndeclaredFeatureNames(): Unit = { fail() }
+    @Ignore @Test def testNsDoesntCoverAllFeatureNames(): Unit = { fail() }
+    @Ignore @Test def testNssAndDefaultDoesntCoverAllFeatureInd(): Unit = { fail() }
+    @Ignore @Test def testDifferentSizedNamesAndFeatures(): Unit = { fail() }
+
+    @Ignore @Test def testBadVwArgsThrowsEx(): Unit = { fail() }
 
 
     @Test def test1(): Unit = {
@@ -80,8 +97,28 @@ object VwJniModelTest {
         "hair.color" -> CsvTypes.StringType
     )
 
-    val csvLines = CsvLines(indices = columns.unzip._1.zipWithIndex.toMap, fs = ",")
+    val typeTestJson =
+        """
+          |{
+          |  "modelType": "VwJNI",
+          |  "modelId": { "id": 0, "name": "" },
+          |  "numMissingThreshold": 0,
+          |  "features": {
+          |    "weight": "ind(${weight} / 10)"
+          |  },
+          |  "namespaces": {
+          |    "personal_features": [ "height_mm", "weight", "hair" ]
+          |  },
+          |  "vw": {
+          |    "params": [
+          |      "--quiet",
+          |      "-t"
+          |    ]
+          |  }
+          |}
+        """.stripMargin.trim.parseJson
 
+    val csvLines = CsvLines(indices = columns.unzip._1.zipWithIndex.toMap, fs = ",")
     val plugin = CompiledSemanticsCsvPlugin(columns:_*)
     val semantics = CompiledSemantics(TwitterEvalCompiler(), plugin, Seq("scala.math._", "com.eharmony.matching.aloha.feature.BasicFunctions._"))
 }

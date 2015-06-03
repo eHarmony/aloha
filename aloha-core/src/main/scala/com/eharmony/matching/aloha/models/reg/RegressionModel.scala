@@ -5,9 +5,9 @@ import java.{lang => jl}
 import com.eharmony.matching.aloha.factory.pimpz.JsValuePimpz
 import com.eharmony.matching.aloha.factory.{ModelParser, ModelParserWithSemantics, ParserProviderCompanion}
 import com.eharmony.matching.aloha.id.ModelIdentity
-import com.eharmony.matching.aloha.models.BaseModel
 import com.eharmony.matching.aloha.models.reg.json.RegressionModelJson
-import com.eharmony.matching.aloha.reflect.{RefInfo, RefInfoOps}
+import com.eharmony.matching.aloha.models.{BaseModel, TypeCoercion}
+import com.eharmony.matching.aloha.reflect.RefInfoOps
 import com.eharmony.matching.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.score.basic.ModelOutput
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter
@@ -147,8 +147,9 @@ object RegressionModel extends ParserProviderCompanion with JsValuePimpz with Re
         val beta = getBeta(d.features.size, d.weights, higherOrderFeatures(d, featureNameToIndex))
 
         // Get the function that coerces to the output type.
-        val rib = implicitly[ScoreConverter[B]].ri
-        val cf = conversionFunction[B](rib) getOrElse {
+        implicit val rib = implicitly[ScoreConverter[B]].ri
+
+        val cf = TypeCoercion[Double, B] getOrElse {
           throw new DeserializationException("Couldn't find conversion function for RegressionModel with output type: " + RefInfoOps.toString(rib))
         }
 
@@ -156,28 +157,6 @@ object RegressionModel extends ParserProviderCompanion with JsValuePimpz with Re
         val m = RegressionModel[A, B](d.modelId, featureNames, featureFns, beta, cf, d.spline, d.numMissingThreshold)
         m
       }
-    }
-
-    private[this] def conversionFunction[B: RefInfo] = {
-      import doubleFunctions._
-      val a = RefInfo[B] match {
-        case RefInfo.Byte => Option(doubleToByteFunction.asInstanceOf[(Double => B)])
-        case RefInfo.Short => Option(doubleToShortFunction.asInstanceOf[(Double => B)])
-        case RefInfo.Int => Option(doubleToIntFunction.asInstanceOf[(Double => B)])
-        case RefInfo.Long => Option(doubleToLongFunction.asInstanceOf[(Double => B)])
-        case RefInfo.Float => Option(doubleToFloatFunction.asInstanceOf[(Double => B)])
-        case RefInfo.Double => Option(doubleToDoubleFunction.asInstanceOf[(Double => B)])
-
-        case RefInfo.JavaByte => Option(doubleToJavaByteFunction.asInstanceOf[(Double => B)])
-        case RefInfo.JavaShort => Option(doubleToJavaShortFunction.asInstanceOf[(Double => B)])
-        case RefInfo.JavaInteger => Option(doubleToJavaIntFunction.asInstanceOf[(Double => B)])
-        case RefInfo.JavaLong => Option(doubleToJavaLongFunction.asInstanceOf[(Double => B)])
-        case RefInfo.JavaFloat => Option(doubleToJavaFloatFunction.asInstanceOf[(Double => B)])
-        case RefInfo.JavaDouble => Option(doubleToJavaDoubleFunction.asInstanceOf[(Double => B)])
-
-        case x if x == RefInfo[String] => Option(doubleToStringFunction.asInstanceOf[(Double => B)])
-      }
-      a
     }
 
     /**
@@ -238,21 +217,4 @@ object RegressionModel extends ParserProviderCompanion with JsValuePimpz with Re
   }
 
   def parser: ModelParser = Parser
-
-  private[this] object doubleFunctions {
-    val doubleToByteFunction = (_: Double).toByte
-    val doubleToShortFunction = (_: Double).toShort
-    val doubleToIntFunction = (_: Double).toInt
-    val doubleToLongFunction = (_: Double).toLong
-    val doubleToFloatFunction = (_: Double).toFloat
-    val doubleToDoubleFunction = (d: Double) => d
-    val doubleToStringFunction = (_: Double).toString
-
-    val doubleToJavaByteFunction = (d: Double) => jl.Byte.valueOf(d.toByte)
-    val doubleToJavaShortFunction = (d: Double) => jl.Short.valueOf(d.toShort)
-    val doubleToJavaIntFunction = (d: Double) => jl.Integer.valueOf(d.toInt)
-    val doubleToJavaLongFunction = (d: Double) => jl.Long.valueOf(d.toLong)
-    val doubleToJavaFloatFunction = (d: Double) => jl.Float.valueOf(d.toFloat)
-    val doubleToJavaDoubleFunction = (d: Double) => jl.Double.valueOf(d)
-  }
 }

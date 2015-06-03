@@ -1,13 +1,18 @@
 package com.eharmony.matching.aloha.models.vw.jni
 
+import scala.collection.{immutable => sci, mutable => scm}
+import scala.util.{Failure, Success, Try}
 
 import java.text.DecimalFormat
-import java.{lang => jl}
+
+import spray.json.{DeserializationException, JsValue, JsonReader}
+
+import vw.VWScorer
 
 import com.eharmony.matching.aloha.factory.{ModelParser, ModelParserWithSemantics, ParserProviderCompanion}
 import com.eharmony.matching.aloha.id.ModelIdentity
-import com.eharmony.matching.aloha.models.BaseModel
 import com.eharmony.matching.aloha.models.reg.RegressionFeatures
+import com.eharmony.matching.aloha.models.{BaseModel, TypeCoercion}
 import com.eharmony.matching.aloha.reflect._
 import com.eharmony.matching.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.score.basic.ModelOutput
@@ -15,32 +20,47 @@ import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 import com.eharmony.matching.aloha.semantics.Semantics
 import com.eharmony.matching.aloha.semantics.func.GenAggFunc
 import com.eharmony.matching.aloha.util.{EitherHelpers, Logging}
-import spray.json.{DeserializationException, JsValue, JsonReader}
-import vw.VWScorer
-
-import scala.collection.immutable.BitSet
-import scala.collection.{immutable => sci, mutable => scm}
-import scala.util.{Failure, Success, Try}
 
 
-final case class VwJniModel[-A, +B: ScoreConverter](
-    private val model: vw.VWScorer,
+/**
+ * Model that delegates to a VW JNI model.
+ * @param modelId a modelId
+ * @param model VW JNI instance
+ * @param featureNames names of features (parallel to featureFunctions)
+ * @param featureFunctions functions to extract values from the input value
+ * @param defaultNs indices of features that will be placed in the default VW namespace
+ * @param namespaces mapping from namespace name to indices of features that will be placed in the namespace
+ * @param finalizer a function that transforms the native VW output type (Float) to B
+ * @param numMissingThreshold A threshold dictating how many missing features to allow before making the
+ *                            prediction fail.  See [[com.eharmony.matching.aloha.models.reg.RegressionFeatures.numMissingThreshold]]
+ * @param scb a score converter
+ * @tparam A model input type
+ * @tparam B model output type
+ * @author R M Deak
+ */
+final case class VwJniModel[-A, +B](
     modelId: ModelIdentity,
-    features: sci.IndexedSeq[(String, GenAggFunc[A, Iterable[(String, Double)]])],
+    private val model: vw.VWScorer,
+    featureNames: sci.IndexedSeq[String],
+    featureFunctions: sci.IndexedSeq[GenAggFunc[A, Iterable[(String, Double)]]],
     defaultNs: List[Int],
     namespaces: List[(String, List[Int])],
     finalizer: Float => B,
-    numMissingThreshold: Option[Int] = None)
+    numMissingThreshold: Option[Int] = None)(implicit private[this] val scb: ScoreConverter[B])
 extends BaseModel[A, B]
    with RegressionFeatures[A]
    with Logging {
 
-    protected[this] override val (featureNames, featureFunctions) = features.unzip
-
     {
-        val req = BitSet(featureFunctions.indices:_*)
-        val act = (BitSet(defaultNs:_*) /: namespaces)(_ ++ _._2)
-        require(req == act, s"defaultNamespace and namespaces must cover all indices (0 until ${featureFunctions.size}).  Missing ${(req -- act).mkString(",")}")
+        require(
+            featureNames.size == featureFunctions.size,
+            s"featureNames.size (${featureNames.size}}) != featureFunctions.size (${featureFunctions.size}})")
+
+        val req = sci.BitSet(featureFunctions.indices:_*)
+        val act = (sci.BitSet(defaultNs:_*) /: namespaces)(_ ++ _._2)
+        require(
+            req == act,
+            s"defaultNamespace and namespaces must cover all indices (0 until ${featureFunctions.size}).  Missing ${(req -- act).mkString(",")}")
     }
 
     import VwJniModel._
@@ -68,6 +88,12 @@ extends BaseModel[A, B]
     def getMissingVariables(missing: scm.Map[String, Seq[String]]): Seq[String] =
         missing.unzip._2.foldLeft(Set.empty[String])(_ ++ _).toIndexedSeq.sorted
 
+    /**
+     * Get a VW line (on the right) or a map of missing features (on the left) if there was too much
+     * missing data to form a prediction.
+     * @param a input
+     * @return a result
+     */
     private[jni] def generateVwInput(a: A): Either[scm.Map[String, Seq[String]], String] = {
         val Features(features, missing, missingOk) = constructFeatures(a)
 
@@ -106,7 +132,9 @@ extends BaseModel[A, B]
     }
 }
 
-object VwJniModel extends ParserProviderCompanion with VwJNIModelJson {
+object VwJniModel extends ParserProviderCompanion with VwJniModelJson {
+
+    // Copied from featureSpecExtractor.vw.unlabeled.VwSpec object.
 
     private[jni] val FeatureDecimalDigits = 6
     private[jni] val DecimalFormatter = new DecimalFormat(List.fill(FeatureDecimalDigits)("#").mkString("0.", "", ""))
@@ -117,6 +145,36 @@ object VwJniModel extends ParserProviderCompanion with VwJNIModelJson {
     object Parser extends ModelParserWithSemantics with EitherHelpers { self =>
         val modelType = "VwJNI"
 
+        override def modelJsonReader[A, B: JsonReader: ScoreConverter](semantics: Semantics[A]): JsonReader[VwJniModel[A, B]] = new JsonReader[VwJniModel[A, B]] {
+            override def read(json: JsValue): VwJniModel[A, B] = {
+                val vw = json.convertTo[VwJNIAst]
+
+                features(vw.features.toSeq, semantics) match {
+                    case Left(errors) => throw new DeserializationException(errors.mkString("errors: ", "\n        ", ""))
+                    case Right(featureMap) =>
+                        val (names, functions) = featureMap.toIndexedSeq.unzip
+
+                        // Conversion function.
+                        val cf = {
+                            implicit val riB = implicitly[ScoreConverter[B]].ri
+                            TypeCoercion[Float, B] getOrElse {
+                                throw new DeserializationException(s"Couldn't find conversion function to ${RefInfoOps.toString[B]}")
+                            }
+                        }
+
+                        // If VW params are unspecified, use empty string.
+                        val vwParams = vw.vw.getParams.fold(_.mkString(" "), identity)
+                        val vwJniModel = new VWScorer(vwParams)
+                        val indices = featureMap.unzip._1.view.zipWithIndex.toMap
+                        val nssRaw = vw.namespaces.getOrElse(sci.ListMap.empty)
+                        val nss = nssRaw.map { case (ns, fs) => (ns, fs.flatMap(indices.get).toList)}.toList
+                        val defaultNs = (indices.keySet -- (Set.empty[String] /: nssRaw)(_ ++ _._2)).flatMap(indices.get).toList
+                        VwJniModel(vw.modelId, vwJniModel, names, functions, defaultNs, nss, cf, vw.numMissingThreshold)
+                }
+            }
+        }
+
+        // TODO: Copied from RegressionModel.  Refactor for reuse.
         private[this] def features[A](featureMap: Seq[(String, Spec)], semantics: Semantics[A]) =
             mapSeq(featureMap) {
                 case (k, Spec(spec, default)) =>
@@ -124,70 +182,7 @@ object VwJniModel extends ParserProviderCompanion with VwJNIModelJson {
                         left.map { Seq(s"Error processing spec '$spec'") ++ _ }. // Add the spec that errored.
                         right.map { f => (k, f) }
             }
-
-        override def modelJsonReader[A, B: JsonReader: ScoreConverter](semantics: Semantics[A]): JsonReader[VwJniModel[A, B]] = new JsonReader[VwJniModel[A, B]] {
-            override def read(json: JsValue): VwJniModel[A, B] = {
-
-                implicit val riB = implicitly[ScoreConverter[B]].ri
-
-                val convFunc = conversionFunction[B] getOrElse {
-                    throw new DeserializationException(s"Couldn't find conversion function to ${RefInfoOps.toString[B]}")
-                }
-
-                val vw = json.convertTo[VwJNIAst]
-
-                features(vw.features.toSeq, semantics) match {
-                    case Left(errors) => throw new DeserializationException(errors.mkString("errors: ", "\n        ", ""))
-                    case Right(featureMap) =>
-                        val vwParams = vw.vw.params.fold(_.mkString(" "), identity)
-                        val vwJniModel = new VWScorer(vwParams)
-                        val indices = featureMap.unzip._1.view.zipWithIndex.toMap
-                        val nss = vw.namespaces.map { case (ns, fs) => (ns, fs.flatMap(indices.get).toList)}.toList
-                        val defaultNs = (indices.keySet -- (Set.empty[String] /: vw.namespaces)(_ ++ _._2)).flatMap(indices.get).toList
-                        VwJniModel(vwJniModel, vw.modelId, featureMap.toIndexedSeq, defaultNs, nss, convFunc, vw.numMissingThreshold)
-                }
-            }
-        }
     }
 
     override def parser: ModelParser = Parser
-
-    private[this] def conversionFunction[B: RefInfo] = {
-        import floatFunctions._
-        val a = RefInfo[B] match {
-            case RefInfo.Byte => Option(floatToByteFunction.asInstanceOf[(Float => B)])
-            case RefInfo.Short => Option(floatToShortFunction.asInstanceOf[(Float => B)])
-            case RefInfo.Int => Option(floatToIntFunction.asInstanceOf[(Float => B)])
-            case RefInfo.Long => Option(floatToLongFunction.asInstanceOf[(Float => B)])
-            case RefInfo.Float => Option(floatToFloatFunction.asInstanceOf[(Float => B)])
-            case RefInfo.Double => Option(floatToDoubleFunction.asInstanceOf[(Float => B)])
-
-            case RefInfo.JavaByte => Option(floatToJavaByteFunction.asInstanceOf[(Float => B)])
-            case RefInfo.JavaShort => Option(floatToJavaShortFunction.asInstanceOf[(Float => B)])
-            case RefInfo.JavaInteger => Option(floatToJavaIntFunction.asInstanceOf[(Float => B)])
-            case RefInfo.JavaLong => Option(floatToJavaLongFunction.asInstanceOf[(Float => B)])
-            case RefInfo.JavaFloat => Option(floatToJavaFloatFunction.asInstanceOf[(Float => B)])
-            case RefInfo.JavaDouble => Option(floatToJavaDoubleFunction.asInstanceOf[(Float => B)])
-
-            case x if x == RefInfo[String] => Option(floatToStringFunction.asInstanceOf[(Float => B)])
-        }
-        a
-    }
-
-    private[this] object floatFunctions {
-        val floatToByteFunction = (_: Float).toByte
-        val floatToShortFunction = (_: Float).toShort
-        val floatToIntFunction = (_: Float).toInt
-        val floatToLongFunction = (_: Float).toLong
-        val floatToFloatFunction = (f: Float) => f
-        val floatToDoubleFunction = (_: Float).toDouble
-        val floatToStringFunction = (_: Float).toString
-
-        val floatToJavaByteFunction = (f: Float) => jl.Byte.valueOf(f.toByte)
-        val floatToJavaShortFunction = (f: Float) => jl.Short.valueOf(f.toShort)
-        val floatToJavaIntFunction = (f: Float) => jl.Integer.valueOf(f.toInt)
-        val floatToJavaLongFunction = (f: Float) => jl.Long.valueOf(f.toLong)
-        val floatToJavaFloatFunction = (f: Float) => jl.Float.valueOf(f)
-        val floatToJavaDoubleFunction = (f: Float) => jl.Double.valueOf(f)
-    }
 }

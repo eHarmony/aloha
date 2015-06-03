@@ -26,5 +26,6 @@ object RefInfo {
     val Object = RefInfoOps.refInfo[AnyRef]
     val Short = RefInfoOps.refInfo[Short]
     val Unit = RefInfoOps.refInfo[Unit]
+    val String = RefInfoOps.refInfo[String]
     def apply[A: RefInfo] = RefInfoOps.refInfo[A]
 }
