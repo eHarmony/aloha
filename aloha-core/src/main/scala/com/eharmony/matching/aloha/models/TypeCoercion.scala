@@ -37,23 +37,23 @@ import scala.math.ScalaNumericAnyConversions
  *
  * Where the label abbreviations are:
  *
- - '''''Bo''''':  ''scala.Boolean
- - '''''C''''':   ''scala.Char
- - '''''By''''':  ''scala.Byte
- - '''''Sh''''':  ''scala.Short
- - '''''I''''':   ''scala.Int
- - '''''L''''':   ''scala.Long
- - '''''F''''':   ''scala.Float
- - '''''D''''':   ''scala.Double
- - '''''JBy''''': ''java.lang.Byte
- - '''''JSh''''': ''java.lang.Short
- - '''''JI''''':  ''java.lang.Integer
- - '''''JL''''':  ''java.lang.Long
- - '''''JF''''':  ''java.lang.Float
- - '''''JD''''':  ''java.lang.Character
- - '''''JC''''':  ''java.lang.Double
- - '''''JBo''''': ''java.lang.Boolean
- - '''''St''''':  ''java.lang.String
+ - '''''Bo''''':  ''scala.Boolean''
+ - '''''C''''':   ''scala.Char''
+ - '''''By''''':  ''scala.Byte''
+ - '''''Sh''''':  ''scala.Short''
+ - '''''I''''':   ''scala.Int''
+ - '''''L''''':   ''scala.Long''
+ - '''''F''''':   ''scala.Float''
+ - '''''D''''':   ''scala.Double''
+ - '''''JBy''''': ''java.lang.Byte''
+ - '''''JSh''''': ''java.lang.Short''
+ - '''''JI''''':  ''java.lang.Integer''
+ - '''''JL''''':  ''java.lang.Long''
+ - '''''JF''''':  ''java.lang.Float''
+ - '''''JD''''':  ''java.lang.Character''
+ - '''''JC''''':  ''java.lang.Double''
+ - '''''JBo''''': ''java.lang.Boolean''
+ - '''''St''''':  ''java.lang.String''
  *
  * and value abbreviations are:
  *
@@ -83,6 +83,7 @@ import scala.math.ScalaNumericAnyConversions
  *
  * @author R M Deak
  */
+// TODO: Work on A = Option[C], B = Option[B] s.t. if Some[C => D], then produce Some[A => B]
 trait TypeCoercion { self: Logging =>
     def coercion[A, B](implicit a: RefInfo[A], b: RefInfo[B]): Option[A => B] = {
         val coerceF =
@@ -90,6 +91,12 @@ trait TypeCoercion { self: Logging =>
                 val f: A => A = identity[A]
                 debug(s"Using identity: ${RefInfoOps.toString[A]} == ${RefInfoOps.toString[B]}")
                 Option(f.asInstanceOf[A => B])
+            }
+            else if (RefInfoOps.isSubType[A, Option[Any]] && RefInfoOps.isSubType[B, Option[Any]]) {
+                coercion(RefInfoOps.typeParams[A].head, RefInfoOps.typeParams[B].head).asInstanceOf[Option[Any => Any]].map(f => (x: Option[Any]) => x.map(f)).asInstanceOf[Option[A => B]]
+            }
+            else if (!RefInfoOps.isSubType[A, Option[Any]] && RefInfoOps.isSubType[B, Option[Any]]) {
+                coercion(a, RefInfoOps.typeParams[B].head).map(f => (x: A) => Option(f(x))).asInstanceOf[Option[A => B]]
             }
             else if (a == RefInfo.String) {
                 debug(s"Using fromString: A=${RefInfoOps.toString[B]}")

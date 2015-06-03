@@ -2,47 +2,48 @@ package com.eharmony.matching.aloha.models.vw.jni
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-import spray.json._
-import spray.json.DefaultJsonProtocol._
-
 import org.junit.Assert._
 import org.junit.{Ignore, Test}
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 
+import spray.json.DefaultJsonProtocol._
+import spray.json._
+
 import com.eharmony.matching.aloha.factory.ModelFactory
+import com.eharmony.matching.aloha.models.vw.jni.VwJniModelTest._
+import com.eharmony.matching.aloha.score.conversions.ScoreConverter.Implicits._
 import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.matching.aloha.semantics.compiled.compiler.TwitterEvalCompiler
-import com.eharmony.matching.aloha.semantics.compiled.plugin.csv.{CsvLines, CsvTypes, CompiledSemanticsCsvPlugin, CsvLine}
-import com.eharmony.matching.aloha.score.conversions.ScoreConverter.Implicits._
-import VwJniModelTest._
+import com.eharmony.matching.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine, CsvLines, CsvTypes}
 
-@RunWith(classOf[BlockJUnit4ClassRunner])
+
+@Ignore @RunWith(classOf[BlockJUnit4ClassRunner])
 class VwJniModelTest {
 
-    @Ignore @Test def testByteOutputType(): Unit = { fail() }
-    @Ignore @Test def testShortOutputType(): Unit = { fail() }
-    @Ignore @Test def testIntOutputType(): Unit = { fail() }
-    @Ignore @Test def testLongOutputType(): Unit = { fail() }
-    @Ignore @Test def testFloatOutputType(): Unit = { fail() }
-    @Ignore @Test def testDoubleOutputType(): Unit = { fail() }
-    @Ignore @Test def testStringOutputType(): Unit = { fail() }
-    @Ignore @Test def testJavaByteOutputType(): Unit = { fail() }
-    @Ignore @Test def testJavaShortOutputType(): Unit = { fail() }
-    @Ignore @Test def testJavaIntegerOutputType(): Unit = { fail() }
-    @Ignore @Test def testJavaLongOutputType(): Unit = { fail() }
-    @Ignore @Test def testJavaFloatOutputType(): Unit = { fail() }
-    @Ignore @Test def testJavaDoubleOutputType(): Unit = { fail() }
+    @Test def testByteOutputType(): Unit = { fail() }
+    @Test def testShortOutputType(): Unit = { fail() }
+    @Test def testIntOutputType(): Unit = { fail() }
+    @Test def testLongOutputType(): Unit = { fail() }
+    @Test def testFloatOutputType(): Unit = { fail() }
+    @Test def testDoubleOutputType(): Unit = { fail() }
+    @Test def testStringOutputType(): Unit = { fail() }
+    @Test def testJavaByteOutputType(): Unit = { fail() }
+    @Test def testJavaShortOutputType(): Unit = { fail() }
+    @Test def testJavaIntegerOutputType(): Unit = { fail() }
+    @Test def testJavaLongOutputType(): Unit = { fail() }
+    @Test def testJavaFloatOutputType(): Unit = { fail() }
+    @Test def testJavaDoubleOutputType(): Unit = { fail() }
 
-    @Ignore @Test def testNoThreshWithMissing(): Unit = { fail() }
-    @Ignore @Test def testExceededThresh(): Unit = { fail() }
+    @Test def testNoThreshWithMissing(): Unit = { fail() }
+    @Test def testExceededThresh(): Unit = { fail() }
 
-    @Ignore @Test def testNsWithUndeclaredFeatureNames(): Unit = { fail() }
-    @Ignore @Test def testNsDoesntCoverAllFeatureNames(): Unit = { fail() }
-    @Ignore @Test def testNssAndDefaultDoesntCoverAllFeatureInd(): Unit = { fail() }
-    @Ignore @Test def testDifferentSizedNamesAndFeatures(): Unit = { fail() }
+    @Test def testNsWithUndeclaredFeatureNames(): Unit = { fail() }
+    @Test def testNsDoesntCoverAllFeatureNames(): Unit = { fail() }
+    @Test def testNssAndDefaultDoesntCoverAllFeatureInd(): Unit = { fail() }
+    @Test def testDifferentSizedNamesAndFeatures(): Unit = { fail() }
 
-    @Ignore @Test def testBadVwArgsThrowsEx(): Unit = { fail() }
+    @Test def testBadVwArgsThrowsEx(): Unit = { fail() }
 
 
     @Test def test1(): Unit = {
