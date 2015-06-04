@@ -23,15 +23,15 @@ import scala.math.ScalaNumericAnyConversions
  *       L   |     A   A   A   A   I   A   A   A   A   A   A   A   A   A       tS
  *  F    F   |     A   A   A   A   A   I   A   A   A   A   A   A   A   A       tS
  *  R    D   |     A   A   A   A   A   A   I   A   A   A   A   A   A   A       tS
- *  O    JBy |         N   N   N   N   N   N   I   N   N   N   N   N   N       tS
- *  M    JSh |         N   N   N   N   N   N   N   I   N   N   N   N   N       tS
- *       JI  |         N   N   N   N   N   N   N   N   I   N   N   N   N       tS
- *       JL  |         N   N   N   N   N   N   N   N   N   I   N   N   N       tS
- *       JF  |         N   N   N   N   N   N   N   N   N   N   I   N   N       tS
- *       JD  |         N   N   N   N   N   N   N   N   N   N   N   I   N       tS
+ *  O    JBy |     N   N   N   N   N   N   N   I   N   N   N   N   N   N       tS
+ *  M    JSh |     N   N   N   N   N   N   N   N   I   N   N   N   N   N       tS
+ *       JI  |     N   N   N   N   N   N   N   N   N   I   N   N   N   N       tS
+ *       JL  |     N   N   N   N   N   N   N   N   N   N   I   N   N   N       tS
+ *       JF  |     N   N   N   N   N   N   N   N   N   N   N   I   N   N       tS
+ *       JD  |     N   N   N   N   N   N   N   N   N   N   N   N   I   N       tS
  *       JC  |     uC                                                  I       tS
  *       JBo | uB                                                          I   tS
- *       St  | fS      fS  fS  fS  fS  fS  fS  fS  fS  fS  fS  fS  fS      fS  I
+ *       St  |                                                                 I
  *           |
  * </pre>
  *
@@ -93,29 +93,32 @@ trait TypeCoercion { self: Logging =>
                 Option(f.asInstanceOf[A => B])
             }
             else if (RefInfoOps.isSubType[A, Option[Any]] && RefInfoOps.isSubType[B, Option[Any]]) {
+                // This cast is necessary.
                 coercion(RefInfoOps.typeParams[A].head, RefInfoOps.typeParams[B].head).asInstanceOf[Option[Any => Any]].map(f => (x: Option[Any]) => x.map(f)).asInstanceOf[Option[A => B]]
             }
             else if (!RefInfoOps.isSubType[A, Option[Any]] && RefInfoOps.isSubType[B, Option[Any]]) {
                 coercion(a, RefInfoOps.typeParams[B].head).map(f => (x: A) => Option(f(x))).asInstanceOf[Option[A => B]]
             }
-            else if (a == RefInfo.String) {
-                debug(s"Using fromString: A=${RefInfoOps.toString[B]}")
-                b match {
-                    case RefInfo.Byte          => Option(((s: String) => s.toByte).asInstanceOf[A => B])
-                    case RefInfo.Short         => Option(((s: String) => s.toShort).asInstanceOf[A => B])
-                    case RefInfo.Int           => Option(((s: String) => s.toInt).asInstanceOf[A => B])
-                    case RefInfo.Long          => Option(((s: String) => s.toLong).asInstanceOf[A => B])
-                    case RefInfo.Float         => Option(((s: String) => s.toFloat).asInstanceOf[A => B])
-                    case RefInfo.Double        => Option(((s: String) => s.toDouble).asInstanceOf[A => B])
-                    case RefInfo.JavaByte      => Option(((s: String) => jl.Byte.valueOf(s)).asInstanceOf[A => B])
-                    case RefInfo.JavaShort     => Option(((s: String) => jl.Short.valueOf(s)).asInstanceOf[A => B])
-                    case RefInfo.JavaInteger   => Option(((s: String) => jl.Integer.valueOf(s)).asInstanceOf[A => B])
-                    case RefInfo.JavaLong      => Option(((s: String) => jl.Long.valueOf(s)).asInstanceOf[A => B])
-                    case RefInfo.JavaFloat     => Option(((s: String) => jl.Float.valueOf(s)).asInstanceOf[A => B])
-                    case RefInfo.JavaDouble    => Option(((s: String) => jl.Double.valueOf(s)).asInstanceOf[A => B])
-                    case _ => None
-                }
-            }
+//            else if (a == RefInfo.String) {
+//                debug(s"Using fromString: A=${RefInfoOps.toString[B]}")
+//                b match {
+//                    case RefInfo.Boolean       => Option(((s: String) => s.toBoolean).asInstanceOf[A => B])
+//                    case RefInfo.Byte          => Option(((s: String) => s.toByte).asInstanceOf[A => B])
+//                    case RefInfo.Short         => Option(((s: String) => s.toShort).asInstanceOf[A => B])
+//                    case RefInfo.Int           => Option(((s: String) => s.toInt).asInstanceOf[A => B])
+//                    case RefInfo.Long          => Option(((s: String) => s.toLong).asInstanceOf[A => B])
+//                    case RefInfo.Float         => Option(((s: String) => s.toFloat).asInstanceOf[A => B])
+//                    case RefInfo.Double        => Option(((s: String) => s.toDouble).asInstanceOf[A => B])
+//                    case RefInfo.JavaBoolean   => Option(((s: String) => jl.Boolean.valueOf(s.toBoolean)).asInstanceOf[A => B])
+//                    case RefInfo.JavaByte      => Option(((s: String) => jl.Byte.valueOf(s.toByte)).asInstanceOf[A => B])
+//                    case RefInfo.JavaShort     => Option(((s: String) => jl.Short.valueOf(s.toShort)).asInstanceOf[A => B])
+//                    case RefInfo.JavaInteger   => Option(((s: String) => jl.Integer.valueOf(s.toInt)).asInstanceOf[A => B])
+//                    case RefInfo.JavaLong      => Option(((s: String) => jl.Long.valueOf(s.toLong)).asInstanceOf[A => B])
+//                    case RefInfo.JavaFloat     => Option(((s: String) => jl.Float.valueOf(s.toFloat)).asInstanceOf[A => B])
+//                    case RefInfo.JavaDouble    => Option(((s: String) => jl.Double.valueOf(s.toDouble)).asInstanceOf[A => B])
+//                    case _ => None
+//                }
+//            }
             else if (b == RefInfo.String) {
                 debug(s"Using toString: B=${RefInfoOps.toString[B]}")
                 Option(((a: A) => a.toString).asInstanceOf[A => B])
@@ -135,12 +138,14 @@ trait TypeCoercion { self: Logging =>
             else if (RefInfoOps.isSubType[A, jl.Number]) {
                 val f = (a: A) => a.asInstanceOf[jl.Number]
                 val c = b match {
+                    case RefInfo.Char          => Option(f.andThen(_.longValue.toChar).asInstanceOf[A => B])
                     case RefInfo.Byte          => Option(f.andThen(_.byteValue).asInstanceOf[A => B])
                     case RefInfo.Short         => Option(f.andThen(_.shortValue).asInstanceOf[A => B])
                     case RefInfo.Int           => Option(f.andThen(_.intValue).asInstanceOf[A => B])
                     case RefInfo.Long          => Option(f.andThen(_.longValue).asInstanceOf[A => B])
                     case RefInfo.Float         => Option(f.andThen(_.floatValue).asInstanceOf[A => B])
                     case RefInfo.Double        => Option(f.andThen(_.doubleValue).asInstanceOf[A => B])
+                    case RefInfo.JavaCharacter => Option(f.andThen(x => jl.Character.valueOf(x.longValue.toChar)).asInstanceOf[A => B])
                     case RefInfo.JavaByte      => Option(f.andThen(v => jl.Byte.valueOf(v.byteValue)).asInstanceOf[A => B])
                     case RefInfo.JavaShort     => Option(f.andThen(v => jl.Short.valueOf(v.shortValue)).asInstanceOf[A => B])
                     case RefInfo.JavaInteger   => Option(f.andThen(v => jl.Integer.valueOf(v.intValue)).asInstanceOf[A => B])
@@ -187,7 +192,7 @@ trait TypeCoercion { self: Logging =>
             else None
 
         if (coerceF.isEmpty)
-            warn("Couldn't find type coercion function: ${RefInfoOps.toString[A]} => ${RefInfoOps.toString[B]}.")
+            warn(s"Couldn't find type coercion function: ${RefInfoOps.toString[A]} => ${RefInfoOps.toString[B]}.")
 
         coerceF
     }
