@@ -32,7 +32,6 @@ import scala.math.ScalaNumericAnyConversions
  *       JC  |     uC                                                  I       tS
  *       JBo | uB                                                          I   tS
  *       St  |                                                                 I
- *           |
  * </pre>
  *
  * Where the label abbreviations are:
@@ -57,17 +56,17 @@ import scala.math.ScalaNumericAnyConversions
  *
  * and value abbreviations are:
  *
- - '''''A''''': ''conversion from scala.AnyVal''
- - '''''N''''': ''conversion from java.lang.Number''
+ - '''''A''''': ''coercion from scala.AnyVal''
+ - '''''N''''': ''coercion from java.lang.Number''
  - '''''I''''': ''identity function''
- - '''''bB''''': ''boxing Boolean conversion''
- - '''''uB''''': ''unboxing Boolean conversion''
- - '''''uC''''': ''unboxing character conversion''
- - '''''tS''''': ''toString conversion''
- - '''''fS''''': ''from String conversion''
+ - '''''bB''''': ''boxing Boolean coercion''
+ - '''''uB''''': ''unboxing Boolean coercion''
+ - '''''uC''''': ''unboxing character coercion''
+ - '''''tS''''': ''toString coercion''
  *
- * The rationale behind not supplying conversion from String to Char is that an empty string is problematic.
- * One could call one of the following but they all throw exceptions:
+ * The rationale behind not supplying coercion from Strings is that too many exceptions can
+ * be thrown during the coercion process.  Coercions from String to character have issues
+ * with the empty string.  One could call one of the following but they all throw exceptions:
  *
  * {{{
  * "".charAt(0) // java.lang.StringIndexOutOfBoundsException: String index out of range: 0
@@ -93,32 +92,18 @@ trait TypeCoercion { self: Logging =>
                 Option(f.asInstanceOf[A => B])
             }
             else if (RefInfoOps.isSubType[A, Option[Any]] && RefInfoOps.isSubType[B, Option[Any]]) {
-                // This cast is necessary.
-                coercion(RefInfoOps.typeParams[A].head, RefInfoOps.typeParams[B].head).asInstanceOf[Option[Any => Any]].map(f => (x: Option[Any]) => x.map(f)).asInstanceOf[Option[A => B]]
+                debug(s"Using Option => Option conversion: ${RefInfoOps.toString[A]} == ${RefInfoOps.toString[B]}")
+
+                // This cast is necessary even thought it says it's not.
+                coercion(RefInfoOps.typeParams[A].head, RefInfoOps.typeParams[B].head).
+                    asInstanceOf[Option[Any => Any]].
+                    map(f => (x: Option[Any]) => x.map(f)).
+                    asInstanceOf[Option[A => B]]
             }
             else if (!RefInfoOps.isSubType[A, Option[Any]] && RefInfoOps.isSubType[B, Option[Any]]) {
+                debug(s"Using _ => Option conversion: ${RefInfoOps.toString[A]} == ${RefInfoOps.toString[B]}")
                 coercion(a, RefInfoOps.typeParams[B].head).map(f => (x: A) => Option(f(x))).asInstanceOf[Option[A => B]]
             }
-//            else if (a == RefInfo.String) {
-//                debug(s"Using fromString: A=${RefInfoOps.toString[B]}")
-//                b match {
-//                    case RefInfo.Boolean       => Option(((s: String) => s.toBoolean).asInstanceOf[A => B])
-//                    case RefInfo.Byte          => Option(((s: String) => s.toByte).asInstanceOf[A => B])
-//                    case RefInfo.Short         => Option(((s: String) => s.toShort).asInstanceOf[A => B])
-//                    case RefInfo.Int           => Option(((s: String) => s.toInt).asInstanceOf[A => B])
-//                    case RefInfo.Long          => Option(((s: String) => s.toLong).asInstanceOf[A => B])
-//                    case RefInfo.Float         => Option(((s: String) => s.toFloat).asInstanceOf[A => B])
-//                    case RefInfo.Double        => Option(((s: String) => s.toDouble).asInstanceOf[A => B])
-//                    case RefInfo.JavaBoolean   => Option(((s: String) => jl.Boolean.valueOf(s.toBoolean)).asInstanceOf[A => B])
-//                    case RefInfo.JavaByte      => Option(((s: String) => jl.Byte.valueOf(s.toByte)).asInstanceOf[A => B])
-//                    case RefInfo.JavaShort     => Option(((s: String) => jl.Short.valueOf(s.toShort)).asInstanceOf[A => B])
-//                    case RefInfo.JavaInteger   => Option(((s: String) => jl.Integer.valueOf(s.toInt)).asInstanceOf[A => B])
-//                    case RefInfo.JavaLong      => Option(((s: String) => jl.Long.valueOf(s.toLong)).asInstanceOf[A => B])
-//                    case RefInfo.JavaFloat     => Option(((s: String) => jl.Float.valueOf(s.toFloat)).asInstanceOf[A => B])
-//                    case RefInfo.JavaDouble    => Option(((s: String) => jl.Double.valueOf(s.toDouble)).asInstanceOf[A => B])
-//                    case _ => None
-//                }
-//            }
             else if (b == RefInfo.String) {
                 debug(s"Using toString: B=${RefInfoOps.toString[B]}")
                 Option(((a: A) => a.toString).asInstanceOf[A => B])
