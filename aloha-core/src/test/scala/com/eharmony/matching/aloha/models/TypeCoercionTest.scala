@@ -1,13 +1,16 @@
 package com.eharmony.matching.aloha.models
 
+import scala.language.existentials
+
 import java.{lang => jl}
 
-import com.eharmony.matching.aloha.models.TypeCoercionTest.{matrixAndTypes, Precision}
-import com.eharmony.matching.aloha.reflect.{RefInfo, RefInfoOps}
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
+
+import com.eharmony.matching.aloha.models.TypeCoercionTest.{matrixAndTypes, Precision}
+import com.eharmony.matching.aloha.reflect.{RefInfo, RefInfoOps}
 
 
 /**

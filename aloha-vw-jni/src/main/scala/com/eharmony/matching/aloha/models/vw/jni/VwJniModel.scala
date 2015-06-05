@@ -60,7 +60,7 @@ extends BaseModel[A, B]
         val act = (sci.BitSet(defaultNs:_*) /: namespaces)(_ ++ _._2)
         require(
             req == act,
-            s"defaultNamespace and namespaces must cover all indices (0 until ${featureFunctions.size}).  Missing ${(req -- act).mkString(",")}")
+            s"defaultNamespace and namespaces must cover all indices (0 until ${featureFunctions.size}).  Missing indices: ${(req -- act).map(i => s"$i='${featureNames(i)}'").mkString(", ")}.")
     }
 
     import VwJniModel._
@@ -132,7 +132,7 @@ extends BaseModel[A, B]
     }
 }
 
-object VwJniModel extends ParserProviderCompanion with VwJniModelJson {
+object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Logging {
 
     // Copied from featureSpecExtractor.vw.unlabeled.VwSpec object.
 
@@ -164,10 +164,19 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson {
 
                         // If VW params are unspecified, use empty string.
                         val vwParams = vw.vw.getParams.fold(_.mkString(" "), identity)
+
+                        // TODO: Map failure to more specialized exception types.  For instance: Try { new VWScorer(vwParams) }.recoverWith{case ex: Error if ex.getMessage.startsWith("unrecognised option") => Failure(new Ex(ex.getMessage, ex))}
                         val vwJniModel = new VWScorer(vwParams)
                         val indices = featureMap.unzip._1.view.zipWithIndex.toMap
                         val nssRaw = vw.namespaces.getOrElse(sci.ListMap.empty)
-                        val nss = nssRaw.map { case (ns, fs) => (ns, fs.flatMap(indices.get).toList)}.toList
+                        val nss = nssRaw.map { case (ns, fs) =>
+                            val fi = fs.flatMap { f =>
+                                val oInd = indices.get(f)
+                                if (oInd.isEmpty) info(s"Ignoring feature '$f' in namespace '$ns'.  Not in the feature list.")
+                                oInd
+                            }.toList
+                            (ns, fi)
+                        }.toList
                         val defaultNs = (indices.keySet -- (Set.empty[String] /: nssRaw)(_ ++ _._2)).flatMap(indices.get).toList
                         VwJniModel(vw.modelId, vwJniModel, names, functions, defaultNs, nss, cf, vw.numMissingThreshold)
                 }
