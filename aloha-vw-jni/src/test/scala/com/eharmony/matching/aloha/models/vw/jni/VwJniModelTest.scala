@@ -29,6 +29,7 @@ import scala.util.Try
 
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
+@Ignore
 class VwJniModelTest {
     import VwJniModelTest._
 
