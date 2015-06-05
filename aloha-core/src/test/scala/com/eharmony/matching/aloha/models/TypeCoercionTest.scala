@@ -557,7 +557,7 @@ class TypeCoercionTest {
             f = types(from)
             t = types(to)
             doesExist = TypeCoercion(f, t).isDefined
-            ok = !shouldExist || doesExist  // p -> q == ~p v q
+            ok = shouldExist == doesExist  // p -> q == ~p v q
         } yield (shouldExist, ok, s"${RefInfoOps.toString(f)} => ${RefInfoOps.toString(t)}")
 
         println(s"Found ${funcs.count(_._1)} coercion functions.")
@@ -579,7 +579,7 @@ class TypeCoercionTest {
             f = types(from)
             t = RefInfoOps.option(types(to))
             doesExist = TypeCoercion(f, t).isDefined
-            ok = !shouldExist || doesExist  // p -> q == ~p v q
+            ok = shouldExist == doesExist  // p -> q == ~p v q
         } yield (shouldExist, ok, s"${RefInfoOps.toString(f)} => ${RefInfoOps.toString(t)}")
 
         println(s"Found ${funcs.count(_._1)} toOption coercion functions.")
@@ -601,7 +601,7 @@ class TypeCoercionTest {
             f = RefInfoOps.option(types(from))
             t = RefInfoOps.option(types(to))
             doesExist = TypeCoercion(f, t).isDefined
-            ok = !shouldExist || doesExist  // p -> q == ~p v q
+            ok = shouldExist == doesExist  // p -> q == ~p v q
         } yield (shouldExist, ok, s"${RefInfoOps.toString(f)} => ${RefInfoOps.toString(t)}")
 
         println(s"Found ${funcs.count(_._1)} Option to Option coercion functions.")
