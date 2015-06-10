@@ -29,14 +29,8 @@
 
         <dependency>
             <groupId>vw</groupId>
-            <artifactId>vw-jni-${os.version}-${os.arch}</artifactId>
+            <artifactId>vw-jni</artifactId>
             <version>1.0.3-SNAPSHOT</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <!-- Test dependencies -->

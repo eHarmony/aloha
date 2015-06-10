@@ -7,7 +7,7 @@ import java.text.DecimalFormat
 
 import spray.json.{DeserializationException, JsValue, JsonReader}
 
-import vw.VWScorer
+import vw.VW
 
 import com.eharmony.matching.aloha.factory.{ModelParser, ModelParserWithSemantics, ParserProviderCompanion}
 import com.eharmony.matching.aloha.id.ModelIdentity
@@ -40,7 +40,7 @@ import com.eharmony.matching.aloha.util.{EitherHelpers, Logging}
  */
 final case class VwJniModel[-A, +B](
     modelId: ModelIdentity,
-    private val model: vw.VWScorer,
+    private val model: VW,
     featureNames: sci.IndexedSeq[String],
     featureFunctions: sci.IndexedSeq[GenAggFunc[A, Iterable[(String, Double)]]],
     defaultNs: List[Int],
@@ -77,7 +77,7 @@ extends BaseModel[A, B]
         generateVwInput(a) match {
             case Left(missing) => failure(Seq(s"Too many features with missing variables: ${missing.count(_._2.nonEmpty)}"), getMissingVariables(missing))
             case Right(vwIn) =>
-                Try { model.getPrediction(vwIn) } match {
+                Try { model.predict(vwIn) } match {
                     case Success(y) => success(finalizer(y))
                     case Failure(ex) => failure(Seq(ex.getMessage))
                 }
@@ -166,7 +166,7 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
                         val vwParams = vw.vw.getParams.fold(_.mkString(" "), identity)
 
                         // TODO: Map failure to more specialized exception types.  For instance: Try { new VWScorer(vwParams) }.recoverWith{case ex: Error if ex.getMessage.startsWith("unrecognised option") => Failure(new Ex(ex.getMessage, ex))}
-                        val vwJniModel = new VWScorer(vwParams)
+                        val vwJniModel = new VW(vwParams)
                         val indices = featureMap.unzip._1.view.zipWithIndex.toMap
                         val nssRaw = vw.namespaces.getOrElse(sci.ListMap.empty)
                         val nss = nssRaw.map { case (ns, fs) =>

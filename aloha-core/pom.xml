@@ -201,7 +201,7 @@
 		<dependency>
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections</artifactId>
-			<version>0.9.9-RC1</version>
+			<version>0.9.9</version>
 			<!-- Was just test but changed to create a classpath scanning default factory. -->
 			<!--<scope>test</scope>-->
 			<exclusions>

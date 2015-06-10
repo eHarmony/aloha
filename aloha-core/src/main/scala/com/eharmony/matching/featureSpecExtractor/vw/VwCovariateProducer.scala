@@ -8,8 +8,8 @@ import com.eharmony.matching.featureSpecExtractor.vw.json.VwJsonLike
 trait VwCovariateProducer[A] { self: SparseCovariateProducer =>
 
     /**
-     * @param semantics
-     * @param json
+     * @param semantics semantics for function creation.
+     * @param json JSON from which to derive feature definitions.
      * @return (covariates, default, namespaces, optional normalizer)
      */
     protected[this] def getVwData(semantics: CompiledSemantics[A], json: VwJsonLike) = {

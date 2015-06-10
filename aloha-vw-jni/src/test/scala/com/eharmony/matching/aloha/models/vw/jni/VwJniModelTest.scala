@@ -16,20 +16,21 @@ import com.eharmony.matching.aloha.semantics.compiled.compiler.TwitterEvalCompil
 import com.eharmony.matching.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine, CsvLines, CsvTypes}
 import com.eharmony.matching.aloha.semantics.func.{GenFunc, GeneratedAccessor}
 import com.eharmony.matching.aloha.util.Logging
+import org.apache.commons.vfs2.VFS
 import org.junit.Assert._
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
-import org.junit.{BeforeClass, Ignore, Test}
+import org.junit.{Ignore, BeforeClass, Test}
 import spray.json.DefaultJsonProtocol._
 import spray.json._
-import vw.VWScorer
+import vw.VW
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.Try
 
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
-@Ignore
+// @Ignore
 class VwJniModelTest {
     import VwJniModelTest._
 
@@ -84,7 +85,7 @@ class VwJniModelTest {
         // Because height_mm feature isn't in any namespace.
         VwJniModel(
             ModelId.empty,
-            new VWScorer(""),
+            new VW("--quiet"),
             Vector("height_mm"),
             Vector(h),
             Nil,
@@ -100,7 +101,7 @@ class VwJniModelTest {
 
         VwJniModel(
             ModelId.empty,
-            new VWScorer(""),
+            new VW("--quiet"),
             Vector(),
             Vector(h),
             Nil,
@@ -116,7 +117,7 @@ class VwJniModelTest {
 
         VwJniModel(
             ModelId.empty,
-            new VWScorer(""),
+            new VW("--quiet"),
             Vector("height_mm"),
             Vector(),
             Nil,
@@ -125,19 +126,38 @@ class VwJniModelTest {
         )
     }
 
+    /**
+     * Intentionally pass a corrupted model to VW and test the recoverability.  Currently, throws a SEG FAULT so
+     * recoverability is out of the question.  So ignore the test.
+     */
+    @Ignore @Test def testCorruptedModel(): Unit = {
+        val badModel = VFS.getManager.resolveFile("res:VwJniModelTest-vw_bad.model").getName.getPath
+        println(s"attempting to instantiate corrupted VW model: $badModel")
+
+        // This try won't do anything because this is currently a SEG FAULT so the world will just blow up.
+        Try { new VW(s"--quiet -i $badModel") }
+    }
+
 
     /**
      * Can't test.  Catching throwable or setting test annotation to @Test(expected = classOf[Error]) causes the
      * world to blow up.  Usually says: Invalid memory access of location 0x0 rip=[HEX HERE]
      */
     // TODO: Figure out how to test this.
-    @Ignore @Test def testBadVwArgsThrowsEx(): Unit = {
+    @Test def testBadVwArgsThrowsEx(): Unit = {
         try {
             val m = model[Float](badVwArgsJson)
-            fail()
+            fail("Should throw exception.")
         }
         catch {
-            case e: Error =>  // Swallow.  We want exception.
+            case e: AssertionError => throw e
+
+            // Swallow.  We want this exception.
+            case e: IllegalArgumentException if e.getMessage == "unrecognised option '--BAD_FEATURE___ounq24tjnasdf8h'" =>
+
+            // Wrong exception type.
+            case e: Throwable if e.getMessage == "unrecognised option '--BAD_FEATURE___ounq24tjnasdf8h'" =>
+                fail("Should throw IllegalArgumentException.  Threw Exception.")
         }
     }
 
@@ -330,11 +350,12 @@ object VwJniModelTest extends Logging {
     }
 
     private[this] def allocateModel(): Try[Unit] = {
-        val m = new VWScorer(s"--quiet --loss_function logistic --link logistic -f $VwModelPath")
+        val m = new VW(s"--quiet --loss_function logistic --link logistic -f $VwModelPath")
         1 to 100 foreach { _ =>
-            m.doLearnAndGetPrediction("-1 | ")
-            m.doLearnAndGetPrediction( "1 | ")
+            m.learn("-1 | ")
+            m.learn( "1 | ")
         }
+        m.close()
         Try(())
     }
 }
