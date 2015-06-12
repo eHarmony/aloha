@@ -29,15 +29,17 @@ class VwContextualBanditSpecProducerTest {
 
         // TODO: Work on removing trailing and leading spaces.  This is clearly not perfect.
         val expected = Seq(
-            "2:1:0| |A name=Alex |B   ",
-            " |A name=Bill |B   ",
-            " |A name=Carl |B   ",
-            " |A name=Dale |B   "
+            "2:1:0|A name=Alex",
+            "|A name=Bill",
+            "|A name=Carl",
+            "|A name=Dale"
         )
 
-        (lines zip expected).zipWithIndex.foreach { case ((x, exp), i) =>
-            val act = spec(x)._2.toString
-            assertEquals(s"On test $i: ", exp, act)
+        (lines zip expected).zipWithIndex.foreach {
+            case ((x, exp), i) =>
+                val act = spec(x)._2.toString
+                assertEquals(s"On test $i: ", exp, act)
+            case d => fail(s"bad: $d")
         }
     }
 }

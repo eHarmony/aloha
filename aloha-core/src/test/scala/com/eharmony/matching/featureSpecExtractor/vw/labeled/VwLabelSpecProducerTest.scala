@@ -25,10 +25,10 @@ class VwLabelSpecProducerTest {
         )
 
         val expected = Seq(
-            "1 2| |A name=Alex marriages=UNK",
-            "2 3| |A name=Bill marriages=UNK",
-            "0 | |A name=Carl marriages=UNK",
-            "3 1| |A name=Dale marriages=UNK"
+            "1 2|A name=Alex marriages=UNK",
+            "2 3|A name=Bill marriages=UNK",
+            "0 |A name=Carl marriages=UNK",
+            "3 1|A name=Dale marriages=UNK"
         )
 
         lines.zip(expected).foreach{
@@ -55,10 +55,10 @@ class VwLabelSpecProducerTest {
         )
 
         val expected = Seq(
-            "1 2 1| |A name=Alex marriages=UNK",
-            "2 3 2| |A name=Bill marriages=UNK",
-            " |A name=Carl marriages=UNK",  // Omitting the importance variable removes the entire label.
-            "3 3| |A name=Dale marriages=UNK"
+            "1 2 1|A name=Alex marriages=UNK",
+            "2 3 2|A name=Bill marriages=UNK",
+            "|A name=Carl marriages=UNK",  // Omitting the importance variable removes the entire label.
+            "3 3|A name=Dale marriages=UNK"
         )
 
         lines.zip(expected).foreach{
@@ -84,9 +84,9 @@ class VwLabelSpecProducerTest {
         )
 
         val expected = Seq(
-            "1 1| |A name=Alex marriages=UNK",
-            "2 2| |A name=Bill marriages=UNK",
-            " |A name=Carl marriages=UNK"
+            "1 1|A name=Alex marriages=UNK",
+            "2 2|A name=Bill marriages=UNK",
+            "|A name=Carl marriages=UNK"
         )
 
         lines.zip(expected).foreach{ case(x, exp) => assertEquals(s"for ${x.line}: ", exp, spec(x)._2.toString) }

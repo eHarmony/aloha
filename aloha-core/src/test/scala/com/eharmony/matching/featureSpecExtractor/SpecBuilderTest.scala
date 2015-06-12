@@ -60,10 +60,10 @@ class SpecBuilderTest {
         )
 
         val expected = Seq(
-            " |A name=Ryan marriages=1",
-            " |A name=Jon marriages=1",
-            " |A name=Alice marriages=UNK",
-            " |A name=Billy marriages=0"
+            "|A name=Ryan marriages=1",
+            "|A name=Jon marriages=1",
+            "|A name=Alice marriages=UNK",
+            "|A name=Billy marriages=0"
         )
 
         val sb = SpecBuilder(semantics, List(new VwSpecProducer[CsvLine]))
@@ -72,7 +72,7 @@ class SpecBuilderTest {
 
         // Test correctness.
         outs.zip(expected).zipWithIndex.foreach{ case (((MissingAndErroneousFeatureInfo(missing, error), act), exp), i) =>
-            assertEquals("for test $i: ", exp, act.toString)
+            assertEquals(s"for test $i: ", exp, act.toString)
         }
     }
 }

@@ -8,7 +8,8 @@ import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.matching.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import com.eharmony.matching.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine, CsvLines, CsvTypes}
 import com.eharmony.matching.aloha.semantics.func.{GenFunc, GeneratedAccessor}
-import com.eharmony.matching.featureSpecExtractor.SparseFeatureExtractorFunction
+import com.eharmony.matching.featureSpecExtractor.{MissingAndErroneousFeatureInfo, SparseFeatureExtractorFunction}
+import com.eharmony.matching.featureSpecExtractor.density.Sparse
 import com.eharmony.matching.featureSpecExtractor.vw.unlabeled.VwSpecTest._
 import org.junit.Assert._
 import org.junit.Test
@@ -20,6 +21,34 @@ import scala.util.{Random, Try}
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 final class VwSpecTest {
+
+    @Test def testAllNsEmpty(): Unit = {
+        val f = (v: Option[Int]) => v.map(x => Seq(("", x.toDouble))).getOrElse(Nil)
+        val f0 = GenFunc.f0[Option[Int], Sparse]("0", f)
+        val f1 = GenFunc.f0[Option[Int], Sparse]("1", f)
+        val fef = SparseFeatureExtractorFunction(Vector("f0" -> f0, "f1" -> f1))
+        val spec = new VwSpec[Option[Int]](fef, List(0), List("ns1" -> List(1)), None, false)
+        val vwIn = spec(None)
+        assertEquals((MissingAndErroneousFeatureInfo(Nil,Nil), new StringBuilder), vwIn)
+    }
+
+    @Test def testDefaultEmptyNonDefaultNotEmpty(): Unit = {
+        val f0 = GenFunc.f0[Option[Int], Sparse]("0", (v: Option[Int]) => v.map(x => Seq(("", x.toDouble))).getOrElse(Nil))
+        val f1 = GenFunc.f0[Option[Int], Sparse]("1", (v: Option[Int]) => v.map(x => Seq(("", x.toDouble))).getOrElse(Seq(("", 1.0))))
+        val fef = SparseFeatureExtractorFunction(Vector("f0" -> f0, "f1" -> f1))
+        val spec = new VwSpec[Option[Int]](fef, List(0), List("ns1" -> List(1)), None, false)
+        val vwIn = spec(None)
+        assertEquals((MissingAndErroneousFeatureInfo(Nil,Nil), new StringBuilder("|ns1 f1")), vwIn)
+    }
+
+    @Test def testDefaultNoneEmptyNonDefaultEmpty(): Unit = {
+        val f0 = GenFunc.f0[Option[Int], Sparse]("0", (v: Option[Int]) => v.map(x => Seq(("", x.toDouble))).getOrElse(Seq(("", 1.0))))
+        val f1 = GenFunc.f0[Option[Int], Sparse]("1", (v: Option[Int]) => v.map(x => Seq(("", x.toDouble))).getOrElse(Nil))
+        val fef = SparseFeatureExtractorFunction(Vector("f0" -> f0, "f1" -> f1))
+        val spec = new VwSpec[Option[Int]](fef, List(0), List("ns1" -> List(1)), None, false)
+        val vwIn = spec(None)
+        assertEquals((MissingAndErroneousFeatureInfo(Nil,Nil), new StringBuilder("| f0")), vwIn)
+    }
 
     /**
      * Test that truncation ''ALWAYS'' happens close to one or negative one but that the truncated value is within
@@ -124,10 +153,10 @@ final class VwSpecTest {
         val lines = csvLines("1,2", "2,3", "3,4", "3,5" )
 
         val expected = Seq(
-            " |addition i_plus_d:3 |division d_div_i:2",
-            " |addition i_plus_d:5 |division d_div_i:1.5",
-            s" |addition i_plus_d:7 |division d_div_i:${((4d / 3) * Precision).round / Precision}",
-            s" |addition i_plus_d:8 |division d_div_i:${((5d / 3) * Precision).round / Precision}"
+            "|addition i_plus_d:3 |division d_div_i:2",
+            "|addition i_plus_d:5 |division d_div_i:1.5",
+            s"|addition i_plus_d:7 |division d_div_i:${((4d / 3) * Precision).round / Precision}",
+            s"|addition i_plus_d:8 |division d_div_i:${((5d / 3) * Precision).round / Precision}"
         )
 
         val features = SparseFeatureExtractorFunction(Vector(
@@ -147,8 +176,8 @@ final class VwSpecTest {
 
         val spec = new VwSpec[CsvLine](
             features,
-            Vector.empty,                                             // default namespace indices
-            Vector("addition" -> Vector(0), "division" -> Vector(1)), // namespaces
+            Nil,                                             // default namespace indices
+            List("addition" -> List(0), "division" -> List(1)), // namespaces
             None,                                                     // no normalizer
             false                                                     // include zeroes
         )
@@ -160,8 +189,8 @@ final class VwSpecTest {
 
     @Test def testIncZeroFalse() {
         val expected = Map(
-            false -> Seq(" ", " i_plus_d", " i_plus_d:2"),
-            true -> Seq(" i_plus_d:0", " i_plus_d", " i_plus_d:2")
+            false -> Seq("", "| i_plus_d", "| i_plus_d:2"),
+            true -> Seq("| i_plus_d:0", "| i_plus_d", "| i_plus_d:2")
         )
 
         val lines = csvLines("0,0", "0,1", "0,2")
@@ -178,8 +207,8 @@ final class VwSpecTest {
         expected foreach { case (includeZeroes, exp) =>
             val spec = new VwSpec[CsvLine](
                 features,
-                Vector(0),    // default namespace indices
-                Vector.empty, // namespaces
+                List(0),    // default namespace indices
+                Nil, // namespaces
                 None,         // no normalizer
                 includeZeroes // include zeroes
             )
@@ -231,16 +260,16 @@ private object VwSpecTest {
                 val nssi = nss.grouped(1).map { x =>
                     val i = x.head
                     removal match {
-                        case Drop(n) if n == i => i.toString -> Vector.empty
-                        case _                 => i.toString -> Vector(i)
+                        case Drop(n) if n == i => i.toString -> List.empty
+                        case _                 => i.toString -> List(i)
                     }
-                }.toIndexedSeq
+                }.toList
 
-                val defi = removal match {
+                val defi = (removal match {
                     case DropDefault if defNs.isEmpty => defNs
                     case DropDefault                  => defNs.tail
                     case _                            => defNs
-                }
+                }).toList
 
                 (nssi, defi)
         }

@@ -29,6 +29,7 @@ final case class StringFeatureExtractorFunction[-A](features: sci.IndexedSeq[(St
  * @tparam A
  * @tparam Density
  */
+// TODO: Merge this with com.eharmony.matching.aloha.models.reg.RegressionFeatures.
 trait FeatureExtractorFunction[-A, @specialized(Double) Density] extends (A => (MissingAndErroneousFeatureInfo, IndexedSeq[Density])) {
     val features: sci.IndexedSeq[(String, GenAggFunc[A, Density])]
     protected[this] val postProcessingFunction: (String, Density) => Density

@@ -8,6 +8,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 
+import scala.language.postfixOps
+
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class VwContextualBanditSpecTest {
     @Test def testMissingCbLabelInfoRemovesLabelOutput() {
@@ -20,10 +22,10 @@ class VwContextualBanditSpecTest {
             a = GenFunc.f0("action", (_: Any) => va)
             c = GenFunc.f0("cost", (_: Any) => vc)
             p = GenFunc.f0("prob", (_: Any) => vp)
-            spec = VwContextualBanditSpec(fef, 0 to 0, Vector.empty, None, a, c, p)
+            spec = VwContextualBanditSpec(fef, 0 to 0 toList, Nil, None, a, c, p)
             exp = (va, vc, vp) match {
-                case (Some(av), Some(cv), Some(pv)) => s"$av:${VwSpec.LabelDecimalFormatter.format(cv)}:${VwSpec.LabelDecimalFormatter.format(pv)}| "
-                case _ => " "
+                case (Some(av), Some(cv), Some(pv)) => s"$av:${VwSpec.LabelDecimalFormatter.format(cv)}:${VwSpec.LabelDecimalFormatter.format(pv)}|"
+                case _ => ""
             }
         } assertEquals(exp, spec(())._2.toString)
     }

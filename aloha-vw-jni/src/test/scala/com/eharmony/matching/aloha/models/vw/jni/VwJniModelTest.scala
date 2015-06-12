@@ -74,7 +74,7 @@ class VwJniModelTest {
     @Test def testNsDoesntCoverAllFeatureNamesFromJson(): Unit = {
         val m = model[Float](nonCoveringNsJson)
         val input = m.generateVwInput(missingHeight)
-        assertEquals(Right("| height:180 "), input)
+        assertEquals(Right("| height:180"), input)
     }
 
     @Test(expected = classOf[IllegalArgumentException])
@@ -167,6 +167,10 @@ class VwJniModelTest {
         m.asInstanceOf[VwJniModel[CsvLine, A]]
     }
 
+    /**
+     * Tests that the output equals the expected output value.  This ensures that the
+     * @tparam A
+     */
     private[this] def testOutputType[A : RefInfo : ScoreConverter : JsonReader](): Unit = {
         val tc = TypeCoercion[Float, Option[A]].get
         val m = model[A](typeTestJson)
@@ -349,6 +353,9 @@ object VwJniModelTest extends Logging {
         if (x.isFailure) error(s"Couldn't properly allocate vw model: $VwModelPath")
     }
 
+    // (paste -d '\n' <(jot -b "-1 |" 100) <(jot -b "1 |" 100)) | vw --quiet --link logistic --loss_function logistic -f log_0.5.model
+    // echo "" | vw -t --quiet -i log_0.5.model -p pred; cat pred; rm -f ./pred ./log_0.5.model
+    // 0.504197
     private[this] def allocateModel(): Try[Unit] = {
         val m = new VW(s"--quiet --loss_function logistic --link logistic -f $VwModelPath")
         1 to 100 foreach { _ =>

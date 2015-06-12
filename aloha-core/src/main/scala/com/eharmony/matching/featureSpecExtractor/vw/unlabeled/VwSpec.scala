@@ -2,50 +2,81 @@ package com.eharmony.matching.featureSpecExtractor.vw.unlabeled
 
 import java.text.DecimalFormat
 
+import com.eharmony.matching.aloha.util.Logging
 import com.eharmony.matching.featureSpecExtractor.density.Sparse
-import com.eharmony.matching.featureSpecExtractor.vw.unlabeled.VwSpec.inEpsilonInterval
-import com.eharmony.matching.featureSpecExtractor.{MissingAndErroneousFeatureInfo, FeatureExtractorFunction, Spec}
+import com.eharmony.matching.featureSpecExtractor.vw.unlabeled.VwSpec.{DefaultVwNamespaceName, inEpsilonInterval}
+import com.eharmony.matching.featureSpecExtractor.{FeatureExtractorFunction, MissingAndErroneousFeatureInfo, Spec}
 
-import scala.collection.{immutable => sci, BitSet}
+import scala.annotation.tailrec
+import scala.collection.immutable.BitSet
 
 /**
  * A Spec to create VW input.
  * @param featuresFunction function to create covariate data.
  * @param defaultNamespace indices of features.  This is where features with no associated namespace are pigeonholed.
  * @param namespaces index mapping from namespace name to feature index.
- * @param normalizer
+ * @param normalizer a function that can alter the output.
  * @param includeZeroValues whether to include key-value pairs in VW input whose the values are equal to zero.
  * @tparam A input type from which features is extracted.
  */
 @throws[IllegalArgumentException]("If any value {0, 1, ..., featuresFunction.features.size - 1} is not mapped to defaultNamespace or namespaces.")
 class VwSpec[-A](
         val featuresFunction: FeatureExtractorFunction[A, Sparse],
-        val defaultNamespace: sci.IndexedSeq[Int],
-        val namespaces: sci.IndexedSeq[(String, sci.IndexedSeq[Int])],
+        val defaultNamespace: List[Int],
+        val namespaces: List[(String, List[Int])],
         val normalizer: Option[CharSequence => CharSequence],
         val includeZeroValues: Boolean = false)
 extends Spec[A]
-with java.io.Serializable {
+   with java.io.Serializable
+   with Logging {
+
     {
-        val req = BitSet(0 until featuresFunction.features.size:_*)
+        val req = BitSet(featuresFunction.features.indices:_*)
         val act = (BitSet(defaultNamespace:_*) /: namespaces)(_ ++ _._2)
         require(req == act, s"defaultNamespace and namespaces must cover all indices (0 until ${featuresFunction.features.size}).  Missing ${(req -- act).mkString(",")}")
     }
 
+    private[this] val nonEmptyNamespaces = namespaces.filter(_._2.nonEmpty)
+
+    // Log the empty namespaces.
+    Option(namespaces.unzip._1.toSet -- nonEmptyNamespaces.unzip._1.toSet).
+        collect { case s if s.nonEmpty => s.toVector.sorted.mkString(", ") }.
+        foreach { empty => info(s"The following namespaces were empty: $empty.") }
+
+
     def apply(data: A): (MissingAndErroneousFeatureInfo, CharSequence) = {
+        val (extractionInfo, features) = featuresFunction(data)
+        val vwIn = unlabeledVwInput(features)
+        (extractionInfo, vwIn)
+    }
+
+    /**
+     * Each namespace will only be present if it contains at least one feature in the namespace.
+     * @param features features to insert into VW input line.
+     * @return
+     */
+    def unlabeledVwInput(features: IndexedSeq[Sparse]) = {
+
+        // RMD 2015-06-12: GOD I HATE THIS CODE!!!  Maybe functionalize it in the future!
+
         val sb = new StringBuilder
 
-        val (extractionInfo, features) = featuresFunction(data)
-        if (defaultNamespace.nonEmpty)
-            addNamespaceFeaturesToVwLine(sb, defaultNamespace, features, includeZeroValues)
+        // Whether a namespace has been added previously.
+        var nsAlreadyInserted = false
 
-        namespaces.foreach { ns =>
-            addNamespaceFeaturesToVwLine(sb.append(" |").append(ns._1), ns._2, features, includeZeroValues)
+        if (defaultNamespace.nonEmpty)
+            nsAlreadyInserted = addNamespaceFeaturesToVwLine(sb, nsAlreadyInserted, DefaultVwNamespaceName, defaultNamespace, features, includeZeroValues = includeZeroValues)
+
+        var nss: List[(String, List[Int])] = nonEmptyNamespaces
+        while (nss.nonEmpty) {
+            val ns = nss.head
+            nsAlreadyInserted = addNamespaceFeaturesToVwLine(sb, nsAlreadyInserted, ns._1, ns._2, features, includeZeroValues)
+            nss = nss.tail
         }
 
         // If necessary, apply the normalizer.
         val vwLine = normalizer.map(n => n(sb)).getOrElse(sb)
-        (extractionInfo, vwLine)
+        vwLine
     }
 
     /**
@@ -54,42 +85,65 @@ with java.io.Serializable {
      * [[VwSpec.DecimalFormatter]].  If the truncated value is the integer, 1, then the value is omitted from the
      * output (as is allowed by VW).  If the truncated value is zero, then the feature is included only if
      * ''includeZeroValues'' is true.
+     *
      * @param sb string builder into which data is
+     * @param previousNsInserted Whether a namespace has previously been inserted
+     * @param nsName the namespace name.
      * @param nsFeatureIndices the feature indices included in the referenced namespace.
      * @param features the entire list of features (across all namespaces).  Since this is an ''IndexedSeq'', lookup
      *                 by index is constant or near-constant time.
      * @param includeZeroValues whether to include key-value pairs in the VW output whose values are zero.
+     * @return
      */
     private[this] def addNamespaceFeaturesToVwLine(
             sb: StringBuilder,
-            nsFeatureIndices: sci.IndexedSeq[Int],
+            previousNsInserted: Boolean,
+            nsName: String,
+            nsFeatureIndices: List[Int],
             features: IndexedSeq[Sparse],
-            includeZeroValues: Boolean) {
+            includeZeroValues: Boolean): Boolean = {
 
-        nsFeatureIndices.foreach { i =>
-            sb.append(" ")
-            val it = features(i).iterator
-            while(it.hasNext) {
-                val (feature, value) = it.next()
+        @tailrec def h(indices: List[Int], inserted: Boolean, nameAlreadyInserted: Boolean): Boolean = {
+            if (indices.isEmpty) inserted
+            else {
+                val baseIt = features(indices.head).iterator
+                val it = if (includeZeroValues) baseIt else baseIt.filter(f => !inEpsilonInterval(f._2))
 
-                if (VwSpec.inEpsilonInterval(value - 1)) {
-                    sb.append(feature)
-                    if (it.hasNext) sb.append(" ")
+                val nameIns = nameAlreadyInserted || it.hasNext
+                val ins = inserted || it.hasNext
+
+                if (!nameAlreadyInserted && it.hasNext) {
+                    if (inserted) sb.append(" ")
+                    sb.append("|").append(nsName)
                 }
-                else if (!inEpsilonInterval(value) || includeZeroValues) {
-                    // For double values, format it to 6 decimals.  VW seems to not handle crazy long
-                    // numbers too well.  Note that for super large numbers, this DecimalFormat will
-                    // spit out very large strings of numbers. i don't think very large weights occur
-                    // that often with VW so for now i'm not addressing that (potential) issue.
-                    sb.append(feature).append(":").append(VwSpec.DecimalFormatter.format(value))
-                    if (it.hasNext) sb.append(" ")
+
+                while(it.hasNext) {
+                    val (feature, value) = it.next()
+                        if (VwSpec.inEpsilonInterval(value - 1)) {
+                            if (ins) sb.append(" ")
+                            sb.append(feature)
+                        }
+                        else if (!inEpsilonInterval(value) || includeZeroValues) {
+                            // For double values, format it to 6 decimals.  VW seems to not handle crazy long
+                            // numbers too well.  Note that for super large numbers, this DecimalFormat will
+                            // spit out very large strings of numbers. i don't think very large weights occur
+                            // that often with VW so for now i'm not addressing that (potential) issue.
+                            if (ins) sb.append(" ")
+                            sb.append(feature).append(":").append(VwSpec.DecimalFormatter.format(value))
+                        }
                 }
+
+                h(indices.tail, ins, nameIns)
             }
         }
+
+        h(nsFeatureIndices, previousNsInserted, nameAlreadyInserted = false)
     }
 }
 
 object VwSpec {
+
+    private[vw] val DefaultVwNamespaceName = ""
     /**
      * The reason to choose 17 digits is that
      1 1 == (1 - 1.0e-17)

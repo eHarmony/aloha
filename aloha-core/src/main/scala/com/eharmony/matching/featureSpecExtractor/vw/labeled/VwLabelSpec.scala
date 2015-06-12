@@ -10,8 +10,8 @@ import scala.collection.{immutable => sci}
 
 final case class VwLabelSpec[-A](
         override val featuresFunction: FeatureExtractorFunction[A, Sparse],
-        override val defaultNamespace: sci.IndexedSeq[Int],
-        override val namespaces: sci.IndexedSeq[(String, sci.IndexedSeq[Int])],
+        override val defaultNamespace: List[Int],
+        override val namespaces: List[(String, List[Int])],
         override val normalizer: Option[CharSequence => CharSequence],
         label: GenAggFunc[A, Option[Double]],
         importance: GenAggFunc[A, Option[Double]],
@@ -29,7 +29,6 @@ extends VwSpec[A](featuresFunction, defaultNamespace, namespaces, normalizer, in
             imp <- importance(data)
             lab <- label(data)
             t = tag(data).getOrElse("").trim
-
         } yield {
             val sb = new StringBuilder().
                 append(VwSpec.LabelDecimalFormatter.format(lab)).  // VW input format [Label].
@@ -39,8 +38,10 @@ extends VwSpec[A](featuresFunction, defaultNamespace, namespaces, normalizer, in
                 append(VwSpec.LabelDecimalFormatter.format(imp)).  // VW input format [Importance].
                 append(" ")
             ).append(t).     // VW input format [Tag].
-              append("|").   // There must be NO leading space b/c the tag must touch the pipe.
-              append(iv)     // Features.
+              append(if (0 == iv.length()) "|" else iv)
+
+//              append("|").   // There must be NO leading space b/c the tag must touch the pipe.
+//              append(iv)     // Features.
         }
 
         if (lineOpt.isEmpty) debug("Label information is missing. Creating a line with no label.")

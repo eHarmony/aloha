@@ -1,14 +1,5 @@
 package com.eharmony.matching.aloha.models.vw.jni
 
-import scala.collection.{immutable => sci, mutable => scm}
-import scala.util.{Failure, Success, Try}
-
-import java.text.DecimalFormat
-
-import spray.json.{DeserializationException, JsValue, JsonReader}
-
-import vw.VW
-
 import com.eharmony.matching.aloha.factory.{ModelParser, ModelParserWithSemantics, ParserProviderCompanion}
 import com.eharmony.matching.aloha.id.ModelIdentity
 import com.eharmony.matching.aloha.models.reg.RegressionFeatures
@@ -20,6 +11,13 @@ import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 import com.eharmony.matching.aloha.semantics.Semantics
 import com.eharmony.matching.aloha.semantics.func.GenAggFunc
 import com.eharmony.matching.aloha.util.{EitherHelpers, Logging}
+import com.eharmony.matching.featureSpecExtractor.SparseFeatureExtractorFunction
+import com.eharmony.matching.featureSpecExtractor.vw.unlabeled.VwSpec
+import spray.json.{DeserializationException, JsValue, JsonReader}
+import vw.VW
+
+import scala.collection.{immutable => sci, mutable => scm}
+import scala.util.{Failure, Success, Try}
 
 
 /**
@@ -51,6 +49,8 @@ extends BaseModel[A, B]
    with RegressionFeatures[A]
    with Logging {
 
+    private[this] val vwSpec = new VwSpec(SparseFeatureExtractorFunction(featureNames zip featureFunctions), defaultNs, namespaces, None)
+
     {
         require(
             featureNames.size == featureFunctions.size,
@@ -62,8 +62,6 @@ extends BaseModel[A, B]
             req == act,
             s"defaultNamespace and namespaces must cover all indices (0 until ${featureFunctions.size}).  Missing indices: ${(req -- act).map(i => s"$i='${featureNames(i)}'").mkString(", ")}.")
     }
-
-    import VwJniModel._
 
 
     /** Produce a score.
@@ -96,52 +94,12 @@ extends BaseModel[A, B]
      */
     private[jni] def generateVwInput(a: A): Either[scm.Map[String, Seq[String]], String] = {
         val Features(features, missing, missingOk) = constructFeatures(a)
-
-        if (!missingOk) Left(missing)
-        else {
-            val b = new StringBuilder
-
-            if (defaultNs.nonEmpty) {
-                b.append("| ")
-                defaultNs foreach { i =>
-                    features(i) foreach { case (f, v) =>
-                        if (!inEpsilonInterval(v)) {
-                            b.append(f)
-                            if (!inEpsilonInterval(v - 1)) b.append(":").append(DecimalFormatter.format(v))
-                            b.append(" ")
-                        }
-                    }
-                }
-            }
-
-            namespaces foreach { case(ns, ind) =>
-                b.append("|").append(ns).append(" ")
-                ind foreach { i =>
-                    features(i) foreach { case (f, v) =>
-                        if (!inEpsilonInterval(v)) {
-                            b.append(f)
-                            if (!inEpsilonInterval(v - 1)) b.append(":").append(DecimalFormatter.format(v))
-                            b.append(" ")
-                        }
-                    }
-                }
-            }
-
-            Right(b.toString())
-        }
+        if (missingOk) Right(vwSpec.unlabeledVwInput(features).toString)
+        else           Left(missing)
     }
 }
 
 object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Logging {
-
-    // Copied from featureSpecExtractor.vw.unlabeled.VwSpec object.
-
-    private[jni] val FeatureDecimalDigits = 6
-    private[jni] val DecimalFormatter = new DecimalFormat(List.fill(FeatureDecimalDigits)("#").mkString("0.", "", ""))
-    private[this] val eps = math.pow(10, -FeatureDecimalDigits) / 2
-    private[this] val negEps = -eps
-    private[jni] def inEpsilonInterval(x: Double) = negEps < x && x < eps
-
     object Parser extends ModelParserWithSemantics with EitherHelpers { self =>
         val modelType = "VwJNI"
 
