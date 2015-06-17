@@ -1,6 +1,6 @@
 package com.eharmony.matching.aloha.models.vw.jni
 
-import java.io.{InputStream, FileInputStream, File}
+import java.io.{File, FileInputStream, InputStream}
 import java.{lang => jl}
 
 import com.eharmony.matching.aloha.FileLocations
@@ -17,11 +17,12 @@ import com.eharmony.matching.aloha.semantics.compiled.plugin.csv.{CompiledSemant
 import com.eharmony.matching.aloha.semantics.func.{GenFunc, GeneratedAccessor}
 import com.eharmony.matching.aloha.util.Logging
 import org.apache.commons.codec.binary.Base64
+import org.apache.commons.io.IOUtils
 import org.apache.commons.vfs2.VFS
 import org.junit.Assert._
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
-import org.junit.{Ignore, BeforeClass, Test}
+import org.junit.{BeforeClass, Ignore, Test}
 import spray.json.DefaultJsonProtocol._
 import spray.json._
 import vw.VW
@@ -29,28 +30,25 @@ import vw.VW
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.Try
 
-
 @RunWith(classOf[BlockJUnit4ClassRunner])
 // @Ignore
 class VwJniModelTest {
     import VwJniModelTest._
 
     @Test def testFailureWhenVwIsCreatedWithLinkParamAndInitialRegressorHasSameLink(): Unit = {
-        val f = VwJniModel.allocateModel(1, LogisticModelB64Encoded)
-
         try {
-            new VW(LogisticModelParams + s" -i ${f.getCanonicalPath}")
+            val f = VwJniModel.allocateModel(1, logisticModelB64Encoded)
+            new VW(LogisticModelParams + s" -i ${f.getCanonicalPath}").close()
             fail("VW should throw a java.lang.Exception with message: \"option '--link' cannot be specified more than once\"");
         }
         catch {
-            case e: Exception if e.getClass.getSimpleName == "Exception" && e.getMessage == "option '--link' cannot be specified more than once" =>
+            case e: IllegalArgumentException if e.getClass.getSimpleName == "IllegalArgumentException" && e.getMessage == "option '--link' cannot be specified more than once" =>
             case t: Throwable => throw t
         }
     }
 
     @Test def testAllocatedModelEqualsOriginalModel(): Unit = {
-        val is = VFS.getManager.resolveFile(LogisticModelVfsPath).getContent.getInputStream
-        val modelBytes = readInputStream(is)
+        val modelBytes = readFile(VwModelFile)// VFS.getManager.resolveFile(LogisticModelVfsPath).getContent.getInputStream
         val out = new String(Base64.encodeBase64(modelBytes))
         val tmpFile = VwJniModel.allocateModel(1, out)
         val tmpBytes = readFile(tmpFile)
@@ -204,7 +202,7 @@ class VwJniModelTest {
 }
 
 object VwJniModelTest extends Logging {
-    private[this] val VwModelFile = new File(FileLocations.testDirectory, "VwJniModelTest-vw.model")
+    private val VwModelFile = new File(FileLocations.testDirectory, "VwJniModelTest-vw.model")
     private val VwModelPath = VwModelFile.getCanonicalPath
 
     val columns = Seq(
@@ -391,7 +389,6 @@ object VwJniModelTest extends Logging {
     }
 
     private def logisticModelJson(includeModel: Boolean) = {
-        val f = new File(LogisticModelPath).getCanonicalPath
 
         val json =
             s"""
@@ -402,8 +399,8 @@ object VwJniModelTest extends Logging {
               |    "height": "Seq((\\"\\", 180.0))"
               |  },
               |  "vw": {
-              |    "params": "--quiet --loss_function logistic --link logistic${if (includeModel) " -i " + f else ""}",
-              |    "model": "$LogisticModelB64Encoded"
+              |    "params": "--quiet --loss_function logistic --link logistic${if (includeModel) " -i " + VwModelPath else ""}",
+              |    "model": "$logisticModelB64Encoded"
               |  }
               |}
             """.stripMargin.trim.parseJson
@@ -411,15 +408,8 @@ object VwJniModelTest extends Logging {
         json
     }
 
-    /**
-     * This model was created via
-     * {{{
-     * paste -d '\n' <(jot -b '-1 |' 100) <(jot -b '1 |' 100) | vw --quiet --loss_function logistic --link logistic -f logistic.test.model
-     * }}}
-     */
-    private val LogisticModelPath = "com/eharmony/matching/aloha/models/vw/jni/logistic.test.model"
-    private val LogisticModelVfsPath = "res:com/eharmony/matching/aloha/models/vw/jni/logistic.test.model"
-    private val LogisticModelB64Encoded = "BwAAADcuMTAuMABtAABIwgAASEISAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASAAAAIC0tbGluaz1sb2dpc3RpYyAAAFzFAQCohYk8"
+    def logisticModelB64Encoded = new String(Base64.encodeBase64(readFile(VwModelFile)))
+
     private val LogisticModelParams = "--quiet --link logistic --loss_function logistic"
 
     private def readFile(f: File, maxFileSize: Int = 1024): Array[Byte] =
@@ -427,10 +417,14 @@ object VwJniModelTest extends Logging {
 
     private def readInputStream(is: InputStream, maxFileSize: Int = 1024): Array[Byte] = {
         val d = new Array[Byte](maxFileSize)
-        val nBytes = is.read(d)
-        is.close()
-        val data = new Array[Byte](nBytes)
-        System.arraycopy(d, 0, data, 0, nBytes)
-        data
+        try {
+            val nBytes = is.read(d)
+            val data = new Array[Byte](nBytes)
+            System.arraycopy(d, 0, data, 0, nBytes)
+            data
+        }
+        finally {
+            IOUtils.closeQuietly(is)
+        }
     }
 }
