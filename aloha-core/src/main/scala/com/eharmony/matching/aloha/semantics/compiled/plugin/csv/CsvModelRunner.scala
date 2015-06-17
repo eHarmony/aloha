@@ -1,5 +1,7 @@
 package com.eharmony.matching.aloha.semantics.compiled.plugin.csv
 
+import com.eharmony.matching.aloha.annotate.CLI
+
 import scala.util.parsing.combinator.RegexParsers
 import org.apache.commons.vfs2.VFS
 import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
@@ -320,6 +322,30 @@ object CsvModelRunnerConfig {
             updateConfig(c, name, CsvTypes.StringOptionVectorType)
         } unbounded() text "a string vector option column: column name"
 
+        note(
+            """
+              |Examples:
+              |
+              |  -model-runner \
+              |    --output-type Int \
+              |    -A \
+              |    --missing "" \
+              |    --sep "\t" \
+              |    --ifs "," \
+              |    --imports scala.math._,scala.util._,com.eharmony.matching.aloha.feature.BasicFunctions._\
+              |    --input-file $HOME/aloha_models/data/123_data.csv \
+              |    -E "a.b.c.Gender=MALE,FEMALE" \
+              |    -E "a.b.c.OSFamily=OS_UNKNOWN:0,WINDOWS:1,LINUX:2,MAC:3,IOS:4,ANDROID:5" \
+              |    -i "profile.user_id" \
+              |    -s "profile.locale"\
+              |    -e "reg.os_type=a.b.c.OSFamily" \
+              |    -oi "profile.num_children" \
+              |    -oe "profile.gender=a.b.c.Gender" \
+              |    $HOME/aloha_models/123.json
+              |
+            """.stripMargin.trim
+        )
+
         checkConfig { c => c.validate().fold(failure, _ => success) }
     }
 }
@@ -328,6 +354,7 @@ object CsvModelRunnerConfig {
 /**
  *
  */
+@CLI(flag = "-modelrunner")
 object CsvModelRunner {
 
     def getConf(args: Seq[String]): Option[CsvModelRunnerConfig] =

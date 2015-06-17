@@ -34,4 +34,9 @@ extends Model[A, B]
       *         sub-model scores.
       */
     private[aloha] def getScore(a: A)(implicit audit: Boolean): (ModelOutput[B], Option[Score])
+
+   /**
+    * A default implementation for the Closeable interface.
+    */
+    def close(): Unit = ()
 }

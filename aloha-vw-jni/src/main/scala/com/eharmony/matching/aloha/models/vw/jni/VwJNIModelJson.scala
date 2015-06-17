@@ -28,8 +28,9 @@ trait VwJniModelJson extends SpecJson {
      * warning.
      * @param params VW initialization parameters.  This is either a sequence of parameters that will be made into a
      *               single string by imploding the list with a " " separator or it is one string.  If None,
+     * @param model an optional model.  This is a base64 encoded representation of a native VW binary model.
      */
-    protected[this] final case class Vw(params: Option[Either[Seq[String], String]] = Some(Right(""))) {
+    protected[this] final case class Vw(params: Option[Either[Seq[String], String]] = Some(Right("")), model: Option[String] = None) {
         def getParams = params getOrElse Right("")
     }
 
@@ -64,6 +65,6 @@ trait VwJniModelJson extends SpecJson {
         namespaces: Option[ListMap[String, Seq[String]]] = Some(ListMap.empty),
         numMissingThreshold: Option[Int] = None)
 
-    protected[this] final implicit val vwFormat: RootJsonFormat[Vw] = jsonFormat1(Vw.apply)
+    protected[this] final implicit val vwFormat: RootJsonFormat[Vw] = jsonFormat2(Vw.apply)
     protected[this] final implicit val vwJNIAstFormat: RootJsonFormat[VwJNIAst] = jsonFormat6(VwJNIAst.apply)
 }

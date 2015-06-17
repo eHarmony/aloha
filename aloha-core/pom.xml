@@ -72,7 +72,6 @@
 		<dependency>
 			<groupId>com.github.scopt</groupId>
 			<artifactId>scopt_${scala.major.version}</artifactId>
-			<version>3.2.0</version>
 		</dependency>
 
 		<dependency>
@@ -355,7 +354,8 @@
                         <configuration>
                             <includes>
                                 <include>**/FileLocations*</include>
-                                <include>**/JensenShannonDivergence*</include>
+								<include>**/JensenShannonDivergence*</include>
+								<include>**/testhelp/**</include>
                                 <include>**/README.md</include>
                             </includes>
                         </configuration>

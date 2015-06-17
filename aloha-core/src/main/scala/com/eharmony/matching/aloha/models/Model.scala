@@ -1,7 +1,8 @@
 package com.eharmony.matching.aloha.models
 
-import com.eharmony.matching.aloha.id.{ModelIdentity, Identifiable}
-import com.eharmony.matching.aloha.score.conversions.ScoreConversion
+import java.io.Closeable
+
+import com.eharmony.matching.aloha.id.{Identifiable, ModelIdentity}
 import com.eharmony.matching.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.score.basic.ModelOutput
 
@@ -21,10 +22,17 @@ import com.eharmony.matching.aloha.score.basic.ModelOutput
   *               thrown by those creating models or user-defined functions that are used inside of 
   *               feature specifications within the models.''
   *
+  * '''NOTE''': ''Models may contain Closeable resources so they extends java.io.Closeable.  It is the caller's
+  *               obligation to call the close method on the model.  For instance: ''
+  * {{{
+  * val model: Model[A, B] = getModel()
+  * val examples: Seq[A] = getExamples()
+  * val results = try { examples map { e => (e, model(e)) } }         finally { model.close }
+  * }}}
   * @tparam A model input type
   * @tparam B model output type
   */
-trait Model[-A, +B] extends Identifiable[ModelIdentity] {
+trait Model[-A, +B] extends Identifiable[ModelIdentity] with Closeable {
 
     /** Get a model prediction.
       * @param a An input to the model.

@@ -27,10 +27,21 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!-- For base64 decoding vw models. -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.github.johnlangford</groupId>
             <artifactId>vw-jni</artifactId>
             <version>7.10.2-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.scopt</groupId>
+            <artifactId>scopt_${scala.major.version}</artifactId>
         </dependency>
 
         <!-- Test dependencies -->

@@ -22,6 +22,8 @@ import com.eharmony.matching.aloha.id.ModelIdentity;
 import com.eharmony.matching.aloha.score.Scores;
 import scala.util.Left$;
 
+import java.io.IOException;
+
 @RunWith(BlockJUnit4ClassRunner.class)
 public class ModelTest {
 
@@ -82,5 +84,8 @@ public class ModelTest {
         public Tuple2<Either<Tuple2<Seq<String>, Iterable<String>>, B>, Option<Scores.Score>> getScore(A a, boolean audit) {
             throw new UnsupportedOperationException();
         }
+
+        @Override
+        public void close() throws IOException {}
     }
 }

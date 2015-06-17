@@ -28,10 +28,11 @@ import com.twitter.io.StreamIO
 import scala.collection.mutable
 import scala.io.Source
 import scala.language.reflectiveCalls
+import scala.reflect.internal.util.BatchSourceFile
 import scala.tools.nsc.interpreter.AbstractFileClassLoader
 import scala.tools.nsc.io.{AbstractFile, VirtualDirectory}
 import scala.tools.nsc.reporters.AbstractReporter
-import scala.tools.nsc.util.{BatchSourceFile, Position}
+import scala.reflect.internal.util.Position
 import scala.tools.nsc.{Global, Settings}
 import scala.util.matching.Regex
 
@@ -177,7 +178,7 @@ class Eval(target: Option[File]) {
 
   /**
    * same as apply[T], but does not run preprocessors.
-   * Will generate a classname of the form Evaluater__<unique>,
+   * Will generate a classname of the form Evaluater&#95;&#95;<unique>,
    * where unique is computed from the jvmID (a random number)
    * and a digest of code
    */

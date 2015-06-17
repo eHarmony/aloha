@@ -1,5 +1,7 @@
 package com.eharmony.matching.aloha.models.vw.jni
 
+import java.io.{InputStream, File, FileOutputStream}
+
 import com.eharmony.matching.aloha.factory.{ModelParser, ModelParserWithSemantics, ParserProviderCompanion}
 import com.eharmony.matching.aloha.id.ModelIdentity
 import com.eharmony.matching.aloha.models.reg.RegressionFeatures
@@ -13,6 +15,8 @@ import com.eharmony.matching.aloha.semantics.func.GenAggFunc
 import com.eharmony.matching.aloha.util.{EitherHelpers, Logging}
 import com.eharmony.matching.featureSpecExtractor.SparseFeatureExtractorFunction
 import com.eharmony.matching.featureSpecExtractor.vw.unlabeled.VwSpec
+import org.apache.commons.codec.binary.Base64
+import org.apache.commons.io.IOUtils
 import spray.json.{DeserializationException, JsValue, JsonReader}
 import vw.VW
 
@@ -97,11 +101,17 @@ extends BaseModel[A, B]
         if (missingOk) Right(vwSpec.unlabeledVwInput(features).toString)
         else           Left(missing)
     }
+
+    /**
+     * Close the underlying VW model.
+     */
+    override def close(): Unit = model.close()
 }
 
 object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Logging {
     object Parser extends ModelParserWithSemantics with EitherHelpers { self =>
         val modelType = "VwJNI"
+        private[this] val initialRegressorPresent = """^(.*\s)?-i.*$"""
 
         override def modelJsonReader[A, B: JsonReader: ScoreConverter](semantics: Semantics[A]): JsonReader[VwJniModel[A, B]] = new JsonReader[VwJniModel[A, B]] {
             override def read(json: JsValue): VwJniModel[A, B] = {
@@ -120,11 +130,23 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
                             }
                         }
 
+                        val initialRegressorParam = vw.vw.model.fold("") { vwModel =>
+                            val m = allocateModel(vw.modelId.id, vwModel)
+                            s" -i ${m.getCanonicalPath} "
+                        }
+
                         // If VW params are unspecified, use empty string.
                         val vwParams = vw.vw.getParams.fold(_.mkString(" "), identity)
 
+                        if (initialRegressorParam.nonEmpty && vwParams.matches(initialRegressorPresent)) {
+                            throw new IllegalArgumentException(s"For model ${vw.modelId.id}, initial regressor (-i) vw parameter supplied and model provided.")
+                        }
+
+                        val finalParams = initialRegressorParam + vwParams
+
                         // TODO: Map failure to more specialized exception types.  For instance: Try { new VWScorer(vwParams) }.recoverWith{case ex: Error if ex.getMessage.startsWith("unrecognised option") => Failure(new Ex(ex.getMessage, ex))}
-                        val vwJniModel = new VW(vwParams)
+                        val vwJniModel = new VW(finalParams)
+
                         val indices = featureMap.unzip._1.view.zipWithIndex.toMap
                         val nssRaw = vw.namespaces.getOrElse(sci.ListMap.empty)
                         val nss = nssRaw.map { case (ns, fs) =>
@@ -150,6 +172,34 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
                         right.map { f => (k, f) }
             }
     }
+
+    private[jni] def allocateModel(modelId: Long, modelB64: String): File = {
+        val decoded = Base64.decodeBase64(modelB64)
+        val f = File.createTempFile(s"aloha.vw.$modelId.", ".model")
+        f.deleteOnExit()
+        val fos = new FileOutputStream(f)
+        try {
+            fos.write(decoded)
+        }
+        finally {
+            IOUtils closeQuietly fos
+        }
+        f
+    }
+
+    private[jni] def readModel(in: InputStream, close: Boolean = true): String = {
+        try {
+            val bytes = IOUtils toByteArray in
+            val encoded = Base64.encodeBase64(bytes)
+            new String(encoded)
+        }
+        finally {
+            if (close)
+                IOUtils closeQuietly in
+        }
+    }
+
+    private[this] val VwLinkFunctions = Seq("identity", "logistic", "glf1")
 
     override def parser: ModelParser = Parser
 }
