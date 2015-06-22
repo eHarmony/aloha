@@ -13,8 +13,9 @@ import org.junit.runners.BlockJUnit4ClassRunner
 /**
  * Created by rdeak on 6/19/15.
  */
-@RunWith(classOf[BlockJUnit4ClassRunner])
 object DatasetCliTest extends IoCaptureCompanion
+
+@RunWith(classOf[BlockJUnit4ClassRunner])
 class DatasetCliTest extends TestWithIoCapture(DatasetCliTest) {
     @Test def cliTest1(): Unit = {
 
