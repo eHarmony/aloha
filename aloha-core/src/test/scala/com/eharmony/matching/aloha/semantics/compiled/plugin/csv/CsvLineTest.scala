@@ -1443,7 +1443,7 @@ private[csv] object CsvLineTest {
         s
     }
 
-    def getCsvLine(csvLines: CsvLines, features: (String, String)*): CsvLine = csvLines(featuresToLineStr(features:_*)).head
+    def getCsvLine(csvLines: CsvLines, features: (String, String)*): CsvLine = csvLines(featuresToLineStr(features:_*))
 
     def extract[A](k: String, v: String, extractor: CsvLine => String => A): A = extract[A](k, v, extractor, csvLines)
     def extractMean[A](k: String, v: String, extractor: CsvLine => String => A): A = extract[A](k, v, extractor, csvLinesMean)
@@ -1458,7 +1458,7 @@ private[csv] object CsvLineTest {
       * @return
       */
     private[this] def extract[A](k: String, v: String, extractor: CsvLine => String => A, csvLines: CsvLines): A = {
-        val l = try { csvLines(featuresToLineStr(k -> v)).head }
+        val l = try { csvLines(featuresToLineStr(k -> v)) }
         catch {
             case e: Throwable =>
                 fail("Shouldn't throw exception.")

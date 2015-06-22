@@ -88,9 +88,17 @@ class CompiledSemanticsCsvPluginTest {
             // The expected value.
             exp = lr.right.flatMap(lro => oir.right.flatMap(oiro => Right(lro.flatMap(lrv => oiro.map(_ || lrv)))))
 
+
             // The actual value.  On throwing exception, output failure instead.
             act = try { Right(f(x)) } catch { case e: Exception => Left(()) }
-        } assertEquals(exp, act)
+        } {
+            if (Seq(lvp, oivp).flatten.toString == "List((required.long,1), (optional.int,1))") {
+                val y = CsvLineTest.getCsvLine(CsvLineTest.csvLines, Seq(lvp, oivp).flatten:_*)
+
+            }
+
+            assertEquals(exp, act)
+        }
     }
 }
 

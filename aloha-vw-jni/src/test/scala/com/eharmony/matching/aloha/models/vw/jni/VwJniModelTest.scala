@@ -202,8 +202,8 @@ class VwJniModelTest {
 }
 
 object VwJniModelTest extends Logging {
-    private val VwModelFile = new File(FileLocations.testDirectory, "VwJniModelTest-vw.model")
-    private val VwModelPath = VwModelFile.getCanonicalPath
+    private[jni] val VwModelFile = new File(FileLocations.testDirectory, "VwJniModelTest-vw.model")
+    private[jni] val VwModelPath = VwModelFile.getCanonicalPath
 
     val columns = Seq(
         "height_cm" -> CsvTypes.LongOptionType,
@@ -355,7 +355,7 @@ object VwJniModelTest extends Logging {
     val plugin = CompiledSemanticsCsvPlugin(columns:_*)
     val semantics = CompiledSemantics(TwitterEvalCompiler(), plugin, Seq("scala.math._", "com.eharmony.matching.aloha.feature.BasicFunctions._"))
 
-    val missingHeight = csvLines(",0,red").head
+    val missingHeight = csvLines(",0,red")
 
 
     /**

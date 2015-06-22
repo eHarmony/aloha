@@ -1,5 +1,6 @@
 package com.eharmony.matching.aloha.cli
 
+import com.eharmony.matching.aloha
 import com.eharmony.matching.testhelp.io.{IoCaptureCompanion, TestWithIoCapture}
 import org.junit.Assert._
 import org.junit.Test
@@ -17,21 +18,21 @@ class CliTest extends TestWithIoCapture(CliTest) {
 
     @Test def testNoArgs(): Unit = {
         Cli.main(Array.empty)
-        assertEquals("No arguments supplied. Supply one of: '-modelrunner', '-vw'.", errContent.trim)
+        assertEquals("No arguments supplied. Supply one of: '--modelrunner', '--vw'.", errContent.trim)
     }
 
     @Test def testBadFlag(): Unit = {
         Cli.main(Array("-BADFLAG"))
-        assertEquals("'-BADFLAG' supplied. Supply one of: '-modelrunner', '-vw'.", errContent.trim)
+        assertEquals("'-BADFLAG' supplied. Supply one of: '--modelrunner', '--vw'.", errContent.trim)
     }
 
     @Test def testVw(): Unit = {
-        Cli.main(Array("-vw"))
+        Cli.main(Array("--vw"))
         val expected =
             """
               |Error: Missing option --spec
               |Error: Missing option --model
-              |vw 1.x
+              |vw """.stripMargin + aloha.version + """
               |Usage: vw [options]
               |
               |  -s <value> | --spec <value>

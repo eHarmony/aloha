@@ -58,7 +58,7 @@ trait LibSvmProducerTestBase {
 
         // Don't care about the data in here.  None of it is necessary.  Just produce one line since
         // features are invariant to data so all lines will be the same.
-        val line: CsvLine = CsvLines(Map.empty)("").head
+        val line: CsvLine = CsvLines(Map.empty)("")
 
         // Compute the actual value.
         val (missing, actual) = libSvmSpec(line)

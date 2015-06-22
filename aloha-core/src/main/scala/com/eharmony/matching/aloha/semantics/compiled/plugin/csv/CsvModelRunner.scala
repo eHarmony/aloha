@@ -1,5 +1,6 @@
 package com.eharmony.matching.aloha.semantics.compiled.plugin.csv
 
+import com.eharmony.matching.aloha
 import com.eharmony.matching.aloha.annotate.CLI
 
 import scala.util.parsing.combinator.RegexParsers
@@ -120,7 +121,7 @@ object CsvModelRunnerConfig {
             fieldIndices    = c.fieldIndices    :+ (cName -> c.colNamesToTypes.size))
 
     val parser = new scopt.OptionParser[CsvModelRunnerConfig]("model-runner-tool") {
-        head("model-runner-tool", "1.x")
+        head("model-runner-tool", aloha.version)
 
         arg[String]("<model>") required() action { (m, c) =>
             c.copy(model = Some(m))
@@ -354,7 +355,7 @@ object CsvModelRunnerConfig {
 /**
  *
  */
-@CLI(flag = "-modelrunner")
+@CLI(flag = "--modelrunner")
 object CsvModelRunner {
 
     def getConf(args: Seq[String]): Option[CsvModelRunnerConfig] =

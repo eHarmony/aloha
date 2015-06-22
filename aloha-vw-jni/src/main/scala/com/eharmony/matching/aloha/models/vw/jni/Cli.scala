@@ -1,5 +1,6 @@
 package com.eharmony.matching.aloha.models.vw.jni
 
+import com.eharmony.matching.aloha
 import com.eharmony.matching.aloha.annotate.CLI
 import spray.json.{DeserializationException, JsString, JsObject, pimpString}
 import com.eharmony.matching.aloha.io.StringReadable
@@ -8,7 +9,7 @@ import org.apache.commons.vfs2.{FileObject, VFS}
 /**
  * Created by rdeak on 6/15/15.
  */
-@CLI(flag = "-vw")
+@CLI(flag = "--vw")
 object Cli {
 
     private[this] val CommandName = "vw"
@@ -29,7 +30,7 @@ object Cli {
 
     private[this] def cliParser = {
         new scopt.OptionParser[Config](CommandName) {
-            head(CommandName, "1.x")
+            head(CommandName, aloha.version)
             opt[String]('s', "spec") action { (x, c) =>
                 c.copy(spec = file(x))
             } text "spec is an Apache VFS URL to an aloha spec file with modelType 'VwJNI'." required()

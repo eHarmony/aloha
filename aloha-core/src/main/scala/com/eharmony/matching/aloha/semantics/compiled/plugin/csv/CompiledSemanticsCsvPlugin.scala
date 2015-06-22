@@ -22,8 +22,8 @@ case class CompiledSemanticsCsvPlugin(colNamesToTypes: Map[String, CsvTypes.CsvT
       */
     def accessorFunctionCode(spec: String): Either[Seq[String], VariableAccessorCode] = {
         val code = colNamesToTypes.get(spec).map {
-            case t if t.isRequired => Right(RequiredAccessorCode(Seq(s"""(_:$inputTypeString).${t.toString}("${escape(spec)}")""")))
-            case t => Right(OptionalAccessorCode(Seq(s"""(_:$inputTypeString).${t.toString}("${escape(spec)}")""")))
+            case t if t.isRequired => Right(RequiredAccessorCode(Seq(s"""(_:$inputTypeString).${t.toString()}("${escape(spec)}")""")))
+            case t => Right(OptionalAccessorCode(Seq(s"""(_:$inputTypeString).${t.toString()}("${escape(spec)}")""")))
         }.getOrElse {
             Left(Seq[String](s"Couldn't produce code for specification: '$spec'."))
         }

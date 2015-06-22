@@ -1,5 +1,7 @@
 package com.eharmony.matching.aloha.semantics.compiled.plugin.csv
 
+import scala.annotation.switch
+
 /** The string values here match the function names in CsvLine.  This is important that the name passed to
   * each instance of Val is exactly the same as the corresponding function name in
   * [[com.eharmony.matching.aloha.semantics.compiled.plugin.csv.CsvLine]].
@@ -41,6 +43,17 @@ object CsvTypes extends Enumeration {
 
     sealed abstract class CsvType(name: String) extends Val(name) {
         def isRequired: Boolean
+        def isVectorized: Boolean = name startsWith "v"
+
+        def baseTypeString = (name.last: @switch) match {
+            case 'e' => "Enum"
+            case 'b' => "Boolean"
+            case 'i' => "Int"
+            case 'l' => "Long"
+            case 'f' => "Float"
+            case 'd' => "Double"
+            case 's' => "String"
+        }
     }
 
     private[this] final class Required(name: String) extends CsvType(name) {

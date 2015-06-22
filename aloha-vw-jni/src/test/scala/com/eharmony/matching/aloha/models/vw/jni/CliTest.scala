@@ -1,13 +1,21 @@
 package com.eharmony.matching.aloha.models.vw.jni
 
+import java.io.FileInputStream
+
+import com.eharmony.matching.aloha
 import com.eharmony.matching.testhelp.io.{IoCaptureCompanion, TestWithIoCapture}
 import org.junit.Assert._
-import org.junit.Test
+import org.junit.{BeforeClass, Test}
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 import spray.json.{DeserializationException, pimpString}
 
-object CliTest extends IoCaptureCompanion
+object CliTest extends IoCaptureCompanion {
+    @BeforeClass def createModel(): Unit = VwJniModelTest.createModel()
+    def vwModelPath = VwJniModelTest.VwModelPath
+
+    lazy val base64EncodedModelString = VwJniModel.readModel(new FileInputStream(vwModelPath))
+}
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class CliTest extends TestWithIoCapture(CliTest) {
@@ -16,26 +24,26 @@ class CliTest extends TestWithIoCapture(CliTest) {
     @Test def testMissingBothParams(): Unit = {
         Cli.main(Array.empty)
         val expected =
-            """
+            ("""
               |Error: Missing option --spec
               |Error: Missing option --model
-              |vw 1.x
+              |vw """.stripMargin + aloha.version + """
               |Usage: vw [options]
               |
               |  -s <value> | --spec <value>
               |        spec is an Apache VFS URL to an aloha spec file with modelType 'VwJNI'.
               |  -m <value> | --model <value>
               |        model is an Apache VFS URL to a VW binary model.
-            """.stripMargin
+            """).stripMargin
         assertEquals(expected.trim, errContent.trim)
     }
 
     @Test def testMissingSpecParam(): Unit = {
-        Cli.main(Array("-m", "res:com/eharmony/matching/aloha/models/vw/jni/logistic.test.model"))
+        Cli.main(Array("-m", vwModelPath))
         val expected =
             """
               |Error: Missing option --spec
-              |vw 1.x
+              |vw """.stripMargin + aloha.version + """
               |Usage: vw [options]
               |
               |  -s <value> | --spec <value>
@@ -51,7 +59,7 @@ class CliTest extends TestWithIoCapture(CliTest) {
         val expected =
             """
               |Error: Missing option --model
-              |vw 1.x
+              |vw """.stripMargin + aloha.version + """
               |Usage: vw [options]
               |
               |  -s <value> | --spec <value>
@@ -64,11 +72,11 @@ class CliTest extends TestWithIoCapture(CliTest) {
     }
 
     @Test def testSpecFileDoesntExist(): Unit = {
-        Cli.main(Array("-m", "res:com/eharmony/matching/aloha/models/vw/jni/logistic.test.model", "-s", "res:SPECTHATDOESNTEXIST"))
+        Cli.main(Array("-m", vwModelPath, "-s", "res:SPECTHATDOESNTEXIST"))
         val expected =
             """
               |Error: Option --spec failed when given 'res:SPECTHATDOESNTEXIST'. Badly formed URI "res:SPECTHATDOESNTEXIST".
-              |vw 1.x
+              |vw """.stripMargin + aloha.version + """
               |Usage: vw [options]
               |
               |  -s <value> | --spec <value>
@@ -85,7 +93,7 @@ class CliTest extends TestWithIoCapture(CliTest) {
         val expected =
             """
               |Error: Option --model failed when given 'res:SPECTHATDOESNTEXIST'. Badly formed URI "res:SPECTHATDOESNTEXIST".
-              |vw 1.x
+              |vw """.stripMargin + aloha.version + """
               |Usage: vw [options]
               |
               |  -s <value> | --spec <value>
@@ -99,7 +107,7 @@ class CliTest extends TestWithIoCapture(CliTest) {
 
     @Test def testArrayJson(): Unit = {
         try {
-            Cli.main(Array("-m", "res:com/eharmony/matching/aloha/models/vw/jni/logistic.test.model",
+            Cli.main(Array("-m", vwModelPath,
                            "-s", "res:com/eharmony/matching/aloha/models/vw/jni/array.js"))
         }
         catch {
@@ -110,7 +118,7 @@ class CliTest extends TestWithIoCapture(CliTest) {
 
     @Test def testModelAlreadyInJson(): Unit = {
         try {
-            Cli.main(Array("-m", "res:com/eharmony/matching/aloha/models/vw/jni/logistic.test.model",
+            Cli.main(Array("-m", vwModelPath,
                            "-s", "res:com/eharmony/matching/aloha/models/vw/jni/withmodel.logistic.aloha.js"))
         }
         catch {
@@ -121,8 +129,9 @@ class CliTest extends TestWithIoCapture(CliTest) {
 
     @Test def testNoVwSectionInJson(): Unit = {
         try {
-            Cli.main(Array("-m", "res:com/eharmony/matching/aloha/models/vw/jni/logistic.test.model",
+            Cli.main(Array("-m", vwModelPath,
                            "-s", "res:com/eharmony/matching/aloha/models/vw/jni/no.vw.aloha.js"))
+
         }
         catch {
             case e: DeserializationException if e.getMessage == "JSON does not contain a 'vw' object." =>
@@ -131,11 +140,11 @@ class CliTest extends TestWithIoCapture(CliTest) {
     }
 
     @Test def testHappy(): Unit = {
-        Cli.main(Array("-m", "res:com/eharmony/matching/aloha/models/vw/jni/logistic.test.model",
+        Cli.main(Array("-m", vwModelPath,
                        "-s", "res:com/eharmony/matching/aloha/models/vw/jni/good.logistic.aloha.js"))
 
         val expected =
-            """
+            ("""
               |{
               |  "modelType": "VwJNI",
               |  "modelId": { "id": 0, "name": "model name" },
@@ -150,10 +159,10 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |      "--quiet",
               |      "-t"
               |    ],
-              |    "model": "BwAAADcuMTAuMABtAABIwgAASEISAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASAAAAIC0tbGluaz1sb2dpc3RpYyAAAFzFAQCohYk8"
+              |    "model": """".stripMargin.trim + base64EncodedModelString + """"
               |  }
               |}
-            """.stripMargin.parseJson
+            """).stripMargin.parseJson
 
         assertEquals(expected, outContent.parseJson)
     }

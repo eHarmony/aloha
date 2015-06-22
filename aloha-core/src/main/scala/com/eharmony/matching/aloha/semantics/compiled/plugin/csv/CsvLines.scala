@@ -1,6 +1,7 @@
 package com.eharmony.matching.aloha.semantics.compiled.plugin.csv
 
-import scala.collection.GenTraversableLike
+import scala.annotation.varargs
+import scala.collection.{TraversableLike, GenTraversableLike}
 import scala.collection.generic.CanBuildFrom
 
 /** A class capable of efficiently creating CsvLine objects.
@@ -24,7 +25,7 @@ case class CsvLines(
 
     private[this] val optEnumFunc: String => Option[(String) => EnumConstant] =
         if (errorOnOptMissingField) (s: String) => if (missingData(s)) None else Option(enums(s).valueOf)
-        else                        (s: String) => if (missingData(s)) None else enums.get(s).map(_.valueOf)
+        else (s: String) => if (missingData(s)) None else enums.get(s).map(_.valueOf)
 
     private[this] val optHandler = if (errorOnOptMissingField) FailFastOptionalHandler(indices) else GracefulOptionalHandler(indices)
 
@@ -39,17 +40,36 @@ case class CsvLines(
         t.map(CsvLineImpl(_, indices, enums, fs, ifs, missingData, optEnumFunc, optHandler))(cbf)
 
     /**
-      *
-      * @param t
-      * @return
-      */
+     * A non-strict version of the GenTraversableLike method for TraversableLike values.
+     * @param t
+     * @param cbf
+     * @tparam Repr
+     * @tparam That
+     * @return
+     */
+    def nonStrict[Repr, That](t: TraversableLike[String, Repr])(implicit cbf: CanBuildFrom[Repr, CsvLine, That]) =
+        t.view.map(CsvLineImpl(_, indices, enums, fs, ifs, missingData, optEnumFunc, optHandler))
+
+    /**
+     *
+     * @param t
+     * @return
+     */
     def apply(t: Iterator[String]) = t.map(CsvLineImpl(_, indices, enums, fs, ifs, missingData, optEnumFunc, optHandler))
 
     /**
-      *
-      * @param t
-      * @return
-      */
-    def apply(t: String*) = t.map(CsvLineImpl(_, indices, enums, fs, ifs, missingData, optEnumFunc, optHandler))
-}
+     *
+     * @param s
+     * @return
+     */
+    def apply(s: String) = CsvLineImpl(s, indices, enums, fs, ifs, missingData, optEnumFunc, optHandler)
 
+    /**
+     *
+     * @param first
+     * @param rest
+     * @return
+     */
+    @varargs def apply(first: String, rest: String*) =
+        (first +: rest.toVector).map(CsvLineImpl(_, indices, enums, fs, ifs, missingData, optEnumFunc, optHandler))
+}
