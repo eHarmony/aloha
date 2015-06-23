@@ -1,0 +1,22 @@
+package com.eharmony.matching.aloha.test.proto;
+
+option java_outer_classname="Testing";
+
+enum GenderProto {
+    MALE   = 1;
+    FEMALE = 2;
+}
+
+message PhotoProto {
+    required int64  id = 1;
+    optional int32 height = 2;
+    optional double aspect_ratio = 3;
+}
+
+message UserProto {
+    required int64 id = 1;
+    optional string name = 2;
+    optional GenderProto gender = 3;
+    optional float bmi = 4;
+    repeated PhotoProto photos = 5;
+}

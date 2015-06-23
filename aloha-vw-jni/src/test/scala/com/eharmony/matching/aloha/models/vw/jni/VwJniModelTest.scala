@@ -202,7 +202,7 @@ class VwJniModelTest {
 }
 
 object VwJniModelTest extends Logging {
-    private[jni] val VwModelFile = new File(FileLocations.testDirectory, "VwJniModelTest-vw.model")
+    private[jni] val VwModelFile = new File(FileLocations.testClassesDirectory, "VwJniModelTest-vw.model")
     private[jni] val VwModelPath = VwModelFile.getCanonicalPath
 
     val columns = Seq(

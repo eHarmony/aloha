@@ -63,3 +63,22 @@ message TestProto {
     repeated Class1Proto rep_c1 = 6;
     required string req_str_1 = 7;
 }
+
+message UserProto {
+    message PhotoProto {
+        required int64  id = 1;
+        optional int32 height = 2;
+        optional double aspect_ratio = 3;
+    }
+
+    enum GenderProto {
+        MALE   = 1;
+        FEMALE = 2;
+    }
+
+    required int64 id = 1;
+    optional string name = 2;
+    optional GenderProto gender = 3;
+    optional float bmi = 4;
+    repeated PhotoProto photos = 5;
+}

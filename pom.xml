@@ -29,6 +29,7 @@
     </licenses>
 
     <modules>
+        <!--<module>aloha-test-proto</module>-->
         <module>aloha-core</module>
         <module>aloha-vw-jni</module>
         <module>aloha-cli</module>

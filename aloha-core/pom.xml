@@ -161,6 +161,7 @@
 			</exclusions>
 		</dependency>
 
+
 		<!-- For testing spring integrations. -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -280,6 +281,11 @@
 									<directory>src/test/resources</directory>
 									<filtering>false</filtering>
 									<excludes>
+										<!--
+											It's really important that test-protos.jar is not in target/test-classes.
+											WE DON'T WANT IT ON THE CLASSPATH!
+										-->
+										<!--<exclude>**/test-protos.jar</exclude>-->
 										<exclude>**/success_1_level_file.json</exclude>
 										<exclude>mvn_gen_test.properties</exclude>
 									</excludes>
@@ -289,6 +295,21 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<!--<plugin>-->
+				<!--<groupId>com.google.protobuf.tools</groupId>-->
+				<!--<artifactId>maven-protoc-plugin</artifactId>-->
+				<!--<version>0.1.10</version>-->
+				<!--<executions>-->
+					<!--<execution>-->
+						<!--<id>test-protos</id>-->
+						<!--<goals>-->
+							<!--<goal>testCompile</goal>-->
+						<!--</goals>-->
+						<!--<phase>generate-sources</phase>-->
+					<!--</execution>-->
+				<!--</executions>-->
+			<!--</plugin>-->
 
 			<!--
 			maven-antrun-plugin added to get test protos into target/generated-test-sources and then compiled
@@ -343,7 +364,7 @@
 								-->
 								<echo message="Compiling protobuf source to .class files." />
 								<exec executable="javac" failonerror="true">
-									<arg line="-d ${project.build.testOutputDirectory} -classpath ${settings.localRepository}/com/google/protobuf/protobuf-java/${protobuf.version}/protobuf-java-${protobuf.version}.jar ${project.build.directory}/generated-test-sources/com/eharmony/matching/aloha/semantics/compiled/plugin/proto/TestProtoBuffs.java" />
+									<arg line="-d ${project.build.testOutputDirectory} -classpath ${settings.localRepository}/com/google/protobuf/protobuf-java/${protobuf.version}/protobuf-java-${protobuf.version}.jar ${project.build.directory}/generated-test-sources/com/eharmony/matching/aloha/semantics/compiled/plugin/proto/TestProtoBuffs.java ${project.build.directory}/generated-test-sources/com/eharmony/matching/aloha/test/proto/Testing.java" />
 								</exec>
 							</tasks>
 						</configuration>

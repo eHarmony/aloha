@@ -1,7 +1,7 @@
 package com.eharmony.matching.featureSpecExtractor.cli
 
 import java.io.{Closeable, File, InputStream, PrintStream}
-import java.net.{URL, URLClassLoader}
+import java.util.regex.Matcher
 
 import com.eharmony.matching.aloha.annotate.CLI
 import com.eharmony.matching.aloha.io.StringReadable
@@ -21,6 +21,7 @@ import org.apache.commons.codec.binary.Base64
 import org.apache.commons.io.IOUtils
 import org.apache.commons.vfs2.{FileObject, VFS}
 
+import scala.annotation.tailrec
 import scala.collection.{immutable => sci}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success, Try}
@@ -41,7 +42,7 @@ object DatasetCli {
     def main(args: Array[String]): Unit = {
         cliParser.parse(args, Config()) match {
             case Some(Config(chunkSize, cacheDir, Seq(inputType), Some(spec), inFile, datasets, cp)) =>
-                addToCp(cp)
+//                addToCp(cp)
                 val (is, closeIn) = inStream(inFile)
 
                 // TODO: test par vs seq.
@@ -177,8 +178,23 @@ object DatasetCli {
         (plugin, (s: String) => csvLines(s))
     }
 
+    /**
+     * This let's classes be specified to the API like java classes (a.b.c.Outer$Inner)
+     * or scala classes (a.b.c.Outer.Inner).
+     * @param className class name for which we are trying to get a Class instance.
+     * @return
+     */
+    @tailrec private def attemptToGetClass(className: String): Option[Class[_]] = {
+        if (-1 == className.indexOf(".")) None
+        else Try { Class.forName(className) } match {
+            case Success(c) => Option(c)
+            case Failure(_) => attemptToGetClass(className.reverse.replaceFirst("\\.", Matcher.quoteReplacement("$")).reverse)
+        }
+    }
+
     private[this] def getProtoPluginAndExtractorFunction[A <: GeneratedMessage](protoClass: String): (CompiledSemanticsProtoPlugin[A], String => A) = {
-        val c = Class.forName(protoClass).asInstanceOf[Class[A]]
+        // The getOrElse is to throw the ClassNotFoundException with the original class name.
+        val c = (attemptToGetClass(protoClass) getOrElse { Class.forName(protoClass) }).asInstanceOf[Class[A]]
         val m = c.getMethod("parseFrom", classOf[Array[Byte]])
         val f: String => A = s => m.invoke(null, Base64.decodeBase64(s)).asInstanceOf[A]
         val plugin = new CompiledSemanticsProtoPlugin[A](c)
@@ -195,18 +211,18 @@ object DatasetCli {
     }
 
     // TODO: Consider extracting this to a trait for use elsewhere.
-    private[this] def addToCp(cp: Seq[FileObject]): Unit = {
-        val addUrl = classOf[URLClassLoader].getDeclaredMethod("addURL", classOf[URL])
-        val accessible = addUrl.isAccessible
-        val sysCl = ClassLoader.getSystemClassLoader
-        addUrl.setAccessible(true)
-        try {
-            cp.foreach(fo => addUrl.invoke(sysCl, fo.getURL))
-        }
-        finally {
-            addUrl.setAccessible(accessible)
-        }
-    }
+//    private[this] def addToCp(cp: Seq[FileObject]): Unit = {
+//        val addUrl = classOf[URLClassLoader].getDeclaredMethod("addURL", classOf[URL])
+//        val accessible = addUrl.isAccessible
+//        val sysCl = ClassLoader.getSystemClassLoader
+//        addUrl.setAccessible(true)
+//        try {
+//            cp.foreach(fo => addUrl.invoke(sysCl, fo.getURL))
+//        }
+//        finally {
+//            addUrl.setAccessible(accessible)
+//        }
+//    }
 
     /**
      * Example:
@@ -233,9 +249,9 @@ object DatasetCli {
                 if (x < 1) reportError(s"parallel flag must provide a positive value.  Provided chunk size of ${c.chunkSize}. ASDF")
                 c.copy(chunkSize = x)
             } text "a list of Apache VFS URLs additional jars to be included on the classpath" optional()
-            opt[Seq[FileObject]]("classpath") abbr ("cp") action { (x, c) =>
-                c.copy(classPath = x)
-            } text "a list of Apache VFS URLs additional jars to be included on the classpath" optional()
+//            opt[Seq[FileObject]]("classpath") abbr ("cp") action { (x, c) =>
+//                c.copy(classPath = x)
+//            } text "a list of Apache VFS URLs additional jars to be included on the classpath" optional()
             opt[FileObject]('s', "spec") action { (x, c) =>
                 c.copy(spec = Option(x))
             } text "a spec file that specifies the features." required()

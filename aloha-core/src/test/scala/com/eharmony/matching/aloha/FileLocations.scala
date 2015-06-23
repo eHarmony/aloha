@@ -11,7 +11,8 @@ object FileLocations {
     private[this] val fileName = "mvn_gen_test.properties"
     private[this] val testGeneratedClassesVar = "testGeneratedClasses"
     private[this] val buildDirectoryVar = "targetDirectory"
-    private[this] val testDirectoryVar = "testClassesDirectory"
+    private[this] val testClassesDirectoryVar = "testClassesDirectory"
+    private[this] val testDirectoryVar = "testDirectory"  // ./src/test
 
     private[this] val props = {
         // Get the string representation and let Source close everything.
@@ -50,6 +51,10 @@ object FileLocations {
     val (buildDirectory, buildDirectoryVfs) = getFilesForVariable(buildDirectoryVar)
 
     /** The test classes directory.
+      */
+    val (testClassesDirectory, testClassesDirectoryVfs) = getFilesForVariable(testClassesDirectoryVar)
+
+    /** The src/test directory.
       */
     val (testDirectory, testDirectoryVfs) = getFilesForVariable(testDirectoryVar)
 }
