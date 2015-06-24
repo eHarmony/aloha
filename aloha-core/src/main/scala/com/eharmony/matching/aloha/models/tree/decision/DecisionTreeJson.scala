@@ -70,12 +70,12 @@ trait DecisionTreeJson {
     private[this] implicit object NodeSelectorJsonFormat extends JsonFormat[NodeSelectorAst] with JsValuePimpz {
         val acceptable = Seq("linear", "random").map("'" + _ + "'").mkString(", ")
         def read(json: JsValue) =
-            json("selectorType") map {_ match {
+            json("selectorType") map {
                 case JsString("linear") => json.convertTo[LinearNodeSelectorAst]
                 case JsString("random") => json.convertTo[RandomNodeSelectorAst]
                 case JsString(selType) => throw new DeserializationException(s"unrecognized selectorType '$selType'. with one of the following values: 'linear'")
                 case x => throw new DeserializationException(s"selectorType must be a string with one of the following values: $acceptable. found $x")
-            }} getOrElse {
+            } getOrElse {
                 throw new DeserializationException(s"node selector needs selectorType field with one of the following values: $acceptable")
             }
 
@@ -84,16 +84,14 @@ trait DecisionTreeJson {
         }
     }
 
-    protected[this] final case class NodeAst[B](id: Int, selector: Option[NodeSelectorAst], value: B)
-//    implicit val modelNodeJsonFormat = jsonFormat3(NodeAst.apply[JsValue])
+    protected[this] case class NodeAst[B](id: Int, selector: Option[NodeSelectorAst], value: B)
 
     private[this] implicit def modelNodeJsonFormat[B: JsonReader] = {
         implicit val jf = jsonReaderToJsonFormat[B]
         jsonFormat3(NodeAst.apply[B])
     }
 
-    protected[this] final case class DecisionTreeAst[B](returnBest: Boolean, missingDataOk: Boolean, nodes: Seq[NodeAst[B]])
-//    implicit val decisionTreeAstJsonFormat = jsonFormat3(DecisionTreeAst.apply[JsValue])
+    protected[this] case class DecisionTreeAst[B](returnBest: Boolean, missingDataOk: Boolean, nodes: Seq[NodeAst[B]])
 
     protected[this] final def decisionTreeAstJsonFormat[B: JsonReader] =  {
         implicit val jf = jsonReaderToJsonFormat[B]
@@ -109,29 +107,3 @@ trait DecisionTreeJson {
             if (children.isEmpty) n.selector.toLeft(Node(n.value)).fold(_ => throw new Exception(s"No children but has node selector: $n"), identity)
             else n.selector.toRight(n).fold(f => throw new Exception("a"), s => Node(n.value, children, s.nodeSelector(sem, missingDataOk)))
 }
-
-
-//trait asdf {
-//    import spray.json._
-//    import spray.json.DefaultJsonProtocol._
-
-    // Same: NodeSelectorAst
-    // Same: LinearNodeSelectorAst(
-    // Same: linearNodeSelectorAstJsonFormat
-    // Same: NodeSelectorJsonFormat
-    // Same: NodeAst
-
-    // Only in BasicDecisionTree: nodeAstJsonFormat
-    // Only in ModelDecisionTree: modelNodeJsonFormat
-    // Same: ModelDecisionTree
-    // Same: implicit def decisionTreeAstJsonFormat[B: JsonFormat]: JsonFormat[DecisionTreeAst[B]] = jsonFormat3(DecisionTreeAst.apply[B])
-
-    // Same: root
-    // Same: id
-    // Same: childIds = (n: NodeAst[_]) => n.selector.map(_.children).getOrElse(Nil)
-
-//    def treeBuilder[A, B](sem: Semantics[A], missingDataOk: Boolean) =
-//        (n: NodeAst[B], rawChildren: Seq[NodeAst[B]], children: Seq[Node[A, B]]) =>
-//            if (children.isEmpty) n.selector.toLeft(Node(n.value)).fold(_ => throw new Exception(s"No children but has node selector: $n"), identity)
-//            else n.selector.toRight(n).fold(f => throw new Exception("a"), s => Node(n.value, children, s.nodeSelector(sem, missingDataOk)))
-//}

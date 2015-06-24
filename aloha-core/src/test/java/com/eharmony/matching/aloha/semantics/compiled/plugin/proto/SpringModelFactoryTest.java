@@ -22,7 +22,7 @@ import com.eharmony.matching.aloha.io.AlohaReadable;
 import com.eharmony.matching.aloha.models.Model;
 import com.eharmony.matching.aloha.score.Scores.Score;
 import com.eharmony.matching.aloha.score.conversions.StrictConversions;
-import com.eharmony.matching.aloha.semantics.compiled.plugin.proto.TestProtoBuffs.TestProto;
+import com.eharmony.matching.aloha.test.proto.TestProtoBuffs.TestProto;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:spring/model.cfg.xml" })

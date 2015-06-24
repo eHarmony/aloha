@@ -9,6 +9,7 @@ import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.matching.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import com.eharmony.matching.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine, CsvLines, CsvProtocol}
 import com.eharmony.matching.aloha.semantics.compiled.plugin.proto.CompiledSemanticsProtoPlugin
+import com.eharmony.matching.aloha.util.Logging
 import com.eharmony.matching.featureSpecExtractor.csv.CsvSpecProducer
 import com.eharmony.matching.featureSpecExtractor.libsvm.labeled.LibSvmLabelSpecProducer
 import com.eharmony.matching.featureSpecExtractor.libsvm.unlabeled.LibSvmSpecProducer
@@ -30,7 +31,7 @@ import scala.util.{Failure, Success, Try}
  * Created by rdeak on 6/17/15.
  */
 @CLI(flag = "--dataset")
-object DatasetCli {
+object DatasetCli extends Logging {
     import DatasetType.DatasetType
 
     private val CommandName = "dataset"

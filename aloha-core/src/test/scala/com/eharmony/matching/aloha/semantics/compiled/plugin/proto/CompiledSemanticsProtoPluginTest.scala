@@ -8,7 +8,7 @@ import collection.JavaConversions.asScalaBuffer
 import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.matching.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 
-import TestProtoBuffs.TestProto
+import com.eharmony.matching.aloha.test.proto.TestProtoBuffs.TestProto
 import TestProto.{Class1Proto, Class2Proto, Class3Proto, Class4Proto, Class5Proto, Class6Proto}
 import com.eharmony.matching.aloha.factory.ModelFactory
 import com.eharmony.matching.aloha.models.reg.RegressionModel

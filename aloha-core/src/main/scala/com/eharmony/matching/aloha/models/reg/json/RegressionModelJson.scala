@@ -9,9 +9,9 @@ import scala.collection.immutable.ListMap
 
 trait RegressionModelJson extends SpecJson {
 
-  protected[this] final case class Hof(features: Map[String, Seq[String]], wt: Double) extends Serializable
+  protected[this] case class Hof(features: Map[String, Seq[String]], wt: Double) extends Serializable
 
-  protected[this] final case class RegData(
+  protected[this] case class RegData(
     modelType: String,
     modelId: ModelId,
     notes: Option[Seq[String]],

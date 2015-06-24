@@ -27,7 +27,7 @@ import com.eharmony.matching.aloha.score.Scores.Score;
 import com.eharmony.matching.aloha.score.conversions.StrictConversions;
 import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics;
 import com.eharmony.matching.aloha.semantics.compiled.compiler.TwitterEvalCompiler;
-import com.eharmony.matching.aloha.semantics.compiled.plugin.proto.TestProtoBuffs.TestProto;
+import com.eharmony.matching.aloha.test.proto.TestProtoBuffs.TestProto;
 
 @RunWith(BlockJUnit4ClassRunner.class)
 public class NonSpringJavaTest {

@@ -47,9 +47,9 @@ trait RegressionFeatures[-A] {
      * @param missing map from feature name to variables in the feature function that were missing.
      * @param missingOk whether the number of
      */
-    protected[this] final case class Features[F](features: F,
-                                                 missing: scm.Map[String, Seq[String]] = scm.Map.empty,
-                                                 missingOk: Boolean = true)
+    protected[this] case class Features[F](features: F,
+                                           missing: scm.Map[String, Seq[String]] = scm.Map.empty,
+                                           missingOk: Boolean = true)
 
     /**
      * Extract the features from the raw data by mapping ''featureFunctions'' over the input.  If
