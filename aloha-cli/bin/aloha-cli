@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+# =================================================================================================
+#  aloha-cli                                                                 R. M. Deak 2015-06-25
+# =================================================================================================
+#
+# Example of usage from the aloha root directory:
+# 
+#   # This is two base64-encoded protos
+#   (echo "CAESBEFsYW4YASUAALhBKg0IARABGQAAAAAAAPA/Kg0IAhACGQAAAAAAAABA"
+#    echo "CAESBEthdGUYAioNCAMQAxkAAAAAAAAIQA==") \
+#   |\
+#   $PWD/aloha-cli/bin/aloha-cli \
+#     -cp $PWD/aloha-core/target/aloha-core-1.1.2-SNAPSHOT-tests.jar:$PWD/aloha-cli/target/aloha-cli-1.1.2-SNAPSHOT-jar-with-dependencies.jar \
+#     --dataset \
+#     --cachedir $PWD/aloha-core/target/test-classes/generated \
+#     -s $PWD/aloha-core/src/test/resources/com/eharmony/matching/featureSpecExtractor/cli/proto_spec1.js \
+#     -p com.eharmony.matching.aloha.test.proto.Testing.UserProto \
+#     --vw -
+#
+# Prints to STDOUT: 
+#
+#   | name=Alan gender=MALE bmi:23 num_photos:2
+#   | name=Kate gender=FEMALE bmi=UNK num_photos
+#
+# =================================================================================================
+
+usage() {
+(cat <<EOM
+usage: aloha-cli -cp /path/to/some.jar:/path/to/other.jar:... [args to CLI] 
+EOM
+) >&2
+}
+
+CP=""
+
+if [[ "$#" -lt 2 ]]; then
+    usage; exit 2
+elif [[ "$1" == '-cp' ]]; then
+    CP=$2
+    shift 2
+else
+    usage; exit 3
+fi
+
+java -cp $CP com.eharmony.matching.aloha.cli.Cli $@

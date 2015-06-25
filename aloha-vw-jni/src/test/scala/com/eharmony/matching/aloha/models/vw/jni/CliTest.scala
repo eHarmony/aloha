@@ -34,6 +34,12 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |        spec is an Apache VFS URL to an aloha spec file with modelType 'VwJNI'.
               |  -m <value> | --model <value>
               |        model is an Apache VFS URL to a VW binary model.
+              |  -n <value> | --name <value>
+              |        name of the model.
+              |  -i <value> | --id <value>
+              |        numeric id of the model.
+              |  --vw-args <value>
+              |        arguments to vw
             """).stripMargin
         assertEquals(expected.trim, errContent.trim)
     }
@@ -50,6 +56,12 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |        spec is an Apache VFS URL to an aloha spec file with modelType 'VwJNI'.
               |  -m <value> | --model <value>
               |        model is an Apache VFS URL to a VW binary model.
+              |  -n <value> | --name <value>
+              |        name of the model.
+              |  -i <value> | --id <value>
+              |        numeric id of the model.
+              |  --vw-args <value>
+              |        arguments to vw
             """.stripMargin
         assertEquals(expected.trim, errContent.trim)
     }
@@ -66,7 +78,12 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |        spec is an Apache VFS URL to an aloha spec file with modelType 'VwJNI'.
               |  -m <value> | --model <value>
               |        model is an Apache VFS URL to a VW binary model.
-              |
+              |  -n <value> | --name <value>
+              |        name of the model.
+              |  -i <value> | --id <value>
+              |        numeric id of the model.
+              |  --vw-args <value>
+              |        arguments to vw
             """.stripMargin
         assertEquals(expected.trim, errContent.trim)
     }
@@ -83,7 +100,12 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |        spec is an Apache VFS URL to an aloha spec file with modelType 'VwJNI'.
               |  -m <value> | --model <value>
               |        model is an Apache VFS URL to a VW binary model.
-              |
+              |  -n <value> | --name <value>
+              |        name of the model.
+              |  -i <value> | --id <value>
+              |        numeric id of the model.
+              |  --vw-args <value>
+              |        arguments to vw
             """.stripMargin
         assertEquals(expected.trim, errContent.trim)
     }
@@ -100,7 +122,12 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |        spec is an Apache VFS URL to an aloha spec file with modelType 'VwJNI'.
               |  -m <value> | --model <value>
               |        model is an Apache VFS URL to a VW binary model.
-              |
+              |  -n <value> | --name <value>
+              |        name of the model.
+              |  -i <value> | --id <value>
+              |        numeric id of the model.
+              |  --vw-args <value>
+              |        arguments to vw
             """.stripMargin
         assertEquals(expected.trim, errContent.trim)
     }
@@ -116,32 +143,14 @@ class CliTest extends TestWithIoCapture(CliTest) {
         }
     }
 
-    @Test def testModelAlreadyInJson(): Unit = {
-        try {
-            Cli.main(Array("-m", vwModelPath,
-                           "-s", "res:com/eharmony/matching/aloha/models/vw/jni/withmodel.logistic.aloha.js"))
-        }
-        catch {
-            case e: DeserializationException if e.getMessage == "JSON should not contain the path 'vw.model'." =>
-            case e: Throwable => throw e
-        }
-    }
-
-    @Test def testNoVwSectionInJson(): Unit = {
-        try {
-            Cli.main(Array("-m", vwModelPath,
-                           "-s", "res:com/eharmony/matching/aloha/models/vw/jni/no.vw.aloha.js"))
-
-        }
-        catch {
-            case e: DeserializationException if e.getMessage == "JSON does not contain a 'vw' object." =>
-            case e: Throwable => throw e
-        }
-    }
-
     @Test def testHappy(): Unit = {
-        Cli.main(Array("-m", vwModelPath,
-                       "-s", "res:com/eharmony/matching/aloha/models/vw/jni/good.logistic.aloha.js"))
+        Cli.main(Array(
+            "-m", vwModelPath,
+            "-s", "res:com/eharmony/matching/aloha/models/vw/jni/good.logistic.aloha.js",
+            "-i", "0",
+            "-n", "model name",
+            "--vw-args", "--quiet -t"
+        ))
 
         val expected =
             ("""
@@ -155,10 +164,7 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |    "personal_features": [ "height_mm" ]
               |  },
               |  "vw": {
-              |    "params": [
-              |      "--quiet",
-              |      "-t"
-              |    ],
+              |    "params": "--quiet -t",
               |    "model": """".stripMargin.trim + base64EncodedModelString + """"
               |  }
               |}

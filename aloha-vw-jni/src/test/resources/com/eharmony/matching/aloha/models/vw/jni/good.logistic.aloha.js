@@ -1,12 +1,12 @@
 {
   "modelType": "VwJNI",
-  "modelId": { "id": 0, "name": "model name" },
-  "features": {
-    "height_mm": "Seq((\"1800\", 1.0))"
-  },
-  "namespaces": {
-    "personal_features": [ "height_mm" ]
-  },
+  "imports": [],
+  "features": [
+    { "name": "height_mm", "spec": "Seq((\"1800\", 1.0))" }
+  ],
+  "namespaces": [
+    {"name": "personal_features", "features": [ "height_mm" ] }
+  ],
   "vw": {
     "params": [
       "--quiet",

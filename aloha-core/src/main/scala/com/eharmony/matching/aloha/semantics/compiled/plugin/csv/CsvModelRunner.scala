@@ -2,6 +2,7 @@ package com.eharmony.matching.aloha.semantics.compiled.plugin.csv
 
 import com.eharmony.matching.aloha
 import com.eharmony.matching.aloha.annotate.CLI
+import org.apache.commons.lang3.StringEscapeUtils
 
 import scala.util.parsing.combinator.RegexParsers
 import org.apache.commons.vfs2.VFS
@@ -12,7 +13,6 @@ import java.io.{PrintStream, File}
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter.Implicits._
 import spray.json.DefaultJsonProtocol._
 import scala.concurrent.ExecutionContext.Implicits.global
-import org.apache.commons.lang.StringEscapeUtils
 
 private[csv] sealed trait EnumGen {
     def withClassName(canonicalClassName: String): Enum

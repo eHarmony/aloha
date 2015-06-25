@@ -6,7 +6,7 @@ import scala.collection.immutable.ListMap
 import spray.json.DefaultJsonProtocol._
 
 import com.eharmony.matching.aloha.id.ModelId
-import com.eharmony.matching.aloha.models.reg.json.SpecJson
+import com.eharmony.matching.aloha.models.reg.json.{Spec, SpecJson}
 import com.eharmony.matching.aloha.factory.Formats.listMapFormat
 
 /**
@@ -57,7 +57,7 @@ trait VwJniModelJson extends SpecJson {
      *                            ''Features.missingOk'' value returned by ''constructFeatures'' will be
      *                            '''false'''; otherwise, it will be '''true'''.
      */
-    protected[this] final case class VwJNIAst(
+    protected[this] case class VwJNIAst(
         modelType: String,
         modelId: ModelId,
         features: ListMap[String, Spec],

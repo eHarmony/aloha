@@ -103,9 +103,14 @@
 			<artifactId>commons-io</artifactId>
 		</dependency>
 
+		<!--<dependency>-->
+			<!--<groupId>commons-lang</groupId>-->
+			<!--<artifactId>commons-lang</artifactId>-->
+		<!--</dependency>-->
+
 		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
 		</dependency>
 
 		<dependency>
@@ -125,8 +130,14 @@
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
+			<artifactId>slf4j-api</artifactId>
 		</dependency>
+
+		<!--<dependency>-->
+			<!--<groupId>org.slf4j</groupId>-->
+			<!--<artifactId>slf4j-log4j12</artifactId>-->
+			<!--<scope>test</scope>-->
+		<!--</dependency>-->
 
 		<!-- ============================================================================= -->
 		<!--                                  Test Deps                                    -->

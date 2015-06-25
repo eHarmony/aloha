@@ -5,6 +5,7 @@ import java.io.{InputStream, File, FileOutputStream}
 import com.eharmony.matching.aloha.factory.{ModelParser, ModelParserWithSemantics, ParserProviderCompanion}
 import com.eharmony.matching.aloha.id.ModelIdentity
 import com.eharmony.matching.aloha.models.reg.RegressionFeatures
+import com.eharmony.matching.aloha.models.reg.json.Spec
 import com.eharmony.matching.aloha.models.{BaseModel, TypeCoercion}
 import com.eharmony.matching.aloha.reflect._
 import com.eharmony.matching.aloha.score.Scores.Score

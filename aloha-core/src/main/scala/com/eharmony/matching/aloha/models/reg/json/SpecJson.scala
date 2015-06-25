@@ -3,8 +3,10 @@ package com.eharmony.matching.aloha.models.reg.json
 import spray.json._
 import spray.json.DefaultJsonProtocol._
 
+
+case class Spec(spec: String, defVal: Option[Seq[(String, Double)]] = Option(Nil))
+
 trait SpecJson {
-    protected[this] case class Spec(spec: String, defVal: Option[Seq[(String, Double)]] = Option(Nil))
 
     protected[this] final val specJsonFormat = jsonFormat2(Spec)
 

@@ -39,6 +39,12 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |        spec is an Apache VFS URL to an aloha spec file with modelType 'VwJNI'.
               |  -m <value> | --model <value>
               |        model is an Apache VFS URL to a VW binary model.
+              |  -n <value> | --name <value>
+              |        name of the model.
+              |  -i <value> | --id <value>
+              |        numeric id of the model.
+              |  --vw-args <value>
+              |        arguments to vw
             """.stripMargin
         assertEquals(expected.trim, errContent.trim)
     }

@@ -29,7 +29,6 @@
     </licenses>
 
     <modules>
-        <!--<module>aloha-test-proto</module>-->
         <module>aloha-core</module>
         <module>aloha-vw-jni</module>
         <module>aloha-cli</module>
@@ -203,11 +202,17 @@
                 <version>2.0.1</version>
             </dependency>
 
+            <!--<dependency>-->
+                <!--<groupId>commons-lang</groupId>-->
+                <!--<artifactId>commons-lang</artifactId>-->
+                <!--<version>2.6</version>-->
+            <!--</dependency>-->
             <dependency>
-                <groupId>commons-lang</groupId>
-                <artifactId>commons-lang</artifactId>
-                <version>2.6</version>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.2</version>
             </dependency>
+
 
             <!-- commons-vfs (1) requires 1.0.4.  Explicitly excluded commons-logging.  -->
             <dependency>
@@ -219,9 +224,16 @@
             <!-- Logging -->
             <dependency>
                 <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
+
 
             <!-- Testing deps -->
             <dependency>
