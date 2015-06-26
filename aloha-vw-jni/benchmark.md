@@ -140,21 +140,3 @@ class Bench {
     @Macrobenchmark def aloha: Double = doBench(reg)
 }
 ```
-
-Where Zero is defined as: 
- 
- 
-```scala
-trait Zero[A] {
-    val zero: A
-}
-
-object Zero {
-    implicit val int: Zero[Int] = new Zero[Int] { val zero = 0 }
-    implicit val long: Zero[Long] = new Zero[Long] { val zero = 0L }
-    implicit val float: Zero[Float] with Object {val zero: Float} = new Zero[Float] { val zero = 0f }
-    implicit val double: Zero[Double] with Object {val zero: Double} = new Zero[Double] { val zero = 0d }
-    implicit val string: Zero[String] with Object {val zero: String} = new Zero[String] { val zero = "" }
-}
-```
-
