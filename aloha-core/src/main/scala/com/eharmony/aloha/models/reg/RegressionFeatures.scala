@@ -9,7 +9,7 @@ import scala.collection.{immutable => sci, mutable => scm}
  * method which applies the ''featureFunctions'' to the input data and keeps track of missing features.
  * @author R M Deak
  */
-// TODO: merge this with com.eharmony.matching.featureSpecExtractor.FeatureExtractorFunction
+// TODO: merge this with com.eharmony.aloha.dataset.FeatureExtractorFunction
 trait RegressionFeatures[-A] {
 
     /**

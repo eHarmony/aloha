@@ -2,9 +2,9 @@ package com.eharmony.aloha.models.vw.jni
 
 import com.eharmony.aloha
 import com.eharmony.aloha.annotate.CLI
+import com.eharmony.aloha.dataset.vw.unlabeled.json.VwUnlabeledJson
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.io.StringReadable
-import com.eharmony.matching.featureSpecExtractor.vw.unlabeled.json.VwUnlabeledJson
 import org.apache.commons.lang3.StringEscapeUtils
 import org.apache.commons.vfs2.{FileObject, VFS}
 import spray.json.{pimpAny, pimpString}

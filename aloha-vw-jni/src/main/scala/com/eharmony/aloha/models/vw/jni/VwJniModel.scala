@@ -2,6 +2,8 @@ package com.eharmony.aloha.models.vw.jni
 
 import java.io.{File, FileOutputStream, InputStream}
 
+import com.eharmony.aloha.dataset.SparseFeatureExtractorFunction
+import com.eharmony.aloha.dataset.vw.unlabeled.VwSpec
 import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.aloha.factory.{ModelParser, ModelParserWithSemantics, ParserProviderCompanion}
 import com.eharmony.aloha.id.ModelIdentity
@@ -14,8 +16,6 @@ import com.eharmony.aloha.score.conversions.ScoreConverter
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.semantics.func.GenAggFunc
 import com.eharmony.aloha.util.{EitherHelpers, Logging}
-import com.eharmony.matching.featureSpecExtractor.SparseFeatureExtractorFunction
-import com.eharmony.matching.featureSpecExtractor.vw.unlabeled.VwSpec
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.io.IOUtils
 import spray.json.{DeserializationException, JsValue, JsonReader}

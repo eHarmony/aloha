@@ -14,7 +14,7 @@
 #     -cp $PWD/aloha-core/target/aloha-core-1.1.2-SNAPSHOT-tests.jar:$PWD/aloha-cli/target/aloha-cli-1.1.2-SNAPSHOT-jar-with-dependencies.jar \
 #     --dataset \
 #     --cachedir $PWD/aloha-core/target/test-classes/generated \
-#     -s $PWD/aloha-core/src/test/resources/com/eharmony/matching/featureSpecExtractor/cli/proto_spec1.js \
+#     -s $PWD/aloha-core/src/test/resources/com/eharmony/aloha/dataset/cli/proto_spec1.js \
 #     -p com.eharmony.aloha.test.proto.Testing.UserProto \
 #     --vw -
 #
