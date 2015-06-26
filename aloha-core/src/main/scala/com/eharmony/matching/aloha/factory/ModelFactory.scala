@@ -201,7 +201,9 @@ object ModelFactory {
       * @return
       */
     def knownModelParsers(): Seq[ModelParser] = {
-        val reflections = new Reflections(aloha.pkgName)
+        // TODO: Change this back after the package change from com.eharmony.matching.aloha to com.eharmony.aloha
+        //        val reflections = new Reflections(aloha.pkgName)
+        val reflections = new Reflections(aloha.pkgName, "com.eharmony.aloha")
         import scala.collection.JavaConversions.asScalaSet
         val parserProviderCompanions = reflections.getSubTypesOf(classOf[ParserProviderCompanion]).toSeq
 

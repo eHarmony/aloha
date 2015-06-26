@@ -1,14 +1,14 @@
-package com.eharmony.matching.aloha.models.vw.jni
+package com.eharmony.aloha.models.vw.jni
 
-import java.io.{InputStream, File, FileOutputStream}
+import java.io.{File, FileOutputStream, InputStream}
 
+import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.factory.{ModelParser, ModelParserWithSemantics, ParserProviderCompanion}
 import com.eharmony.matching.aloha.id.ModelIdentity
 import com.eharmony.matching.aloha.models.reg.RegressionFeatures
 import com.eharmony.matching.aloha.models.reg.json.Spec
 import com.eharmony.matching.aloha.models.{BaseModel, TypeCoercion}
 import com.eharmony.matching.aloha.reflect._
-import com.eharmony.matching.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.score.basic.ModelOutput
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 import com.eharmony.matching.aloha.semantics.Semantics
@@ -76,7 +76,9 @@ extends BaseModel[A, B]
       *         a Some instance if audit is true) is a more involved reporting of the score including errors and all
       *         sub-model scores.
       */
-    override private[aloha] def getScore(a: A)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = {
+    // TODO: Change this back after the package change from com.eharmony.matching.aloha to com.eharmony.aloha
+    override def getScore(a: A)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = {
+    // override private[aloha] def getScore(a: A)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = {
         generateVwInput(a) match {
             case Left(missing) => failure(Seq(s"Too many features with missing variables: ${missing.count(_._2.nonEmpty)}"), getMissingVariables(missing))
             case Right(vwIn) =>

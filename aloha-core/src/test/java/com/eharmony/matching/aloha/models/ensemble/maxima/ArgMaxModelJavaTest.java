@@ -6,7 +6,7 @@ import com.eharmony.matching.aloha.score.order.ScoreComparator;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import com.eharmony.matching.aloha.score.Scores.Score;
+import com.eharmony.aloha.score.Scores.Score;
 import com.eharmony.matching.aloha.score.conversions.StrictConversions;
 import scala.collection.JavaConversions;
 
@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.eharmony.matching.aloha.score.Scores.Score.BaseScore.ScoreType.STRING;
+import static com.eharmony.aloha.score.Scores.Score.BaseScore.ScoreType.STRING;
 
 public class ArgMaxModelJavaTest {
 

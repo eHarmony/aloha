@@ -7,7 +7,7 @@ import spray.json.{JsValue, JsonReader}
 import com.eharmony.matching.aloha.models.{BaseModel, Model}
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 import com.eharmony.matching.aloha.id.ModelIdentity
-import com.eharmony.matching.aloha.score.Scores.Score
+import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.score.basic.ModelOutput
 import com.eharmony.matching.aloha.factory.{ModelFactory, ModelParser, ParserProviderCompanion}
 import com.eharmony.matching.aloha.util.EitherHelpers

@@ -2,8 +2,8 @@ package com.eharmony.matching.aloha.score.conversions
 
 import collection.JavaConversions.{asJavaIterable, asScalaBuffer}
 import com.eharmony.matching.aloha.id.{ModelIdentity, Identifiable}
-import com.eharmony.matching.aloha.score.Scores.Score
-import com.eharmony.matching.aloha.score.Scores.Score.{ModelId, ScoreError, MissingRequiredFields}
+import com.eharmony.aloha.score.Scores.Score
+import com.eharmony.aloha.score.Scores.Score.{ModelId, ScoreError, MissingRequiredFields}
 import com.eharmony.matching.aloha.score.basic.ModelOutput
 
 /** When mixing in with ScoreConversion, values of type A can be converted to a Score by calling toScore.  This works

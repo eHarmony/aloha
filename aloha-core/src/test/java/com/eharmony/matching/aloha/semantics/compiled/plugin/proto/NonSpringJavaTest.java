@@ -23,7 +23,7 @@ import com.eharmony.matching.aloha.interop.DoubleFactoryInfo;
 import com.eharmony.matching.aloha.interop.IntegerFactoryInfo;
 import com.eharmony.matching.aloha.models.Model;
 import com.eharmony.matching.aloha.models.reg.RegressionModel;
-import com.eharmony.matching.aloha.score.Scores.Score;
+import com.eharmony.aloha.score.Scores.Score;
 import com.eharmony.matching.aloha.score.conversions.StrictConversions;
 import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics;
 import com.eharmony.matching.aloha.semantics.compiled.compiler.TwitterEvalCompiler;

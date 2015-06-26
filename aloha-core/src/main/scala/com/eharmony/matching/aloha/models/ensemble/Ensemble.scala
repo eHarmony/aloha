@@ -2,7 +2,7 @@ package com.eharmony.matching.aloha.models.ensemble
 
 import scala.collection.GenTraversableOnce
 import com.eharmony.matching.aloha.models.{BaseModel, Model}
-import com.eharmony.matching.aloha.score.Scores.Score
+import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 import com.eharmony.matching.aloha.score.basic.ModelOutput
 

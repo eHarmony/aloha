@@ -2,13 +2,13 @@ package com.eharmony.matching.aloha.models.reg
 
 import java.{lang => jl}
 
+import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.factory.pimpz.JsValuePimpz
 import com.eharmony.matching.aloha.factory.{ModelParser, ModelParserWithSemantics, ParserProviderCompanion}
 import com.eharmony.matching.aloha.id.ModelIdentity
 import com.eharmony.matching.aloha.models.reg.json.{RegressionModelJson, Spec}
 import com.eharmony.matching.aloha.models.{BaseModel, TypeCoercion}
 import com.eharmony.matching.aloha.reflect.RefInfoOps
-import com.eharmony.matching.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.score.basic.ModelOutput
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 import com.eharmony.matching.aloha.semantics.Semantics
@@ -64,7 +64,7 @@ import scala.language.{higherKinds, implicitConversions}
  *                            of the computed score.  This is for missing data situations.
  * @tparam A model input type
  * @tparam B model output type.  Requires a implicit [[com.eharmony.matching.aloha.score.conversions.ScoreConverter]]
- *           to convert from B to com.eharmony.matching.aloha.score.Scores.Score
+ *           to convert from B to com.eharmony.aloha.score.Scores.Score
  */
 case class RegressionModel[-A, +B: ScoreConverter](
   modelId: ModelIdentity,

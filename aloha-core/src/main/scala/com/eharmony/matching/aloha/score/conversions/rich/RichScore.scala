@@ -1,11 +1,12 @@
 package com.eharmony.matching.aloha.score.conversions.rich
 
+import com.eharmony.aloha.score.Scores.Score
+import com.eharmony.aloha.score.Scores.Score.BaseScore.ScoreType
+import com.eharmony.aloha.score.Scores.Score.ScoreError
+import com.eharmony.matching.aloha.score.conversions.{BasicTypeScoreConversions, RelaxedConversions, StrictConversions}
+import com.eharmony.matching.aloha.score.order.Orderings._  // TODO: Remove this after renaming package to com.eharmony.aloha
+
 import scala.language.higherKinds
-import com.eharmony.matching.aloha.score.Scores.Score
-import com.eharmony.matching.aloha.score.Scores.Score.ScoreError
-import com.eharmony.matching.aloha.score.conversions.{RelaxedConversions, StrictConversions, BasicTypeScoreConversions}
-import com.eharmony.matching.aloha.score.Scores.Score.BaseScore.ScoreType
-import com.eharmony.matching.aloha.score.order.Orderings
 
 object RichScoreOps {
     def toRichScore(score: Score) = new RichScoreLike { protected[this] val s = score }
@@ -14,7 +15,6 @@ object RichScoreOps {
 trait RichScoreLike {
     protected[this] val s: Score
 
-    import Orderings._
     import collection.JavaConversions.asScalaBuffer
 
     /** Get all errors, flattened into an IndexedSeq, sorted by Model ID.

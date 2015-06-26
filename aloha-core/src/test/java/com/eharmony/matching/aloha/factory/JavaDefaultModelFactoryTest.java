@@ -36,7 +36,7 @@ import com.eharmony.matching.aloha.models.reg.RegressionModel;
 import com.eharmony.matching.aloha.models.tree.decision.BasicDecisionTree;
 import com.eharmony.matching.aloha.models.tree.decision.ModelDecisionTree;
 
-import com.eharmony.matching.aloha.score.Scores;
+import com.eharmony.aloha.score.Scores;
 import com.eharmony.matching.aloha.util.ICList;
 
 

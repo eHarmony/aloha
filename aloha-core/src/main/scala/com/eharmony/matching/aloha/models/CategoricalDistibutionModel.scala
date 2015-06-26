@@ -9,7 +9,7 @@ import com.eharmony.matching.aloha.util.rand.HashedCategoricalDistribution
 import com.eharmony.matching.aloha.factory.{ ModelParserWithSemantics, ModelParser, ParserProviderCompanion }
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 import com.eharmony.matching.aloha.score.basic.ModelOutput
-import com.eharmony.matching.aloha.score.Scores.Score
+import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.semantics.Semantics
 import com.eharmony.matching.aloha.util.Logging
 

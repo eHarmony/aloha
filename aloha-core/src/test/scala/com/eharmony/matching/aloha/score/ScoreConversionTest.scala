@@ -1,20 +1,18 @@
 package com.eharmony.matching.aloha.score
 
-import org.junit.runner.RunWith
-import org.junit.Test
-import org.junit.Assert._
-
-import com.google.protobuf.GeneratedMessage
-import com.google.protobuf.GeneratedMessage.GeneratedExtension
-
+import com.eharmony.aloha.score.Scores.Score.BaseScore.ScoreType._
+import com.eharmony.aloha.score.Scores.Score.{BaseScore, BooleanScore, DoubleScore, FloatScore, IntScore, LongScore, StringScore}
 import com.eharmony.matching.aloha.id.ModelId
-import com.eharmony.matching.aloha.models.{BaseModel, Model}
-import com.eharmony.matching.aloha.score.conversions.rich.RichScore
+import com.eharmony.matching.aloha.models.BaseModel
+import com.eharmony.matching.aloha.reflect.RefInfo
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter.Implicits._
-import com.eharmony.matching.aloha.score.Scores.Score.{BaseScore, BooleanScore, IntScore, LongScore, FloatScore, DoubleScore, StringScore}
-import com.eharmony.matching.aloha.score.Scores.Score.BaseScore.ScoreType._
-import com.eharmony.matching.aloha.reflect.RefInfo
+import com.eharmony.matching.aloha.score.conversions.rich.RichScore
+import com.google.protobuf.GeneratedMessage
+import com.google.protobuf.GeneratedMessage.GeneratedExtension
+import org.junit.Assert._
+import org.junit.Test
+import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 
 /** Test that the implicit conversions work.

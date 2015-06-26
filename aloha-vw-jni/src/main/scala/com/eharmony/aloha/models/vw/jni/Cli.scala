@@ -1,4 +1,4 @@
-package com.eharmony.matching.aloha.models.vw.jni
+package com.eharmony.aloha.models.vw.jni
 
 import com.eharmony.matching.aloha
 import com.eharmony.matching.aloha.annotate.CLI
@@ -66,27 +66,5 @@ object Cli extends VwJniModelJson {
         val vwParams = Option(vwArgs).filter(_.trim.nonEmpty).map(args => Right(StringEscapeUtils.escapeJson(args)))
         val vwObj = Vw(vwParams, Option(b64Model))
         VwJNIAst(VwJniModel.parser.modelType, ModelId(id, name), features, vwObj, ns).toJson.compactPrint
-
-/*
-    protected[this] final case class VwJNIAst(
-        modelType: String,
-        modelId: ModelId,
-        features: ListMap[String, Spec],
-        vw: Vw,
-        namespaces: Option[ListMap[String, Seq[String]]] = Some(ListMap.empty),
-        numMissingThreshold: Option[Int] = None)
-
-*/
-
-//        val updatedJson = j.getFields("vw") collectFirst {
-//            case vw@JsObject(fields) if !fields.contains("model") =>
-//                j.copy(fields = j.fields + ("vw" -> vw.copy(fields = fields + ("model" -> JsString(b64Model)))))
-//            case vw@JsObject(fields) if fields.contains("model") =>
-//                throw new DeserializationException("JSON should not contain the path 'vw.model'.")
-//        }
-//
-//        updatedJson.
-//            getOrElse { throw new DeserializationException("JSON does not contain a 'vw' object.") }.
-//            compactPrint
     }
 }

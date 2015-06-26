@@ -1,4 +1,4 @@
-package com.eharmony.matching.aloha.cli
+package com.eharmony.aloha.cli
 
 import com.eharmony.matching.aloha
 import com.eharmony.matching.testhelp.io.{IoCaptureCompanion, TestWithIoCapture}

@@ -13,7 +13,7 @@ import com.eharmony.matching.aloha.models.ensemble.tie.TakeFirstTieBreaker
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 import com.eharmony.matching.aloha.score.conversions.rich.RichScore
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter.Implicits._
-import com.eharmony.matching.aloha.score.Scores.Score
+import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.score.basic.ModelOutput
 
 @RunWith(classOf[JUnit4ClassRunner])

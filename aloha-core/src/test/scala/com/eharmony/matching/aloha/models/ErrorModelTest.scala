@@ -4,7 +4,7 @@ import org.junit.Test
 import org.junit.Assert.assertNotNull
 import org.junit.runner.RunWith
 import com.eharmony.matching.aloha.id.ModelId
-import com.eharmony.matching.aloha.score.Scores.Score
+import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.factory.ModelFactory
 import org.junit.runners.BlockJUnit4ClassRunner
 

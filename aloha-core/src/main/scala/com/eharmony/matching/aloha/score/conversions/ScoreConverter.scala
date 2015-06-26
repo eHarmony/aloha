@@ -1,12 +1,13 @@
 package com.eharmony.matching.aloha.score.conversions
 
-import java.{ lang => jl }
-import scala.annotation.implicitNotFound
+import java.{lang => jl}
 
+import com.eharmony.aloha.score.Scores.Score.BaseScore.ScoreType
+import com.eharmony.aloha.score.Scores.Score.{BaseScore, BooleanScore, DoubleScore, FloatScore, IntScore, LongScore, ModelId, StringScore}
 import com.eharmony.matching.aloha.id.ModelIdentity
-import com.eharmony.matching.aloha.score.Scores.Score.{ ModelId, BaseScore, BooleanScore, IntScore, LongScore, FloatScore, DoubleScore, StringScore }
-import com.eharmony.matching.aloha.score.Scores.Score.BaseScore.ScoreType
 import com.eharmony.matching.aloha.reflect.RefInfo
+
+import scala.annotation.implicitNotFound
 
 @implicitNotFound(msg = "Cannot find ScoreConverter type class for ${A}.\nConsider including import statement\n\timport com.eharmony.matching.aloha.score.conversions.ScoreConverter.Implicits._")
 trait ScoreConverter[A] extends Serializable {

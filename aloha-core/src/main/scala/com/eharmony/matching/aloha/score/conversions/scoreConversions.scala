@@ -1,11 +1,13 @@
 package com.eharmony.matching.aloha.score.conversions
 
 import java.{lang => jl}
-import scala.language.higherKinds
-import com.eharmony.matching.aloha.score.Scores.Score
+
+import com.eharmony.aloha.score.Scores.Score
+import com.eharmony.aloha.score.Scores.Score.BaseScore.ScoreType
+import com.eharmony.matching.aloha.reflect.{RefInfo, RefInfoOps}
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter.Implicits._
-import com.eharmony.matching.aloha.score.Scores.Score.BaseScore.ScoreType
-import com.eharmony.matching.aloha.reflect.{RefInfoOps, RefInfo}
+
+import scala.language.higherKinds
 
 /** Provide conversions from score to the basic types.
   *
@@ -64,7 +66,7 @@ object RelaxedConversions extends BasicTypeScoreConversions[Option] {
 
     /** Get the score.  The Option tells the score exists.  The Right in the embedded Either contains the actual
       * score and the Left contains the type that actually exists in the
-      * [[com.eharmony.matching.aloha.score.Scores.Score]] if querying the wrong type.
+      * [[com.eharmony.aloha.score.Scores.Score]] if querying the wrong type.
       * @param s the score
       * @tparam A the type to which the score should be converted.
       * @return

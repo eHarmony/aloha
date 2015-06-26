@@ -1,13 +1,12 @@
-package com.eharmony.matching.aloha.models.vw.jni
+package com.eharmony.aloha.models.vw.jni
 
+import com.eharmony.matching.aloha.factory.Formats.listMapFormat
+import com.eharmony.matching.aloha.id.ModelId
+import com.eharmony.matching.aloha.models.reg.json.{Spec, SpecJson}
+import spray.json.DefaultJsonProtocol._
 import spray.json.RootJsonFormat
 
 import scala.collection.immutable.ListMap
-import spray.json.DefaultJsonProtocol._
-
-import com.eharmony.matching.aloha.id.ModelId
-import com.eharmony.matching.aloha.models.reg.json.{Spec, SpecJson}
-import com.eharmony.matching.aloha.factory.Formats.listMapFormat
 
 /**
  * Components of the JSON protocol for VwJniModel
@@ -30,7 +29,7 @@ trait VwJniModelJson extends SpecJson {
      *               single string by imploding the list with a " " separator or it is one string.  If None,
      * @param model an optional model.  This is a base64 encoded representation of a native VW binary model.
      */
-    protected[this] final case class Vw(params: Option[Either[Seq[String], String]] = Some(Right("")), model: Option[String] = None) {
+    protected[this] case class Vw(params: Option[Either[Seq[String], String]] = Some(Right("")), model: Option[String] = None) {
         def getParams = params getOrElse Right("")
     }
 

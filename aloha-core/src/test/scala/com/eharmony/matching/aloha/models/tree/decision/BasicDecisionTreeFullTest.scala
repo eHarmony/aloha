@@ -15,7 +15,7 @@ import com.eharmony.matching.aloha.reflect._
 import com.eharmony.matching.aloha.semantics.func.{GenFunc, GeneratedAccessor, GenAggFunc}
 import com.eharmony.matching.aloha.factory.ModelFactory
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter.Implicits._
-import com.eharmony.matching.aloha.score.Scores.Score
+import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.score.conversions.RelaxedConversions
 
 /** This test is designed to comprehensively cover all of the test cases in a decision stub (three nodes consisting

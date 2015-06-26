@@ -1,7 +1,7 @@
 package com.eharmony.matching.aloha.score.order
 
-import com.eharmony.matching.aloha.score.Scores.Score.{BaseScore, ScoreError}
-import com.eharmony.matching.aloha.score.Scores.Score
+import com.eharmony.aloha.score.Scores.Score
+import com.eharmony.aloha.score.Scores.Score.{BaseScore, ScoreError}
 
 object Orderings {
     implicit object ScoreErrorById extends Ordering[ScoreError] {

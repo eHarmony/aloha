@@ -1,7 +1,7 @@
 package com.eharmony.matching.aloha.semantics.compiled.plugin.csv;
 
 import com.eharmony.matching.aloha.models.Model;
-import com.eharmony.matching.aloha.score.Scores;
+import com.eharmony.aloha.score.Scores;
 import com.eharmony.matching.aloha.score.conversions.RelaxedConversions;
 import org.junit.Test;
 import org.junit.runner.RunWith;

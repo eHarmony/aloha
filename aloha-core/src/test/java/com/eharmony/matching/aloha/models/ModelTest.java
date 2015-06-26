@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
 
 import com.eharmony.matching.aloha.id.ModelId;
 import com.eharmony.matching.aloha.id.ModelIdentity;
-import com.eharmony.matching.aloha.score.Scores;
+import com.eharmony.aloha.score.Scores;
 import scala.util.Left$;
 
 import java.io.IOException;
@@ -45,7 +45,7 @@ public class ModelTest {
 
         // score
         assertNotNull(model.score(null));
-        assertEquals("com.eharmony.matching.aloha.score.Scores.Score", model.score(null).getClass().getCanonicalName());
+        assertEquals("com.eharmony.aloha.score.Scores.Score", model.score(null).getClass().getCanonicalName());
 
         // getScore
         try {

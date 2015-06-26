@@ -1,7 +1,7 @@
 package com.eharmony.matching.aloha.score.conversions
 
-import com.eharmony.matching.aloha.score.Scores.Score
-import com.eharmony.matching.aloha.score.Scores.Score.{ModelId => MId}
+import com.eharmony.aloha.score.Scores.Score
+import com.eharmony.aloha.score.Scores.Score.{ModelId => MId}
 import com.eharmony.matching.aloha.id.ModelId
 
 package object rich {
@@ -15,7 +15,7 @@ package object rich {
       * @param id
       */
     implicit class RichModelId(protected val id: MId) {
-        /** Transform the com.eharmony.matching.aloha.score.Scores.Score.ModelId to a
+        /** Transform the com.eharmony.aloha.score.Scores.Score.ModelId to a
           * [[com.eharmony.matching.aloha.id.ModelId]].
           * @return
           */

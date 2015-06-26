@@ -2,7 +2,7 @@ package com.eharmony.matching.aloha.models.conversion;
 
 import com.eharmony.matching.aloha.factory.TypedModelFactory;
 import com.eharmony.matching.aloha.models.Model;
-import com.eharmony.matching.aloha.score.Scores;
+import com.eharmony.aloha.score.Scores;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;

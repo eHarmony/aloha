@@ -1,13 +1,13 @@
-package com.eharmony.matching.aloha.models.vw.jni
+package com.eharmony.aloha.models.vw.jni
 
 import java.io.FileInputStream
 
 import com.eharmony.matching.aloha
 import com.eharmony.matching.testhelp.io.{IoCaptureCompanion, TestWithIoCapture}
 import org.junit.Assert._
-import org.junit.{BeforeClass, Test}
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
+import org.junit.{BeforeClass, Test}
 import spray.json.{DeserializationException, pimpString}
 
 object CliTest extends IoCaptureCompanion {

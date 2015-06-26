@@ -68,7 +68,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>com.eharmony.matching.aloha.cli.Cli</mainClass>
+                            <mainClass>com.eharmony.aloha.cli.Cli</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

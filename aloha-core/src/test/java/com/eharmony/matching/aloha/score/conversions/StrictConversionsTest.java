@@ -1,21 +1,21 @@
 package com.eharmony.matching.aloha.score.conversions;
 
-import com.eharmony.matching.aloha.score.Scores;
-import com.eharmony.matching.aloha.score.Scores.Score;
-import com.eharmony.matching.aloha.score.Scores.Score.ModelId;
-import com.eharmony.matching.aloha.score.Scores.Score.BaseScore;
-import com.eharmony.matching.aloha.score.Scores.Score.BooleanScore;
-import com.eharmony.matching.aloha.score.Scores.Score.IntScore;
-import com.eharmony.matching.aloha.score.Scores.Score.LongScore;
-import com.eharmony.matching.aloha.score.Scores.Score.FloatScore;
-import com.eharmony.matching.aloha.score.Scores.Score.DoubleScore;
-import com.eharmony.matching.aloha.score.Scores.Score.StringScore;
+import com.eharmony.aloha.score.Scores;
+import com.eharmony.aloha.score.Scores.Score;
+import com.eharmony.aloha.score.Scores.Score.ModelId;
+import com.eharmony.aloha.score.Scores.Score.BaseScore;
+import com.eharmony.aloha.score.Scores.Score.BooleanScore;
+import com.eharmony.aloha.score.Scores.Score.IntScore;
+import com.eharmony.aloha.score.Scores.Score.LongScore;
+import com.eharmony.aloha.score.Scores.Score.FloatScore;
+import com.eharmony.aloha.score.Scores.Score.DoubleScore;
+import com.eharmony.aloha.score.Scores.Score.StringScore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 
 import static org.junit.Assert.assertEquals;
-import static com.eharmony.matching.aloha.score.Scores.Score.BaseScore.ScoreType.*;
+import static com.eharmony.aloha.score.Scores.Score.BaseScore.ScoreType.*;
 
 /**
  * Note there are three atypical cases byte -> short, byte -> int, short -> int.  This is because protocol buffers

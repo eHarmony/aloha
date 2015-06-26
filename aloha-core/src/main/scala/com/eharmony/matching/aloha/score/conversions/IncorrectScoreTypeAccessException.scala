@@ -2,7 +2,7 @@ package com.eharmony.matching.aloha.score.conversions
 
 import com.eharmony.matching.aloha.AlohaException
 import IncorrectScoreTypeAccessException.getMessage
-import com.eharmony.matching.aloha.score.Scores.Score
+import com.eharmony.aloha.score.Scores.Score
 
 case class IncorrectScoreTypeAccessException(s: Score, accessedType: String)
     extends AlohaException(getMessage(s, accessedType), null)

@@ -1,7 +1,7 @@
 package com.eharmony.matching.aloha.models
 
 import com.eharmony.matching.aloha.id.{ModelId, ModelIdentity}
-import com.eharmony.matching.aloha.score.Scores.Score
+import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter
 import com.eharmony.matching.aloha.score.basic.ModelOutput
 import com.eharmony.matching.aloha.factory.{ModelParser, BasicModelParser, ParserProviderCompanion}

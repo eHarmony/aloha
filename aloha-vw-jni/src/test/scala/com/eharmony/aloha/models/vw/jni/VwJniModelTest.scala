@@ -1,4 +1,4 @@
-package com.eharmony.matching.aloha.models.vw.jni
+package com.eharmony.aloha.models.vw.jni
 
 import java.io.{File, FileInputStream, InputStream}
 import java.{lang => jl}

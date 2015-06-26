@@ -3,11 +3,11 @@ package com.eharmony.matching.aloha.models
 import java.io.Closeable
 
 import com.eharmony.matching.aloha.id.{Identifiable, ModelIdentity}
-import com.eharmony.matching.aloha.score.Scores.Score
+import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.score.basic.ModelOutput
 
 /** A ''Model'', in the context of a prediction task, should be thought of as a unit of work whose result should
-  * be recorded.  To this end, models return a '''com.eharmony.matching.aloha.score.Scores.Score''' defined in the
+  * be recorded.  To this end, models return a '''com.eharmony.aloha.score.Scores.Score''' defined in the
   * ''aloha-proto'' project.  This data type can actually contain a tree of typed scores, where each score contains a
   * prediction value and a model identifier.  Because of this, models need to be
   * [[com.eharmony.matching.aloha.id.Identifiable]] and need to provide

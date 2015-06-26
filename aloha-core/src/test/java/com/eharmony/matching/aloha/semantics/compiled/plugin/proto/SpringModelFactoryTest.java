@@ -20,7 +20,7 @@ import scala.util.Try;
 
 import com.eharmony.matching.aloha.io.AlohaReadable;
 import com.eharmony.matching.aloha.models.Model;
-import com.eharmony.matching.aloha.score.Scores.Score;
+import com.eharmony.aloha.score.Scores.Score;
 import com.eharmony.matching.aloha.score.conversions.StrictConversions;
 import com.eharmony.matching.aloha.test.proto.TestProtoBuffs.TestProto;
 

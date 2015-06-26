@@ -1,7 +1,7 @@
 package com.eharmony.matching.aloha.score.conversions
 
 import scala.language.higherKinds
-import com.eharmony.matching.aloha.score.Scores.Score
+import com.eharmony.aloha.score.Scores.Score
 
 trait BasicScalaTypeConversions [C[_] <: Option[_]] {
     def asBoolean(s: Score): C[Boolean]

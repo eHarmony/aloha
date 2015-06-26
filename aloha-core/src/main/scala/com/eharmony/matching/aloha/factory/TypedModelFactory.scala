@@ -77,7 +77,7 @@ import com.eharmony.matching.aloha.io.multiple.{ SequenceMultipleReadable, Multi
  * @param evidence$1 reflection information about type parameter A
  * @param evidence$2 reflection information about type parameter B
  * @param evidence$3 a way to read a variable of type B from JSON
- * @param evidence$4 a way to convert an instance of type B into a [[com.eharmony.matching.aloha.score.Scores.Score]]
+ * @param evidence$4 a way to convert an instance of type B into a [[com.eharmony.aloha.score.Scores.Score]]
  * @tparam A the input type of models created by this factory
  * @tparam B the output type of models created by this factory
  * @tparam M the kind (as in higher kind) of models created.  This represents the greatest lower bound of all of the

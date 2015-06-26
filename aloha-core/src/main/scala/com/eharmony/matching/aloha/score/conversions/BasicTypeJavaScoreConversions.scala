@@ -1,6 +1,6 @@
 package com.eharmony.matching.aloha.score.conversions
 
-import com.eharmony.matching.aloha.score.Scores.Score
+import com.eharmony.aloha.score.Scores.Score
 import java.{lang => jl}
 
 trait BasicTypeJavaScoreConversions {

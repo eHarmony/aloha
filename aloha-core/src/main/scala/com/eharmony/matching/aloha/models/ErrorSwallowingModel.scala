@@ -2,7 +2,7 @@ package com.eharmony.matching.aloha.models
 
 import scala.util.Try
 import java.io.{ByteArrayOutputStream, PrintStream}
-import com.eharmony.matching.aloha.score.Scores.Score
+import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.matching.aloha.score.basic.ModelOutput
 import com.eharmony.matching.aloha.factory.{ParserProviderCompanion, ModelFactory, ModelParser}
 import com.eharmony.matching.aloha.score.conversions.ScoreConverter
