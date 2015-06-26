@@ -1,7 +1,7 @@
 package com.eharmony.matching.featureSpecExtractor.cli
 
-import com.eharmony.matching.aloha.FileLocations
-import com.eharmony.matching.aloha.io.StringReadable
+import com.eharmony.aloha.FileLocations
+import com.eharmony.aloha.io.StringReadable
 import com.eharmony.matching.testhelp.io.{TestWithIoCapture, IoCaptureCompanion}
 import org.apache.commons.io.IOUtils
 import org.apache.commons.vfs2.VFS
@@ -64,7 +64,7 @@ class DatasetCliTest extends TestWithIoCapture(DatasetCliTest) {
 
         val args = Array[String](
             "-s", "res:com/eharmony/matching/featureSpecExtractor/cli/proto_spec1.js",
-            "-p", "com.eharmony.matching.aloha.test.proto.Testing.UserProto",
+            "-p", "com.eharmony.aloha.test.proto.Testing.UserProto",
             "--cachedir", FileLocations.testGeneratedClasses.getCanonicalPath,
             "--vw", tmpFile
         )

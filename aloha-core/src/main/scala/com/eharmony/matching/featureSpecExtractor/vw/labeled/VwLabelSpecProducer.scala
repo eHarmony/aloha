@@ -1,7 +1,7 @@
 package com.eharmony.matching.featureSpecExtractor.vw.labeled
 
-import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
-import com.eharmony.matching.aloha.semantics.func.{GenAggFunc, GenFunc0}
+import com.eharmony.aloha.semantics.compiled.CompiledSemantics
+import com.eharmony.aloha.semantics.func.{GenAggFunc, GenFunc0}
 import com.eharmony.matching.featureSpecExtractor.vw.VwCovariateProducer
 import com.eharmony.matching.featureSpecExtractor.vw.labeled.json.VwLabeledJson
 import com.eharmony.matching.featureSpecExtractor.vw.unlabeled.VwSpec

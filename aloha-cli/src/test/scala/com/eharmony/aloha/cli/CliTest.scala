@@ -1,6 +1,6 @@
 package com.eharmony.aloha.cli
 
-import com.eharmony.matching.aloha
+import com.eharmony.aloha
 import com.eharmony.matching.testhelp.io.{IoCaptureCompanion, TestWithIoCapture}
 import org.junit.Assert._
 import org.junit.Test

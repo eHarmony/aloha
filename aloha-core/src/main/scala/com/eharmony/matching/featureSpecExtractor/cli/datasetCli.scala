@@ -3,13 +3,13 @@ package com.eharmony.matching.featureSpecExtractor.cli
 import java.io.{Closeable, File, InputStream, PrintStream}
 import java.util.regex.Matcher
 
-import com.eharmony.matching.aloha.annotate.CLI
-import com.eharmony.matching.aloha.io.StringReadable
-import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
-import com.eharmony.matching.aloha.semantics.compiled.compiler.TwitterEvalCompiler
-import com.eharmony.matching.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine, CsvLines, CsvProtocol}
-import com.eharmony.matching.aloha.semantics.compiled.plugin.proto.CompiledSemanticsProtoPlugin
-import com.eharmony.matching.aloha.util.Logging
+import com.eharmony.aloha.annotate.CLI
+import com.eharmony.aloha.io.StringReadable
+import com.eharmony.aloha.semantics.compiled.CompiledSemantics
+import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
+import com.eharmony.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine, CsvLines, CsvProtocol}
+import com.eharmony.aloha.semantics.compiled.plugin.proto.CompiledSemanticsProtoPlugin
+import com.eharmony.aloha.util.Logging
 import com.eharmony.matching.featureSpecExtractor.csv.CsvSpecProducer
 import com.eharmony.matching.featureSpecExtractor.libsvm.labeled.LibSvmLabelSpecProducer
 import com.eharmony.matching.featureSpecExtractor.libsvm.unlabeled.LibSvmSpecProducer

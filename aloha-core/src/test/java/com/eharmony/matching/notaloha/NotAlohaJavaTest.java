@@ -1,8 +1,8 @@
 package com.eharmony.matching.notaloha;
 
 import org.junit.Test;
-import com.eharmony.matching.aloha.models.Model;
-import com.eharmony.matching.aloha.models.ensemble.maxima.ArgMaxModelTest;
+import com.eharmony.aloha.models.Model;
+import com.eharmony.aloha.models.ensemble.maxima.ArgMaxModelTest;
 
 public class NotAlohaJavaTest {
 

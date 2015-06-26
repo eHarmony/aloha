@@ -33,7 +33,7 @@ object SparseSpec extends DefaultJsonProtocol {
     implicit val sparseSpecFormat = jsonFormat3(SparseSpec.apply)
 
     implicit class SparseSpecOps(val spec: Spec[Sparse]) extends AnyVal {
-        def toModelSpec = com.eharmony.matching.aloha.models.reg.json.Spec(spec.spec, spec.defVal.map(_.toSeq))
+        def toModelSpec = com.eharmony.aloha.models.reg.json.Spec(spec.spec, spec.defVal.map(_.toSeq))
     }
 //    val modelSpecWriter = new RootJsonWriter[SparseSpec] {
 //        override def write(ss: SparseSpec) = {

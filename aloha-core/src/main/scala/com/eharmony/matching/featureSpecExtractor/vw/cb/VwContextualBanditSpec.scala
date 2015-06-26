@@ -1,7 +1,7 @@
 package com.eharmony.matching.featureSpecExtractor.vw.cb
 
-import com.eharmony.matching.aloha.semantics.func.GenAggFunc
-import com.eharmony.matching.aloha.util.Logging
+import com.eharmony.aloha.semantics.func.GenAggFunc
+import com.eharmony.aloha.util.Logging
 import com.eharmony.matching.featureSpecExtractor.FeatureExtractorFunction
 import com.eharmony.matching.featureSpecExtractor.density.Sparse
 import com.eharmony.matching.featureSpecExtractor.vw.unlabeled.VwSpec

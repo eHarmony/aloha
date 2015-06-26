@@ -1,8 +1,8 @@
 package com.eharmony.aloha.models.vw.jni
 
-import com.eharmony.matching.aloha.factory.Formats.listMapFormat
-import com.eharmony.matching.aloha.id.ModelId
-import com.eharmony.matching.aloha.models.reg.json.{Spec, SpecJson}
+import com.eharmony.aloha.factory.Formats.listMapFormat
+import com.eharmony.aloha.id.ModelId
+import com.eharmony.aloha.models.reg.json.{Spec, SpecJson}
 import spray.json.DefaultJsonProtocol._
 import spray.json.RootJsonFormat
 

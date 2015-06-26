@@ -1,6 +1,6 @@
 package com.eharmony.matching.featureSpecExtractor.vw
 
-import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
+import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.matching.featureSpecExtractor.SparseCovariateProducer
 import com.eharmony.matching.featureSpecExtractor.json.SparseSpec
 import com.eharmony.matching.featureSpecExtractor.vw.json.VwJsonLike

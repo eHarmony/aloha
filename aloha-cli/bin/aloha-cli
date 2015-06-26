@@ -15,7 +15,7 @@
 #     --dataset \
 #     --cachedir $PWD/aloha-core/target/test-classes/generated \
 #     -s $PWD/aloha-core/src/test/resources/com/eharmony/matching/featureSpecExtractor/cli/proto_spec1.js \
-#     -p com.eharmony.matching.aloha.test.proto.Testing.UserProto \
+#     -p com.eharmony.aloha.test.proto.Testing.UserProto \
 #     --vw -
 #
 # Prints to STDOUT: 
@@ -43,4 +43,4 @@ else
     usage; exit 3
 fi
 
-java -cp $CP com.eharmony.matching.aloha.cli.Cli $@
+java -cp $CP com.eharmony.aloha.cli.Cli $@

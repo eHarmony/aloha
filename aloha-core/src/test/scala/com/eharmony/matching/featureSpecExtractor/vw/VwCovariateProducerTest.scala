@@ -1,10 +1,10 @@
 package com.eharmony.matching.featureSpecExtractor.vw
 
-import com.eharmony.matching.aloha.FileLocations
-import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
-import com.eharmony.matching.aloha.semantics.compiled.compiler.TwitterEvalCompiler
-import com.eharmony.matching.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine, CsvTypes}
-import com.eharmony.matching.aloha.semantics.func.GenAggFunc
+import com.eharmony.aloha.FileLocations
+import com.eharmony.aloha.semantics.compiled.CompiledSemantics
+import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
+import com.eharmony.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine, CsvTypes}
+import com.eharmony.aloha.semantics.func.GenAggFunc
 import com.eharmony.matching.featureSpecExtractor.json.SparseSpec
 import com.eharmony.matching.featureSpecExtractor.vw.VwCovariateProducerTest.{X, semantics}
 import com.eharmony.matching.featureSpecExtractor.vw.json.VwJsonLike

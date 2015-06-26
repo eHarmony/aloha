@@ -1,6 +1,6 @@
 package com.eharmony.aloha.cli
 
-import com.eharmony.matching.aloha.annotate.CLI
+import com.eharmony.aloha.annotate.CLI
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith

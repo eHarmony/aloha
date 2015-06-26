@@ -1,8 +1,8 @@
 package com.eharmony.matching.featureSpecExtractor
 
-import com.eharmony.matching.aloha.reflect.RefInfo
-import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
-import com.eharmony.matching.aloha.semantics.func.GenAggFunc
+import com.eharmony.aloha.reflect.RefInfo
+import com.eharmony.aloha.semantics.compiled.CompiledSemantics
+import com.eharmony.aloha.semantics.func.GenAggFunc
 import com.eharmony.matching.featureSpecExtractor.density.{Dense, Sparse}
 import com.eharmony.matching.featureSpecExtractor.json.CovariateJson
 

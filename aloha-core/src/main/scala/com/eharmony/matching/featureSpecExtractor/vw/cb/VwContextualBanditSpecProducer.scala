@@ -1,7 +1,7 @@
 package com.eharmony.matching.featureSpecExtractor.vw.cb
 
-import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
-import com.eharmony.matching.aloha.semantics.func.GenAggFunc
+import com.eharmony.aloha.semantics.compiled.CompiledSemantics
+import com.eharmony.aloha.semantics.func.GenAggFunc
 import com.eharmony.matching.featureSpecExtractor.vw.VwCovariateProducer
 import com.eharmony.matching.featureSpecExtractor.vw.cb.json.VwContextualBanditJson
 import com.eharmony.matching.featureSpecExtractor.{CompilerFailureMessages, DvProducer, SparseCovariateProducer, SpecProducer}

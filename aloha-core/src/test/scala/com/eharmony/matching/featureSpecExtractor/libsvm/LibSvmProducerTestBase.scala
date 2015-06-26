@@ -1,9 +1,9 @@
 package com.eharmony.matching.featureSpecExtractor.libsvm
 
-import com.eharmony.matching.aloha.FileLocations
-import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
-import com.eharmony.matching.aloha.semantics.compiled.compiler.TwitterEvalCompiler
-import com.eharmony.matching.aloha.semantics.compiled.plugin.csv.{CsvLines, CompiledSemanticsCsvPlugin, CsvLine}
+import com.eharmony.aloha.FileLocations
+import com.eharmony.aloha.semantics.compiled.CompiledSemantics
+import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
+import com.eharmony.aloha.semantics.compiled.plugin.csv.{CsvLines, CompiledSemanticsCsvPlugin, CsvLine}
 import com.eharmony.matching.featureSpecExtractor.{SpecBuilder, SpecProducer}
 import com.eharmony.matching.featureSpecExtractor.libsvm.unlabeled.LibSvmSpec
 import com.google.common.hash.Hashing
@@ -35,7 +35,7 @@ trait LibSvmProducerTestBase {
         // to key value pairs.
         val json = s"""
                       |{
-                      |  "imports": [ "com.eharmony.matching.aloha.feature.BasicFunctions._" ],
+                      |  "imports": [ "com.eharmony.aloha.feature.BasicFunctions._" ],
                       |  "numBits": $bits,
                       |  "features": [
                       |    { "name": "$f1", "spec": "Seq((\\"\\", $one))" },

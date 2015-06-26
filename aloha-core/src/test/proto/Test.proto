@@ -1,4 +1,4 @@
-package com.eharmony.matching.aloha.test.proto;
+package com.eharmony.aloha.test.proto;
 
 option java_outer_classname="TestProtoBuffs";
 

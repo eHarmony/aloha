@@ -1,9 +1,9 @@
 package com.eharmony.matching.featureSpecExtractor.csv
 
-import com.eharmony.matching.aloha.FileLocations
-import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
-import com.eharmony.matching.aloha.semantics.compiled.compiler.TwitterEvalCompiler
-import com.eharmony.matching.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine, CsvLines, CsvTypes}
+import com.eharmony.aloha.FileLocations
+import com.eharmony.aloha.semantics.compiled.CompiledSemantics
+import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
+import com.eharmony.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine, CsvLines, CsvTypes}
 import com.eharmony.matching.featureSpecExtractor.{MissingAndErroneousFeatureInfo, SpecBuilder}
 import org.junit.Assert._
 import org.junit.Test

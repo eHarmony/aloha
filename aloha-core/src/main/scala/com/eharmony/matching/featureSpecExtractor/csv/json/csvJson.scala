@@ -5,8 +5,8 @@ TODO: Fix.  Figure out the required / vs optional variable accessors issue.
 Document why need to wrap in option in wrappedSpec.
 */
 
-import com.eharmony.matching.aloha.reflect.{RefInfoOps, RefInfo}
-import com.eharmony.matching.aloha.util.Logging
+import com.eharmony.aloha.reflect.{RefInfoOps, RefInfo}
+import com.eharmony.aloha.util.Logging
 import com.eharmony.matching.featureSpecExtractor.csv.encoding.Encoding
 import com.eharmony.matching.featureSpecExtractor.csv.finalizer.{EncodingBasedFinalizer, BasicFinalizer, Finalizer}
 import spray.json._

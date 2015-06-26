@@ -1,10 +1,10 @@
 package com.eharmony.matching.featureSpecExtractor.vw.unlabeled
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import com.eharmony.matching.aloha.FileLocations
-import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
-import com.eharmony.matching.aloha.semantics.compiled.compiler.TwitterEvalCompiler
-import com.eharmony.matching.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine}
+import com.eharmony.aloha.FileLocations
+import com.eharmony.aloha.semantics.compiled.CompiledSemantics
+import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
+import com.eharmony.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine}
 import com.eharmony.matching.featureSpecExtractor.SpecBuilder
 import org.junit.Assert._
 import org.junit.Test

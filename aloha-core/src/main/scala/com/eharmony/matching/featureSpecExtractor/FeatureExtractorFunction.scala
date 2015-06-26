@@ -1,6 +1,6 @@
 package com.eharmony.matching.featureSpecExtractor
 
-import com.eharmony.matching.aloha.semantics.func.GenAggFunc
+import com.eharmony.aloha.semantics.func.GenAggFunc
 import com.eharmony.matching.featureSpecExtractor.density.{Dense, Sparse}
 
 import scala.collection.{immutable => sci, mutable => scm}
@@ -29,7 +29,7 @@ final case class StringFeatureExtractorFunction[-A](features: sci.IndexedSeq[(St
  * @tparam A
  * @tparam Density
  */
-// TODO: Merge this with com.eharmony.matching.aloha.models.reg.RegressionFeatures.
+// TODO: Merge this with com.eharmony.aloha.models.reg.RegressionFeatures.
 trait FeatureExtractorFunction[-A, @specialized(Double) Density] extends (A => (MissingAndErroneousFeatureInfo, IndexedSeq[Density])) {
     val features: sci.IndexedSeq[(String, GenAggFunc[A, Density])]
     protected[this] val postProcessingFunction: (String, Density) => Density

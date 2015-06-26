@@ -1,6 +1,6 @@
 package com.eharmony.matching.featureSpecExtractor.vw.cb
 
-import com.eharmony.matching.aloha.semantics.compiled.plugin.csv.CsvLine
+import com.eharmony.aloha.semantics.compiled.plugin.csv.CsvLine
 import com.eharmony.matching.featureSpecExtractor.SpecBuilder
 import com.eharmony.matching.featureSpecExtractor.vw.VwParsingAndChainOfRespTest
 import org.junit.Assert._

@@ -1,9 +1,9 @@
 package com.eharmony.matching.featureSpecExtractor
 
-import com.eharmony.matching.aloha.AlohaException
-import com.eharmony.matching.aloha.reflect.RefInfo
-import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
-import com.eharmony.matching.aloha.semantics.func.{GenAggFunc, GenFunc0}
+import com.eharmony.aloha.AlohaException
+import com.eharmony.aloha.reflect.RefInfo
+import com.eharmony.aloha.semantics.compiled.CompiledSemantics
+import com.eharmony.aloha.semantics.func.{GenAggFunc, GenFunc0}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success, Try}

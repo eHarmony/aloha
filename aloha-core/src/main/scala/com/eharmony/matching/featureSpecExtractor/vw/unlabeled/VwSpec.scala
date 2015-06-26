@@ -2,7 +2,7 @@ package com.eharmony.matching.featureSpecExtractor.vw.unlabeled
 
 import java.text.DecimalFormat
 
-import com.eharmony.matching.aloha.util.Logging
+import com.eharmony.aloha.util.Logging
 import com.eharmony.matching.featureSpecExtractor.density.Sparse
 import com.eharmony.matching.featureSpecExtractor.vw.unlabeled.VwSpec.{DefaultVwNamespaceName, inEpsilonInterval}
 import com.eharmony.matching.featureSpecExtractor.{FeatureExtractorFunction, MissingAndErroneousFeatureInfo, Spec}

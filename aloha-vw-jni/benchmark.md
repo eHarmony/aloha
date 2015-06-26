@@ -63,14 +63,14 @@ package bench
 
 import java.io.File
 
-import com.eharmony.matching.aloha.factory.ModelFactory
-import com.eharmony.matching.aloha.models.Model
-import com.eharmony.matching.aloha.score.conversions.ScoreConverter.Implicits._
-import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
-import com.eharmony.matching.aloha.semantics.compiled.compiler.TwitterEvalCompiler
-import com.eharmony.matching.aloha.semantics.compiled.plugin.proto.CompiledSemanticsProtoPlugin
-import com.eharmony.matching.common.value.ModelTrainingProtoBuffs.ModelTrainingProto
-import com.eharmony.matching.common.value.OppositeGenderUserPairingProtoBuffs.OppositeGenderUserPairingProto
+import com.eharmony.aloha.factory.ModelFactory
+import com.eharmony.aloha.models.Model
+import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits._
+import com.eharmony.aloha.semantics.compiled.CompiledSemantics
+import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
+import com.eharmony.aloha.semantics.compiled.plugin.proto.CompiledSemanticsProtoPlugin
+import com.eharmony.common.value.ModelTrainingProtoBuffs.ModelTrainingProto
+import com.eharmony.common.value.OppositeGenderUserPairingProtoBuffs.OppositeGenderUserPairingProto
 import com.google.caliper.{BeforeExperiment, Benchmark, Param}
 import com.google.caliper.api.Macrobenchmark
 import org.apache.commons.codec.binary.Base64
@@ -97,10 +97,10 @@ class Bench {
         val plugin = CompiledSemanticsProtoPlugin[OppositeGenderUserPairingProto]
         val compiler = TwitterEvalCompiler(classCacheDir = Option(new File("target/test-classes/generated")))
         val imports = Seq(
-            "com.eharmony.matching.aloha.feature.BasicFunctions._",
+            "com.eharmony.aloha.feature.BasicFunctions._",
             "com.eharmony.matching.maestro.SemanticsFunctions._",
             "com.eharmony.matching.maestro.scala.SemanticsFunctions._",
-            "com.eharmony.matching.aloha.feature.OptionMath.Syntax._",
+            "com.eharmony.aloha.feature.OptionMath.Syntax._",
             "scala.math._"
         )
         CompiledSemantics(compiler, plugin, imports)

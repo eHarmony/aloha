@@ -3,8 +3,8 @@ package com.eharmony.matching.featureSpecExtractor.cli
 import java.io.{ByteArrayOutputStream, IOException}
 import java.util.Arrays
 
-import com.eharmony.matching.aloha.test.proto.Testing.GenderProto._
-import com.eharmony.matching.aloha.test.proto.Testing._
+import com.eharmony.aloha.test.proto.Testing.GenderProto._
+import com.eharmony.aloha.test.proto.Testing._
 import com.google.protobuf.GeneratedMessage
 import org.apache.commons.codec.binary.Base64
 import org.junit.{Ignore, Test}

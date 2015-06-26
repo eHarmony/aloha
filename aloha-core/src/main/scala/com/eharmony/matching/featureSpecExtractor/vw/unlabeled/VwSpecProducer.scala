@@ -1,6 +1,6 @@
 package com.eharmony.matching.featureSpecExtractor.vw.unlabeled
 
-import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
+import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.matching.featureSpecExtractor.vw.VwCovariateProducer
 import com.eharmony.matching.featureSpecExtractor.vw.unlabeled.json.VwUnlabeledJson
 import com.eharmony.matching.featureSpecExtractor.{CompilerFailureMessages, SparseCovariateProducer, SpecProducer}

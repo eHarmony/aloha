@@ -2,7 +2,7 @@ package com.eharmony.aloha.models.vw.jni
 
 import java.io.FileInputStream
 
-import com.eharmony.matching.aloha
+import com.eharmony.aloha
 import com.eharmony.matching.testhelp.io.{IoCaptureCompanion, TestWithIoCapture}
 import org.junit.Assert._
 import org.junit.runner.RunWith
@@ -67,7 +67,7 @@ class CliTest extends TestWithIoCapture(CliTest) {
     }
 
     @Test def testMissingModelParam(): Unit = {
-        Cli.main(Array("-s", "res:com/eharmony/matching/aloha/models/vw/jni/good.logistic.aloha.js"))
+        Cli.main(Array("-s", "res:com/eharmony/aloha/models/vw/jni/good.logistic.aloha.js"))
         val expected =
             """
               |Error: Missing option --model
@@ -111,7 +111,7 @@ class CliTest extends TestWithIoCapture(CliTest) {
     }
 
     @Test def testModelFileDoesntExist(): Unit = {
-        Cli.main(Array("-m", "res:SPECTHATDOESNTEXIST", "-s", "res:com/eharmony/matching/aloha/models/vw/jni/good.logistic.aloha.js"))
+        Cli.main(Array("-m", "res:SPECTHATDOESNTEXIST", "-s", "res:com/eharmony/aloha/models/vw/jni/good.logistic.aloha.js"))
         val expected =
             """
               |Error: Option --model failed when given 'res:SPECTHATDOESNTEXIST'. Badly formed URI "res:SPECTHATDOESNTEXIST".
@@ -135,7 +135,7 @@ class CliTest extends TestWithIoCapture(CliTest) {
     @Test def testArrayJson(): Unit = {
         try {
             Cli.main(Array("-m", vwModelPath,
-                           "-s", "res:com/eharmony/matching/aloha/models/vw/jni/array.js"))
+                           "-s", "res:com/eharmony/aloha/models/vw/jni/array.js"))
         }
         catch {
             case e: DeserializationException if e.getMessage == "Expected JSON object." =>
@@ -146,7 +146,7 @@ class CliTest extends TestWithIoCapture(CliTest) {
     @Test def testHappy(): Unit = {
         Cli.main(Array(
             "-m", vwModelPath,
-            "-s", "res:com/eharmony/matching/aloha/models/vw/jni/good.logistic.aloha.js",
+            "-s", "res:com/eharmony/aloha/models/vw/jni/good.logistic.aloha.js",
             "-i", "0",
             "-n", "model name",
             "--vw-args", "--quiet -t"

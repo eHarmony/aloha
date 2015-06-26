@@ -9,10 +9,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 
-import com.eharmony.matching.aloha.FileLocations
-import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
-import com.eharmony.matching.aloha.semantics.compiled.compiler.TwitterEvalCompiler
-import com.eharmony.matching.aloha.semantics.compiled.plugin.csv.{CsvLines, CompiledSemanticsCsvPlugin, CsvLine, CsvTypes}
+import com.eharmony.aloha.FileLocations
+import com.eharmony.aloha.semantics.compiled.CompiledSemantics
+import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
+import com.eharmony.aloha.semantics.compiled.plugin.csv.{CsvLines, CompiledSemanticsCsvPlugin, CsvLine, CsvTypes}
 import com.eharmony.matching.featureSpecExtractor.vw.cb.{VwContextualBanditSpec, VwContextualBanditSpecProducer}
 import com.eharmony.matching.featureSpecExtractor.vw.labeled.{VwLabelSpec, VwLabelSpecProducer}
 import com.eharmony.matching.featureSpecExtractor.vw.unlabeled.{VwSpec, VwSpecProducer}

@@ -1,7 +1,7 @@
 {
   "imports":[
-    "com.eharmony.matching.aloha.feature.BasicFunctions._",
-    "com.eharmony.matching.aloha.feature.OptionMath.Syntax._",
+    "com.eharmony.aloha.feature.BasicFunctions._",
+    "com.eharmony.aloha.feature.OptionMath.Syntax._",
     "scala.math._"
   ],
   "features": [

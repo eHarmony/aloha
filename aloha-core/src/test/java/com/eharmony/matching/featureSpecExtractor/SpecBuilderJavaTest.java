@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import static org.junit.Assert.assertNotNull;
 
-import com.eharmony.matching.aloha.semantics.compiled.plugin.csv.CsvLine;
+import com.eharmony.aloha.semantics.compiled.plugin.csv.CsvLine;
 import com.eharmony.matching.featureSpecExtractor.vw.VwParsingAndChainOfRespTest;
 import com.eharmony.matching.featureSpecExtractor.vw.cb.VwContextualBanditSpecProducer;
 import com.eharmony.matching.featureSpecExtractor.vw.labeled.VwLabelSpecProducer;

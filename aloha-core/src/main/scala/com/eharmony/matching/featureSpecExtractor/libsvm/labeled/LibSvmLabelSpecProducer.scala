@@ -1,8 +1,8 @@
 package com.eharmony.matching.featureSpecExtractor.libsvm.labeled
 
-import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
-import com.eharmony.matching.aloha.semantics.func.GenAggFunc
-import com.eharmony.matching.aloha.util.Logging
+import com.eharmony.aloha.semantics.compiled.CompiledSemantics
+import com.eharmony.aloha.semantics.func.GenAggFunc
+import com.eharmony.aloha.util.Logging
 import com.eharmony.matching.featureSpecExtractor._
 import com.eharmony.matching.featureSpecExtractor.libsvm.labeled.json.LibSvmLabeledJson
 import com.eharmony.matching.featureSpecExtractor.libsvm.unlabeled.LibSvmSpecProducer

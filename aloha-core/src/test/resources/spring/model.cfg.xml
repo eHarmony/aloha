@@ -3,7 +3,7 @@
 <!--
 ===============================================================================
 Example of Aloha factory and model creation.  This uses the factory class
-com.eharmony.matching.aloha.interop.NoImplModelFactory which tossed away
+com.eharmony.aloha.interop.NoImplModelFactory which tossed away
 implementation details of the models that it creates.  While this is better for
 a java environment because it's easier and higher kinds don't really work in
 java, this isn't the preferred way to create model factories in code using
@@ -55,7 +55,7 @@ mixins, cake pattern, etc.
         the protocol buffer GeneratedMessage.
      -->
     <bean id="userPairingProtoPlugin"
-          class="com.eharmony.matching.aloha.semantics.compiled.plugin.proto.CompiledSemanticsProtoPlugin">
+          class="com.eharmony.aloha.semantics.compiled.plugin.proto.CompiledSemanticsProtoPlugin">
         <constructor-arg index="0" type="java.lang.Class" ref="modelInputTypeProtoClass" />
     </bean>
 
@@ -66,7 +66,7 @@ mixins, cake pattern, etc.
         features are compiled independently, they can be reused across models.
     -->
     <bean id="compiler"
-          class="com.eharmony.matching.aloha.semantics.compiled.compiler.TwitterEvalCompiler">
+          class="com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler">
         <constructor-arg index="0" type="java.io.File">
             <bean class="java.io.File">
                 <constructor-arg index="0" type="java.lang.String" value="${testGeneratedClasses}" />
@@ -78,9 +78,9 @@ mixins, cake pattern, etc.
         Semantics produce the functions injected into models.  The third argument is important.  It specifies the
         functionality that is imported.  This should be a String[].  At the very least, this should be:
 
-            com.eharmony.matching.aloha.feature.BasicFunctions._
+            com.eharmony.aloha.feature.BasicFunctions._
     -->
-    <bean id="semantics" class="com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics">
+    <bean id="semantics" class="com.eharmony.aloha.semantics.compiled.CompiledSemantics">
         <constructor-arg index="0" ref="compiler" />
         <constructor-arg index="1" ref="userPairingProtoPlugin" />
         <constructor-arg index="2" value="${semantics_imports}" />
@@ -91,7 +91,7 @@ mixins, cake pattern, etc.
     <!--                                        CREATE FACTORY HERE ...                                      -->
     <!-- *************************************************************************************************** -->
     <!-- OK to use the java.lang.Class-based ctor b/c the type is not parametrized. -->
-    <bean id="doubleFactoryInfo" class="com.eharmony.matching.aloha.interop.DoubleFactoryInfo">
+    <bean id="doubleFactoryInfo" class="com.eharmony.aloha.interop.DoubleFactoryInfo">
         <constructor-arg index="0" type="java.lang.Class" ref="modelInputTypeProtoClass" />
     </bean>
 
@@ -99,18 +99,18 @@ mixins, cake pattern, etc.
     <bean id="parsers" class="java.util.ArrayList">
         <constructor-arg>
             <list>
-                <bean class="com.eharmony.matching.aloha.models.reg.RegressionModel" factory-method="parser"/>
+                <bean class="com.eharmony.aloha.models.reg.RegressionModel" factory-method="parser"/>
             </list>
         </constructor-arg>
     </bean>
 
-    <bean id="untypedModelFactory" class="com.eharmony.matching.aloha.factory.ModelFactory">
+    <bean id="untypedModelFactory" class="com.eharmony.aloha.factory.ModelFactory">
         <constructor-arg index="0" ref="parsers" />
     </bean>
 
     <bean id="modelFactory" factory-bean="untypedModelFactory" factory-method="toTypedFactory">
-        <constructor-arg index="0" type="com.eharmony.matching.aloha.semantics.Semantics" ref="semantics" />
-        <constructor-arg index="1" type="com.eharmony.matching.aloha.interop.FactoryInfo" ref="doubleFactoryInfo" />
+        <constructor-arg index="0" type="com.eharmony.aloha.semantics.Semantics" ref="semantics" />
+        <constructor-arg index="1" type="com.eharmony.aloha.interop.FactoryInfo" ref="doubleFactoryInfo" />
     </bean>
 
     <!-- *************************************************************************************************** -->

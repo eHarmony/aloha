@@ -14,7 +14,7 @@
 #     --missing ""                                                                \
 #     --sep "\t"                                                                  \
 #     --ifs ","                                                                   \
-#     --imports scala.math._,com.eharmony.matching.aloha.feature.BasicFunctions._ \
+#     --imports scala.math._,com.eharmony.aloha.feature.BasicFunctions._ \
 #     --input-file $(pwd)/src/test/resources/fizzbuzz_testinput.csv               \
 #     -i profile.user_id                                                          \
 #     $(pwd)/src/test/resources/fizzbuzz.json
@@ -51,4 +51,4 @@ if [ -z "$CP_FILE" ]; then
 fi
 
 # execute the application and pass arguments.
-java -cp $(cat $PWD/tmp/classpath.txt) com.eharmony.matching.aloha.semantics.compiled.plugin.csv.CsvModelRunner "$@"
+java -cp $(cat $PWD/tmp/classpath.txt) com.eharmony.aloha.semantics.compiled.plugin.csv.CsvModelRunner "$@"

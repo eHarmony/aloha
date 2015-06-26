@@ -4,10 +4,10 @@ import java.io.{File, InputStream, Reader}
 import java.net.URL
 import java.{util => ju}
 
-import com.eharmony.matching.aloha.AlohaException
-import com.eharmony.matching.aloha.io.{AlohaReadable, ReadableByString}
-import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
-import com.eharmony.matching.aloha.util.Logging
+import com.eharmony.aloha.AlohaException
+import com.eharmony.aloha.io.{AlohaReadable, ReadableByString}
+import com.eharmony.aloha.semantics.compiled.CompiledSemantics
+import com.eharmony.aloha.util.Logging
 import com.eharmony.matching.featureSpecExtractor.json.validation.Validation
 import org.apache.commons.{vfs, vfs2}
 import spray.json._

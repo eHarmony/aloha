@@ -1,6 +1,6 @@
 package com.eharmony.matching.featureSpecExtractor.libsvm.unlabeled
 
-import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
+import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.matching.featureSpecExtractor.density.Sparse
 import com.eharmony.matching.featureSpecExtractor.libsvm.unlabeled.json.LibSvmUnlabeledJson
 import com.eharmony.matching.featureSpecExtractor.{CompilerFailureMessages, FeatureExtractorFunction, SparseCovariateProducer, SpecProducer}

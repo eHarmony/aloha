@@ -3,19 +3,19 @@ package com.eharmony.aloha.models.vw.jni
 import java.io.{File, FileInputStream, InputStream}
 import java.{lang => jl}
 
-import com.eharmony.matching.aloha.FileLocations
-import com.eharmony.matching.aloha.factory.JavaJsonFormats._
-import com.eharmony.matching.aloha.factory.ModelFactory
-import com.eharmony.matching.aloha.id.ModelId
-import com.eharmony.matching.aloha.models.TypeCoercion
-import com.eharmony.matching.aloha.reflect.RefInfo
-import com.eharmony.matching.aloha.score.conversions.ScoreConverter
-import com.eharmony.matching.aloha.score.conversions.ScoreConverter.Implicits._
-import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
-import com.eharmony.matching.aloha.semantics.compiled.compiler.TwitterEvalCompiler
-import com.eharmony.matching.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine, CsvLines, CsvTypes}
-import com.eharmony.matching.aloha.semantics.func.{GenFunc, GeneratedAccessor}
-import com.eharmony.matching.aloha.util.Logging
+import com.eharmony.aloha.FileLocations
+import com.eharmony.aloha.factory.JavaJsonFormats._
+import com.eharmony.aloha.factory.ModelFactory
+import com.eharmony.aloha.id.ModelId
+import com.eharmony.aloha.models.TypeCoercion
+import com.eharmony.aloha.reflect.RefInfo
+import com.eharmony.aloha.score.conversions.ScoreConverter
+import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits._
+import com.eharmony.aloha.semantics.compiled.CompiledSemantics
+import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
+import com.eharmony.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine, CsvLines, CsvTypes}
+import com.eharmony.aloha.semantics.func.{GenFunc, GeneratedAccessor}
+import com.eharmony.aloha.util.Logging
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.io.IOUtils
 import org.apache.commons.vfs2.VFS
@@ -353,7 +353,7 @@ object VwJniModelTest extends Logging {
 
     val csvLines = CsvLines(indices = columns.unzip._1.zipWithIndex.toMap, fs = ",")
     val plugin = CompiledSemanticsCsvPlugin(columns:_*)
-    val semantics = CompiledSemantics(TwitterEvalCompiler(), plugin, Seq("scala.math._", "com.eharmony.matching.aloha.feature.BasicFunctions._"))
+    val semantics = CompiledSemantics(TwitterEvalCompiler(), plugin, Seq("scala.math._", "com.eharmony.aloha.feature.BasicFunctions._"))
 
     val missingHeight = csvLines(",0,red")
 

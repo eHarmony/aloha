@@ -6,7 +6,7 @@ import org.junit.runner.RunWith
 import org.junit.internal.runners.JUnit4ClassRunner
 import org.junit.Test
 import Model.WrappedModel
-import com.eharmony.matching.aloha.reflect.{ RefInfoOps, RefInfo }
+import com.eharmony.aloha.reflect.{ RefInfoOps, RefInfo }
 
 // Case classes don't need a new to be instantiated which is their main advantage here
 case class ModelId(id: Long, name: String)

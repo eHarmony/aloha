@@ -2,11 +2,11 @@ package com.eharmony.aloha.cli
 
 import java.lang.reflect.Modifier
 
-import com.eharmony.matching.aloha.annotate.CLI
+import com.eharmony.aloha.annotate.CLI
 import org.reflections.Reflections
 
 import scala.collection.JavaConversions.asScalaSet
-import com.eharmony.matching.aloha.pkgName
+import com.eharmony.aloha.pkgName
 
 /**
  * Created by rdeak on 6/16/15.
@@ -32,7 +32,7 @@ object Cli {
 
     private[cli] lazy val cliClasses = {
         // TODO: Change back to: 'val reflections = new Reflections(pkgName)' once featureSpecExtractor is moved.
-        val reflections = new Reflections("com.eharmony.matching.featureSpecExtractor", pkgName, "com.eharmony.aloha")
+        val reflections = new Reflections("com.eharmony.matching.featureSpecExtractor", pkgName)
 
         // We want to classes with the static forwarders, not the singleton (module) classes.
         reflections.getTypesAnnotatedWith(classOf[CLI]).toSet.asInstanceOf[Set[Class[Any]]].collect { case c if hasStaticMain(c) =>  c }

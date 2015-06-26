@@ -1,6 +1,6 @@
 package com.eharmony.matching.featureSpecExtractor.libsvm.labeled
 
-import com.eharmony.matching.aloha.semantics.func.GenAggFunc
+import com.eharmony.aloha.semantics.func.GenAggFunc
 import com.eharmony.matching.featureSpecExtractor.{LabelSpec, FeatureExtractorFunction}
 import com.eharmony.matching.featureSpecExtractor.density.Sparse
 import com.eharmony.matching.featureSpecExtractor.libsvm.unlabeled.LibSvmSpec

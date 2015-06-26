@@ -2,7 +2,7 @@ package com.eharmony.matching.featureSpecExtractor
 
 import scala.util.Try
 import spray.json.JsValue
-import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
+import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 
 /**
  * SpecProducer is used to create different kinds of [[Spec]] instances.  '''Classes that extend SpecProducer should

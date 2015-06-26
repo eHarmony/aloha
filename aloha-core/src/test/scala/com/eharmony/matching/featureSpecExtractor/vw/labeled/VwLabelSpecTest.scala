@@ -1,6 +1,6 @@
 package com.eharmony.matching.featureSpecExtractor.vw.labeled
 
-import com.eharmony.matching.aloha.semantics.func.GenFunc.f0
+import com.eharmony.aloha.semantics.func.GenFunc.f0
 import com.eharmony.matching.featureSpecExtractor.SparseFeatureExtractorFunction
 import org.junit.Assert._
 import org.junit.Test

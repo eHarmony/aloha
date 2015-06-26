@@ -3,17 +3,17 @@ package com.eharmony.aloha.models.vw.jni
 import java.io.{File, FileOutputStream, InputStream}
 
 import com.eharmony.aloha.score.Scores.Score
-import com.eharmony.matching.aloha.factory.{ModelParser, ModelParserWithSemantics, ParserProviderCompanion}
-import com.eharmony.matching.aloha.id.ModelIdentity
-import com.eharmony.matching.aloha.models.reg.RegressionFeatures
-import com.eharmony.matching.aloha.models.reg.json.Spec
-import com.eharmony.matching.aloha.models.{BaseModel, TypeCoercion}
-import com.eharmony.matching.aloha.reflect._
-import com.eharmony.matching.aloha.score.basic.ModelOutput
-import com.eharmony.matching.aloha.score.conversions.ScoreConverter
-import com.eharmony.matching.aloha.semantics.Semantics
-import com.eharmony.matching.aloha.semantics.func.GenAggFunc
-import com.eharmony.matching.aloha.util.{EitherHelpers, Logging}
+import com.eharmony.aloha.factory.{ModelParser, ModelParserWithSemantics, ParserProviderCompanion}
+import com.eharmony.aloha.id.ModelIdentity
+import com.eharmony.aloha.models.reg.RegressionFeatures
+import com.eharmony.aloha.models.reg.json.Spec
+import com.eharmony.aloha.models.{BaseModel, TypeCoercion}
+import com.eharmony.aloha.reflect._
+import com.eharmony.aloha.score.basic.ModelOutput
+import com.eharmony.aloha.score.conversions.ScoreConverter
+import com.eharmony.aloha.semantics.Semantics
+import com.eharmony.aloha.semantics.func.GenAggFunc
+import com.eharmony.aloha.util.{EitherHelpers, Logging}
 import com.eharmony.matching.featureSpecExtractor.SparseFeatureExtractorFunction
 import com.eharmony.matching.featureSpecExtractor.vw.unlabeled.VwSpec
 import org.apache.commons.codec.binary.Base64
@@ -35,7 +35,7 @@ import scala.util.{Failure, Success, Try}
  * @param namespaces mapping from namespace name to indices of features that will be placed in the namespace
  * @param finalizer a function that transforms the native VW output type (Float) to B
  * @param numMissingThreshold A threshold dictating how many missing features to allow before making the
- *                            prediction fail.  See [[com.eharmony.matching.aloha.models.reg.RegressionFeatures.numMissingThreshold]]
+ *                            prediction fail.  See [[com.eharmony.aloha.models.reg.RegressionFeatures.numMissingThreshold]]
  * @param scb a score converter
  * @tparam A model input type
  * @tparam B model output type
@@ -76,9 +76,7 @@ extends BaseModel[A, B]
       *         a Some instance if audit is true) is a more involved reporting of the score including errors and all
       *         sub-model scores.
       */
-    // TODO: Change this back after the package change from com.eharmony.matching.aloha to com.eharmony.aloha
-    override def getScore(a: A)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = {
-    // override private[aloha] def getScore(a: A)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = {
+     override private[aloha] def getScore(a: A)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = {
         generateVwInput(a) match {
             case Left(missing) => failure(Seq(s"Too many features with missing variables: ${missing.count(_._2.nonEmpty)}"), getMissingVariables(missing))
             case Right(vwIn) =>

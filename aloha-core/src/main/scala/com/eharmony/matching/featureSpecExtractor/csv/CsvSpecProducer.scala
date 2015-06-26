@@ -1,7 +1,7 @@
 package com.eharmony.matching.featureSpecExtractor.csv
 
-import com.eharmony.matching.aloha.semantics.compiled.CompiledSemantics
-import com.eharmony.matching.aloha.semantics.func.GenAggFunc
+import com.eharmony.aloha.semantics.compiled.CompiledSemantics
+import com.eharmony.aloha.semantics.func.GenAggFunc
 import com.eharmony.matching.featureSpecExtractor.csv.encoding.Encoding
 import com.eharmony.matching.featureSpecExtractor.csv.finalizer.{BasicFinalizer, EncodingBasedFinalizer}
 import com.eharmony.matching.featureSpecExtractor.csv.json.{CsvColumnSpec, CsvJson}

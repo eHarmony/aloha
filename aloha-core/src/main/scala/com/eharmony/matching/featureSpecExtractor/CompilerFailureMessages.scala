@@ -1,6 +1,6 @@
 package com.eharmony.matching.featureSpecExtractor
 
-import com.eharmony.matching.aloha.AlohaException
+import com.eharmony.aloha.AlohaException
 
 trait CompilerFailureMessages {
     protected[this] final def failure(featureName: String, msgs: Seq[String]) = {
