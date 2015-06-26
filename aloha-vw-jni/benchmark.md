@@ -1,6 +1,13 @@
-## Benchmarking VW JNI Aloha based model to Aloha's regression model
+# Benchmarking Aloha VW JNI and Aloha regression models
 
-### Results
+## Description
+
+What follows are the load test setup and results for end-to-end comparison of feature generation and prediction speeds
+between Aloha's regression model and Aloha's model that delegates to VW's JNI wrapper.  Both models create the same 
+features so the difference in timings are presumably related to the way in which the models make use of the same 
+intermediate data structures.
+
+## Results
 
 [Google Caliper Results](https://microbenchmarks.appspot.com/runs/ec237dff-a8be-40f1-9f94-928ebfed298a#r:scenario.benchmarkSpec.parameters.nExamples,scenario.benchmarkSpec.methodName)
 
@@ -8,14 +15,13 @@ It's also informative to see quantile information associated with predictions / 
 
 <img src="https://github.corp.eharmony.com/modeling/aloha/raw/master/aloha-vw-jni/doc/img/aloha_vs_jni_quartiles_small.png" width="800px" />
 
-### VW information
+## VW information
 
-There were 294 sparse basis functions with quadratic interactions (*as shown below*).  This model is  
+There were 294 sparse basis functions with quadratic interactions (*as shown below*).   
 
 The vw arguments used were *"--quiet -t -q JY -q JW -q IY -q IW -q YW -q JI --loss_function logistic -k -b 26 --ignore Z -i"*
 
-
-### Getting Data
+## Getting Data
 
 ```scala
 import java.io.BufferedWriter
@@ -49,7 +55,7 @@ object Data {
 }
 ```
 
-### Code
+## Code
 
 
 ```scala
@@ -85,7 +91,7 @@ class Bench {
             toVector
     }
 
-    var examples: Array[OppositeGenderUserPairingProto] = _
+    private[this] var examples: Array[OppositeGenderUserPairingProto] = _
 
     private[this] def semantics() = {
         val plugin = CompiledSemanticsProtoPlugin[OppositeGenderUserPairingProto]
@@ -100,10 +106,8 @@ class Bench {
         CompiledSemantics(compiler, plugin, imports)
     }
 
-    lazy val factory = {
-        val sem = semantics()
-        ModelFactory.defaultFactory.toTypedFactory[OppositeGenderUserPairingProto, Float](sem)
-    }
+    private[this] lazy val factory =  
+        ModelFactory.defaultFactory.toTypedFactory[OppositeGenderUserPairingProto, Float](semantics())
 
     private lazy val vw: Model[OppositeGenderUserPairingProto, Float] = {
         val m = factory.fromResource("aloha_vw_model.json").get
@@ -113,14 +117,6 @@ class Bench {
 
     private lazy val reg: Model[OppositeGenderUserPairingProto, Float] =
         factory.fromResource("aloha_regression_model.json").get
-
-    @BeforeExperiment def setUp: Unit = {
-        // Do these to initialize the lazy vals.
-        println(s"VW model ID: ${vw.modelId.getId()}")
-        println(s"Reg model ID: ${reg.modelId.getId()}")
-        examples = allExamples.take(nExamples).toArray
-        1 to 3 foreach { _ => System.gc } // probably doesn't make a difference
-    }
 
     def doBench(m: Model[OppositeGenderUserPairingProto, Float]): Double = {
       var s = 0d
@@ -132,7 +128,15 @@ class Bench {
       s
     }
 
-    @Macrobenchmark def jni: Double = doBench(vw)
+    @BeforeExperiment def setUp: Unit = {
+        // Do these to initialize the lazy vals.
+        println(s"VW model ID: ${vw.modelId.getId()}")
+        println(s"Reg model ID: ${reg.modelId.getId()}")
+        examples = allExamples.take(nExamples).toArray
+        1 to 3 foreach { _ => System.gc } // probably doesn't make a difference
+    }
+
+    @Macrobenchmark def jni: Double   = doBench(vw)
     @Macrobenchmark def aloha: Double = doBench(reg)
 }
 ```
