@@ -8,12 +8,22 @@
 		<groupId>com.eharmony</groupId>
 		<artifactId>aloha</artifactId>
 		<version>1.1.2-SNAPSHOT</version>
-		<relativePath>..</relativePath>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>aloha-core</artifactId>
 	<packaging>jar</packaging>
 	<name>${project.artifactId}</name>
 	<description>Aloha core library</description>
+
+	<url>${site.url}/${project.artifactId}</url>
+
+	<distributionManagement>
+		<site>
+			<id>${site.deploy.id}</id>
+			<!-- Note that GitHub does not like having leading slash here -->
+			<url>${site.deploy.url}${project.artifactId}</url>
+		</site>
+	</distributionManagement>
 
 	<properties>
 		<protobuf.version>2.4.1</protobuf.version>
@@ -133,12 +143,6 @@
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
 
-		<!--<dependency>-->
-			<!--<groupId>org.slf4j</groupId>-->
-			<!--<artifactId>slf4j-log4j12</artifactId>-->
-			<!--<scope>test</scope>-->
-		<!--</dependency>-->
-
 		<!-- ============================================================================= -->
 		<!--                                  Test Deps                                    -->
 		<!-- ============================================================================= -->
@@ -149,9 +153,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
 			<scope>test</scope>
 		</dependency>
 
@@ -430,14 +433,4 @@
             </plugin>
 		</plugins>
 	</build>
-
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>2.4</version>
-			</plugin>
-		</plugins>
-	</reporting>
 </project>

@@ -1,0 +1,165 @@
+<project xmlns="http://maven.apache.org/DECORATION/1.6.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.6.0
+                             http://maven.apache.org/xsd/decoration-1.6.0.xsd">
+
+    <publishDate position="bottom" format="yyyy-MM-dd" />
+    <version position="bottom" />
+
+    <skin>
+        <groupId>lt.velykis.maven.skins</groupId>
+        <artifactId>reflow-maven-skin</artifactId>
+        <version>1.1.1</version>
+    </skin>
+
+    <custom>
+        <reflowSkin>
+            <endContent>
+                <script src="$resourcePath/js/highlight/highlight.pack.js"></script>
+            </endContent>
+
+            <!-- Make this to 'false' for local development, i.e. file:// URLs -->
+            <protocolRelativeURLs>false</protocolRelativeURLs>
+            <smoothScroll>true</smoothScroll>
+            <theme>default</theme>
+            <!--<theme>bootswatch-readable</theme>-->
+            <navbarInverse>false</navbarInverse>
+
+            <highlightJs>false</highlightJs>
+
+            <!--<highlightJs>true</highlightJs>-->
+            <!--<highlightJsTheme>github</highlightJsTheme>-->
+
+            <!-- Put this back -->
+            <absoluteResourceURL>http://eharmony.github.io/aloha/</absoluteResourceURL>
+            <brand>
+                <!-- Brand text in top-left part of the site -->
+                <name>
+                    <![CDATA[
+                    <span class="color-highlight">Aloha</span>
+                    ]]>
+                </name>
+                <href>http://eharmony.github.io/aloha/index.html</href>
+            </brand>
+            <slogan>A scala-based feature generation and modeling framework</slogan>
+            <titleTemplate>%2$s | %1$s</titleTemplate>
+
+            <!-- Use Table of Contents at the top of the page (max 6 elements) -->
+            <toc offsetTop="40">top</toc>
+            <tocTopMax>6</tocTopMax>
+
+            <topNav>Dataset Examples|Model Examples|Modules</topNav>
+
+            <bottomNav maxSpan="9" >
+                <column>Main|reports</column>
+                <column>Modules|API Docs</column>
+                <column>Dataset Examples</column>
+                <column>Model Examples</column>
+            </bottomNav>
+            <bottomDescription>
+                <![CDATA[
+                <span class="color-highlight">Aloha</span> is a scala-based feature generation and modeling framework.
+                ]]>
+            </bottomDescription>
+            <pages>
+                <index project="aloha">
+                    <!-- Override the title -->
+                    <titleTemplate>Aloha</titleTemplate>
+                    <!-- no breadcrumbs on the main index page -->
+                    <breadcrumbs>false</breadcrumbs>
+                    <!-- no ToC on the main index page -->
+                    <toc>false</toc>
+                    <markPageHeader>false</markPageHeader>
+                    <sections>
+                        <body />
+                        <columns>2</columns>
+                    </sections>
+                </index>
+                <eg-dataset>
+                    <sections>
+                        <body />
+                        <columns>2</columns>
+                        <body />
+                    </sections>
+                </eg-dataset>
+
+                <contribute>
+                    <breadcrumbs>false</breadcrumbs>
+                </contribute>
+                <!-- Disable source highlighting for Maven reports -->
+                <source-repository>
+                    <highlightJs>false</highlightJs>
+                </source-repository>
+                <issue-tracking>
+                    <highlightJs>false</highlightJs>
+                    <toc>false</toc>
+                </issue-tracking>
+                <license>
+                    <highlightJs>false</highlightJs>
+                    <toc>false</toc>
+                </license>
+                <!-- Disable ToC for some Maven reports -->
+                <project-info>
+                    <toc>false</toc>
+                </project-info>
+                <github-report>
+                    <toc>false</toc>
+                </github-report>
+                <dependencies>
+                    <tocTopMax>4</tocTopMax>
+                </dependencies>
+            </pages>
+        </reflowSkin>
+    </custom>
+
+    <body>
+
+        <head>
+            <link rel="stylesheet" href="$resourcePath/css/highlight/github.css" />
+        </head>
+
+        <links>
+            <item name="Code" href="http://github.com/eharmony/aloha/"/>
+        </links>
+
+        <menu name="Main" inherit="top">
+            <item name="Home" href="./" />
+            <item name="Code" href="http://github.com/eharmony/aloha/" />
+            <item name="Release notes" href="release-notes.html" />
+        </menu>
+
+        <menu name="API Docs">
+            <item name="aloha-core" href="aloha-core/scaladocs/index.html" />
+            <item name="aloha-vw-jni" href="aloha-vw-jni/scaladocs/index.html" />
+            <item name="aloha-cli" href="aloha-cli/scaladocs/index.html" />
+        </menu>
+
+        <menu name="Modules" ref="modules" />
+
+        <menu name="Dataset Examples" inherit="top" >
+            <item name="CSV" href="eg/dataset/csv.html" />
+            <item name="VW Unlabeled" href="eg/dataset/vw.html" />
+            <item name="VW Labeled" href="eg/dataset/labeled_vw.html" />
+            <item name="VW Bandit" href="eg/dataset/cb_vw.html" />
+            <item name="LIBSVM Unlabeled" href="eg/dataset/libsvm.html" />
+            <item name="LIBSVM Labeled" href="eg/dataset/labeled_libsvm.html" />
+        </menu>
+
+        <menu name="Model Examples" inherit="top">
+            <item name="Regression" href="eg/model/reg.html" />
+            <item name="Decision Tree" href="eg/model/decision_tree.html" />
+            <item name="Model Decision Tree" href="eg/model/model_decision_tree.html" />
+        </menu>
+
+        <menu name="Contribute" inherit="top">
+            <item name="Contribute" href="contribute.html" />
+            <item name="Issues" href="http://github.com/eharmony/aloha/issues/" />
+            <item name="Fork on GitHub" href="http://github.com/eharmony/aloha/" />
+        </menu>
+
+        <menu name="Maven Documentation" ref="reports" inherit="top"/>
+
+        <footer>All rights reserved.</footer>
+    </body>
+    <!--<poweredBy />-->
+</project>

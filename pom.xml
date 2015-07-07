@@ -11,11 +11,23 @@
     <name>${project.artifactId}</name>
 
     <!-- TODO: Fill these in: -->
-    <!--<url></url>-->
-    <!--<organization></organization>-->
+
+    <organization>
+        <name>eHarmony</name>
+        <url>http://eharmony.com</url>
+    </organization>
 
     <description>Scala-based machine learning library with generic models and lazily created features.</description>
     <inceptionYear>2013</inceptionYear>
+
+    <distributionManagement>
+        <site>
+            <id>${site.deploy.id}</id>
+            <name>Deployment through GitHub's site deployment plugin</name>
+            <url>${site.deploy.url}</url>
+        </site>
+    </distributionManagement>
+
     <licenses>
         <!--
             To see infectiousness of licenses of dependencies, look at the licenses in mvn clean site and then
@@ -49,30 +61,6 @@
         </developer>
     </developers>
 
-    <!-- TODO: Figure this out for multi-module project ... -->
-    <!--<scm>-->
-        <!--<connection>scm:git:git@github.corp.eharmony.com:matching/aloha.git</connection>-->
-        <!--<url>git@github.corp.eharmony.com:matching/aloha.git</url>-->
-        <!--<developerConnection>scm:git:git@github.corp.eharmony.com:matching/aloha.git</developerConnection>-->
-    <!--</scm>-->
-
-    <!--<distributionManagement>-->
-        <!--<repository>-->
-            <!--<uniqueVersion>false</uniqueVersion>-->
-            <!--<id>internal-releases</id>-->
-            <!--<name>Internal Releases</name>-->
-            <!--<url>https://repository.corp.eharmony.com/nexus/content/repositories/internal-releases</url>-->
-            <!--<layout>default</layout>-->
-        <!--</repository>-->
-        <!--<snapshotRepository>-->
-            <!--<uniqueVersion>false</uniqueVersion>-->
-            <!--<id>internal-snapshots</id>-->
-            <!--<name>Internal Snapshots</name>-->
-            <!--<url>https://repository.corp.eharmony.com/nexus/content/repositories/internal-snapshots</url>-->
-            <!--<layout>default</layout>-->
-        <!--</snapshotRepository>-->
-    <!--</distributionManagement>-->
-
     <properties>
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
@@ -94,7 +82,30 @@
         <compile>all</compile>
 
         <generated.classes.test>${project.build.directory}/test-classes/generated</generated.classes.test>
+
+        <!-- Site related properties -->
+        <site.url>http://eharmony.github.io/aloha</site.url>
+        <github.global.server>github</github.global.server>
+        <site.deploy.id>gh-pages</site.deploy.id>
+        <site.deploy.url />
+
+        <repositoryOwner>eharmony</repositoryOwner>
+        <repositoryName>aloha</repositoryName>
     </properties>
+
+    <url>${site.url}</url>
+
+    <scm>
+        <connection>scm:git:git@github.com:eharmony/aloha.git</connection>
+        <developerConnection>scm:git:git@github.com:eharmony/aloha.git</developerConnection>
+        <url>http://github.com/eharmony/aloha/tree/master</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>http://github.com/eharmony/aloha/issues</url>
+    </issueManagement>
 
     <dependencyManagement>
         <dependencies>
@@ -367,6 +378,59 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
             </plugin>
+
+            <!-- http://minds.coremedia.com/2012/09/11/problem-solved-deploy-multi-module-maven-project-site-as-github-pages/ -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.4</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.doxia</groupId>
+                        <artifactId>doxia-module-markdown</artifactId>
+                        <version>1.6</version>
+                    </dependency>
+
+                    <!-- For Reflow skin -->
+                    <dependency>
+                        <groupId>lt.velykis.maven.skins</groupId>
+                        <artifactId>reflow-velocity-tools</artifactId>
+                        <version>1.1.1</version>
+                    </dependency>
+                    <!-- Reflow skin requires Velocity >= 1.7  -->
+                    <dependency>
+                        <groupId>org.apache.velocity</groupId>
+                        <artifactId>velocity</artifactId>
+                        <version>1.7</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <skipDeploy>true</skipDeploy>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <!-- GitHub site plug-in for deployment to GitHub pages -->
+                <groupId>com.github.github</groupId>
+                <artifactId>site-maven-plugin</artifactId>
+                <version>0.9</version>
+                <configuration>
+                    <message>Creating site for ${project.artifactId}, ${project.version}</message>
+                    <!-- this does the trick to place every module in the correct subfolder -->
+                    <path>${project.distributionManagement.site.url}</path>
+                    <merge>true</merge>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>github-site</id>
+                        <goals>
+                            <goal>site</goal>
+                        </goals>
+                        <phase>site-deploy</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 
@@ -380,7 +444,26 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.4</version>
+                <version>2.7</version>
+                <configuration>
+                    <anonymousConnection>scm:git:git@github.com:eharmony/aloha.git</anonymousConnection>
+                    <developerConnection>scm:git:git@github.com:eharmony/aloha.git</developerConnection>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>summary</report>
+                            <report>license</report>
+                            <report>modules</report>
+                            <report>project-team</report>
+                            <report>scm</report>
+                            <report>issue-tracking</report>
+                            <report>dependencies</report>
+                            <report>dependency-convergence</report>
+                            <report>plugins</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
         </plugins>
     </reporting>
@@ -562,6 +645,11 @@
                                 <id>attach-javadocs</id>
                                 <!-- TODO: Figure out how to change the jar name -->
                                 <goals><goal>doc-jar</goal></goals>
+                                <configuration>
+                                    <includes>
+                                        <include>**eharmony/aloha/**</include>
+                                    </includes>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -576,6 +664,33 @@
                     </plugin>
                 </plugins>
             </reporting>
+        </profile>
+
+        <profile>
+            <id>stage</id>
+            <properties>
+                <site.deploy.url>http://github.com/eharmony/aloha/tree/gh-pages/</site.deploy.url>
+            </properties>
+
+            <build>
+                <plugins>
+                    <!-- Configure Maven site plugin to perform stage -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-site-plugin</artifactId>
+                        <version>3.3</version>
+                        <executions>
+                            <execution>
+                                <id>stage</id>
+                                <goals>
+                                    <goal>stage</goal>
+                                </goals>
+                                <phase>site</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 </project>

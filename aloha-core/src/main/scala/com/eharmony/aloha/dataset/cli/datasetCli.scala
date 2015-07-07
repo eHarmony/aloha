@@ -3,6 +3,7 @@ package com.eharmony.aloha.dataset.cli
 import java.io.{Closeable, File, InputStream, PrintStream}
 import java.util.regex.Matcher
 
+import com.eharmony.aloha
 import com.eharmony.aloha.annotate.CLI
 import com.eharmony.aloha.dataset.csv.CsvSpecProducer
 import com.eharmony.aloha.dataset.libsvm.labeled.LibSvmLabelSpecProducer
@@ -23,7 +24,6 @@ import org.apache.commons.io.IOUtils
 import org.apache.commons.vfs2.{FileObject, VFS}
 
 import scala.annotation.tailrec
-import scala.collection.{immutable => sci}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success, Try}
 
@@ -43,7 +43,6 @@ object DatasetCli extends Logging {
     def main(args: Array[String]): Unit = {
         cliParser.parse(args, Config()) match {
             case Some(Config(chunkSize, cacheDir, Seq(inputType), Some(spec), inFile, datasets, cp)) =>
-//                addToCp(cp)
                 val (is, closeIn) = inStream(inFile)
 
                 // TODO: test par vs seq.
@@ -139,7 +138,7 @@ object DatasetCli extends Logging {
             f.fold((System.out, false))(f => (new PrintStream(f.getContent.getOutputStream), true))
     }
 
-    private def inStream(f: Option[FileObject]): (InputStream, Boolean) =
+    protected[this] def inStream(f: Option[FileObject]): (InputStream, Boolean) =
         f.fold((System.in, false))(f => (f.getContent.getInputStream, true))
 
 
@@ -211,20 +210,6 @@ object DatasetCli extends Logging {
         }
     }
 
-    // TODO: Consider extracting this to a trait for use elsewhere.
-//    private[this] def addToCp(cp: Seq[FileObject]): Unit = {
-//        val addUrl = classOf[URLClassLoader].getDeclaredMethod("addURL", classOf[URL])
-//        val accessible = addUrl.isAccessible
-//        val sysCl = ClassLoader.getSystemClassLoader
-//        addUrl.setAccessible(true)
-//        try {
-//            cp.foreach(fo => addUrl.invoke(sysCl, fo.getURL))
-//        }
-//        finally {
-//            addUrl.setAccessible(accessible)
-//        }
-//    }
-
     /**
      * Example:
      * {{{
@@ -242,7 +227,7 @@ object DatasetCli extends Logging {
      */
     def cliParser = {
         new scopt.OptionParser[Config](CommandName) {
-            head(CommandName, "1.x")
+            head(CommandName, aloha.version)
             opt[File]("cachedir") action { (x, c) =>
                 c.copy(cacheDir = Option(x))
             } text "a cache directory" optional()
@@ -250,41 +235,38 @@ object DatasetCli extends Logging {
                 if (x < 1) reportError(s"parallel flag must provide a positive value.  Provided chunk size of ${c.chunkSize}. ASDF")
                 c.copy(chunkSize = x)
             } text "a list of Apache VFS URLs additional jars to be included on the classpath" optional()
-//            opt[Seq[FileObject]]("classpath") abbr ("cp") action { (x, c) =>
-//                c.copy(classPath = x)
-//            } text "a list of Apache VFS URLs additional jars to be included on the classpath" optional()
             opt[FileObject]('s', "spec") action { (x, c) =>
                 c.copy(spec = Option(x))
-            } text "a spec file that specifies the features." required()
+            } text "Apache VFS URL to a JSON specification file containing attributes of the dataset being created." required()
             opt[String]('p', "proto-input") action { (x, c) =>
                 // B/c maxOccurs = 1, non-empty must come from another input type.
                 c.copy(inputTypes = c.inputTypes :+ ProtoInputType(x))
-            } text "a spec file that specifies the features." maxOccurs (1)
+            } text "canonical class name of the protocol buffer type to use." maxOccurs (1)
             opt[FileObject]('c', "csv-input") action { (x, c) =>
                 // B/c maxOccurs = 1, non-empty must come from another input type.
                 c.copy(inputTypes = c.inputTypes :+ CsvInputType(x))
-            } text "a spec file that specifies the features." maxOccurs (1)
+            } text "Apache VFS URL to JSON file specifying the structure of the CSV input." maxOccurs (1)
             opt[FileObject]('i', "in") action { (x, c) =>
                 c.copy(input = Option(x))
-            } text "a spec file that specifies the features." maxOccurs (1)
+            } text "Apache VFS URL to the input file.  If not supplied, STDIN will be used." maxOccurs (1)
             opt[Option[FileObject]](DatasetType.vw.toString) action { (x, c) =>
                 c.copy(datasets = c.datasets :+ DatasetType.vw -> x)
-            } text "a spec file that specifies the features." maxOccurs (1)
+            } text "produce an unlabeled VW dataset and place the output in the specified location." maxOccurs (1)
             opt[Option[FileObject]](DatasetType.vw_labeled.toString) action { (x, c) =>
                 c.copy(datasets = c.datasets :+ DatasetType.vw_labeled -> x)
-            } text "a spec file that specifies the features." maxOccurs (1)
+            } text "produce a labeled VW dataset and place the output in the specified location." maxOccurs (1)
             opt[Option[FileObject]](DatasetType.vw_cb.toString) action { (x, c) =>
                 c.copy(datasets = c.datasets :+ DatasetType.vw_cb -> x)
-            } text "a spec file that specifies the features." maxOccurs (1)
+            } text "produce a contextual bandit VW dataset and place the output in the specified location." maxOccurs (1)
             opt[Option[FileObject]](DatasetType.libsvm.toString) action { (x, c) =>
                 c.copy(datasets = c.datasets :+ DatasetType.libsvm -> x)
-            } text "a spec file that specifies the features." maxOccurs (1)
+            } text "produce an unlabeled LIBSVM dataset and place the output in the specified location." maxOccurs (1)
             opt[Option[FileObject]](DatasetType.libsvm_labeled.toString) action { (x, c) =>
                 c.copy(datasets = c.datasets :+ DatasetType.libsvm_labeled -> x)
-            } text "a spec file that specifies the features." maxOccurs (1)
+            } text "produce a labeled LIBSVM dataset and place the output in the specified location." maxOccurs (1)
             opt[Option[FileObject]](DatasetType.csv.toString) action { (x, c) =>
                 c.copy(datasets = c.datasets :+ DatasetType.csv -> x)
-            } text "a spec file that specifies the features." maxOccurs (1)
+            } text "produce a CSV dataset and place the output in the specified location." maxOccurs (1)
             checkConfig { c =>
                 if (c.chunkSize < 1)         Left(s"parallel flag must provide a positive value.  Provided chunk size of ${c.chunkSize}.")
                 if (c.inputTypes.isEmpty)    Left("No input type provided.  Provide one of the proto-input or csv-input options.")

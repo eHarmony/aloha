@@ -4,7 +4,7 @@
         <groupId>com.eharmony</groupId>
         <artifactId>aloha</artifactId>
         <version>1.1.2-SNAPSHOT</version>
-        <relativePath>..</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>aloha-cli</artifactId>
@@ -19,6 +19,17 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
+    <url>${site.url}/${project.artifactId}</url>
+
+    <distributionManagement>
+        <site>
+            <id>${site.deploy.id}</id>
+            <!-- Note that GitHub does not like having leading slash here -->
+            <url>${site.deploy.url}${project.artifactId}</url>
+        </site>
+    </distributionManagement>
+
 
     <dependencies>
         <!-- SHOULD INCLUDE ALL OTHER ALOHA LIBRARIES.  Maybe maven enforcer can help. -->

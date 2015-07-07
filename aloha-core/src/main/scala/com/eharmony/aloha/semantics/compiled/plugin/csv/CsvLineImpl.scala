@@ -1,5 +1,7 @@
 package com.eharmony.aloha.semantics.compiled.plugin.csv
 
+import java.util.regex.Pattern
+
 import scala.collection.immutable
 
 /** A representation of one line of CSV data.
@@ -25,8 +27,11 @@ case class CsvLineImpl(
         optEnumFunc: String => Option[String => EnumConstant],
         optHandler: OptionalHandler) extends CsvLine {
 
+    val fieldsSep = Pattern.quote(fieldSeparator)
+    val intraFieldSep = Pattern.quote(intraFieldSeparator)
+
     import CsvLineImpl._
-    private[this] val fields = line.split(fieldSeparator, -1)
+    private[this] val fields = line.split(fieldsSep, -1)
 
     def e(fieldName: String) = reqField(fieldName, enums(fieldName).valueOf)
     def b(fieldName: String) = reqField(fieldName, fb)
@@ -69,7 +74,7 @@ case class CsvLineImpl(
     private[this] def vecField[A](s: String, f: String => A): immutable.IndexedSeq[A] = {
         val fs = fields(indices(s))
         val v = if (fs.trim.isEmpty) Vector.empty[A]
-                else fs.split(intraFieldSeparator, -1).map(f).toVector
+                else fs.split(intraFieldSep, -1).map(f).toVector
         v
     }
 
@@ -84,7 +89,7 @@ case class CsvLineImpl(
     private[this] def vecOptField[A](s: String, f: Option[String => A]): immutable.IndexedSeq[Option[A]] = {
         val fs = fields(indices(s))
         val v = if (fs.trim.isEmpty) immutable.IndexedSeq.empty[Option[A]]
-        else optHandler.produceOptions(fs.split(intraFieldSeparator, -1), f, missingId)
+        else optHandler.produceOptions(fs.split(intraFieldSep, -1), f, missingId)
         v
     }
 }

@@ -1,0 +1,15 @@
+.jumbotron {
+  background: url('../images/flower.jpg') top right;
+  background-size: cover;
+
+  height: 75vh;
+  margin: 0px 0px 10vh 0px;
+
+  /* Make a nested block level element fill the entire page width.  From http://stackoverflow.com/a/24895631 */
+  position: relative;
+  width: 100vw;
+  left: calc(-50vw + 50%);
+}
+
+.jumbotron .container {
+}

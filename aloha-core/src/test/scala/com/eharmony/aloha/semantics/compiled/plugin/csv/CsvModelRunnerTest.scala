@@ -50,4 +50,53 @@ class CsvModelRunnerTest {
 
     assertEquals(expected.trim, result.trim)
   }
+
+  /**
+   * Protos look like this.  Alan's proto has a first photo id of 1, fizzbuzz returns the id.  Kate's proto
+   * has a first photo id of 3, so fizzbuzz returns negative -2.
+   *
+   * {{{
+   * [
+   *   {
+   *     "name": "Alan"
+   *     "gender": "MALE",
+   *     "bmi": 23,
+   *     "photos": [
+   *       { "id": 1, "height": 1, "aspect_ratio": 1 },
+   *       { "id": 2, "height": 2, "aspect_ratio": 2 }
+   *     ]
+   *   },
+   *   {
+   *     "name": "Kate"
+   *     "gender": "FEMALE",
+   *     "photos": [
+   *       { "id": 3, "height": 3, "aspect_ratio": 3 }
+   *     ]
+   *   }
+   * ]
+   * }}}
+   */
+  @Test def testProto() {
+    // Use a temp file so we can get at the results for comparison.  Also shows how to write to a VFS file.
+    val tmpFile = "ram://results.txt"
+
+    val expected = Seq(1, -2)
+
+    val args = Array(
+      "-p", "com.eharmony.aloha.test.proto.Testing.UserProto",
+      "--imports", "scala.math._,com.eharmony.aloha.feature.BasicFunctions._",
+      "--input-file", "res:fizz_buzzs.proto",
+      "--output-file", tmpFile,
+      "res:fizzbuzz_proto.json"
+    )
+
+    CsvModelRunner.main(args)
+
+    val actual = io.Source.
+                    fromInputStream(VFS.getManager.resolveFile(tmpFile).getContent.getInputStream).
+                    getLines().
+                    map(_.toInt).
+                    toSeq
+    assertEquals(expected, actual)
+  }
 }

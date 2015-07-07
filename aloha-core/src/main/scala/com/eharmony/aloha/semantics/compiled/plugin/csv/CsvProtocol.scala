@@ -2,8 +2,6 @@ package com.eharmony.aloha.semantics.compiled.plugin.csv
 
 import spray.json._
 
-import com.eharmony.aloha.factory.ScalaJsonFormats.listMapFormat
-import scala.collection.immutable.ListMap
 import scala.util.{Failure, Try}
 
 
@@ -11,14 +9,16 @@ trait CsvProtocol {
     import DefaultJsonProtocol._
 
     private[this] sealed trait CsvColumn {
+        def name: String
         def columnType: CsvTypes.CsvType
     }
 
-    private[this] case class PrimitiveColumn(columnType: CsvTypes.CsvType) extends CsvColumn
-    private[this] case class EnumColumn(columnType: CsvTypes.CsvType, enum: Enum) extends CsvColumn
-
+    private[this] case class PrimitiveColumn(name: String, columnType: CsvTypes.CsvType) extends CsvColumn
+    private[this] case class EnumColumn(name: String, columnType: CsvTypes.CsvType, enum: Enum) extends CsvColumn
 
     private[this] implicit object CsvColumnFormat extends JsonFormat[CsvColumn] {
+
+        private[this] def nameToFieldOpt(name: String) = Option("name" -> JsString(name))
 
         override def write(c: CsvColumn): JsValue = {
             val t = Some("type" -> JsString(c.columnType.baseTypeString.toLowerCase))
@@ -26,23 +26,23 @@ trait CsvProtocol {
             val v = Option(c.columnType.isVectorized).collect{ case true => "vectorized" -> JsBoolean(true)}
 
             c match {
-                case PrimitiveColumn(tpe)  => JsObject(Seq(t, o, v).flatten:_*)
-                case EnumColumn(tpe, enum) =>
+                case PrimitiveColumn(name, tpe)  => JsObject(Seq(nameToFieldOpt(name), t, o, v).flatten:_*)
+                case EnumColumn(name, tpe, enum) =>
                     val cn = Some("className" -> JsString(enum.className))
-                    val vs = Some("values" -> JsObject(ListMap(enum.values().sortWith(_.ordinal() < _.ordinal()).map(c => c.name() -> JsNumber(c.getNumber())):_*)))
-                    JsObject(Seq(t, o, v, cn, vs).flatten:_*)
+                    val vs = Some("values" -> JsArray(enum.values().sortWith(_.ordinal < _.ordinal).map(_.toJson).toVector))
+                    JsObject(Seq(nameToFieldOpt(name), t, o, v, cn, vs).flatten:_*)
             }
         }
 
         override def read(json: JsValue) = {
             val obj = json.asJsObject("Attempt to create CsvColumn but JSON was not an object")
 
-            val t = obj.getFields("type") match {
-                case Seq(JsString(tpe)) => Option(tpe.capitalize)
+            val nameAndType = obj.getFields("name", "type") match {
+                case Seq(JsString(name), JsString(tpe)) => Option((name, tpe.capitalize))
                 case _ => None
             }
 
-            t map { tpe =>
+            nameAndType map { case (name, tpe) =>
                 val o = obj.getFields("optional") match {
                     case Seq(JsBoolean(b)) => b
                     case _ => false
@@ -56,7 +56,7 @@ trait CsvProtocol {
                 val csvType = CsvTypes.withNameExtended(csvTypeString)
 
                 if (tpe != "Enum")
-                    PrimitiveColumn(csvType)
+                    PrimitiveColumn(name, csvType)
                 else {
                     val cn = (obj.getFields("className") match {
                         case Seq(JsString(c)) => Option(c)
@@ -66,30 +66,30 @@ trait CsvProtocol {
                     }
 
                     val enum = obj.getFields("values").headOption map { vs =>
-                        Try { Enum(cn, vs.convertTo[ListMap[String, Int]].toSeq:_*) }.
+                        Try { Enum(cn, vs.convertTo[Vector[EnumConstant]].sortWith(_.ordinal < _.ordinal).map(c => (c.name(), c.getNumber())):_*) }.
                             recoverWith { case _ => Try { Enum.withNoNumbers(cn, vs.convertTo[Vector[String]]:_*) } }.
                             recoverWith { case _ => Failure(new DeserializationException("Couldn't get enum values.")) }.
                             get
                     } getOrElse { throw new DeserializationException("values not present for Enum.") }
-                    EnumColumn(csvType, enum)
+                    EnumColumn(name, csvType, enum)
                 }
             } getOrElse {
-                throw new DeserializationException("no type provided")
+                throw new DeserializationException("name or type wasn't provided")
             }
         }
     }
 
 
-    private[this] case class CsvJson(columns: ListMap[String, CsvColumn],
-                       fs: Option[String],
-                       ifs: Option[String],
-                       missingData: Option[String],
-                       errorOnOptMissingField: Option[Boolean],
-                       errorOnOptMissingEnum: Option[Boolean]) extends CsvDataRetriever {
+    private[this] case class CsvJson(columns: Vector[CsvColumn],
+                                     fs: Option[String],
+                                     ifs: Option[String],
+                                     missingData: Option[String],
+                                     errorOnOptMissingField: Option[Boolean],
+                                     errorOnOptMissingEnum: Option[Boolean]) extends CsvDataRetriever {
 
         def csvLines: CsvLines = {
-            val ind = columns.unzip._1.zipWithIndex.toMap
-            val enums = columns.collect { case (name, EnumColumn(tpe, enum)) => name -> enum}.toMap
+            val ind = columns.map(_.name).zipWithIndex.toMap
+            val enums = columns.collect { case EnumColumn(name, tpe, enum) => name -> enum}.toMap
             val m = missingData getOrElse ""
             val missing = (s: String) => s == m
             CsvLines(ind, enums, fs getOrElse "\t" , ifs getOrElse ",", missing, errorOnOptMissingField getOrElse false, errorOnOptMissingEnum getOrElse false)
@@ -97,7 +97,7 @@ trait CsvProtocol {
 
         def plugin: CompiledSemanticsCsvPlugin = {
             // TODO: make sure this is a hashmap, not a listmap.
-            CompiledSemanticsCsvPlugin(columns.map {case (name, col) => (name, col.columnType)}.toMap)
+            CompiledSemanticsCsvPlugin(columns.map {case c => (c.name, c.columnType)}.toMap)
         }
     }
 

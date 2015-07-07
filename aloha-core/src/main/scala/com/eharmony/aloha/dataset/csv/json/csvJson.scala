@@ -1,7 +1,6 @@
 package com.eharmony.aloha.dataset.csv.json
 
 /*
-TODO: Fix.  Figure out the required / vs optional variable accessors issue.
 Document why need to wrap in option in wrappedSpec.
 */
 
@@ -18,7 +17,7 @@ sealed trait CsvColumnSpec {
     type ColType
     def name: String
     def spec: String
-    def wrappedSpec = s"Option($spec)" // TODO: tell why this is necessary.
+    def wrappedSpec = s"Option($spec)"
     def defVal: Option[ColType]
     def refInfo: RefInfo[Option[ColType]]
     def finalizer(sep: String, nullString: String): Finalizer[ColType]
@@ -51,8 +50,12 @@ extends DefaultJsonProtocol
      */
     implicit val csvColumnSpecFormat: JsonFormat[CsvColumnSpec] = lift(new JsonReader[CsvColumnSpec] {
         def read(j: JsValue): CsvColumnSpec = {
-            val o = j.asJsObject
-            val fieldType = o.getFields("type").collectFirst { case JsString(s) => s.toLowerCase }
+            val o = j.asJsObject("CSV Column should be an object")
+            val fieldType = o.getFields("type") match {
+                case Seq(JsString(s)) => Option(s.toLowerCase)
+                case _ => None
+            }
+
             val spec = fieldType match {
                 case Some("string") => o.convertTo[CsvColumnSpecWithDefault[String]]
                 case Some("double") => o.convertTo[CsvColumnSpecWithDefault[Double]]

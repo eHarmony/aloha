@@ -4,7 +4,7 @@
         <groupId>com.eharmony</groupId>
         <artifactId>aloha</artifactId>
         <version>1.1.2-SNAPSHOT</version>
-        <relativePath>..</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>aloha-vw-jni</artifactId>
@@ -19,6 +19,17 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
+    <url>${site.url}/${project.artifactId}</url>
+
+    <distributionManagement>
+        <site>
+            <id>${site.deploy.id}</id>
+            <!-- Note that GitHub does not like having leading slash here -->
+            <url>${site.deploy.url}${project.artifactId}</url>
+        </site>
+    </distributionManagement>
+
 
     <dependencies>
         <dependency>
@@ -36,7 +47,7 @@
         <dependency>
             <groupId>com.github.johnlangford</groupId>
             <artifactId>vw-jni</artifactId>
-            <version>7.10.2-SNAPSHOT</version>
+            <version>8.0.0</version>
         </dependency>
 
         <dependency>

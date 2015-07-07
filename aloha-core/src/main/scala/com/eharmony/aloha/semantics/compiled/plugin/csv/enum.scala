@@ -2,6 +2,7 @@ package com.eharmony.aloha.semantics.compiled.plugin.csv
 
 import scala.language.dynamics
 
+
 /** This class is designed to emulate Java enum values created by Google's Protocol Buffer library.
   * {{{
   * val GenderProto = Enum("com.eharmony.matching.common.value.ProfileProtoBuffs.ProfileProto.GenderProto", "MALE" -> 1, "FEMALE" -> 2)
@@ -73,6 +74,17 @@ sealed trait EnumConstant {
     def name(): String
     def getNumber(): Int
     def ordinal(): Int
+}
+
+object EnumConstant {
+    import spray.json.DefaultJsonProtocol.{IntJsonFormat, StringJsonFormat, jsonFormat}
+    import spray.json.{JsValue, JsonFormat, pimpAny}
+
+    implicit val enumConstantFormat = new JsonFormat[EnumConstant] {
+        private[this] val format = jsonFormat(EnumConstantImpl.apply, "name", "ordinal", "number")
+        override def read(json: JsValue): EnumConstant = json.convertTo[EnumConstantImpl](format)
+        override def write(c: EnumConstant) = EnumConstantImpl(c.name(), c.ordinal(), c.getNumber()).toJson(format)
+    }
 }
 
 /** An emulated enum constant.
