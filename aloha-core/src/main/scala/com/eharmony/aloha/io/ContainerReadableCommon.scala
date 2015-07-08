@@ -9,7 +9,7 @@ trait ContainerReadableCommon[C[_]] extends ContainerReadable[C] {
 
     /** The character set that is used to decode the input streams in fromInputStream in the derived classes.
       */
-    protected val inputCharset: String = io.Codec.UTF8.charSet.name
+    protected val inputCharset: String = scala.io.Codec.UTF8.charSet.name
 
     /** Read from a File.
       *

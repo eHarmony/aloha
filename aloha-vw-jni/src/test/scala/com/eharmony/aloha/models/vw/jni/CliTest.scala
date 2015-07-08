@@ -144,13 +144,15 @@ class CliTest extends TestWithIoCapture(CliTest) {
     }
 
     @Test def testHappy(): Unit = {
-        Cli.main(Array(
+        val args = Array(
             "-m", vwModelPath,
             "-s", "res:com/eharmony/aloha/models/vw/jni/good.logistic.aloha.js",
             "-i", "0",
             "-n", "model name",
             "--vw-args", "--quiet -t"
-        ))
+        )
+
+        Cli.main(args)
 
         val expected =
             ("""

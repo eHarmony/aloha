@@ -1,0 +1,32 @@
+{
+  "notes": [
+    "'notes' section unnecessary.  Just providing information on the json below for expository purposes.",
+    "all of the fields below are required and are not vectorized.  If one of the fields were optional,",
+    "just add:",
+    "          '\"optional\": true'",
+    "for the column definition.  The same is true for vectorized data.  Just add:",
+    "          '\"vectorized\": true'."
+  ],
+  "fs": "\t",
+  "ifs": ",",
+  "missingData": "",
+  "columns": [
+    { "name": "profile.user_id",         "type": "int" },
+    {
+      "name": "user.name",
+      "type": "enum",
+      "className": "com.eh.Names",
+      "values": [
+        { "name": "Bill",  "ordinal": 1, "number": 1 },
+        { "name": "James", "ordinal": 2, "number": 2 },
+        { "name": "Dan",   "ordinal": 3, "number": 4 }
+      ]
+    },
+    { "name": "user.isMale",             "type": "boolean" },
+    { "name": "user.age",                "type": "int" },
+    { "name": "user.birthdate.unixtime", "type": "long" },
+    { "name": "user.face.ratio",         "type": "float" },
+    { "name": "user.xyz",                "type": "double" },
+    { "name": "user.name.last",          "type": "string" }
+  ]
+}

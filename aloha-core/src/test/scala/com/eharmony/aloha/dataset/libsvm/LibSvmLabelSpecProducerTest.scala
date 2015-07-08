@@ -8,7 +8,6 @@ import org.junit.runners.BlockJUnit4ClassRunner
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class LibSvmLabelSpecProducerTest extends LibSvmProducerTestBase {
     @Test def testCorrectFormatting(): Unit = {
-        val seed = 0
-        test(seed, LibSvmLabelSpecProducer(), "x")
+        test(LibSvmLabelSpecProducer(), "x")
     }
 }

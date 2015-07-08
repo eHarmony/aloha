@@ -6,21 +6,22 @@ import com.eharmony.aloha.dataset.{SpecBuilder, SpecProducer}
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import com.eharmony.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine, CsvLines}
-import com.google.common.hash.Hashing
+import com.eharmony.aloha.util.hashing.MurmurHash3
+
+//import com.google.common.hash.Hashing
 import org.junit.Assert._
 
 trait LibSvmProducerTestBase {
 
-    def test[A <: LibSvmSpec[CsvLine]](seed: Int, prod: SpecProducer[CsvLine, A], label: String = "") {
-        val mh3 = Hashing.murmur3_32(seed)
+    def test[A <: LibSvmSpec[CsvLine]](prod: SpecProducer[CsvLine, A], label: String = "") {
         val bits = 31
         val mask = (1 << bits) - 1
         val f1 = "f1"
         val f2 = "f2"
         val one = 1.0
         val two = 2.0
-        val f1Hash = mh3.newHasher.putString(f1).hash.asInt & mask
-        val f2Hash = mh3.newHasher.putString(f2).hash.asInt & mask
+        val f1Hash = MurmurHash3.stringHash(f1) & mask
+        val f2Hash = MurmurHash3.stringHash(f2) & mask
 
         // This is the important part of the test.  This is the formatted string we are trying to produce
         // in LibSvmSpecProducer.

@@ -64,7 +64,7 @@ object DatasetCli extends Logging {
     }
 
     private def runSequential[A](is: InputStream, lws: Seq[LineWriter[A]]): Unit = {
-        io.Source.fromInputStream(is).getLines().zipWithIndex.foreach { line =>
+        scala.io.Source.fromInputStream(is).getLines().zipWithIndex.foreach { line =>
             lws.foreach { lw =>
                 try {
                     lw(line._1)
@@ -79,7 +79,7 @@ object DatasetCli extends Logging {
 
     private def runParallel[A](is: InputStream, lws: Seq[LineWriter[A]], chunkSize: Int): Unit = {
         val lwsp = lws.par
-        io.Source.fromInputStream(is).getLines().zipWithIndex.grouped(chunkSize).foreach { lines =>
+        scala.io.Source.fromInputStream(is).getLines().zipWithIndex.grouped(chunkSize).foreach { lines =>
             lwsp.foreach { lw =>
                 lines.foreach { line =>
                     // TODO: Use an inlined method.

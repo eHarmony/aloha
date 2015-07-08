@@ -15,7 +15,7 @@ import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import com.eharmony.aloha.semantics.compiled.plugin.proto.CompiledSemanticsProtoPlugin
 import com.google.protobuf.GeneratedMessage
 import org.apache.commons.codec.binary.Base64
-import org.apache.commons.lang3.StringEscapeUtils
+// import org.apache.commons.lang3.StringEscapeUtils
 import org.apache.commons.vfs2.{FileObject, VFS}
 import spray.json.{JsonFormat, pimpString}
 import spray.json.DefaultJsonProtocol._
@@ -527,7 +527,7 @@ object CsvModelRunner {
         val closeOut = conf.outputFile.isDefined
 
         val is = conf.inputFile.map(f => VFS.getManager.resolveFile(f).getContent.getInputStream).getOrElse(System.in)
-        val in = io.Source.fromInputStream(is).getLines()
+        val in = scala.io.Source.fromInputStream(is).getLines()
 
         (conf, in, fn, out, closeOut)
     }
@@ -562,8 +562,14 @@ object CsvModelRunner {
         val config = getConf(args).flatMap { c =>
             c.inputType.right.get.map {
                 case in: InlineCsvInputType => c.copy(inputType = Right(Option(in.copy(
-                    separator = StringEscapeUtils.unescapeJava(in.separator),
-                    intraFieldSeparator = StringEscapeUtils.unescapeJava(in.intraFieldSeparator)
+                    // TODO: If this doesn't work, use commons-lang3 StringEscapeUtils.unescapeJava for unescaping.
+                    //       Removed commons-lang3 as a dependency because it's only used in 2 places.  Here and
+                    //       aloha-vw-jni Cli class.  Here's how it was originally.
+                    //
+                    //         separator = StringEscapeUtils.unescapeJava(in.separator),
+                    //         intraFieldSeparator = StringEscapeUtils.unescapeJava(in.intraFieldSeparator)
+                    separator = unescape(in.separator),
+                    intraFieldSeparator = unescape(in.intraFieldSeparator)
                 ))))
                 case _ => c
             }
@@ -591,5 +597,7 @@ object CsvModelRunner {
             }
         }
     }
+
+    private[this] def unescape(s: String) = s.replaceAllLiterally("\\\\", "\\")
 }
 

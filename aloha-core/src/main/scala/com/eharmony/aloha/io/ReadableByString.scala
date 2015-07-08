@@ -11,7 +11,7 @@ trait ReadableByString[A] extends AlohaReadable[A] with FileReadableByInputStrea
 
     /** The character set that is used to decode the input streams in fromInputStream in the derived classes.
       */
-    protected val inputCharset: String = io.Codec.UTF8.charSet.name
+    protected val inputCharset: String = scala.io.Codec.UTF8.charSet.name
 
     /** Read from an InputStream.
       * @param is an InputStream to read.  The InputStream is automatically closed.

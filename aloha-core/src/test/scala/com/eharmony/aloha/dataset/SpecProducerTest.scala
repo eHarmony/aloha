@@ -2,18 +2,20 @@ package com.eharmony.aloha.dataset
 
 import java.lang.reflect.Modifier
 
-import scala.collection.JavaConversions.asScalaSet
+import com.eharmony.aloha
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
-
+import scala.collection.JavaConversions.asScalaSet
 import org.reflections.Reflections
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class SpecProducerTest {
+    private[this] def scanPkg = aloha.pkgName + ".dataset"
+
     @Test def testAllSpecProducersHaveOnlyZeroArgConstructors() {
-        val reflections = new Reflections("com.eharmony.aloha.dataset")
+        val reflections = new Reflections(scanPkg)
         val specProdClasses = reflections.getSubTypesOf(classOf[SpecProducer[_, _]]).toSet
         specProdClasses.foreach { clazz =>
             val cons = clazz.getConstructors
@@ -26,7 +28,7 @@ class SpecProducerTest {
     }
 
     @Test def testAllSpecProducersAreFinalClasses() {
-        val reflections = new Reflections("com.eharmony.aloha.dataset")
+        val reflections = new Reflections(scanPkg)
         val specProdClasses = reflections.getSubTypesOf(classOf[SpecProducer[_, _]]).toSet
         specProdClasses.foreach { clazz =>
             assertTrue(s"${clazz.getCanonicalName} needs to be declared final.", Modifier.isFinal(clazz.getModifiers))

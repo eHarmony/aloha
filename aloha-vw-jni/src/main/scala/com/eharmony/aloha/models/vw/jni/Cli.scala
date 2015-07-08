@@ -5,7 +5,7 @@ import com.eharmony.aloha.annotate.CLI
 import com.eharmony.aloha.dataset.vw.unlabeled.json.VwUnlabeledJson
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.io.StringReadable
-import org.apache.commons.lang3.StringEscapeUtils
+// import org.apache.commons.lang3.StringEscapeUtils
 import org.apache.commons.vfs2.{FileObject, VFS}
 import spray.json.{pimpAny, pimpString}
 
@@ -63,8 +63,15 @@ object Cli extends VwJniModelJson {
         val vw: VwUnlabeledJson = json.convertTo[VwUnlabeledJson]
         val features = ListMap(vw.features.map(f => f.name -> f.toModelSpec):_*)
         val ns = vw.namespaces.map(nss => ListMap(nss.map(n => n.name -> n.features):_*))
-        val vwParams = Option(vwArgs).filter(_.trim.nonEmpty).map(args => Right(StringEscapeUtils.escapeJson(args)))
+        // TODO: If this doesn't work, use commons-lang3 StringEscapeUtils.unescapeJava for unescaping.
+        //       Removed commons-lang3 as a dependency because it's only used in 2 places.  Here and
+        //       aloha-core CsvModelRunner class.  Here's how it was originally.
+        //
+        //         val vwParams = Option(vwArgs).filter(_.trim.nonEmpty).map(args => Right(StringEscapeUtils.escapeJson(args)))
+        val vwParams = Option(vwArgs).filter(_.trim.nonEmpty).map(args => Right(escape(args)))
         val vwObj = Vw(vwParams, Option(b64Model))
         VwJNIAst(VwJniModel.parser.modelType, ModelId(id, name), features, vwObj, ns).toJson.compactPrint
     }
+
+    private[this] def escape(s: String) = s.replaceAllLiterally("\\", "\\\\").replaceAllLiterally("\"", "\\\"")
 }

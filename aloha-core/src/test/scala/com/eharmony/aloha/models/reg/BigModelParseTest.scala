@@ -27,7 +27,7 @@ class BigModelParseTest extends RegressionModelJson with Timing {
         val ((s, data), t) = time(getBigZippedData("/com/eharmony/aloha/models/reg/semi_cleaned_big_model.json.gz"))
         assertTrue(s"Should take less than 10 seconds to parse, took $t", t < 10)
 
-        assertEquals("file lines", 184846, io.Source.fromString(s).getLines().size)
+        assertEquals("file lines", 184846, scala.io.Source.fromString(s).getLines().size)
         assertEquals("Features", 94, data.features.size)
         assertEquals("First order weights", 874, data.weights.size)
         assertEquals("Higher order weights", 30598, data.higherOrderFeatures.map(_.size).getOrElse(0))

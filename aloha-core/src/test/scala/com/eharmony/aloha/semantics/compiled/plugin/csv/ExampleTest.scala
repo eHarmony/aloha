@@ -109,7 +109,7 @@ object ExampleTest {
 
     private[this] val DistInd = 14
 
-    val samples = csvLines.apply(io.Source.fromURL(getClass.getClassLoader.getResource("3001_data.tsv")).getLines().take(10).map(l => {
+    val samples = csvLines.apply(scala.io.Source.fromURL(getClass.getClassLoader.getResource("3001_data.tsv")).getLines().take(10).map(l => {
         val a = l.split("\t", -1)
         try {
             if (a(DistInd).toInt < 0) a(DistInd) = "10"

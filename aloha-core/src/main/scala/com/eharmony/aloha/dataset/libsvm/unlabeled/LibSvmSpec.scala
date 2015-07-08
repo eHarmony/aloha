@@ -2,7 +2,9 @@ package com.eharmony.aloha.dataset.libsvm.unlabeled
 
 import com.eharmony.aloha.dataset.density.Sparse
 import com.eharmony.aloha.dataset.{FeatureExtractorFunction, MissingAndErroneousFeatureInfo, Spec}
-import com.google.common.hash.HashFunction
+import com.eharmony.aloha.util.hashing.HashFunction
+
+//import com.google.common.hash.HashFunction
 
 import scala.collection.{immutable => sci}
 
@@ -28,7 +30,9 @@ class LibSvmSpec[-A](covariates: FeatureExtractorFunction[A, Sparse], hash: Hash
         //   val sortedDeduped = sci.OrderedMap(f:_*)
         //
         val sortedDeduped = cov.aggregate(sci.SortedMap.empty[Int, Double])(
-            (z, kvs) => kvs.foldLeft(z){ case (m, (k, v)) => m + ((hash.newHasher.putString(k).hash.asInt & mask, v)) },
+//            (z, kvs) => kvs.foldLeft(z){ case (m, (k, v)) => m + ((hash.newHasher.putString(k).hash.asInt & mask, v)) },
+            // TODO: Test this
+            (z, kvs) => kvs.foldLeft(z){ case (m, (k, v)) => m + ((hash.stringHash(k) & mask, v)) },
             (m1, m2) => m1 ++ m2
         )
 

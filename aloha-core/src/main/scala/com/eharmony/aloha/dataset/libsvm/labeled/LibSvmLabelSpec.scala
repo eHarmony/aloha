@@ -4,7 +4,9 @@ import com.eharmony.aloha.dataset.density.Sparse
 import com.eharmony.aloha.dataset.libsvm.unlabeled.LibSvmSpec
 import com.eharmony.aloha.dataset.{FeatureExtractorFunction, LabelSpec}
 import com.eharmony.aloha.semantics.func.GenAggFunc
-import com.google.common.hash.HashFunction
+import com.eharmony.aloha.util.hashing.HashFunction
+
+// import com.google.common.hash.HashFunction
 
 class LibSvmLabelSpec[-A](
         covariates: FeatureExtractorFunction[A, Sparse],
