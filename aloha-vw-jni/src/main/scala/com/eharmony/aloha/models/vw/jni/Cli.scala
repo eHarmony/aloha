@@ -2,20 +2,14 @@ package com.eharmony.aloha.models.vw.jni
 
 import com.eharmony.aloha
 import com.eharmony.aloha.annotate.CLI
-import com.eharmony.aloha.dataset.vw.unlabeled.json.VwUnlabeledJson
 import com.eharmony.aloha.id.ModelId
-import com.eharmony.aloha.io.StringReadable
-// import org.apache.commons.lang3.StringEscapeUtils
 import org.apache.commons.vfs2.{FileObject, VFS}
-import spray.json.{pimpAny, pimpString}
-
-import scala.collection.immutable.ListMap
 
 /**
  * Created by rdeak on 6/15/15.
  */
 @CLI(flag = "--vw")
-object Cli extends VwJniModelJson {
+object Cli {
 
     private[this] val CommandName = "vw"
 
@@ -24,11 +18,11 @@ object Cli extends VwJniModelJson {
      * @param spec
      * @param model
      */
-    case class Config(spec: FileObject = null, model: FileObject = null, id: Long = 0, name: String = "", vwArgs: String= "")
+    case class Config(spec: FileObject = null, model: FileObject = null, id: Long = 0, name: String = "", vwArgs: Option[String]= None)
 
     def main(args: Array[String]) {
         cliParser.parse(args, Config()) match {
-            case Some(Config(spec, model, id, name, vwArgs)) => println(getModel(spec, model, id, name, vwArgs))
+            case Some(Config(spec, model, id, name, vwArgs)) => println(VwJniModelCreator.buildModel(spec, model, ModelId(id, name), vwArgs, None, None).compactPrint)
             case None => // Will be taken care of by scopt.
         }
     }
@@ -38,7 +32,7 @@ object Cli extends VwJniModelJson {
             head(CommandName, aloha.version)
             opt[String]('s', "spec") action { (x, c) =>
                 c.copy(spec = file(x))
-            } text "spec is an Apache VFS URL to an aloha spec file with modelType 'VwJNI'." required()
+            } text "spec is an Apache VFS URL to an aloha spec file." required()
             opt[String]('m', "model") action { (x, c) =>
                 c.copy(model = file(x))
             } text "model is an Apache VFS URL to a VW binary model." required()
@@ -49,29 +43,10 @@ object Cli extends VwJniModelJson {
                 c.copy(id = x)
             } text "numeric id of the model." optional()
             opt[String]("vw-args") action { (x, c) =>
-                c.copy(vwArgs = x)
+                c.copy(vwArgs = Some(x))
             } text "arguments to vw" optional()
         }
     }
 
     private[this] def file(path: String) = VFS.getManager.resolveFile(path)
-
-    private[this] def getModel(spec: FileObject, model: FileObject, id: Long, name: String, vwArgs: String) = {
-        val json = StringReadable.fromVfs2(spec).parseJson
-        val b64Model = VwJniModel.readModel(model.getContent.getInputStream)
-        val j = json.asJsObject("Expected JSON object.")
-        val vw: VwUnlabeledJson = json.convertTo[VwUnlabeledJson]
-        val features = ListMap(vw.features.map(f => f.name -> f.toModelSpec):_*)
-        val ns = vw.namespaces.map(nss => ListMap(nss.map(n => n.name -> n.features):_*))
-        // TODO: If this doesn't work, use commons-lang3 StringEscapeUtils.unescapeJava for unescaping.
-        //       Removed commons-lang3 as a dependency because it's only used in 2 places.  Here and
-        //       aloha-core CsvModelRunner class.  Here's how it was originally.
-        //
-        //         val vwParams = Option(vwArgs).filter(_.trim.nonEmpty).map(args => Right(StringEscapeUtils.escapeJson(args)))
-        val vwParams = Option(vwArgs).filter(_.trim.nonEmpty).map(args => Right(escape(args)))
-        val vwObj = Vw(vwParams, Option(b64Model))
-        VwJNIAst(VwJniModel.parser.modelType, ModelId(id, name), features, vwObj, ns).toJson.compactPrint
-    }
-
-    private[this] def escape(s: String) = s.replaceAllLiterally("\\", "\\\\").replaceAllLiterally("\"", "\\\"")
 }

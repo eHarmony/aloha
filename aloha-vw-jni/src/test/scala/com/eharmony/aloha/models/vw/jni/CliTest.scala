@@ -31,7 +31,7 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |Usage: vw [options]
               |
               |  -s <value> | --spec <value>
-              |        spec is an Apache VFS URL to an aloha spec file with modelType 'VwJNI'.
+              |        spec is an Apache VFS URL to an aloha spec file.
               |  -m <value> | --model <value>
               |        model is an Apache VFS URL to a VW binary model.
               |  -n <value> | --name <value>
@@ -53,7 +53,7 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |Usage: vw [options]
               |
               |  -s <value> | --spec <value>
-              |        spec is an Apache VFS URL to an aloha spec file with modelType 'VwJNI'.
+              |        spec is an Apache VFS URL to an aloha spec file.
               |  -m <value> | --model <value>
               |        model is an Apache VFS URL to a VW binary model.
               |  -n <value> | --name <value>
@@ -75,7 +75,7 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |Usage: vw [options]
               |
               |  -s <value> | --spec <value>
-              |        spec is an Apache VFS URL to an aloha spec file with modelType 'VwJNI'.
+              |        spec is an Apache VFS URL to an aloha spec file.
               |  -m <value> | --model <value>
               |        model is an Apache VFS URL to a VW binary model.
               |  -n <value> | --name <value>
@@ -97,7 +97,7 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |Usage: vw [options]
               |
               |  -s <value> | --spec <value>
-              |        spec is an Apache VFS URL to an aloha spec file with modelType 'VwJNI'.
+              |        spec is an Apache VFS URL to an aloha spec file.
               |  -m <value> | --model <value>
               |        model is an Apache VFS URL to a VW binary model.
               |  -n <value> | --name <value>
@@ -119,7 +119,7 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |Usage: vw [options]
               |
               |  -s <value> | --spec <value>
-              |        spec is an Apache VFS URL to an aloha spec file with modelType 'VwJNI'.
+              |        spec is an Apache VFS URL to an aloha spec file.
               |  -m <value> | --model <value>
               |        model is an Apache VFS URL to a VW binary model.
               |  -n <value> | --name <value>
@@ -138,7 +138,7 @@ class CliTest extends TestWithIoCapture(CliTest) {
                            "-s", "res:com/eharmony/aloha/models/vw/jni/array.js"))
         }
         catch {
-            case e: DeserializationException if e.getMessage == "Expected JSON object." =>
+            case e: DeserializationException if e.getMessage == "Object expected in field 'imports'" =>
             case e: Throwable => throw e
         }
     }
