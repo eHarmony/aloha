@@ -1,0 +1,17 @@
+{
+  "imports":[
+    "com.eharmony.aloha.feature.BasicFunctions._",
+    "scala.math._"
+  ],
+  "features": [
+    {"name": "name",       "spec":"ind(${name})",   "defVal":[["=UNK",1.0]]},
+    {"name": "gender",     "spec":"ind(${gender})", "defVal":[["=UNK",1.0]]},
+    {"name": "bmi",        "spec":"${bmi}",         "defVal":[["=UNK",1.0]]},
+    {"name": "num_photos", "spec":"${photos}.size" },
+    {"name": "avg_photo_height", "spec":"(${photos.height}.flatten : Seq[Int]).sum / ${photos}.size" }
+  ],
+  "namespaces": [
+    { "name": "photos", "features": [ "num_photos", "avg_photo_height" ] }
+  ],
+  "label": "2 * (${id} % 2) - 1"
+}

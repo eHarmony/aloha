@@ -79,7 +79,7 @@ object DatasetCli extends Logging {
 
     private def runParallel[A](is: InputStream, lws: Seq[LineWriter[A]], chunkSize: Int): Unit = {
         val lwsp = lws.par
-        scala.io.Source.fromInputStream(is).getLines().zipWithIndex.grouped(chunkSize).foreach { lines =>
+        io.Source.fromInputStream(is).getLines().zipWithIndex.grouped(chunkSize).foreach { lines =>
             lwsp.foreach { lw =>
                 lines.foreach { line =>
                     // TODO: Use an inlined method.
@@ -184,9 +184,9 @@ object DatasetCli extends Logging {
      * @param className class name for which we are trying to get a Class instance.
      * @return
      */
-    @tailrec private def attemptToGetClass(className: String): Option[Class[_]] = {
+    @tailrec private def attemptToGetClass[A](className: String): Option[Class[A]] = {
         if (-1 == className.indexOf(".")) None
-        else Try { Class.forName(className) } match {
+        else Try { Class.forName(className).asInstanceOf[Class[A]] } match {
             case Success(c) => Option(c)
             case Failure(_) => attemptToGetClass(className.reverse.replaceFirst("\\.", Matcher.quoteReplacement("$")).reverse)
         }
@@ -194,7 +194,7 @@ object DatasetCli extends Logging {
 
     private[this] def getProtoPluginAndExtractorFunction[A <: GeneratedMessage](protoClass: String): (CompiledSemanticsProtoPlugin[A], String => A) = {
         // The getOrElse is to throw the ClassNotFoundException with the original class name.
-        val c = (attemptToGetClass(protoClass) getOrElse { Class.forName(protoClass) }).asInstanceOf[Class[A]]
+        val c = attemptToGetClass[A](protoClass) getOrElse Class.forName(protoClass).asInstanceOf[Class[A]]
         val m = c.getMethod("parseFrom", classOf[Array[Byte]])
         val f: String => A = s => m.invoke(null, Base64.decodeBase64(s)).asInstanceOf[A]
         val plugin = new CompiledSemanticsProtoPlugin[A](c)
