@@ -109,8 +109,8 @@ trait OptionMath {
     /** Should not use a wildcard import to include all functions in the object.  Instead, import the OptMathOps object.
       */
     object OptMathOps {
-        @inline final def abs[A](a: Option[A])(implicit n: Numeric[A]) = a.map(n abs _)
-        @inline final def negate[A](a: Option[A])(implicit n: Numeric[A]) = a.map(n negate _)
+        @inline final def abs[A](a: Option[A])(implicit n: Numeric[A]) = a.map(n.abs)
+        @inline final def negate[A](a: Option[A])(implicit n: Numeric[A]) = a.map(n.negate)
         @inline final def plus[A](left: Option[A], right: Option[A])(implicit n: Numeric[A]) = for (l <- left; r <- right) yield n.plus(l, r)
         @inline final def minus[A](left: Option[A], right: Option[A])(implicit n: Numeric[A]) = for (l <- left; r <- right) yield n.minus(l, r)
         @inline final def times[A](left: Option[A], right: Option[A])(implicit n: Numeric[A]) = for (l <- left; r <- right) yield n.times(l, r)

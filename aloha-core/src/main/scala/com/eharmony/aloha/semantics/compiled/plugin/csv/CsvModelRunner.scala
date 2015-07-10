@@ -36,9 +36,9 @@ case class ProtoInputType(protoClass: String) extends InputType {
      * @param className class name for which we are trying to get a Class instance.
      * @return
      */
-    @tailrec private[this] def attemptToGetClass(className: String): Option[Class[_]] = {
+    @tailrec private[this] def attemptToGetClass[A](className: String): Option[Class[A]] = {
         if (-1 == className.indexOf(".")) None
-        else Try { Class.forName(className) } match {
+        else Try { Class.forName(className).asInstanceOf[Class[A]] } match {
             case Success(c) => Option(c)
             case Failure(_) => attemptToGetClass(className.reverse.replaceFirst("\\.", Matcher.quoteReplacement("$")).reverse)
         }
@@ -46,7 +46,7 @@ case class ProtoInputType(protoClass: String) extends InputType {
 
     def getProtoPluginAndExtractorFunction[A <: GeneratedMessage]: (CompiledSemanticsProtoPlugin[A], (String) => A, RefInfo[A]) = {
         // The getOrElse is to throw the ClassNotFoundException with the original class name.
-        val c = (attemptToGetClass(protoClass) getOrElse { Class.forName(protoClass) }).asInstanceOf[Class[A]]
+        val c = attemptToGetClass[A](protoClass) getOrElse Class.forName(protoClass).asInstanceOf[Class[A]]
         val m = c.getMethod("parseFrom", classOf[Array[Byte]])
 
         val f: String => A = s => m.invoke(null, Base64.decodeBase64(s)).asInstanceOf[A]
