@@ -7,7 +7,7 @@ import com.eharmony.aloha.dataset.vw.unlabeled.VwSpec
 import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.aloha.factory.{ModelParser, ModelParserWithSemantics, ParserProviderCompanion}
 import com.eharmony.aloha.id.ModelIdentity
-import com.eharmony.aloha.models.reg.RegressionFeatures
+import com.eharmony.aloha.models.reg.{ConstantDeltaSpline, RegressionFeatures}
 import com.eharmony.aloha.models.reg.json.Spec
 import com.eharmony.aloha.models.{BaseModel, TypeCoercion}
 import com.eharmony.aloha.reflect._
@@ -49,7 +49,8 @@ final case class VwJniModel[-A, +B](
     defaultNs: List[Int],
     namespaces: List[(String, List[Int])],
     finalizer: Float => B,
-    numMissingThreshold: Option[Int] = None)(implicit private[this] val scb: ScoreConverter[B])
+    numMissingThreshold: Option[Int] = None,
+    spline: Option[ConstantDeltaSpline] = None)(implicit private[this] val scb: ScoreConverter[B])
 extends BaseModel[A, B]
    with RegressionFeatures[A]
    with Logging {
@@ -81,7 +82,8 @@ extends BaseModel[A, B]
             case Left(missing) => failure(Seq(s"Too many features with missing variables: ${missing.count(_._2.nonEmpty)}"), getMissingVariables(missing))
             case Right(vwIn) =>
                 Try { model.predict(vwIn) } match {
-                    case Success(y) => success(finalizer(y))
+                    // TODO Ryan Deak, please test this appropriately, I'm not sure how
+                    case Success(y) => success(finalizer(spline.map(_(y).toFloat).getOrElse(y)))
                     case Failure(ex) => failure(Seq(ex.getMessage))
                 }
         }
@@ -159,7 +161,7 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
                             (ns, fi)
                         }.toList
                         val defaultNs = (indices.keySet -- (Set.empty[String] /: nssRaw)(_ ++ _._2)).flatMap(indices.get).toList
-                        VwJniModel(vw.modelId, vwJniModel, names, functions, defaultNs, nss, cf, vw.numMissingThreshold)
+                        VwJniModel(vw.modelId, vwJniModel, names, functions, defaultNs, nss, cf, vw.numMissingThreshold, None)
                 }
             }
         }

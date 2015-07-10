@@ -15,13 +15,27 @@ import spray.json.{JsValue, pimpAny, pimpString}
  * Created by jmorra on 7/10/15.
  */
 object VwJniModelCreator extends VwJniModelJson {
-  def buildModel(spec: FileObject, model: FileObject, id: ModelId, vwArgs: Option[String], notes: Option[Seq[String]], spline: Option[ConstantDeltaSpline]): JsValue = {
+  def buildModel(
+    spec: FileObject,
+    model: FileObject,
+    id: ModelId,
+    vwArgs: Option[String],
+    numMissingThreshold: Option[Int] = None,
+    notes: Option[Seq[String]] = None,
+    spline: Option[ConstantDeltaSpline] = None): JsValue = {
     val json = StringReadable.fromVfs2(spec).parseJson
     val vw = json.convertTo[VwUnlabeledJson]
-    buildModel(vw, model, id, vwArgs, notes, spline)
+    buildModel(vw, model, id, vwArgs, numMissingThreshold, notes, spline)
   }
 
-  def buildModel(vw: VwUnlabeledJson, model: FileObject, id: ModelId, vwArgs: Option[String], notes: Option[Seq[String]], spline: Option[ConstantDeltaSpline]): JsValue = {
+  def buildModel(
+    vw: VwUnlabeledJson,
+    model: FileObject,
+    id: ModelId,
+    vwArgs: Option[String],
+    numMissingThreshold: Option[Int],
+    notes: Option[Seq[String]],
+    spline: Option[ConstantDeltaSpline]): JsValue = {
     val b64Model = VwJniModel.readModel(model.getContent.getInputStream)
     val features = ListMap(vw.features.map(f => f.name -> f.toModelSpec):_*)
     val ns = vw.namespaces.map(nss => ListMap(nss.map(n => n.name -> n.features):_*))
@@ -32,7 +46,7 @@ object VwJniModelCreator extends VwJniModelJson {
     //         val vwParams = Option(vwArgs).filter(_.trim.nonEmpty).map(args => Right(StringEscapeUtils.escapeJson(args)))
     val vwParams = vwArgs.filter(_.trim.nonEmpty).map(args => Right(escape(args)))
     val vwObj = Vw(vwParams, Option(b64Model))
-    VwJNIAst(VwJniModel.parser.modelType, id, features, vwObj, ns).toJson
+    VwJNIAst(VwJniModel.parser.modelType, id, features, vwObj, ns, numMissingThreshold, notes, spline).toJson
   }
 
   private[this] def escape(s: String) = s.replaceAllLiterally("\\", "\\\\").replaceAllLiterally("\"", "\\\"")

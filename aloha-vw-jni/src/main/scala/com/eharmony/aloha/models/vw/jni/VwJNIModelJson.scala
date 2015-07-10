@@ -2,6 +2,7 @@ package com.eharmony.aloha.models.vw.jni
 
 import com.eharmony.aloha.factory.Formats.listMapFormat
 import com.eharmony.aloha.id.ModelId
+import com.eharmony.aloha.models.reg.ConstantDeltaSpline
 import com.eharmony.aloha.models.reg.json.{Spec, SpecJson}
 import spray.json.DefaultJsonProtocol._
 import spray.json.RootJsonFormat
@@ -62,8 +63,11 @@ trait VwJniModelJson extends SpecJson {
         features: ListMap[String, Spec],
         vw: Vw,
         namespaces: Option[ListMap[String, Seq[String]]] = Some(ListMap.empty),
-        numMissingThreshold: Option[Int] = None)
+        numMissingThreshold: Option[Int] = None,
+        notes: Option[Seq[String]] = None,
+        spline: Option[ConstantDeltaSpline] = None)
 
     protected[this] final implicit val vwFormat: RootJsonFormat[Vw] = jsonFormat2(Vw.apply)
-    protected[this] final implicit val vwJNIAstFormat: RootJsonFormat[VwJNIAst] = jsonFormat6(VwJNIAst.apply)
+    protected[this] final implicit val splineJsonFormat = jsonFormat(ConstantDeltaSpline, "min", "max", "knots")
+    protected[this] final implicit val vwJNIAstFormat: RootJsonFormat[VwJNIAst] = jsonFormat8(VwJNIAst.apply)
 }

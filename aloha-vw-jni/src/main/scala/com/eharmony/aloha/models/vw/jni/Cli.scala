@@ -22,7 +22,7 @@ object Cli {
 
     def main(args: Array[String]) {
         cliParser.parse(args, Config()) match {
-            case Some(Config(spec, model, id, name, vwArgs)) => println(VwJniModelCreator.buildModel(spec, model, ModelId(id, name), vwArgs, None, None).compactPrint)
+            case Some(Config(spec, model, id, name, vwArgs)) => println(VwJniModelCreator.buildModel(spec, model, ModelId(id, name), vwArgs).compactPrint)
             case None => // Will be taken care of by scopt.
         }
     }
