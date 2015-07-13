@@ -19,8 +19,8 @@ import scala.language.implicitConversions
 class DatasetCliTest {
 
     @Test def testCsvInVwOut(): Unit = {
-        val inFile = "tmp:csvInVwOut.in"
-        val outFile = "tmp:csvInVwOut.out"
+        val inFile = "ram://csvInVwOut.in"
+        val outFile = "ram://csvInVwOut.out"
 
         input(inFile,
             "MALE,205,stuff|things,,",
@@ -45,7 +45,7 @@ class DatasetCliTest {
     }
 
     @Test def testProtoInVwOut(): Unit = {
-        val outFile = "tmp:protoInVwOut.out"
+        val outFile = "ram://protoInVwOut.out"
 
         val expected = Seq(
             "| name=Alan gender=MALE bmi:23 num_photos:2",
@@ -65,7 +65,7 @@ class DatasetCliTest {
     }
 
     @Test def testProtoInVwOut2(): Unit = {
-        val outFile = "tmp://protoInVwOut2.out"
+        val outFile = "ram://protoInVwOut2.out"
 
         val expected = Seq(
             "1 1| name=Alan gender=MALE bmi:23 |photos num_photos:2 avg_photo_height",
@@ -86,8 +86,8 @@ class DatasetCliTest {
 
 
     @Test def testCsvInCsvOut(): Unit = {
-        val inFile = "tmp:csvInCsvOut.in"
-        val outFile = "tmp:csvInCsvOut.out"
+        val inFile = "ram://csvInCsvOut.in"
+        val outFile = "ram://csvInCsvOut.out"
 
         input(inFile,
             "MALE,175,,,",
