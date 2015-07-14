@@ -36,14 +36,13 @@ class VwJniModelTest {
 
     @Test def testSerialization(): Unit = {
         val m = model[Double](typeTestJson)
-        val f = File.createTempFile("testSerialization", "obj")
-        f.deleteOnExit()
 
-        val oos = new ObjectOutputStream(new FileOutputStream(f))
+        val baos = new ByteArrayOutputStream()
+        val oos = new ObjectOutputStream(baos)
         oos.writeObject(m)
         oos.close()
 
-        val ois = new ObjectInputStream(new FileInputStream(f))
+        val ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray))
         val m1 = ois.readObject().asInstanceOf[VwJniModel[CsvLine, Double]]
         ois.close()
 
