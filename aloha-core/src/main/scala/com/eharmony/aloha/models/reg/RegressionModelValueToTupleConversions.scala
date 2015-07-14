@@ -54,30 +54,30 @@ trait RegressionModelValueToTupleConversions {
         Iterable(("", x))
     }
 
-    implicit def byteOptionToIterableTuple2EmptyStringDouble(x: Option[Byte]): Iterable[(String, Double)] = {
-        // TODO: Log
-        x.map(v => Iterable(("", v.toDouble))) getOrElse Nil
-    }
-    implicit def shortOptionToIterableTuple2EmptyStringDouble(x: Option[Short]): Iterable[(String, Double)] = {
-        // TODO: Log
-        x.map(v => Iterable(("", v.toDouble))) getOrElse Nil
-    }
-    implicit def intOptionToIterableTuple2EmptyStringDouble(x: Option[Int]): Iterable[(String, Double)] = {
-        // TODO: Log
-        x.map(v => Iterable(("", v.toDouble))) getOrElse Nil
-    }
-    implicit def longOptionToIterableTuple2EmptyStringDouble(x: Option[Long]): Iterable[(String, Double)] = {
-        // TODO: Log
-        x.map(v => Iterable(("", v.toDouble))) getOrElse Nil
-    }
-    implicit def floatOptionToIterableTuple2EmptyStringDouble(x: Option[Float]): Iterable[(String, Double)] = {
-        // TODO: Log
-        x.map(v => Iterable(("", v.toDouble))) getOrElse Nil
-    }
-    implicit def doubleOptionToIterableTuple2EmptyStringDouble(x: Option[Double]): Iterable[(String, Double)] = {
-        // TODO: Log
-        x.map(v => Iterable(("", v))) getOrElse Nil
-    }
+//    implicit def byteOptionToIterableTuple2EmptyStringDouble(x: Option[Byte]): Iterable[(String, Double)] = {
+//        // TODO: Log
+//        x.map(v => Iterable(("", v.toDouble))) getOrElse Nil
+//    }
+//    implicit def shortOptionToIterableTuple2EmptyStringDouble(x: Option[Short]): Iterable[(String, Double)] = {
+//        // TODO: Log
+//        x.map(v => Iterable(("", v.toDouble))) getOrElse Nil
+//    }
+//    implicit def intOptionToIterableTuple2EmptyStringDouble(x: Option[Int]): Iterable[(String, Double)] = {
+//        // TODO: Log
+//        x.map(v => Iterable(("", v.toDouble))) getOrElse Nil
+//    }
+//    implicit def longOptionToIterableTuple2EmptyStringDouble(x: Option[Long]): Iterable[(String, Double)] = {
+//        // TODO: Log
+//        x.map(v => Iterable(("", v.toDouble))) getOrElse Nil
+//    }
+//    implicit def floatOptionToIterableTuple2EmptyStringDouble(x: Option[Float]): Iterable[(String, Double)] = {
+//        // TODO: Log
+//        x.map(v => Iterable(("", v.toDouble))) getOrElse Nil
+//    }
+//    implicit def doubleOptionToIterableTuple2EmptyStringDouble(x: Option[Double]): Iterable[(String, Double)] = {
+//        // TODO: Log
+//        x.map(v => Iterable(("", v))) getOrElse Nil
+//    }
 }
 
 object RegressionModelValueToTupleConversions extends RegressionModelValueToTupleConversions

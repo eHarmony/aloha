@@ -8,7 +8,7 @@
     {"name": "gender",     "spec":"ind(${gender})", "defVal":[["=UNK",1.0]]},
     {"name": "bmi",        "spec":"${bmi}",         "defVal":[["=UNK",1.0]]},
     {"name": "num_photos", "spec":"${photos}.size" },
-    {"name": "avg_photo_height", "spec":"(${photos.height}.flatten : Seq[Int]).sum / ${photos}.size" }
+    {"name": "avg_photo_height", "spec":"{ val hs = ${photos.height};  hs.flatten.sum / hs.filter(_.nonEmpty).size }" }
   ],
   "namespaces": [
     { "name": "photos", "features": [ "num_photos", "avg_photo_height" ] }

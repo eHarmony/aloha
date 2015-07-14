@@ -30,9 +30,7 @@ trait VwJniModelJson extends SpecJson {
      *               single string by imploding the list with a " " separator or it is one string.  If None,
      * @param model an optional model.  This is a base64 encoded representation of a native VW binary model.
      */
-    protected[this] case class Vw(params: Option[Either[Seq[String], String]] = Some(Right("")), model: Option[String] = None) {
-        def getParams = params getOrElse Right("")
-    }
+    protected[this] case class Vw(model: String, params: Option[Either[Seq[String], String]] = Option(Right("")))
 
     /**
      * Note that as is, this declaration will cause a compiler warning:

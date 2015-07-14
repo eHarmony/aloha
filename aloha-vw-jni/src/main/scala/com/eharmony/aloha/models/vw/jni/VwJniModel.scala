@@ -1,16 +1,16 @@
 package com.eharmony.aloha.models.vw.jni
 
-import java.io.{File, FileOutputStream, InputStream}
+import java.io._
 
 import com.eharmony.aloha.dataset.SparseFeatureExtractorFunction
 import com.eharmony.aloha.dataset.vw.unlabeled.VwSpec
-import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.aloha.factory.{ModelParser, ModelParserWithSemantics, ParserProviderCompanion}
 import com.eharmony.aloha.id.ModelIdentity
-import com.eharmony.aloha.models.reg.{ConstantDeltaSpline, RegressionFeatures}
 import com.eharmony.aloha.models.reg.json.Spec
+import com.eharmony.aloha.models.reg.{RegressionFeatures, Spline}
 import com.eharmony.aloha.models.{BaseModel, TypeCoercion}
 import com.eharmony.aloha.reflect._
+import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.aloha.score.basic.ModelOutput
 import com.eharmony.aloha.score.conversions.ScoreConverter
 import com.eharmony.aloha.semantics.Semantics
@@ -28,7 +28,9 @@ import scala.util.{Failure, Success, Try}
 /**
  * Model that delegates to a VW JNI model.
  * @param modelId a modelId
- * @param model VW JNI instance
+ * @param b64EncodedVwModel a base64-encoded VW binary model.
+ * @param vwParams VW parameters.  These are the same as the ones that would be passed on the command line,
+ *                 directly to VW.
  * @param featureNames names of features (parallel to featureFunctions)
  * @param featureFunctions functions to extract values from the input value
  * @param defaultNs indices of features that will be placed in the default VW namespace
@@ -43,19 +45,30 @@ import scala.util.{Failure, Success, Try}
  */
 final case class VwJniModel[-A, +B](
     modelId: ModelIdentity,
-    private val model: VW,
+    b64EncodedVwModel: String,
+    vwParams: String,
     featureNames: sci.IndexedSeq[String],
     featureFunctions: sci.IndexedSeq[GenAggFunc[A, Iterable[(String, Double)]]],
     defaultNs: List[Int],
     namespaces: List[(String, List[Int])],
-    finalizer: Float => B,
+    finalizer: Double => B,
     numMissingThreshold: Option[Int] = None,
-    spline: Option[ConstantDeltaSpline] = None)(implicit private[this] val scb: ScoreConverter[B])
+    spline: Option[Spline] = None)(implicit private[this] val scb: ScoreConverter[B])
 extends BaseModel[A, B]
    with RegressionFeatures[A]
    with Logging {
 
-    private[this] val vwSpec = new VwSpec(SparseFeatureExtractorFunction(featureNames zip featureFunctions), defaultNs, namespaces, None)
+    /**
+     * The object responsible to taking the computed features and turning it into a VW input formatted string.
+     * This is a transient lazy val so that we can properly serialize
+     */
+    private[this] val vwSpec =
+        new VwSpec(SparseFeatureExtractorFunction(featureNames zip featureFunctions), defaultNs, namespaces, None)
+
+    /**
+     * The backing VW instance doing all of the regression work.
+     */
+    @transient private[this] lazy val model = VwJniModel.getModel(modelId.getId(), b64EncodedVwModel, vwParams)
 
     {
         require(
@@ -67,6 +80,10 @@ extends BaseModel[A, B]
         require(
             req == act,
             s"defaultNamespace and namespaces must cover all indices (0 until ${featureFunctions.size}).  Missing indices: ${(req -- act).map(i => s"$i='${featureNames(i)}'").mkString(", ")}.")
+
+        // Initialize the lazy vals.  This is done so that errors will be thrown on creation.
+        require(vwSpec != null)
+        require(model != null)
     }
 
 
@@ -82,8 +99,7 @@ extends BaseModel[A, B]
             case Left(missing) => failure(Seq(s"Too many features with missing variables: ${missing.count(_._2.nonEmpty)}"), getMissingVariables(missing))
             case Right(vwIn) =>
                 Try { model.predict(vwIn) } match {
-                    // TODO Ryan Deak, please test this appropriately, I'm not sure how
-                    case Success(y) => success(finalizer(spline.map(_(y).toFloat).getOrElse(y)))
+                    case Success(y) => success(finalizer(spline.map(s => s(y)).getOrElse(y)))
                     case Failure(ex) => failure(Seq(ex.getMessage))
                 }
         }
@@ -112,9 +128,12 @@ extends BaseModel[A, B]
 }
 
 object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Logging {
+    private[this] val initialRegressorPresent = """^(.*\s)?-i.*$"""
+
+    override def parser: ModelParser = Parser
+
     object Parser extends ModelParserWithSemantics with EitherHelpers { self =>
         val modelType = "VwJNI"
-        private[this] val initialRegressorPresent = """^(.*\s)?-i.*$"""
 
         override def modelJsonReader[A, B: JsonReader: ScoreConverter](semantics: Semantics[A]): JsonReader[VwJniModel[A, B]] = new JsonReader[VwJniModel[A, B]] {
             override def read(json: JsValue): VwJniModel[A, B] = {
@@ -128,27 +147,12 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
                         // Conversion function.
                         val cf = {
                             implicit val riB = implicitly[ScoreConverter[B]].ri
-                            TypeCoercion[Float, B] getOrElse {
+                            TypeCoercion[Double, B] getOrElse {
                                 throw new DeserializationException(s"Couldn't find conversion function to ${RefInfoOps.toString[B]}")
                             }
                         }
 
-                        val initialRegressorParam = vw.vw.model.fold("") { vwModel =>
-                            val m = allocateModel(vw.modelId.id, vwModel)
-                            s" -i ${m.getCanonicalPath} "
-                        }
-
-                        // If VW params are unspecified, use empty string.
-                        val vwParams = vw.vw.getParams.fold(_.mkString(" "), identity)
-
-                        if (initialRegressorParam.nonEmpty && vwParams.matches(initialRegressorPresent)) {
-                            throw new IllegalArgumentException(s"For model ${vw.modelId.id}, initial regressor (-i) vw parameter supplied and model provided.")
-                        }
-
-                        val finalParams = initialRegressorParam + vwParams
-
-                        // TODO: Map failure to more specialized exception types.  For instance: Try { new VWScorer(vwParams) }.recoverWith{case ex: Error if ex.getMessage.startsWith("unrecognised option") => Failure(new Ex(ex.getMessage, ex))}
-                        val vwJniModel = new VW(finalParams)
+                        val vwParams = vw.vw.params.map(_.fold(_.mkString(" "), identity)) getOrElse ""
 
                         val indices = featureMap.unzip._1.view.zipWithIndex.toMap
                         val nssRaw = vw.namespaces.getOrElse(sci.ListMap.empty)
@@ -160,8 +164,9 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
                             }.toList
                             (ns, fi)
                         }.toList
+
                         val defaultNs = (indices.keySet -- (Set.empty[String] /: nssRaw)(_ ++ _._2)).flatMap(indices.get).toList
-                        VwJniModel(vw.modelId, vwJniModel, names, functions, defaultNs, nss, cf, vw.numMissingThreshold, None)
+                        VwJniModel(vw.modelId, vw.vw.model, vwParams, names, functions, defaultNs, nss, cf, vw.numMissingThreshold, vw.spline)
                 }
             }
         }
@@ -176,8 +181,27 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
             }
     }
 
-    private[jni] def allocateModel(modelId: Long, modelB64: String): File = {
-        val decoded = Base64.decodeBase64(modelB64)
+    private[jni] def readBinaryVwModelToB64String(in: InputStream, close: Boolean = true): String = {
+        try {
+            val bytes = IOUtils toByteArray in
+            val encoded = Base64.encodeBase64(bytes)
+            new String(encoded)
+        }
+        finally {
+            if (close)
+                IOUtils closeQuietly in
+        }
+    }
+
+    /**
+     * Takes the model ID and base64-encoded binary VW model and creates a temp file with the decoded data
+     * and returns the file handle.
+     * @param modelId numeric model ID
+     * @param b64EncodedVwModel the base64-encoded binary VW model
+     * @return File object for the newly created temp file
+     */
+    private[jni] def allocateModel(modelId: Long, b64EncodedVwModel: String): File = {
+        val decoded = Base64.decodeBase64(b64EncodedVwModel)
         val f = File.createTempFile(s"aloha.vw.$modelId.", ".model")
         f.deleteOnExit()
         val fos = new FileOutputStream(f)
@@ -190,19 +214,22 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
         f
     }
 
-    private[jni] def readModel(in: InputStream, close: Boolean = true): String = {
-        try {
-            val bytes = IOUtils toByteArray in
-            val encoded = Base64.encodeBase64(bytes)
-            new String(encoded)
-        }
-        finally {
-            if (close)
-                IOUtils closeQuietly in
-        }
+    /**
+     * Create a vw.VW object from a base64-encoded binary VW model and a set of VW parameters.
+     * @param modelId A numeric model ID
+     * @param b64EncodedVwModel the base64-encoded binary VW model
+     * @param vwParams the parameters passed to the vw.VW JNI wrapper
+     * @return a vw.VW JNI wrapper model.
+     */
+    private[jni] def getModel(modelId: Long, b64EncodedVwModel: String, vwParams: String): VW = {
+        val m = allocateModel(modelId, b64EncodedVwModel)
+        val initialRegressorParam = s" -i ${m.getCanonicalPath} "
+
+        if (vwParams matches initialRegressorPresent)
+            throw new IllegalArgumentException(s"For model $modelId, initial regressor (-i) vw parameter supplied and model provided.")
+
+        val finalParams = initialRegressorParam + vwParams
+        val vwJniModel = new VW(finalParams)
+        vwJniModel
     }
-
-    private[this] val VwLinkFunctions = Seq("identity", "logistic", "glf1")
-
-    override def parser: ModelParser = Parser
 }

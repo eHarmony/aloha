@@ -12,9 +12,7 @@ import spray.json.{DeserializationException, pimpString}
 
 object CliTest extends IoCaptureCompanion {
     @BeforeClass def createModel(): Unit = VwJniModelTest.createModel()
-    def vwModelPath = VwJniModelTest.VwModelPath
-
-    lazy val base64EncodedModelString = VwJniModel.readModel(new FileInputStream(vwModelPath))
+    lazy val base64EncodedModelString = VwJniModel.readBinaryVwModelToB64String(new FileInputStream(VwJniModelTest.VwModelPath))
 }
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
@@ -40,12 +38,23 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |        numeric id of the model.
               |  --vw-args <value>
               |        arguments to vw
+              |  --num-missing-thresh <value>
+              |        number of missing features to allow before returning a 'no-prediction'.
+              |  --note <value>
+              |        notes to add to the model. Can provide this many parameter times.
+              |  --spline-min <value>
+              |        min value for spline domain. (must additional provide spline-max and spline-knots).
+              |  --spline-max <value>
+              |        max value for spline domain. (must additional provide spline-min and spline-knots).
+              |  --spline-knots <value>
+              |        max value for spline domain. (must additional provide spline-min, spline-delta, and spline-knots).
             """).stripMargin
+
         assertEquals(expected.trim, errContent.trim)
     }
 
     @Test def testMissingSpecParam(): Unit = {
-        Cli.main(Array("-m", vwModelPath))
+        Cli.main(Array("-m", VwJniModelTest.VwModelPath))
         val expected =
             """
               |Error: Missing option --spec
@@ -62,7 +71,18 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |        numeric id of the model.
               |  --vw-args <value>
               |        arguments to vw
+              |  --num-missing-thresh <value>
+              |        number of missing features to allow before returning a 'no-prediction'.
+              |  --note <value>
+              |        notes to add to the model. Can provide this many parameter times.
+              |  --spline-min <value>
+              |        min value for spline domain. (must additional provide spline-max and spline-knots).
+              |  --spline-max <value>
+              |        max value for spline domain. (must additional provide spline-min and spline-knots).
+              |  --spline-knots <value>
+              |        max value for spline domain. (must additional provide spline-min, spline-delta, and spline-knots).
             """.stripMargin
+
         assertEquals(expected.trim, errContent.trim)
     }
 
@@ -84,12 +104,23 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |        numeric id of the model.
               |  --vw-args <value>
               |        arguments to vw
+              |  --num-missing-thresh <value>
+              |        number of missing features to allow before returning a 'no-prediction'.
+              |  --note <value>
+              |        notes to add to the model. Can provide this many parameter times.
+              |  --spline-min <value>
+              |        min value for spline domain. (must additional provide spline-max and spline-knots).
+              |  --spline-max <value>
+              |        max value for spline domain. (must additional provide spline-min and spline-knots).
+              |  --spline-knots <value>
+              |        max value for spline domain. (must additional provide spline-min, spline-delta, and spline-knots).
             """.stripMargin
+
         assertEquals(expected.trim, errContent.trim)
     }
 
     @Test def testSpecFileDoesntExist(): Unit = {
-        Cli.main(Array("-m", vwModelPath, "-s", "res:SPECTHATDOESNTEXIST"))
+        Cli.main(Array("-m", VwJniModelTest.VwModelPath, "-s", "res:SPECTHATDOESNTEXIST"))
         val expected =
             """
               |Error: Option --spec failed when given 'res:SPECTHATDOESNTEXIST'. Badly formed URI "res:SPECTHATDOESNTEXIST".
@@ -106,7 +137,18 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |        numeric id of the model.
               |  --vw-args <value>
               |        arguments to vw
+              |  --num-missing-thresh <value>
+              |        number of missing features to allow before returning a 'no-prediction'.
+              |  --note <value>
+              |        notes to add to the model. Can provide this many parameter times.
+              |  --spline-min <value>
+              |        min value for spline domain. (must additional provide spline-max and spline-knots).
+              |  --spline-max <value>
+              |        max value for spline domain. (must additional provide spline-min and spline-knots).
+              |  --spline-knots <value>
+              |        max value for spline domain. (must additional provide spline-min, spline-delta, and spline-knots).
             """.stripMargin
+
         assertEquals(expected.trim, errContent.trim)
     }
 
@@ -128,13 +170,24 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |        numeric id of the model.
               |  --vw-args <value>
               |        arguments to vw
+              |  --num-missing-thresh <value>
+              |        number of missing features to allow before returning a 'no-prediction'.
+              |  --note <value>
+              |        notes to add to the model. Can provide this many parameter times.
+              |  --spline-min <value>
+              |        min value for spline domain. (must additional provide spline-max and spline-knots).
+              |  --spline-max <value>
+              |        max value for spline domain. (must additional provide spline-min and spline-knots).
+              |  --spline-knots <value>
+              |        max value for spline domain. (must additional provide spline-min, spline-delta, and spline-knots).
             """.stripMargin
+
         assertEquals(expected.trim, errContent.trim)
     }
 
     @Test def testArrayJson(): Unit = {
         try {
-            Cli.main(Array("-m", vwModelPath,
+            Cli.main(Array("-m", VwJniModelTest.VwModelPath,
                            "-s", "res:com/eharmony/aloha/models/vw/jni/array.js"))
         }
         catch {
@@ -145,7 +198,7 @@ class CliTest extends TestWithIoCapture(CliTest) {
 
     @Test def testHappy(): Unit = {
         val args = Array(
-            "-m", vwModelPath,
+            "-m", VwJniModelTest.VwModelPath,
             "-s", "res:com/eharmony/aloha/models/vw/jni/good.logistic.aloha.js",
             "-i", "0",
             "-n", "model name",

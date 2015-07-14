@@ -15,11 +15,9 @@ import spray.json.pimpString
  */
 object VwJniModelCreatorTest extends IoCaptureCompanion {
   @BeforeClass def createModel(): Unit = VwJniModelTest.createModel()
-  def vwModelPath = VwJniModelTest.VwModelPath
-
-  lazy val base64EncodedModelString = VwJniModel.readModel(new FileInputStream(vwModelPath))
+  lazy val base64EncodedModelString = VwJniModel.readBinaryVwModelToB64String(new FileInputStream(VwJniModelTest.VwModelPath))
   val vfs = VFS.getManager
-  val vfsModel = vfs.resolveFile(vwModelPath)
+  val vfsModel = vfs.resolveFile(VwJniModelTest.VwModelPath)
   val vfsSpec = vfs.resolveFile("res:com/eharmony/aloha/models/vw/jni/good.logistic.aloha.js")
   val cds = ConstantDeltaSpline(0, 1, IndexedSeq(0.25, 0.75))
 }
@@ -47,7 +45,7 @@ class VwJniModelCreatorTest {
                                                                             |}
                                                                           """).stripMargin.parseJson
     val actual = VwJniModelCreator.buildModel(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"))
-    assertEquals(actual, expected)
+    assertEquals(expected, actual)
   }
 
   @Test def withNotes() = {
@@ -72,7 +70,7 @@ class VwJniModelCreatorTest {
                                                                             |}
                                                                           """).stripMargin.parseJson
     val actual = VwJniModelCreator.buildModel(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"), None, Some(Seq("This is a note")))
-    assertEquals(actual, expected)
+    assertEquals(expected, actual)
   }
 
   @Test def withSpline() = {
@@ -100,7 +98,7 @@ class VwJniModelCreatorTest {
                                                                           """).stripMargin.parseJson
 
     val actual = VwJniModelCreator.buildModel(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"), None, None, Some(cds))
-    assertEquals(actual, expected)
+    assertEquals(expected, actual)
   }
 
   @Test def withNotesAndSpline() = {
@@ -130,6 +128,6 @@ class VwJniModelCreatorTest {
                                                                             |}
                                                                           """).stripMargin.parseJson
     val actual = VwJniModelCreator.buildModel(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"), None, Some(Seq("This is a note")), Some(cds))
-    assertEquals(actual, expected)
+    assertEquals(expected, actual)
   }
 }

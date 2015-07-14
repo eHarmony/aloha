@@ -1,6 +1,6 @@
 package com.eharmony.aloha.models.vw.jni
 
-import java.io.{File, FileInputStream, InputStream}
+import java.io._
 import java.{lang => jl}
 
 import com.eharmony.aloha.FileLocations
@@ -31,9 +31,25 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.Try
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
-// @Ignore
 class VwJniModelTest {
     import VwJniModelTest._
+
+    @Test def testSerialization(): Unit = {
+        val m = model[Double](typeTestJson)
+        val f = File.createTempFile("testSerialization", "obj")
+        f.deleteOnExit()
+
+        val oos = new ObjectOutputStream(new FileOutputStream(f))
+        oos.writeObject(m)
+        oos.close()
+
+        val ois = new ObjectInputStream(new FileInputStream(f))
+        val m1 = ois.readObject().asInstanceOf[VwJniModel[CsvLine, Double]]
+        ois.close()
+
+        assertEquals(m.toString, m1.toString)
+        assertEquals(m(missingHeight), m1(missingHeight))
+    }
 
     @Test def testFailureWhenVwIsCreatedWithLinkParamAndInitialRegressorHasSameLink(): Unit = {
         try {
@@ -48,7 +64,7 @@ class VwJniModelTest {
     }
 
     @Test def testAllocatedModelEqualsOriginalModel(): Unit = {
-        val modelBytes = readFile(VwModelFile)// VFS.getManager.resolveFile(LogisticModelVfsPath).getContent.getInputStream
+        val modelBytes = readFile(VwModelFile)
         val out = new String(Base64.encodeBase64(modelBytes))
         val tmpFile = VwJniModel.allocateModel(1, out)
         val tmpBytes = readFile(tmpFile)
@@ -107,12 +123,13 @@ class VwJniModelTest {
         // Because height_mm feature isn't in any namespace.
         VwJniModel(
             ModelId.empty,
-            new VW("--quiet"),
+            VwB64Model,
+            "--quiet",
             Vector("height_mm"),
             Vector(h),
             Nil,
             Nil,
-            (f: Float) => f
+            (f: Double) => f
         )
     }
 
@@ -123,12 +140,13 @@ class VwJniModelTest {
 
         VwJniModel(
             ModelId.empty,
-            new VW("--quiet"),
+            VwB64Model,
+            "--quiet",
             Vector(),
             Vector(h),
             Nil,
             Nil,
-            (f: Float) => f
+            (f: Double) => f
         )
     }
 
@@ -139,12 +157,13 @@ class VwJniModelTest {
 
         VwJniModel(
             ModelId.empty,
-            new VW("--quiet"),
+            VwB64Model,
+            "--quiet",
             Vector("height_mm"),
             Vector(),
             Nil,
             Nil,
-            (f: Float) => f
+            (f: Double) => f
         )
     }
 
@@ -194,7 +213,7 @@ class VwJniModelTest {
      * @tparam A
      */
     private[this] def testOutputType[A : RefInfo : ScoreConverter : JsonReader](): Unit = {
-        val tc = TypeCoercion[Float, Option[A]].get
+        val tc = TypeCoercion[Double, Option[A]].get
         val m = model[A](typeTestJson)
         val y = m(missingHeight)
         assertEquals(tc(ExpVwOutput), y)
@@ -204,6 +223,8 @@ class VwJniModelTest {
 object VwJniModelTest extends Logging {
     private[jni] val VwModelFile = new File(FileLocations.testClassesDirectory, "VwJniModelTest-vw.model")
     private[jni] val VwModelPath = VwModelFile.getCanonicalPath
+
+    private[jni] lazy val VwB64Model = VwJniModel.readBinaryVwModelToB64String(new FileInputStream(VwModelFile))
 
     val columns = Seq(
         "height_cm" -> CsvTypes.LongOptionType,
@@ -235,7 +256,7 @@ object VwJniModelTest extends Logging {
           |}
         """.stripMargin.trim.parseJson
 
-    val typeTestJson =
+    lazy val typeTestJson =
        ("""
           |{
           |  "modelType": "VwJNI",
@@ -250,15 +271,15 @@ object VwJniModelTest extends Logging {
           |  "vw": {
           |    "params": [
           |      "--quiet",
-          |      "-t",
-          |      "-i """.stripMargin + VwModelPath + """"
-          |    ]
+          |      "-t"
+          |    ],
+          |    "model": """".stripMargin + VwB64Model + """"
           |  }
           |}
         """.stripMargin).trim.parseJson
 
-    val noThreshJson =
-        """
+    lazy val noThreshJson =
+       ("""
           |{
           |  "modelType": "VwJNI",
           |  "modelId": { "id": 0, "name": "" },
@@ -272,13 +293,14 @@ object VwJniModelTest extends Logging {
           |    "params": [
           |      "--quiet",
           |      "-t"
-          |    ]
+          |    ],
+          |    "model": """".stripMargin + VwB64Model + """"
           |  }
           |}
-        """.stripMargin.trim.parseJson
+        """.stripMargin).trim.parseJson
 
-    val threshJson =
-        """
+    lazy val threshJson =
+       ("""
           |{
           |  "modelType": "VwJNI",
           |  "modelId": { "id": 0, "name": "" },
@@ -293,13 +315,14 @@ object VwJniModelTest extends Logging {
           |    "params": [
           |      "--quiet",
           |      "-t"
-          |    ]
+          |    ],
+          |    "model": """".stripMargin + VwB64Model + """"
           |  }
           |}
-        """.stripMargin.trim.parseJson
+        """.stripMargin).trim.parseJson
 
-    val nsWithUndeclFeatureJson =
-        """
+    lazy val nsWithUndeclFeatureJson =
+       ("""
           |{
           |  "modelType": "VwJNI",
           |  "modelId": { "id": 0, "name": "" },
@@ -314,13 +337,14 @@ object VwJniModelTest extends Logging {
           |    "params": [
           |      "--quiet",
           |      "-t"
-          |    ]
+          |    ],
+          |    "model": """".stripMargin + VwB64Model + """"
           |  }
           |}
-        """.stripMargin.trim.parseJson
+        """.stripMargin).trim.parseJson
 
-    val nonCoveringNsJson =
-        """
+    lazy val nonCoveringNsJson =
+       ("""
           |{
           |  "modelType": "VwJNI",
           |  "modelId": { "id": 0, "name": "" },
@@ -332,28 +356,37 @@ object VwJniModelTest extends Logging {
           |    "params": [
           |      "--quiet",
           |      "-t"
-          |    ]
+          |    ],
+          |    "model": """".stripMargin + VwB64Model + """"
           |  }
           |}
-        """.stripMargin.trim.parseJson
+        """.stripMargin).trim.parseJson
 
 
-    val badVwArgsJson =
-        """
+    lazy val badVwArgsJson =
+       ("""
           |{
           |  "modelType": "VwJNI",
           |  "modelId": { "id": 0, "name": "" },
           |  "features": { "height": "Seq((\"\", 180.0))" },
           |  "vw": {
-          |    "params": "--quiet --BAD_FEATURE___ounq24tjnasdf8h"
+          |    "params": "--quiet --BAD_FEATURE___ounq24tjnasdf8h",
+          |    "model": """".stripMargin + VwB64Model + """"
           |  }
           |}
-        """.stripMargin.trim.parseJson
+        """.stripMargin).trim.parseJson
 
 
     val csvLines = CsvLines(indices = columns.unzip._1.zipWithIndex.toMap, fs = ",")
-    val plugin = CompiledSemanticsCsvPlugin(columns:_*)
-    val semantics = CompiledSemantics(TwitterEvalCompiler(), plugin, Seq("scala.math._", "com.eharmony.aloha.feature.BasicFunctions._"))
+
+    val semantics = {
+        // NOTE: It is very important that the classCacheDir is specified because the serialization test
+        //       will fail otherwise.  This is because the class definition won't be found otherwise.
+        val compiler = TwitterEvalCompiler(classCacheDir = Option(FileLocations.testGeneratedClasses))
+        val plugin = CompiledSemanticsCsvPlugin(columns:_*)
+        val imports = Seq("scala.math._", "com.eharmony.aloha.feature.BasicFunctions._")
+        CompiledSemantics(compiler, plugin, imports)
+    }
 
     val missingHeight = csvLines(",0,red")
 
@@ -361,7 +394,7 @@ object VwJniModelTest extends Logging {
     /**
      * The output of the model created by createModel.
      */
-    val ExpVwOutput = 0.50419676f
+    val ExpVwOutput = 0.5041967630386353
 
     /**
      * Don't call this manually.  Should only be called by the testing framework.  Is Idempotent though.

@@ -7,7 +7,7 @@ import scala.collection.GenTraversable
 
 import org.junit.runners.BlockJUnit4ClassRunner
 import org.junit.runner.RunWith
-import org.junit.Test
+import org.junit.{Ignore, Test}
 import org.junit.Assert._
 
 import com.eharmony.aloha.util.Timing
@@ -18,9 +18,10 @@ import com.eharmony.aloha.util.Timing
 class CsvLinesTest extends Timing {
 
     /** Test that parallel is faster most of the time.  Only run this when there are at least 3 "processors"
-      * (concurrent threads).
+      * (concurrent threads).  This is ignored because it results in intermittent failing builds.  This is probably
+      * more appropriate for a benchmark suite.
       */
-    @Test def testParallelVsSequential() {
+    @Ignore @Test def testParallelVsSequential() {
 
         if (Runtime.getRuntime.availableProcessors() <= 2) {
             println(s"available processors = ${Runtime.getRuntime.availableProcessors}.  Cancelling test.")

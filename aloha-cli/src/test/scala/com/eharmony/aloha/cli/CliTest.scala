@@ -36,7 +36,7 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |Usage: vw [options]
               |
               |  -s <value> | --spec <value>
-              |        spec is an Apache VFS URL to an aloha spec file with modelType 'VwJNI'.
+              |        spec is an Apache VFS URL to an aloha spec file.
               |  -m <value> | --model <value>
               |        model is an Apache VFS URL to a VW binary model.
               |  -n <value> | --name <value>
@@ -45,7 +45,18 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |        numeric id of the model.
               |  --vw-args <value>
               |        arguments to vw
+              |  --num-missing-thresh <value>
+              |        number of missing features to allow before returning a 'no-prediction'.
+              |  --note <value>
+              |        notes to add to the model. Can provide this many parameter times.
+              |  --spline-min <value>
+              |        min value for spline domain. (must additional provide spline-max and spline-knots).
+              |  --spline-max <value>
+              |        max value for spline domain. (must additional provide spline-min and spline-knots).
+              |  --spline-knots <value>
+              |        max value for spline domain. (must additional provide spline-min, spline-delta, and spline-knots).
             """.stripMargin
+
         assertEquals(expected.trim, errContent.trim)
     }
 }
