@@ -58,7 +58,9 @@ class VwJniModelTest {
             fail("VW should throw a java.lang.Exception with message: \"option '--link' cannot be specified more than once\"");
         }
         catch {
-            case e: IllegalArgumentException if e.getClass.getSimpleName == "IllegalArgumentException" && e.getMessage == "option '--link' cannot be specified more than once" =>
+            // Can't rely on msg because different versions of boost (a dep of VW) return different messages
+            // case e: IllegalArgumentException if e.getClass.getSimpleName == "IllegalArgumentException" && e.getMessage == "option '--link' cannot be specified more than once" =>
+            case e: IllegalArgumentException if e.getClass.getSimpleName == "IllegalArgumentException" =>
             case t: Throwable => throw t
         }
     }
@@ -194,10 +196,12 @@ class VwJniModelTest {
             case e: AssertionError => throw e
 
             // Swallow.  We want this exception.
-            case e: IllegalArgumentException if e.getMessage == "unrecognised option '--BAD_FEATURE___ounq24tjnasdf8h'" =>
+            // Can't rely on msg because different versions of boost (a dep of VW) return different messages
+            case e: IllegalArgumentException => // if e.getMessage == "option '--BAD_FEATURE___ounq24tjnasdf8h'" =>
 
             // Wrong exception type.
-            case e: Throwable if e.getMessage == "unrecognised option '--BAD_FEATURE___ounq24tjnasdf8h'" =>
+            case e: Throwable if e.getMessage != "Should throw exception." =>
+                // if e.getMessage == "option '--BAD_FEATURE___ounq24tjnasdf8h'" =>
                 fail("Should throw IllegalArgumentException.  Threw Exception.")
         }
     }
