@@ -13,7 +13,7 @@ import spray.json.pimpString
 /**
  * Created by jmorra on 7/10/15.
  */
-object VwJniModelCreatorTest extends IoCaptureCompanion {
+object VwJniModelJsonTest extends IoCaptureCompanion {
   @BeforeClass def createModel(): Unit = VwJniModelTest.createModel()
   lazy val base64EncodedModelString = VwJniModel.readBinaryVwModelToB64String(new FileInputStream(VwJniModelTest.VwModelPath))
   val vfs = VFS.getManager
@@ -22,8 +22,8 @@ object VwJniModelCreatorTest extends IoCaptureCompanion {
   val cds = ConstantDeltaSpline(0, 1, IndexedSeq(0.25, 0.75))
 }
 
-class VwJniModelCreatorTest {
-  import VwJniModelCreatorTest._
+class VwJniModelJsonTest {
+  import VwJniModelJsonTest._
 
   @Test def testGoodModel() = {
 
@@ -44,7 +44,7 @@ class VwJniModelCreatorTest {
                                                                             |  }
                                                                             |}
                                                                           """).stripMargin.parseJson
-    val actual = VwJniModelCreator.buildModel(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"))
+    val actual = VwJniModel.json(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"))
     assertEquals(expected, actual)
   }
 
@@ -69,7 +69,7 @@ class VwJniModelCreatorTest {
                                                                             |  }
                                                                             |}
                                                                           """).stripMargin.parseJson
-    val actual = VwJniModelCreator.buildModel(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"), None, Some(Seq("This is a note")))
+    val actual = VwJniModel.json(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"), None, Some(Seq("This is a note")))
     assertEquals(expected, actual)
   }
 
@@ -97,7 +97,7 @@ class VwJniModelCreatorTest {
                                                                             |}
                                                                           """).stripMargin.parseJson
 
-    val actual = VwJniModelCreator.buildModel(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"), None, None, Some(cds))
+    val actual = VwJniModel.json(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"), None, None, Some(cds))
     assertEquals(expected, actual)
   }
 
@@ -127,7 +127,7 @@ class VwJniModelCreatorTest {
                                                                             |  }
                                                                             |}
                                                                           """).stripMargin.parseJson
-    val actual = VwJniModelCreator.buildModel(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"), None, Some(Seq("This is a note")), Some(cds))
+    val actual = VwJniModel.json(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"), None, Some(Seq("This is a note")), Some(cds))
     assertEquals(expected, actual)
   }
 }

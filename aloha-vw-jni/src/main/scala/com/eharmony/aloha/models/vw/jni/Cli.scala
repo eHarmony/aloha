@@ -36,7 +36,7 @@ object Cli {
             case Some(Config(spec, model, id, name, vwArgs, numMissingThresh, notesList, min, max, knots)) =>
                 val spline = for (n <- min; x <- max; k <- knots) yield ConstantDeltaSpline(n, x, k)
                 val notes = Option(notesList) filter {_.nonEmpty}
-                val jsonAst = VwJniModelCreator.buildModel(spec, model, ModelId(id, name), vwArgs, numMissingThresh, notes, spline)
+                val jsonAst = VwJniModel.json(spec, model, ModelId(id, name), vwArgs, numMissingThresh, notes, spline)
                 println(jsonAst.compactPrint)
             case None => // Will be taken care of by scopt.
         }
