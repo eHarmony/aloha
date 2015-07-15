@@ -34,7 +34,6 @@ import scala.util.Try
 class VwJniModelTest {
     import VwJniModelTest._
 
-
     /**
      * This test works locally but fails on jenkins.  Ignore for now.
      */
