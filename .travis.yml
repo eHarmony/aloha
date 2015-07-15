@@ -3,4 +3,10 @@ scala:
    - 2.10.4
 jdk:
   - oraclejdk7
+
+before_install:
+    - git checkout git@github.corp.eharmony.com:matching/aloha-proto.git
+    - cd aloha-proto
+    - mvn clean install
+    - cd -
 install: mvn clean package -DskipTests=false
