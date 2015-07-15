@@ -5,12 +5,14 @@ jdk:
   - oraclejdk7
 
 before_install:
-    - wget https://protobuf.googlecode.com/files/protobuf-2.4.1.tar.gz
-    - tar -xzvf protobuf-2.4.1.tar.gz
-    - cd protobuf-2.4.1 && ./configure --prefix=/usr && make && sudo make install
-    - cd -
-    - git clone https://github.com/eHarmony/aloha-proto.git
-    - cd aloha-proto
-    - mvn clean install
-    - cd -
+    - lsb_release -r
+    - cat /proc/version
+#    - wget https://protobuf.googlecode.com/files/protobuf-2.4.1.tar.gz
+#    - tar -xzvf protobuf-2.4.1.tar.gz
+#    - cd protobuf-2.4.1 && ./configure --prefix=/usr && make && sudo make install
+#    - cd -
+#    - git clone https://github.com/eHarmony/aloha-proto.git
+#    - cd aloha-proto
+#    - mvn clean install
+#    - cd -
 install: mvn clean package -DskipTests=false
