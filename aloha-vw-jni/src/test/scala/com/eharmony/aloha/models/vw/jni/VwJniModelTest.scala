@@ -34,7 +34,7 @@ import scala.util.Try
 class VwJniModelTest {
     import VwJniModelTest._
 
-    @Test def testSerialization(): Unit = {
+  @Ignore @Test def testSerialization(): Unit = {
         val m = model[Double](typeTestJson)
 
         val baos = new ByteArrayOutputStream()
