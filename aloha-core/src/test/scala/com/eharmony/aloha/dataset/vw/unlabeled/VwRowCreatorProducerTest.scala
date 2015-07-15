@@ -1,6 +1,6 @@
 package com.eharmony.aloha.dataset.vw.unlabeled
 
-import com.eharmony.aloha.dataset.SpecBuilder
+import com.eharmony.aloha.dataset.RowCreatorBuilder
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import com.eharmony.aloha.FileLocations
@@ -13,11 +13,11 @@ import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
-class VwSpecProducerTest {
+class VwRowCreatorProducerTest {
     @Test def test1() {
         val p = CompiledSemanticsCsvPlugin()
         val sem = CompiledSemantics(TwitterEvalCompiler(classCacheDir = Option(FileLocations.testGeneratedClasses)), p, Nil)
-        val sb = SpecBuilder(sem, List(new VwSpecProducer[CsvLine]))
+        val sb = RowCreatorBuilder(sem, List(new VwRowCreator.Producer[CsvLine]))
 
         val json1 =
             """

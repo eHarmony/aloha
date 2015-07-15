@@ -1,14 +1,17 @@
 package com.eharmony.aloha.dataset.libsvm.unlabeled
 
 import com.eharmony.aloha.dataset.density.Sparse
-import com.eharmony.aloha.dataset.{FeatureExtractorFunction, MissingAndErroneousFeatureInfo, Spec}
+import com.eharmony.aloha.dataset.libsvm.unlabeled.json.LibSvmUnlabeledJson
+import com.eharmony.aloha.dataset.{CompilerFailureMessages, FeatureExtractorFunction, MissingAndErroneousFeatureInfo, RowCreator, RowCreatorProducer, SparseCovariateProducer}
+import com.eharmony.aloha.semantics.compiled.CompiledSemantics
+import com.eharmony.aloha.util.Logging
 import com.eharmony.aloha.util.hashing.HashFunction
-
-//import com.google.common.hash.HashFunction
+import spray.json.JsValue
 
 import scala.collection.{immutable => sci}
+import scala.util.Try
 
-class LibSvmSpec[-A](covariates: FeatureExtractorFunction[A, Sparse], hash: HashFunction, numBits: Int = LibSvmSpec.DefaultBits) extends Spec[A] {
+class LibSvmRowCreator[-A](covariates: FeatureExtractorFunction[A, Sparse], hash: HashFunction, numBits: Int = LibSvmRowCreator.DefaultBits) extends RowCreator[A] {
     require(1 <= numBits && numBits <= 31, s"numBits must be in {1, 2, ..., 31}.  Found $numBits")
 
     private[this] val mask = (1 << numBits) - 1
@@ -41,6 +44,27 @@ class LibSvmSpec[-A](covariates: FeatureExtractorFunction[A, Sparse], hash: Hash
     }
 }
 
-object LibSvmSpec {
+final object LibSvmRowCreator {
     val DefaultBits = 18
+
+    final case class Producer[A]()
+        extends RowCreatorProducer[A, LibSvmRowCreator[A]]
+        with SparseCovariateProducer
+        with CompilerFailureMessages
+        with Logging {
+
+        type JsonType = LibSvmUnlabeledJson
+        def name = getClass.getSimpleName
+        def parse(json: JsValue): Try[LibSvmUnlabeledJson] = Try { json.convertTo[LibSvmUnlabeledJson] }
+        def getRowCreator(semantics: CompiledSemantics[A], jsonSpec: LibSvmUnlabeledJson): Try[LibSvmRowCreator[A]] = {
+            val covariates: Try[FeatureExtractorFunction[A, Sparse]] = getCovariates(semantics, jsonSpec)
+            val hash: HashFunction = jsonSpec.salt match {
+                case Some(s) => new com.eharmony.aloha.util.hashing.MurmurHash3(s)
+                case None    => com.eharmony.aloha.util.hashing.MurmurHash3
+            }
+            warn(hash.salts)
+            covariates.map(c => jsonSpec.numBits.fold(new LibSvmRowCreator(c, hash))(b => new LibSvmRowCreator(c, hash, b)))
+        }
+    }
+
 }

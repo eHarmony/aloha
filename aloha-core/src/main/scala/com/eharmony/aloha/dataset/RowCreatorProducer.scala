@@ -5,7 +5,7 @@ import spray.json.JsValue
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 
 /**
- * SpecProducer is used to create different kinds of [[Spec]] instances.  '''Classes that extend SpecProducer should
+ * SpecProducer is used to create different kinds of [[RowCreator]] instances.  '''Classes that extend SpecProducer should
  * only have zero-arg constructors.'''  This is because Spec instances should only be parametrized by the JSON
  * specification.  Otherwise, one JSON specification could produce non-equivalent Spec instances in different
  * environments.  It is a design goal for this not to happen.
@@ -13,7 +13,7 @@ import com.eharmony.aloha.semantics.compiled.CompiledSemantics
  * @tparam A type of input passed to the spec.
  * @tparam B implementation of the Spec[A] that is returned by the getSpec function.
  */
-trait SpecProducer[A, +B <: Spec[A]] {
+trait RowCreatorProducer[A, +B <: RowCreator[A]] {
 
     /**
      * Type of parsed JSON object.
@@ -36,8 +36,8 @@ trait SpecProducer[A, +B <: Spec[A]] {
     /**
      * Attempt to produce a Spec.
      * @param semantics semantics used to make sense of the features in the JsonSpec
-     * @param jsonSpec a JSON specification to transform into a Spec.
+     * @param jsonSpec a JSON specification to transform into a RowCreator.
      * @return
      */
-    def getSpec(semantics: CompiledSemantics[A], jsonSpec: JsonType): Try[B]
+    def getRowCreator(semantics: CompiledSemantics[A], jsonSpec: JsonType): Try[B]
 }

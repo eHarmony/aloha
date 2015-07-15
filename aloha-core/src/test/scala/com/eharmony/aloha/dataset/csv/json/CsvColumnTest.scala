@@ -8,7 +8,7 @@ import spray.json.DefaultJsonProtocol.{DoubleJsonFormat, LongJsonFormat}
 
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
-class CsvColumnSpecTest {
+class CsvColumnTest {
     @Test def test1() {
         val examples = Seq(
             """{ "name": "long",       "type": "long",   "spec": "${long}" }""",
@@ -18,13 +18,13 @@ class CsvColumnSpecTest {
         )
 
         val expected = Seq(
-            CsvColumnSpecWithDefault[Long]("long", "${long}"),
-            CsvColumnSpecWithDefault[Double]("opt_double", "${opt_double}"),
-            SyntheticEnumCsvColumnSpec("syn_enum", "${opt_string}", Seq("e1v1")),
-            EnumCsvColumnSpec("enum", "${string}", "com.eharmony.matching.notaloha.AnEnum")
+            CsvColumnWithDefault[Long]("long", "${long}"),
+            CsvColumnWithDefault[Double]("opt_double", "${opt_double}"),
+            SyntheticEnumCsvColumn("syn_enum", "${opt_string}", Seq("e1v1")),
+            EnumCsvColumn("enum", "${string}", "com.eharmony.matching.notaloha.AnEnum")
         )
 
-        val act = examples.foreach{ ex => CsvColumnSpec.csvColumnSpecFormat.read(ex.parseJson) }
+        val act = examples.foreach{ ex => CsvColumn.csvColumnSpecFormat.read(ex.parseJson) }
 
         // TODO: actually test.
         // assertEquals(expected, act)

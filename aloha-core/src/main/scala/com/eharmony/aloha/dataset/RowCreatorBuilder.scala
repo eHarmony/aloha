@@ -18,18 +18,18 @@ import scala.util.{Failure, Success, Try}
 
 
 /**
- * Given a semantics, json specification and an ordered sequence of SpecProducers, ''find the first producer''
- * that applies to creating a Spec from the json specification and use it to instantiate the Spec object.
- * @param semantics a Semantics to be used for creating the Spec.
- * @param producers an ordered sequence of SpecProducers.  These producers form the basis of a
+ * Given a semantics, json specification and an ordered sequence of RowCreatorProducers, ''find the first producer''
+ * that applies to creating a Spec from the json specification and use it to instantiate the RowCreator object.
+ * @param semantics a Semantics to be used for creating the RowCreator.
+ * @param producers an ordered sequence of RowCreatorProducers.  These producers form the basis of a
  *                  [[http://en.wikipedia.org/wiki/Chain-of-responsibility_pattern chain of responsibility pattern]].
  *                  Therefore, '''the order is important'''.
  * @tparam A the result type produced by reading from one of the readable formats.
  * @tparam B the implementation of Spec[A] used.
  */
-final case class SpecBuilder[A, B <: Spec[A]](
+final case class RowCreatorBuilder[A, B <: RowCreator[A]](
         semantics: CompiledSemantics[A],
-        producers: List[SpecProducer[A, B]])
+        producers: List[RowCreatorProducer[A, B]])
 extends AlohaReadable[Try[B]]
    with Logging {
 
@@ -43,19 +43,19 @@ extends AlohaReadable[Try[B]]
      *   https://issues.scala-lang.org/browse/SI-8905
      */
     // TODO: Determine if Serializable is necessary to serialize SpecBuilder.
-    private[this] val specReadable = new ReadableByString[Try[B]] {
+    private[this] val rowCreatorReadable = new ReadableByString[Try[B]] {
         override def fromString(s: String) = fromJson(s.parseJson)
     }
 
-    def fromFile(f: File): Try[B] = specReadable.fromFile(f)
-    def fromUrl(u: URL): Try[B] = specReadable.fromUrl(u)
-    def fromVfs1(foVfs1: vfs.FileObject): Try[B] = specReadable.fromVfs1(foVfs1)
-    def fromVfs2(foVfs2: vfs2.FileObject): Try[B] = specReadable.fromVfs2(foVfs2)
-    def fromResource(r: String): Try[B] = specReadable.fromResource(r)
-    def fromClasspathResource(r: String): Try[B] = specReadable.fromClasspathResource(r)
-    def fromInputStream(is: InputStream): Try[B] = specReadable.fromInputStream(is)
-    def fromReader(r: Reader): Try[B] = specReadable.fromReader(r)
-    def fromString(s: String): Try[B] = specReadable.fromString(s)
+    def fromFile(f: File): Try[B] = rowCreatorReadable.fromFile(f)
+    def fromUrl(u: URL): Try[B] = rowCreatorReadable.fromUrl(u)
+    def fromVfs1(foVfs1: vfs.FileObject): Try[B] = rowCreatorReadable.fromVfs1(foVfs1)
+    def fromVfs2(foVfs2: vfs2.FileObject): Try[B] = rowCreatorReadable.fromVfs2(foVfs2)
+    def fromResource(r: String): Try[B] = rowCreatorReadable.fromResource(r)
+    def fromClasspathResource(r: String): Try[B] = rowCreatorReadable.fromClasspathResource(r)
+    def fromInputStream(is: InputStream): Try[B] = rowCreatorReadable.fromInputStream(is)
+    def fromReader(r: Reader): Try[B] = rowCreatorReadable.fromReader(r)
+    def fromString(s: String): Try[B] = rowCreatorReadable.fromString(s)
 
     def fromJson(json: JsValue): Try[B] = {
 
@@ -68,7 +68,7 @@ extends AlohaReadable[Try[B]]
          * @return failures and a possible success.
          */
         @tailrec
-        def find(prod: List[SpecProducer[A, B]], failures: List[Failure[B]]): (List[Failure[B]], Option[B]) = {
+        def find(prod: List[RowCreatorProducer[A, B]], failures: List[Failure[B]]): (List[Failure[B]], Option[B]) = {
             prod match {
                 case Nil => (failures.reverse, None)
                 case p :: tail =>
@@ -78,7 +78,7 @@ extends AlohaReadable[Try[B]]
                             case v: Validation => v.validate().fold(Try(())){f => Failure(new AlohaException(f)) }
                             case _ => Try(())
                         }
-                        spec <- p.getSpec(semantics, typedData)              // Attempt to produce the spec from IR.
+                        spec <- p.getRowCreator(semantics, typedData)              // Attempt to produce the spec from IR.
                     } yield spec
 
                     spec match {
@@ -101,7 +101,7 @@ extends AlohaReadable[Try[B]]
     }
 }
 
-object SpecBuilder {
+object RowCreatorBuilder {
 
     /**
      * This is a factory to be used from Java.  Since java.util.List is invariant, we provide a different signature
@@ -112,8 +112,8 @@ object SpecBuilder {
      * @tparam B subtype of Spec objects produced by the SpecBuilder.
      * @return a new Spec builder.
      */
-    def apply[A, B <: Spec[A]](
+    def apply[A, B <: RowCreator[A]](
             semantics: CompiledSemantics[A],
-            producers: ju.List[_ <: SpecProducer[A, _ <: B]]): SpecBuilder[A, B] =
-        SpecBuilder[A, B](semantics, producers.toList)
+            producers: ju.List[_ <: RowCreatorProducer[A, _ <: B]]): RowCreatorBuilder[A, B] =
+        RowCreatorBuilder[A, B](semantics, producers.toList)
 }

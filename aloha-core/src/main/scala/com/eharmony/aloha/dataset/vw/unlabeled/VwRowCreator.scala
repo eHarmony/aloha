@@ -3,12 +3,18 @@ package com.eharmony.aloha.dataset.vw.unlabeled
 import java.text.DecimalFormat
 
 import com.eharmony.aloha.dataset.density.Sparse
-import com.eharmony.aloha.dataset.vw.unlabeled.VwSpec.{DefaultVwNamespaceName, inEpsilonInterval}
-import com.eharmony.aloha.dataset.{FeatureExtractorFunction, MissingAndErroneousFeatureInfo, Spec}
+import com.eharmony.aloha.dataset.vw.VwCovariateProducer
+import com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator.{DefaultVwNamespaceName, inEpsilonInterval}
+import com.eharmony.aloha.dataset.vw.unlabeled.json.VwUnlabeledJson
+import com.eharmony.aloha.dataset.{CompilerFailureMessages, FeatureExtractorFunction, MissingAndErroneousFeatureInfo, RowCreator, RowCreatorProducer, SparseCovariateProducer}
+import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.util.Logging
+import spray.json._
 
 import scala.annotation.tailrec
 import scala.collection.immutable.BitSet
+import scala.util.Try
+
 
 /**
  * A Spec to create VW input.
@@ -20,13 +26,13 @@ import scala.collection.immutable.BitSet
  * @tparam A input type from which features is extracted.
  */
 @throws[IllegalArgumentException]("If any value {0, 1, ..., featuresFunction.features.size - 1} is not mapped to defaultNamespace or namespaces.")
-class VwSpec[-A](
+class VwRowCreator[-A](
         val featuresFunction: FeatureExtractorFunction[A, Sparse],
         val defaultNamespace: List[Int],
         val namespaces: List[(String, List[Int])],
         val normalizer: Option[CharSequence => CharSequence],
         val includeZeroValues: Boolean = false)
-extends Spec[A]
+extends RowCreator[A]
    with java.io.Serializable
    with Logging {
 
@@ -82,7 +88,7 @@ extends Spec[A]
     /**
      * Add data from a namespace to the VW line.  Data comes in the form of an iterable sequence of key-value pairs
      * where keys are strings and values are doubles.  The values are truncated according to
-     * [[VwSpec.DecimalFormatter]].  If the truncated value is the integer, 1, then the value is omitted from the
+     * [[VwRowCreator.DecimalFormatter]].  If the truncated value is the integer, 1, then the value is omitted from the
      * output (as is allowed by VW).  If the truncated value is zero, then the feature is included only if
      * ''includeZeroValues'' is true.
      *
@@ -119,7 +125,7 @@ extends Spec[A]
 
                 while(it.hasNext) {
                     val (feature, value) = it.next()
-                        if (VwSpec.inEpsilonInterval(value - 1)) {
+                        if (VwRowCreator.inEpsilonInterval(value - 1)) {
                             if (ins) sb.append(" ")
                             sb.append(feature)
                         }
@@ -129,7 +135,7 @@ extends Spec[A]
                             // spit out very large strings of numbers. i don't think very large weights occur
                             // that often with VW so for now i'm not addressing that (potential) issue.
                             if (ins) sb.append(" ")
-                            sb.append(feature).append(":").append(VwSpec.DecimalFormatter.format(value))
+                            sb.append(feature).append(":").append(VwRowCreator.DecimalFormatter.format(value))
                         }
                 }
 
@@ -141,7 +147,7 @@ extends Spec[A]
     }
 }
 
-object VwSpec {
+final object VwRowCreator {
 
     private[vw] val DefaultVwNamespaceName = ""
     /**
@@ -161,4 +167,20 @@ object VwSpec {
     private[this] val eps = math.pow(10, -FeatureDecimalDigits) / 2
     private[this] val negEps = -eps
     private[vw] def inEpsilonInterval(x: Double) = negEps < x && x < eps
+
+    final class Producer[A]
+        extends RowCreatorProducer[A, VwRowCreator[A]]
+        with VwCovariateProducer[A]
+        with SparseCovariateProducer
+        with CompilerFailureMessages {
+
+        type JsonType = VwUnlabeledJson
+        def name = getClass.getSimpleName
+        def parse(json: JsValue): Try[VwUnlabeledJson] = Try { json.convertTo[VwUnlabeledJson] }
+        def getRowCreator(semantics: CompiledSemantics[A], jsonSpec: VwUnlabeledJson): Try[VwRowCreator[A]] = {
+            val (covariates, default, nss, normalizer) = getVwData(semantics, jsonSpec)
+            val spec = covariates.map(c => new VwRowCreator(c, default, nss, normalizer))
+            spec
+        }
+    }
 }

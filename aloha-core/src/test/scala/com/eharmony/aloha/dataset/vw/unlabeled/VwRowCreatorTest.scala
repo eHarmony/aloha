@@ -5,7 +5,7 @@ import java.text.DecimalFormat
 import com.eharmony.aloha.FileLocations
 import com.eharmony.aloha.dataset.{MissingAndErroneousFeatureInfo, SparseFeatureExtractorFunction}
 import com.eharmony.aloha.dataset.density.Sparse
-import com.eharmony.aloha.dataset.vw.unlabeled.VwSpecTest._
+import com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreatorTest._
 import com.eharmony.aloha.feature.BasicFunctions
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
@@ -20,14 +20,14 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Random, Try}
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
-final class VwSpecTest {
+final class VwRowCreatorTest {
 
     @Test def testAllNsEmpty(): Unit = {
         val f = (v: Option[Int]) => v.map(x => Seq(("", x.toDouble))).getOrElse(Nil)
         val f0 = GenFunc.f0[Option[Int], Sparse]("0", f)
         val f1 = GenFunc.f0[Option[Int], Sparse]("1", f)
         val fef = SparseFeatureExtractorFunction(Vector("f0" -> f0, "f1" -> f1))
-        val spec = new VwSpec[Option[Int]](fef, List(0), List("ns1" -> List(1)), None, false)
+        val spec = new VwRowCreator[Option[Int]](fef, List(0), List("ns1" -> List(1)), None, false)
         val vwIn = spec(None)
         assertEquals((MissingAndErroneousFeatureInfo(Nil,Nil), new StringBuilder), vwIn)
     }
@@ -36,7 +36,7 @@ final class VwSpecTest {
         val f0 = GenFunc.f0[Option[Int], Sparse]("0", (v: Option[Int]) => v.map(x => Seq(("", x.toDouble))).getOrElse(Nil))
         val f1 = GenFunc.f0[Option[Int], Sparse]("1", (v: Option[Int]) => v.map(x => Seq(("", x.toDouble))).getOrElse(Seq(("", 1.0))))
         val fef = SparseFeatureExtractorFunction(Vector("f0" -> f0, "f1" -> f1))
-        val spec = new VwSpec[Option[Int]](fef, List(0), List("ns1" -> List(1)), None, false)
+        val spec = new VwRowCreator[Option[Int]](fef, List(0), List("ns1" -> List(1)), None, false)
         val vwIn = spec(None)
         assertEquals((MissingAndErroneousFeatureInfo(Nil,Nil), new StringBuilder("|ns1 f1")), vwIn)
     }
@@ -45,7 +45,7 @@ final class VwSpecTest {
         val f0 = GenFunc.f0[Option[Int], Sparse]("0", (v: Option[Int]) => v.map(x => Seq(("", x.toDouble))).getOrElse(Seq(("", 1.0))))
         val f1 = GenFunc.f0[Option[Int], Sparse]("1", (v: Option[Int]) => v.map(x => Seq(("", x.toDouble))).getOrElse(Nil))
         val fef = SparseFeatureExtractorFunction(Vector("f0" -> f0, "f1" -> f1))
-        val spec = new VwSpec[Option[Int]](fef, List(0), List("ns1" -> List(1)), None, false)
+        val spec = new VwRowCreator[Option[Int]](fef, List(0), List("ns1" -> List(1)), None, false)
         val vwIn = spec(None)
         assertEquals((MissingAndErroneousFeatureInfo(Nil,Nil), new StringBuilder("| f0")), vwIn)
     }
@@ -55,14 +55,14 @@ final class VwSpecTest {
      * &epsilon; of the original value, where &epsilon; = 10^-''VwSpec.FeatureDecimalDigits''^ / 2.
      */
     @Test def testFeatureFormatterOneMinusEpsilonInterval() {
-        val denom = math.pow(10, VwSpec.FeatureDecimalDigits - 1)
-        val eps = math.pow(10, -VwSpec.FeatureDecimalDigits) / 2
+        val denom = math.pow(10, VwRowCreator.FeatureDecimalDigits - 1)
+        val eps = math.pow(10, -VwRowCreator.FeatureDecimalDigits) / 2
         val r = new Random(0)
 
         val counts = 1 to 10000 flatMap { i =>
             val x = 1 - r.nextDouble() / denom
-            Seq( x -> VwSpec.DecimalFormatter.format(x).toDouble,
-                -x -> VwSpec.DecimalFormatter.format(-x).toDouble)
+            Seq( x -> VwRowCreator.DecimalFormatter.format(x).toDouble,
+                -x -> VwRowCreator.DecimalFormatter.format(-x).toDouble)
         } collect {
             case(d, s) if s == d => (d, s)                // If the values are equal, that's bad.
             case(d, s) if math.abs(s - d) > eps => (d, s) // If the values differ too much, that's bad.
@@ -82,13 +82,13 @@ final class VwSpecTest {
      * }}}
      */
     @Test def testLabelFormatterOneMinusEpsilonInterval() {
-        val denom = math.pow(10, VwSpec.LabelDecimalDigits - 1)
+        val denom = math.pow(10, VwRowCreator.LabelDecimalDigits - 1)
         val r = new Random(0)
 
         val counts = 1 to 10000 flatMap { i =>
             val x = 1 - r.nextDouble() / denom
-            Seq( x -> VwSpec.LabelDecimalFormatter.format(x),
-                -x -> VwSpec.LabelDecimalFormatter.format(-x))
+            Seq( x -> VwRowCreator.LabelDecimalFormatter.format(x),
+                -x -> VwRowCreator.LabelDecimalFormatter.format(-x))
         } collect { case(d, s) if s.toDouble != d => (d, s) }
 
         assertEquals(s"counts should be empty.  Found ${counts.distinct.take(10)} ...", 0, counts.size)
@@ -101,7 +101,7 @@ final class VwSpecTest {
      * }}}
      */
     @Test def testLabelFormatterEpsilonInterval() {
-        testEpsilonInterval(VwSpec.LabelDecimalDigits, VwSpec.labelInEpsilonInterval, VwSpec.LabelDecimalFormatter)
+        testEpsilonInterval(VwRowCreator.LabelDecimalDigits, VwRowCreator.labelInEpsilonInterval, VwRowCreator.LabelDecimalFormatter)
     }
 
     /**
@@ -111,7 +111,7 @@ final class VwSpecTest {
      * }}}
      */
     @Test def testFeatureFormatterEpsilonInterval() {
-        testEpsilonInterval(VwSpec.FeatureDecimalDigits, VwSpec.inEpsilonInterval, VwSpec.DecimalFormatter)
+        testEpsilonInterval(VwRowCreator.FeatureDecimalDigits, VwRowCreator.inEpsilonInterval, VwRowCreator.DecimalFormatter)
     }
 
     private[this] def testEpsilonInterval(digits: Int, inEpsFunc: Double => Boolean, formatter: DecimalFormat) {
@@ -174,7 +174,7 @@ final class VwSpecTest {
                 )
         ))
 
-        val spec = new VwSpec[CsvLine](
+        val spec = new VwRowCreator[CsvLine](
             features,
             Nil,                                             // default namespace indices
             List("addition" -> List(0), "division" -> List(1)), // namespaces
@@ -205,7 +205,7 @@ final class VwSpecTest {
         ))
 
         expected foreach { case (includeZeroes, exp) =>
-            val spec = new VwSpec[CsvLine](
+            val spec = new VwRowCreator[CsvLine](
                 features,
                 List(0),    // default namespace indices
                 Nil, // namespaces
@@ -218,7 +218,7 @@ final class VwSpecTest {
     }
 }
 
-private object VwSpecTest {
+private object VwRowCreatorTest {
     val Precision = 1.0e6
 
     lazy val semantics = {
@@ -247,7 +247,7 @@ private object VwSpecTest {
      * @param removal how to remove an element from a namespace.
      * @return
      */
-    def createSpec(nFeatures: Int, nNamespaces: Int, removal: Removal): Try[VwSpec[CsvLine]] = {
+    def createSpec(nFeatures: Int, nNamespaces: Int, removal: Removal): Try[VwRowCreator[CsvLine]] = {
 
         val features = (('a' to 'z') ++ ('A' to 'Z') ++ ('0' to '9')).take(nFeatures).map{ c =>
             val name = s"a$c"
@@ -275,7 +275,7 @@ private object VwSpecTest {
         }
 
         // This is intended to fail most of the time (to achieve the testing goal).
-        val specTry = Try { new VwSpec(SparseFeatureExtractorFunction(features), defi, nssi, None) }
+        val specTry = Try { new VwRowCreator(SparseFeatureExtractorFunction(features), defi, nssi, None) }
         specTry
     }
 }

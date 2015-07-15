@@ -1,13 +1,13 @@
 package com.eharmony.aloha.dataset.libsvm
 
-import com.eharmony.aloha.dataset.libsvm.unlabeled.LibSvmSpecProducer
+import com.eharmony.aloha.dataset.libsvm.unlabeled.LibSvmRowCreator
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
-class LibSvmSpecProducerTest extends LibSvmProducerTestBase {
+class LibSvmRowCreatorProducerTest extends LibSvmProducerTestBase {
     @Test def testCorrectFormatting() {
-        test(LibSvmSpecProducer())
+        test(LibSvmRowCreator.Producer())
     }
 }

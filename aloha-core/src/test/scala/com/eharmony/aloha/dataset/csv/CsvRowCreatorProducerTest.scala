@@ -1,7 +1,7 @@
 package com.eharmony.aloha.dataset.csv
 
 import com.eharmony.aloha.FileLocations
-import com.eharmony.aloha.dataset.{MissingAndErroneousFeatureInfo, SpecBuilder}
+import com.eharmony.aloha.dataset.{MissingAndErroneousFeatureInfo, RowCreatorBuilder}
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import com.eharmony.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine, CsvLines, CsvTypes}
@@ -13,8 +13,8 @@ import org.junit.runners.BlockJUnit4ClassRunner
 import scala.concurrent.ExecutionContext.Implicits.global
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
-class CsvSpecProducerTest {
-    import CsvSpecProducerTest._
+class CsvRowCreatorProducerTest {
+    import CsvRowCreatorProducerTest._
 
     @Test def test1() {
         val json =
@@ -75,7 +75,7 @@ class CsvSpecProducerTest {
     }
 }
 
-object CsvSpecProducerTest {
+object CsvRowCreatorProducerTest {
 
     private lazy val (lines, specBuilder) = {
         val types = Seq(
@@ -97,7 +97,7 @@ object CsvSpecProducerTest {
             """1,2.0,e1v1,e2v2,VALUE_3"""
         )
 
-        val sb = SpecBuilder(semantics, List(CsvSpecProducer[CsvLine]()))
+        val sb = RowCreatorBuilder(semantics, List(CsvRowCreator.Producer[CsvLine]()))
         (lines, sb)
     }
 }

@@ -1,6 +1,6 @@
 package com.eharmony.aloha.dataset.vw.labeled
 
-import com.eharmony.aloha.dataset.SpecBuilder
+import com.eharmony.aloha.dataset.RowCreatorBuilder
 import com.eharmony.aloha.dataset.vw.VwParsingAndChainOfRespTest
 import com.eharmony.aloha.semantics.compiled.plugin.csv.CsvLine
 import org.junit.Assert._
@@ -9,12 +9,12 @@ import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
-class VwLabelSpecProducerTest {
+class VwLabelRowCreatorProducerTest {
 
     @Test def testNonDefaultTagThatsMissingDoesntRemoveLabel() {
         val semantics = VwParsingAndChainOfRespTest.semantics
 
-        val sb = SpecBuilder(semantics, List(new VwLabelSpecProducer[CsvLine]))
+        val sb = RowCreatorBuilder(semantics, List(new VwLabelRowCreator.Producer[CsvLine]))
         val spec = sb.fromResource("com/eharmony/aloha/dataset/simpleSpecWithTag.json").get
 
         val lines = VwParsingAndChainOfRespTest.csvLines(
@@ -44,7 +44,7 @@ class VwLabelSpecProducerTest {
     @Test def testImportanceMissingRemovesLabel() {
         val semantics = VwParsingAndChainOfRespTest.semantics
 
-        val sb = SpecBuilder(semantics, List(new VwLabelSpecProducer[CsvLine]))
+        val sb = RowCreatorBuilder(semantics, List(new VwLabelRowCreator.Producer[CsvLine]))
         val spec = sb.fromResource("com/eharmony/aloha/dataset/simpleSpecWithImp.json").get
 
         val lines = VwParsingAndChainOfRespTest.csvLines(
@@ -74,7 +74,7 @@ class VwLabelSpecProducerTest {
 
         val semantics = VwParsingAndChainOfRespTest.semantics
 
-        val sb = SpecBuilder(semantics, List(new VwLabelSpecProducer[CsvLine]))
+        val sb = RowCreatorBuilder(semantics, List(new VwLabelRowCreator.Producer[CsvLine]))
         val spec = sb.fromResource("com/eharmony/aloha/dataset/simpleSpec.json").get
 
         val lines = VwParsingAndChainOfRespTest.csvLines(

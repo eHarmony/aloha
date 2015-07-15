@@ -1,6 +1,6 @@
 package com.eharmony.aloha.dataset.vw.cb
 
-import com.eharmony.aloha.dataset.SpecBuilder
+import com.eharmony.aloha.dataset.RowCreatorBuilder
 import com.eharmony.aloha.dataset.vw.VwParsingAndChainOfRespTest
 import com.eharmony.aloha.semantics.compiled.plugin.csv.CsvLine
 import org.junit.Assert._
@@ -9,7 +9,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
-class VwContextualBanditSpecProducerTest {
+class VwContextualBanditRowCreatorProducerTest {
 
     /**
      * Test when any of the three of the label components are missing, the label is omitted.  This makes a prediction
@@ -17,7 +17,7 @@ class VwContextualBanditSpecProducerTest {
      */
     @Test def testAnyMissingDvFails(): Unit = {
         val semantics = VwParsingAndChainOfRespTest.semantics
-        val sb = SpecBuilder(semantics, List(new VwContextualBanditSpecProducer[CsvLine]))
+        val sb = RowCreatorBuilder(semantics, List(new VwContextualBanditRowCreator.Producer[CsvLine]))
         val spec = sb.fromResource("com/eharmony/aloha/dataset/simpleCbSpec.json").get
 
         val lines = VwParsingAndChainOfRespTest.csvLines(

@@ -1,7 +1,7 @@
 package com.eharmony.aloha.dataset.vw.cb
 
 import com.eharmony.aloha.dataset.SparseFeatureExtractorFunction
-import com.eharmony.aloha.dataset.vw.unlabeled.VwSpec
+import com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator
 import com.eharmony.aloha.semantics.func.GenFunc
 import org.junit.Assert._
 import org.junit.Test
@@ -11,7 +11,7 @@ import org.junit.runners.BlockJUnit4ClassRunner
 import scala.language.postfixOps
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
-class VwContextualBanditSpecTest {
+class VwContextualBanditRowCreatorTest {
     @Test def testMissingCbLabelInfoRemovesLabelOutput() {
         val fef = new SparseFeatureExtractorFunction(Vector("f1" -> GenFunc.f0("Empty", (_: Any) => Nil)))
 
@@ -22,9 +22,9 @@ class VwContextualBanditSpecTest {
             a = GenFunc.f0("action", (_: Any) => va)
             c = GenFunc.f0("cost", (_: Any) => vc)
             p = GenFunc.f0("prob", (_: Any) => vp)
-            spec = VwContextualBanditSpec(fef, 0 to 0 toList, Nil, None, a, c, p)
+            spec = VwContextualBanditRowCreator(fef, 0 to 0 toList, Nil, None, a, c, p)
             exp = (va, vc, vp) match {
-                case (Some(av), Some(cv), Some(pv)) => s"$av:${VwSpec.LabelDecimalFormatter.format(cv)}:${VwSpec.LabelDecimalFormatter.format(pv)}|"
+                case (Some(av), Some(cv), Some(pv)) => s"$av:${VwRowCreator.LabelDecimalFormatter.format(cv)}:${VwRowCreator.LabelDecimalFormatter.format(pv)}|"
                 case _ => ""
             }
         } assertEquals(exp, spec(())._2.toString)

@@ -1,8 +1,8 @@
 package com.eharmony.aloha.dataset.libsvm
 
 import com.eharmony.aloha.FileLocations
-import com.eharmony.aloha.dataset.libsvm.unlabeled.LibSvmSpec
-import com.eharmony.aloha.dataset.{SpecBuilder, SpecProducer}
+import com.eharmony.aloha.dataset.libsvm.unlabeled.LibSvmRowCreator
+import com.eharmony.aloha.dataset.{RowCreatorBuilder, RowCreatorProducer}
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import com.eharmony.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine, CsvLines}
@@ -13,7 +13,7 @@ import org.junit.Assert._
 
 trait LibSvmProducerTestBase {
 
-    def test[A <: LibSvmSpec[CsvLine]](prod: SpecProducer[CsvLine, A], label: String = "") {
+    def test[A <: LibSvmRowCreator[CsvLine]](prod: RowCreatorProducer[CsvLine, A], label: String = "") {
         val bits = 31
         val mask = (1 << bits) - 1
         val f1 = "f1"
@@ -52,7 +52,7 @@ trait LibSvmProducerTestBase {
             Nil)(scala.concurrent.ExecutionContext.global)
 
         // Provide seed so its the same as the one in mh3
-        val sb = SpecBuilder(semantics, List(prod))
+        val sb = RowCreatorBuilder(semantics, List(prod))
 
         // Assume no problems parsing.  That's not the point of the test.
         val libSvmSpec = sb.fromString(json).get

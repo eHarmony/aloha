@@ -10,7 +10,7 @@ import org.junit.runners.BlockJUnit4ClassRunner
 import scala.language.{postfixOps, implicitConversions}
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
-final class VwLabelSpecTest {
+final class VwLabelRowCreatorTest {
 
     private[this] val lab = 3d
     private[this] val imp0 = 0d
@@ -21,12 +21,12 @@ final class VwLabelSpecTest {
 
     private[this] implicit def liftToOption[A](a: A): Option[A] = Option(a)
 
-    private[this] def spec(lab: Option[Double] = None, imp: Option[Double] = None, tag: Option[String] = None): VwLabelSpec[Any] = {
+    private[this] def spec(lab: Option[Double] = None, imp: Option[Double] = None, tag: Option[String] = None): VwLabelRowCreator[Any] = {
         val fef = new SparseFeatureExtractorFunction[Any](Vector("f1" -> f0("Empty", _ => Nil)))
-        VwLabelSpec(fef, 0 to 0 toList, Nil, None, f0("", _ => lab), f0("", _ => imp), f0("", _ => tag))
+        VwLabelRowCreator(fef, 0 to 0 toList, Nil, None, f0("", _ => lab), f0("", _ => imp), f0("", _ => tag))
     }
 
-    private[this] def testLabelRemoval(spec: VwLabelSpec[Any], exp: String = ""): Unit = assertEquals(exp, spec(())._2.toString)
+    private[this] def testLabelRemoval(spec: VwLabelRowCreator[Any], exp: String = ""): Unit = assertEquals(exp, spec(())._2.toString)
 
     // All of these should return empty label because the Label function returns a missing label.
     @Test def testS___() = testLabelRemoval(spec())
@@ -62,7 +62,7 @@ final class VwLabelSpecTest {
 
 
     @Test def testStringLabel() {
-        val spec = new VwLabelSpec(
+        val spec = new VwLabelRowCreator(
             new SparseFeatureExtractorFunction(Vector("f1" -> f0("Empty", (_: Double) => Nil))),
             0 to 0 toList,
             Nil,

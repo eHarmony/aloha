@@ -5,13 +5,13 @@ import java.util.regex.Matcher
 
 import com.eharmony.aloha
 import com.eharmony.aloha.annotate.CLI
-import com.eharmony.aloha.dataset.csv.CsvSpecProducer
-import com.eharmony.aloha.dataset.libsvm.labeled.LibSvmLabelSpecProducer
-import com.eharmony.aloha.dataset.libsvm.unlabeled.LibSvmSpecProducer
-import com.eharmony.aloha.dataset.vw.cb.VwContextualBanditSpecProducer
-import com.eharmony.aloha.dataset.vw.labeled.VwLabelSpecProducer
-import com.eharmony.aloha.dataset.vw.unlabeled.VwSpecProducer
-import com.eharmony.aloha.dataset.{Spec, SpecBuilder, SpecProducer}
+import com.eharmony.aloha.dataset.csv.CsvRowCreator
+import com.eharmony.aloha.dataset.libsvm.labeled.LibSvmLabelRowCreator
+import com.eharmony.aloha.dataset.libsvm.unlabeled.LibSvmRowCreator
+import com.eharmony.aloha.dataset.vw.cb.VwContextualBanditRowCreator
+import com.eharmony.aloha.dataset.vw.labeled.VwLabelRowCreator
+import com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator
+import com.eharmony.aloha.dataset.{RowCreator, RowCreatorBuilder, RowCreatorProducer}
 import com.eharmony.aloha.io.StringReadable
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
@@ -99,7 +99,7 @@ object DatasetCli extends Logging {
         }
     }
 
-    private class LineWriter[A](extractor: String => A, spec: Spec[A], out: PrintStream, closeStream: Boolean) extends (String => LineWriter[A]) with Closeable {
+    private class LineWriter[A](extractor: String => A, spec: RowCreator[A], out: PrintStream, closeStream: Boolean) extends (String => LineWriter[A]) with Closeable {
         override def apply(a: String): this.type = {
             out.println(spec(extractor(a))._2)
             this
@@ -112,13 +112,13 @@ object DatasetCli extends Logging {
     }
 
     private object LineWriter {
-        def apply[A](extractor: String => A, spec: Spec[A], outFile: Option[FileObject]): LineWriter[A] = {
+        def apply[A](extractor: String => A, spec: RowCreator[A], outFile: Option[FileObject]): LineWriter[A] = {
             val (out, close) = outStream(outFile)
             new LineWriter(extractor, spec, out, close)
         }
 
         /**
-         * If the LineWriter can't be created because the [[Spec]] couldn't
+         * If the LineWriter can't be created because the [[RowCreator]] couldn't
          * be created, there is no need to attempt to clean up the out's OutputStream because the process will fail
          * before attempting to open the OutputStream.
          * @param extractor
@@ -130,7 +130,7 @@ object DatasetCli extends Logging {
          * @return
          */
         def create[A](extractor: String => A, semantics: CompiledSemantics[A], datasetType: DatasetType, out: Option[FileObject], spec: FileObject): Try[LineWriter[A]] =
-            SpecBuilder(semantics, List(datasetType.specProducer[A])).
+            RowCreatorBuilder(semantics, List(datasetType.specProducer[A])).
                 fromVfs2(spec).
                 map(s => LineWriter(extractor, s, out))
 
@@ -288,13 +288,13 @@ object DatasetCli extends Logging {
         val vw, vw_labeled, vw_cb, libsvm, libsvm_labeled, csv = Value
 
         implicit class DatasetTypeOps(val v: DatasetType) extends AnyVal {
-            def specProducer[A]: SpecProducer[A, Spec[A]] = v match {
-                case `vw`             => new VwSpecProducer[A]
-                case `vw_labeled`     => new VwLabelSpecProducer[A]
-                case `vw_cb`          => new VwContextualBanditSpecProducer[A]
-                case `libsvm`         => new LibSvmSpecProducer[A]
-                case `libsvm_labeled` => new LibSvmLabelSpecProducer[A]
-                case `csv`            => new CsvSpecProducer[A]
+            def specProducer[A]: RowCreatorProducer[A, RowCreator[A]] = v match {
+                case `vw`             => new VwRowCreator.Producer[A]
+                case `vw_labeled`     => new VwLabelRowCreator.Producer[A]
+                case `vw_cb`          => new VwContextualBanditRowCreator.Producer[A]
+                case `libsvm`         => new LibSvmRowCreator.Producer[A]
+                case `libsvm_labeled` => new LibSvmLabelRowCreator.Producer[A]
+                case `csv`            => new CsvRowCreator.Producer[A]
             }
         }
     }

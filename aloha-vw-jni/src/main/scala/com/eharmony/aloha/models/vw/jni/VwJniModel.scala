@@ -5,7 +5,7 @@ import java.io._
 import com.eharmony.aloha.dataset.SparseFeatureExtractorFunction
 import com.eharmony.aloha.dataset.json.SparseSpec.SparseSpecOps
 import com.eharmony.aloha.dataset.vw.json.VwJsonLike
-import com.eharmony.aloha.dataset.vw.unlabeled.VwSpec
+import com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator
 import com.eharmony.aloha.dataset.vw.unlabeled.json.VwUnlabeledJson
 import com.eharmony.aloha.factory.{ModelParser, ModelParserWithSemantics, ParserProviderCompanion}
 import com.eharmony.aloha.id.{ModelId, ModelIdentity}
@@ -69,8 +69,8 @@ extends BaseModel[A, B]
      * The object responsible to taking the computed features and turning it into a VW input formatted string.
      * This is a transient lazy val so that we can properly serialize
      */
-    private[this] val vwSpec =
-        new VwSpec(SparseFeatureExtractorFunction(featureNames zip featureFunctions), defaultNs, namespaces, None)
+    private[this] val vwRowCreator =
+        new VwRowCreator(SparseFeatureExtractorFunction(featureNames zip featureFunctions), defaultNs, namespaces, None)
 
     /**
      * The backing VW instance doing all of the regression work.
@@ -89,7 +89,7 @@ extends BaseModel[A, B]
             s"defaultNamespace and namespaces must cover all indices (0 until ${featureFunctions.size}).  Missing indices: ${(req -- act).map(i => s"$i='${featureNames(i)}'").mkString(", ")}.")
 
         // Initialize the lazy vals.  This is done so that errors will be thrown on creation.
-        require(vwSpec != null)
+        require(vwRowCreator != null)
         require(model != null)
     }
 

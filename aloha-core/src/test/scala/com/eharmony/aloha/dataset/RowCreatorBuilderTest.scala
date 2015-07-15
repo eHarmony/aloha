@@ -1,14 +1,13 @@
 package com.eharmony.aloha.dataset
 
 import com.eharmony.aloha.FileLocations
-import com.eharmony.aloha.dataset.libsvm.unlabeled.LibSvmSpecProducer
-import com.eharmony.aloha.dataset.vw.unlabeled.VwSpecProducer
+import com.eharmony.aloha.dataset.libsvm.unlabeled.LibSvmRowCreator
+import com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import com.eharmony.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine, CsvLines, CsvTypes}
-import org.junit.Assert.assertEquals
+import org.junit.Assert.{assertEquals, _}
 import org.junit.Test
-import org.junit.Assert._
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 
@@ -16,17 +15,17 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success}
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
-class SpecBuilderTest {
-    import SpecBuilderTest._
+class RowCreatorBuilderTest {
+    import RowCreatorBuilderTest._
 
 
     /**
      * This test is designed to ensure that the validation is being called.
      */
     @Test def testValidation() {
-        val p = new LibSvmSpecProducer[CsvLine]
+        val p = new LibSvmRowCreator.Producer[CsvLine]
         val semantics = CompiledSemantics(TwitterEvalCompiler(), CompiledSemanticsCsvPlugin(), Nil)
-        val sb = SpecBuilder(semantics, List(p))
+        val sb = RowCreatorBuilder(semantics, List(p))
 
         sb.fromString(getRepeatedJson(1)) match {
             case Failure(e) => throw e
@@ -66,7 +65,7 @@ class SpecBuilderTest {
             "|A name=Billy marriages=0"
         )
 
-        val sb = SpecBuilder(semantics, List(new VwSpecProducer[CsvLine]))
+        val sb = RowCreatorBuilder(semantics, List(new VwRowCreator.Producer[CsvLine]))
         val spec = sb.fromResource("com/eharmony/aloha/dataset/simpleSpec.json").get
         val outs = lines.map(spec.apply)
 
@@ -77,7 +76,7 @@ class SpecBuilderTest {
     }
 }
 
-object SpecBuilderTest {
+object RowCreatorBuilderTest {
     val (semantics, csvLines) = {
 
         val features = Seq(
