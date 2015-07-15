@@ -124,7 +124,7 @@ extends BaseModel[A, B]
      */
     private[jni] def generateVwInput(a: A): Either[scm.Map[String, Seq[String]], String] = {
         val Features(features, missing, missingOk) = constructFeatures(a)
-        if (missingOk) Right(vwSpec.unlabeledVwInput(features).toString)
+        if (missingOk) Right(vwRowCreator.unlabeledVwInput(features).toString)
         else           Left(missing)
     }
 
