@@ -5,7 +5,7 @@ jdk:
   - oraclejdk7
 
 before_install:
-    - git clone git@github.corp.eharmony.com:matching/aloha-proto.git
+    - git clone git@github.com:eHarmony/aloha-proto.git
     - cd aloha-proto
     - mvn clean install
     - cd -
