@@ -19,6 +19,16 @@ public class HackForTravisTest {
 
     @Test
     public void printLibraryInfoTest() throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader("/proc/version"));
+
+        StringBuilder b = new StringBuilder();
+        for (String line; null != (line = reader.readLine()); ) {
+            b.append(line).append("\n");
+        }
+        reader.close();
+
+
+        System.out.println(b.toString());
         System.out.println(loadOSDependentLibrary("/vw_jni", ".lib"));
     }
 
