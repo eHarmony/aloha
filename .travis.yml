@@ -6,6 +6,7 @@ jdk:
 #os:
 #    - osx
 before_install:
+    - cat /proc/version
     - wget https://protobuf.googlecode.com/files/protobuf-2.4.1.tar.gz
     - tar -xzvf protobuf-2.4.1.tar.gz
     - cd protobuf-2.4.1 && ./configure --prefix=/usr && make && sudo make install
@@ -14,5 +15,6 @@ before_install:
     - cd aloha-proto
     - mvn clean install
     - cd -
+    - cat /proc/version
 #install: mvn clean package -DskipTests=false
-install: cd aloha-core; mvn clean test -Dtest=HackForTravisTest
+install: cat /proc/version && cd aloha-core &&  mvn clean test -Dtest=HackForTravisTest
