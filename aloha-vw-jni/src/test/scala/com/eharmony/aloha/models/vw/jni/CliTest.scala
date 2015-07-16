@@ -12,7 +12,7 @@ import spray.json.{DeserializationException, pimpString}
 
 object CliTest extends IoCaptureCompanion {
     @BeforeClass def createModel(): Unit = VwJniModelTest.createModel()
-    lazy val base64EncodedModelString = Option(VwJniModelTest.VwModelFile.exists).collect{case true => VwJniModel.readBinaryVwModelToB64String(new FileInputStream(VwJniModelTest.VwModelFile))}
+    lazy val base64EncodedModelString = VwJniModel.readBinaryVwModelToB64String(new FileInputStream(VwJniModelTest.VwModelFile))
 }
 
 /**
@@ -227,7 +227,7 @@ class CliTest extends TestWithIoCapture(CliTest) {
                    |  },
                    |  "vw": {
                    |    "params": "--quiet -t",
-                   |    "model": """".stripMargin.trim + base64EncodedModelString.get + """"
+                   |    "model": """".stripMargin.trim + base64EncodedModelString + """"
                    |  }
                    |}
                  """).stripMargin.parseJson

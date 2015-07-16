@@ -45,48 +45,42 @@ class VwJniModelTest {
      * This test works locally but fails on jenkins.  Ignore for now.
      */
     @Ignore @Test def testSerialization(): Unit = {
-        typeTestJson foreach { json =>
-            val m = model[Double](json)
+        val m = model[Double](typeTestJson)
 
-            val baos = new ByteArrayOutputStream()
-            val oos = new ObjectOutputStream(baos)
-            oos.writeObject(m)
-            oos.close()
+        val baos = new ByteArrayOutputStream()
+        val oos = new ObjectOutputStream(baos)
+        oos.writeObject(m)
+        oos.close()
 
-            val ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray))
-            val m1 = ois.readObject().asInstanceOf[VwJniModel[CsvLine, Double]]
-            ois.close()
+        val ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray))
+        val m1 = ois.readObject().asInstanceOf[VwJniModel[CsvLine, Double]]
+        ois.close()
 
-            assertEquals(m.toString, m1.toString)
-            assertEquals(m(missingHeight), m1(missingHeight))
-        }
+        assertEquals(m.toString, m1.toString)
+        assertEquals(m(missingHeight), m1(missingHeight))
     }
 
     @Test def testFailureWhenVwIsCreatedWithLinkParamAndInitialRegressorHasSameLink(): Unit = {
-        logisticModelB64Encoded foreach { m =>
-            try {
-                val f = VwJniModel.allocateModel(1, m)
-                new VW(LogisticModelParams + s" -i ${f.getCanonicalPath}").close()
-                fail("VW should throw a java.lang.Exception with message: \"option '--link' cannot be specified more than once\"");
-            }
-            catch {
-                // Can't rely on msg because different versions of boost (a dep of VW) return different messages
-                // case e: IllegalArgumentException if e.getClass.getSimpleName == "IllegalArgumentException" && e.getMessage == "option '--link' cannot be specified more than once" =>
-                case e: IllegalArgumentException if e.getClass.getSimpleName == "IllegalArgumentException" =>
-                case t: Throwable => throw t
-            }
+        try {
+            val f = VwJniModel.allocateModel(1, logisticModelB64Encoded)
+            new VW(LogisticModelParams + s" -i ${f.getCanonicalPath}").close()
+            fail("VW should throw a java.lang.Exception with message: \"option '--link' cannot be specified more than once\"");
+        }
+        catch {
+            // Can't rely on msg because different versions of boost (a dep of VW) return different messages
+            // case e: IllegalArgumentException if e.getClass.getSimpleName == "IllegalArgumentException" && e.getMessage == "option '--link' cannot be specified more than once" =>
+            case e: IllegalArgumentException if e.getClass.getSimpleName == "IllegalArgumentException" =>
+            case t: Throwable => throw t
         }
     }
 
     @Test def testAllocatedModelEqualsOriginalModel(): Unit = {
-        if (VwModelFile.exists()) {
-            val modelBytes = readFile(VwModelFile)
-            val out = new String(Base64.encodeBase64(modelBytes))
-            val tmpFile = VwJniModel.allocateModel(1, out)
-            val tmpBytes = readFile(tmpFile)
-            println(out)
-            assertArrayEquals(modelBytes, tmpBytes)
-        }
+        val modelBytes = readFile(VwModelFile)
+        val out = new String(Base64.encodeBase64(modelBytes))
+        val tmpFile = VwJniModel.allocateModel(1, out)
+        val tmpBytes = readFile(tmpFile)
+        println(out)
+        assertArrayEquals(modelBytes, tmpBytes)
     }
 
     @Test def testByteOutputType(): Unit = testOutputType[Byte]()
@@ -104,40 +98,32 @@ class VwJniModelTest {
     @Test def testJavaDoubleOutputType(): Unit = testOutputType[jl.Double]()
 
     @Test def testNoThreshWithMissing(): Unit = {
-        noThreshJson foreach { json =>
-            val m = model[Float](json)
-            val y = m(missingHeight)
-            assertTrue(y.isDefined)
-        }
+        val m = model[Float](noThreshJson)
+        val y = m(missingHeight)
+        assertTrue(y.isDefined)
     }
 
     @Test def testExceededThresh(): Unit = {
-        threshJson foreach { json =>
-            val m = model[Float](json)
-            val y = m(missingHeight)
-            assertTrue(y.isEmpty)
-            assertEquals(List("height_cm"), m.featureFunctions.head.accessorOutputMissing(missingHeight))
-        }
+        val m = model[Float](threshJson)
+        val y = m(missingHeight)
+        assertTrue(y.isEmpty)
+        assertEquals(List("height_cm"), m.featureFunctions.head.accessorOutputMissing(missingHeight))
     }
 
     /**
      * This should succeed.  It just logs when non-existent features are listed in the namespace.
      */
     @Test def testNsWithUndeclaredFeatureNames(): Unit = {
-        nsWithUndeclFeatureJson foreach { json =>
-            val m = model[Float](json)
-        }
+        val m = model[Float](nsWithUndeclFeatureJson)
     }
 
     /**
      * It's ok to have namespaces not cover all features.  The remainder goes into the default ns.
      */
     @Test def testNsDoesntCoverAllFeatureNamesFromJson(): Unit = {
-        nonCoveringNsJson foreach { json =>
-            val m = model[Float](json)
-            val input = m.generateVwInput(missingHeight)
-            assertEquals(Right("| height:180"), input)
-        }
+        val m = model[Float](nonCoveringNsJson)
+        val input = m.generateVwInput(missingHeight)
+        assertEquals(Right("| height:180"), input)
     }
 
     @Test def testNssAndDefaultDoesntCoverAllFeatureInd(): Unit = {
@@ -146,24 +132,22 @@ class VwJniModelTest {
 
         // Because height_mm feature isn't in any namespace.
 
-        VwB64Model foreach { m =>
-            try {
-                VwJniModel(
-                    ModelId.empty,
-                    m,
-                    "--quiet",
-                    Vector("height_mm"),
-                    Vector(h),
-                    Nil,
-                    Nil,
-                    (f: Double) => f
-                )
-                fail("should throw IllegalArgumentException")
-            }
-            catch {
-                case e: IllegalArgumentException if e.getMessage == "requirement failed: defaultNamespace and namespaces must cover all indices (0 until 1).  Missing 0" =>
-                case e: Throwable => throw e
-            }
+        try {
+            VwJniModel(
+                ModelId.empty,
+                VwB64Model,
+                "--quiet",
+                Vector("height_mm"),
+                Vector(h),
+                Nil,
+                Nil,
+                (f: Double) => f
+            )
+            fail("should throw IllegalArgumentException")
+        }
+        catch {
+            case e: IllegalArgumentException if e.getMessage == "requirement failed: defaultNamespace and namespaces must cover all indices (0 until 1).  Missing 0" =>
+            case e: Throwable => throw e
         }
     }
 
@@ -171,24 +155,22 @@ class VwJniModelTest {
         val accessor = GeneratedAccessor("height_cm", (_:CsvLine).ol("height_cm"))
         val h = GenFunc.f1(accessor)("ind(height_cm * 10)", _.map(h => Seq(("height_mm=" + (h * 10), 1.0))).getOrElse(Nil))
 
-        VwB64Model foreach { m =>
-            try {
-                VwJniModel(
-                    ModelId.empty,
-                    m,
-                    "--quiet",
-                    Vector(),
-                    Vector(h),
-                    Nil,
-                    Nil,
-                    (f: Double) => f
-                )
-                fail("should throw IllegalArgumentException")
-            }
-            catch {
-                case e: IllegalArgumentException if e.getMessage == "requirement failed: featureNames.size (0}) != featureFunctions.size (1})" =>
-                case e: Throwable => throw e
-            }
+        try {
+            VwJniModel(
+                ModelId.empty,
+                VwB64Model,
+                "--quiet",
+                Vector(),
+                Vector(h),
+                Nil,
+                Nil,
+                (f: Double) => f
+            )
+            fail("should throw IllegalArgumentException")
+        }
+        catch {
+            case e: IllegalArgumentException if e.getMessage == "requirement failed: featureNames.size (0}) != featureFunctions.size (1})" =>
+            case e: Throwable => throw e
         }
     }
 
@@ -196,24 +178,22 @@ class VwJniModelTest {
         val accessor = GeneratedAccessor("height_cm", (_:CsvLine).ol("height_cm"))
         val h = GenFunc.f1(accessor)("ind(height_cm * 10)", _.map(h => Seq(("height_mm=" + (h * 10), 1.0))).getOrElse(Nil))
 
-        VwB64Model foreach { m =>
-            try {
-                VwJniModel(
-                    ModelId.empty,
-                    m,
-                    "--quiet",
-                    Vector("height_mm"),
-                    Vector(),
-                    Nil,
-                    Nil,
-                    (f: Double) => f
-                )
-                fail("should throw IllegalArgumentException")
-            }
-            catch {
-                case e: IllegalArgumentException if e.getMessage == "requirement failed: featureNames.size (1}) != featureFunctions.size (0})" =>
-                case e: Throwable => throw e
-            }
+        try {
+            VwJniModel(
+                ModelId.empty,
+                VwB64Model,
+                "--quiet",
+                Vector("height_mm"),
+                Vector(),
+                Nil,
+                Nil,
+                (f: Double) => f
+            )
+            fail("should throw IllegalArgumentException")
+        }
+        catch {
+            case e: IllegalArgumentException if e.getMessage == "requirement failed: featureNames.size (1}) != featureFunctions.size (0})" =>
+            case e: Throwable => throw e
         }
     }
 
@@ -237,10 +217,8 @@ class VwJniModelTest {
     // TODO: Figure out how to test this.
     @Test def testBadVwArgsThrowsEx(): Unit = {
         try {
-            badVwArgsJson foreach { json =>
-                val m = model[Float](json)
-                fail("Should throw exception.")
-            }
+            val m = model[Float](badVwArgsJson)
+            fail("Should throw exception.")
         }
         catch {
             case e: AssertionError => throw e
@@ -268,11 +246,9 @@ class VwJniModelTest {
      */
     private[this] def testOutputType[A : RefInfo : ScoreConverter : JsonReader](): Unit = {
         val tc = TypeCoercion[Double, Option[A]].get
-        typeTestJson foreach { json =>
-            val m = model[A](json)
-            val y = m(missingHeight)
-            assertEquals(tc(ExpVwOutput), y)
-        }
+        val m = model[A](typeTestJson)
+        val y = m(missingHeight)
+        assertEquals(tc(ExpVwOutput), y)
     }
 }
 
@@ -280,7 +256,7 @@ object VwJniModelTest extends Logging {
     private[jni] val VwModelFile = new File(FileLocations.testClassesDirectory, "VwJniModelTest-vw.model")
     private[jni] val VwModelPath = VwModelFile.getCanonicalPath
 
-    private[jni] lazy val VwB64Model = Option(VwModelFile.exists).collect{case true => VwJniModel.readBinaryVwModelToB64String(new FileInputStream(VwModelFile))}
+    private[jni] lazy val VwB64Model = VwJniModel.readBinaryVwModelToB64String(new FileInputStream(VwModelFile))
 
     val columns = Seq(
         "height_cm" -> CsvTypes.LongOptionType,
@@ -312,7 +288,7 @@ object VwJniModelTest extends Logging {
           |}
         """.stripMargin.trim.parseJson
 
-    lazy val typeTestJson = VwB64Model.map( m =>
+    lazy val typeTestJson =
         ("""
            |{
            |  "modelType": "VwJNI",
@@ -329,13 +305,12 @@ object VwJniModelTest extends Logging {
            |      "--quiet",
            |      "-t"
            |    ],
-           |    "model": """".stripMargin + m + """"
+           |    "model": """".stripMargin + VwB64Model + """"
            |  }
            |}
          """.stripMargin).trim.parseJson
-    )
 
-    lazy val noThreshJson = VwB64Model.map( m =>
+    lazy val noThreshJson =
        ("""
           |{
           |  "modelType": "VwJNI",
@@ -351,13 +326,12 @@ object VwJniModelTest extends Logging {
           |      "--quiet",
           |      "-t"
           |    ],
-          |    "model": """".stripMargin + m + """"
+          |    "model": """".stripMargin + VwB64Model + """"
           |  }
           |}
         """.stripMargin).trim.parseJson
-    )
 
-    lazy val threshJson = VwB64Model.map( m =>
+    lazy val threshJson =
        ("""
           |{
           |  "modelType": "VwJNI",
@@ -374,13 +348,12 @@ object VwJniModelTest extends Logging {
           |      "--quiet",
           |      "-t"
           |    ],
-          |    "model": """".stripMargin + m + """"
+          |    "model": """".stripMargin + VwB64Model + """"
           |  }
           |}
         """.stripMargin).trim.parseJson
-    )
 
-    lazy val nsWithUndeclFeatureJson = VwB64Model.map( m =>
+    lazy val nsWithUndeclFeatureJson =
        ("""
           |{
           |  "modelType": "VwJNI",
@@ -397,13 +370,12 @@ object VwJniModelTest extends Logging {
           |      "--quiet",
           |      "-t"
           |    ],
-          |    "model": """".stripMargin + m + """"
+          |    "model": """".stripMargin + VwB64Model + """"
           |  }
           |}
         """.stripMargin).trim.parseJson
-    )
 
-    lazy val nonCoveringNsJson = VwB64Model.map( m =>
+    lazy val nonCoveringNsJson =
        ("""
           |{
           |  "modelType": "VwJNI",
@@ -417,13 +389,13 @@ object VwJniModelTest extends Logging {
           |      "--quiet",
           |      "-t"
           |    ],
-          |    "model": """".stripMargin + m + """"
+          |    "model": """".stripMargin + VwB64Model + """"
           |  }
           |}
         """.stripMargin).trim.parseJson
-    )
 
-    lazy val badVwArgsJson = VwB64Model.map( m =>
+
+    lazy val badVwArgsJson =
        ("""
           |{
           |  "modelType": "VwJNI",
@@ -431,11 +403,10 @@ object VwJniModelTest extends Logging {
           |  "features": { "height": "Seq((\"\", 180.0))" },
           |  "vw": {
           |    "params": "--quiet --BAD_FEATURE___ounq24tjnasdf8h",
-          |    "model": """".stripMargin + m + """"
+          |    "model": """".stripMargin + VwB64Model + """"
           |  }
           |}
         """.stripMargin).trim.parseJson
-    )
 
     val csvLines = CsvLines(indices = columns.unzip._1.zipWithIndex.toMap, fs = ",")
 
@@ -482,26 +453,23 @@ object VwJniModelTest extends Logging {
         m.close()
     }
 
-    private[this] def logisticModelJson(includeModel: Boolean): Option[JsValue] = {
-        logisticModelB64Encoded map { m =>
-            s"""
-              |{
-              |  "modelType": "VwJNI",
-              |  "modelId": { "id": 0, "name": "" },
-              |  "features": {
-              |    "height": "Seq((\\"\\", 180.0))"
-              |  },
-              |  "vw": {
-              |    "params": "--quiet --loss_function logistic --link logistic${if (includeModel) " -i " + VwModelPath else ""}",
-              |    "model": "$m"
-              |  }
-              |}
-            """.stripMargin.trim.parseJson
-
-        }
+    private[this] def logisticModelJson(includeModel: Boolean): JsValue = {
+        s"""
+          |{
+          |  "modelType": "VwJNI",
+          |  "modelId": { "id": 0, "name": "" },
+          |  "features": {
+          |    "height": "Seq((\\"\\", 180.0))"
+          |  },
+          |  "vw": {
+          |    "params": "--quiet --loss_function logistic --link logistic${if (includeModel) " -i " + VwModelPath else ""}",
+          |    "model": "$logisticModelB64Encoded"
+          |  }
+          |}
+        """.stripMargin.trim.parseJson
     }
 
-    def logisticModelB64Encoded = Option(VwModelFile.exists()) collect { case true => new String(Base64.encodeBase64(readFile(VwModelFile))) }
+    def logisticModelB64Encoded = new String(Base64.encodeBase64(readFile(VwModelFile)))
 
     private val LogisticModelParams = "--quiet --link logistic --loss_function logistic"
 

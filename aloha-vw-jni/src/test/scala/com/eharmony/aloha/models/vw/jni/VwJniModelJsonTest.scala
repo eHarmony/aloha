@@ -20,7 +20,7 @@ import spray.json.pimpString
  */
 object VwJniModelJsonTest extends IoCaptureCompanion {
   @BeforeClass def createModel(): Unit = VwJniModelTest.createModel()
-  lazy val base64EncodedModelString = Option(VwJniModelTest.VwModelFile.exists).collect{case true => VwJniModel.readBinaryVwModelToB64String(new FileInputStream(VwJniModelTest.VwModelFile))}
+  lazy val base64EncodedModelString = VwJniModel.readBinaryVwModelToB64String(new FileInputStream(VwJniModelTest.VwModelFile))
   val vfs = VFS.getManager
   val vfsModel = vfs.resolveFile(VwJniModelTest.VwModelPath)
   val vfsSpec = vfs.resolveFile("res:com/eharmony/aloha/models/vw/jni/good.logistic.aloha.js")
@@ -31,115 +31,108 @@ class VwJniModelJsonTest {
   import VwJniModelJsonTest._
 
   @Test def testGoodModel() = {
-    base64EncodedModelString foreach { m =>
-        val expected =
-            ("""
-               |{
-               |  "modelType": "VwJNI",
-               |  "modelId": { "id": 0, "name": "model name" },
-               |  "features": {
-               |    "height_mm": "Seq((\"1800\", 1.0))"
-               |  },
-               |  "namespaces": {
-               |    "personal_features": [ "height_mm" ]
-               |  },
-               |  "vw": {
-               |    "params": "--quiet -t",
-               |    "model": """".stripMargin.trim + m + """"
-               |  }
-               |}
-             """).stripMargin.parseJson
-        val actual = VwJniModel.json(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"))
-        assertEquals(expected, actual)
-    }
+      val expected =
+          ("""
+             |{
+             |  "modelType": "VwJNI",
+             |  "modelId": { "id": 0, "name": "model name" },
+             |  "features": {
+             |    "height_mm": "Seq((\"1800\", 1.0))"
+             |  },
+             |  "namespaces": {
+             |    "personal_features": [ "height_mm" ]
+             |  },
+             |  "vw": {
+             |    "params": "--quiet -t",
+             |    "model": """".stripMargin.trim +  base64EncodedModelString + """"
+             |  }
+             |}
+           """).stripMargin.parseJson
+      val actual = VwJniModel.json(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"))
+      assertEquals(expected, actual)
   }
 
   @Test def withNotes() = {
-      base64EncodedModelString foreach { m =>
-          val expected =
-              ("""
-                 |{
-                 |  "modelType": "VwJNI",
-                 |  "modelId": { "id": 0, "name": "model name" },
-                 |  "features": {
-                 |    "height_mm": "Seq((\"1800\", 1.0))"
-                 |  },
-                 |  "notes": [
-                 |    "This is a note"
-                 |  ],
-                 |  "namespaces": {
-                 |    "personal_features": [ "height_mm" ]
-                 |  },
-                 |  "vw": {
-                 |    "params": "--quiet -t",
-                 |    "model": """".stripMargin.trim + m + """"
-                 |  }
-                 |}
-               """).stripMargin.parseJson
-          val actual = VwJniModel.json(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"), None, Some(Seq("This is a note")))
-          assertEquals(expected, actual)
-      }
+      val expected =
+          ("""
+             |{
+             |  "modelType": "VwJNI",
+             |  "modelId": { "id": 0, "name": "model name" },
+             |  "features": {
+             |    "height_mm": "Seq((\"1800\", 1.0))"
+             |  },
+             |  "notes": [
+             |    "This is a note"
+             |  ],
+             |  "namespaces": {
+             |    "personal_features": [ "height_mm" ]
+             |  },
+             |  "vw": {
+             |    "params": "--quiet -t",
+             |    "model": """".stripMargin.trim + base64EncodedModelString + """"
+             |  }
+             |}
+           """).stripMargin.parseJson
+      val actual = VwJniModel.json(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"), None, Some(Seq("This is a note")))
+      assertEquals(expected, actual)
   }
 
   @Test def withSpline() = {
-      base64EncodedModelString foreach { m =>
-          val expected =
-              ("""
-                 |{
-                 |  "modelType": "VwJNI",
-                 |  "modelId": { "id": 0, "name": "model name" },
-                 |  "features": {
-                 |    "height_mm": "Seq((\"1800\", 1.0))"
-                 |  },
-                 |  "spline": {
-                 |    "min": 0.0,
-                 |    "max": 1.0,
-                 |    "knots": [0.25, 0.75]
-                 |  },
-                 |  "namespaces": {
-                 |    "personal_features": [ "height_mm" ]
-                 |  },
-                 |  "vw": {
-                 |    "params": "--quiet -t",
-                 |    "model": """".stripMargin.trim + m + """"
-                 |  }
-                 |}
-               """).stripMargin.parseJson
 
-          val actual = VwJniModel.json(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"), None, None, Some(cds))
-          assertEquals(expected, actual)
-      }
+      val expected =
+          ("""
+             |{
+             |  "modelType": "VwJNI",
+             |  "modelId": { "id": 0, "name": "model name" },
+             |  "features": {
+             |    "height_mm": "Seq((\"1800\", 1.0))"
+             |  },
+             |  "spline": {
+             |    "min": 0.0,
+             |    "max": 1.0,
+             |    "knots": [0.25, 0.75]
+             |  },
+             |  "namespaces": {
+             |    "personal_features": [ "height_mm" ]
+             |  },
+             |  "vw": {
+             |    "params": "--quiet -t",
+             |    "model": """".stripMargin.trim + base64EncodedModelString + """"
+             |  }
+             |}
+           """).stripMargin.parseJson
+
+      val actual = VwJniModel.json(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"), None, None, Some(cds))
+      assertEquals(expected, actual)
   }
 
   @Test def withNotesAndSpline() = {
-      base64EncodedModelString foreach { m =>
-          val expected =
-              ("""
-                 |{
-                 |  "modelType": "VwJNI",
-                 |  "modelId": { "id": 0, "name": "model name" },
-                 |  "features": {
-                 |    "height_mm": "Seq((\"1800\", 1.0))"
-                 |  },
-                 |  "notes": [
-                 |    "This is a note"
-                 |  ],
-                 |  "spline": {
-                 |    "min": 0.0,
-                 |    "max": 1.0,
-                 |    "knots": [0.25, 0.75]
-                 |  },
-                 |  "namespaces": {
-                 |    "personal_features": [ "height_mm" ]
-                 |  },
-                 |  "vw": {
-                 |    "params": "--quiet -t",
-                 |    "model": """".stripMargin.trim + m + """"
-                 |  }
-                 |}
-               """).stripMargin.parseJson
-          val actual = VwJniModel.json(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"), None, Some(Seq("This is a note")), Some(cds))
-          assertEquals(expected, actual)
-      }
+      val expected =
+          ("""
+             |{
+             |  "modelType": "VwJNI",
+             |  "modelId": { "id": 0, "name": "model name" },
+             |  "features": {
+             |    "height_mm": "Seq((\"1800\", 1.0))"
+             |  },
+             |  "notes": [
+             |    "This is a note"
+             |  ],
+             |  "spline": {
+             |    "min": 0.0,
+             |    "max": 1.0,
+             |    "knots": [0.25, 0.75]
+             |  },
+             |  "namespaces": {
+             |    "personal_features": [ "height_mm" ]
+             |  },
+             |  "vw": {
+             |    "params": "--quiet -t",
+             |    "model": """".stripMargin.trim + base64EncodedModelString + """"
+             |  }
+             |}
+           """).stripMargin.parseJson
+      val actual = VwJniModel.json(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"), None, Some(Seq("This is a note")), Some(cds))
+      assertEquals(expected, actual)
   }
 }
