@@ -3,16 +3,19 @@
 # in case the current aloha version is using a snapshot.  If it's not using a snapshot, no harm, no foul.
 
 language: scala
-scala:
-    - 2.10.4
+
 jdk:
     - oraclejdk7
+
+sudo: false
+
+cache:
+  directories:
+  - $HOME/protobuf
+
+scala:
+    - 2.10.4
+
 before_install:
-    - wget https://protobuf.googlecode.com/files/protobuf-2.4.1.tar.gz
-    - tar -xzvf protobuf-2.4.1.tar.gz
-    - cd protobuf-2.4.1 && ./configure --prefix=/usr && make && sudo make install
-    - cd -
-    - git clone https://github.com/eHarmony/aloha-proto.git
-    - cd aloha-proto
-    - mvn clean install
-    - cd -
+    - source travis-install-protobuf.sh
+    - bash travis-install-aloha-proto.sh
