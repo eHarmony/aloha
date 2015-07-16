@@ -63,26 +63,30 @@ class VwJniModelTest {
     }
 
     @Test def testFailureWhenVwIsCreatedWithLinkParamAndInitialRegressorHasSameLink(): Unit = {
-        try {
-            val f = VwJniModel.allocateModel(1, logisticModelB64Encoded)
-            new VW(LogisticModelParams + s" -i ${f.getCanonicalPath}").close()
-            fail("VW should throw a java.lang.Exception with message: \"option '--link' cannot be specified more than once\"");
-        }
-        catch {
-            // Can't rely on msg because different versions of boost (a dep of VW) return different messages
-            // case e: IllegalArgumentException if e.getClass.getSimpleName == "IllegalArgumentException" && e.getMessage == "option '--link' cannot be specified more than once" =>
-            case e: IllegalArgumentException if e.getClass.getSimpleName == "IllegalArgumentException" =>
-            case t: Throwable => throw t
+        logisticModelB64Encoded foreach { m =>
+            try {
+                val f = VwJniModel.allocateModel(1, m)
+                new VW(LogisticModelParams + s" -i ${f.getCanonicalPath}").close()
+                fail("VW should throw a java.lang.Exception with message: \"option '--link' cannot be specified more than once\"");
+            }
+            catch {
+                // Can't rely on msg because different versions of boost (a dep of VW) return different messages
+                // case e: IllegalArgumentException if e.getClass.getSimpleName == "IllegalArgumentException" && e.getMessage == "option '--link' cannot be specified more than once" =>
+                case e: IllegalArgumentException if e.getClass.getSimpleName == "IllegalArgumentException" =>
+                case t: Throwable => throw t
+            }
         }
     }
 
     @Test def testAllocatedModelEqualsOriginalModel(): Unit = {
-        val modelBytes = readFile(VwModelFile)
-        val out = new String(Base64.encodeBase64(modelBytes))
-        val tmpFile = VwJniModel.allocateModel(1, out)
-        val tmpBytes = readFile(tmpFile)
-        println(out)
-        assertArrayEquals(modelBytes, tmpBytes)
+        if (VwModelFile.exists()) {
+            val modelBytes = readFile(VwModelFile)
+            val out = new String(Base64.encodeBase64(modelBytes))
+            val tmpFile = VwJniModel.allocateModel(1, out)
+            val tmpBytes = readFile(tmpFile)
+            println(out)
+            assertArrayEquals(modelBytes, tmpBytes)
+        }
     }
 
     @Test def testByteOutputType(): Unit = testOutputType[Byte]()
@@ -478,9 +482,8 @@ object VwJniModelTest extends Logging {
         m.close()
     }
 
-    private def logisticModelJson(includeModel: Boolean) = {
-
-        val json =
+    private[this] def logisticModelJson(includeModel: Boolean): Option[JsValue] = {
+        logisticModelB64Encoded map { m =>
             s"""
               |{
               |  "modelType": "VwJNI",
@@ -490,15 +493,15 @@ object VwJniModelTest extends Logging {
               |  },
               |  "vw": {
               |    "params": "--quiet --loss_function logistic --link logistic${if (includeModel) " -i " + VwModelPath else ""}",
-              |    "model": "$logisticModelB64Encoded"
+              |    "model": "$m"
               |  }
               |}
             """.stripMargin.trim.parseJson
 
-        json
+        }
     }
 
-    def logisticModelB64Encoded = new String(Base64.encodeBase64(readFile(VwModelFile)))
+    def logisticModelB64Encoded = Option(VwModelFile.exists()) collect { case true => new String(Base64.encodeBase64(readFile(VwModelFile))) }
 
     private val LogisticModelParams = "--quiet --link logistic --loss_function logistic"
 
