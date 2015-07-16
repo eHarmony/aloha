@@ -6,7 +6,7 @@ jdk:
 #os:
 #    - osx
 before_install:
-    - sudo echo 'Linux version 3.13.0-40-generic (buildd@comet) (gcc version 4.8.2 (Ubuntu 4.8.2-19ubuntu1) ) #69-Ubuntu SMP Thu Nov 13 17:53:56 UTC 2014' > /proc/version
+    - sudo echo 'Linux version 3.13.0-40-generic (buildd@comet) (gcc version 4.8.2 (Ubuntu 4.8.2-19ubuntu1) ) 69-Ubuntu SMP Thu Nov 13 17:53:56 UTC 2014' > /proc/version
     - cat /proc/version
     - wget https://protobuf.googlecode.com/files/protobuf-2.4.1.tar.gz
     - tar -xzvf protobuf-2.4.1.tar.gz
