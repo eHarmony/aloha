@@ -296,7 +296,7 @@
                         </execution>
                     </executions>
                     <configuration>
-                        <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                        <redirectTestOutputToFile>false</redirectTestOutputToFile>
                         <includes>
                             <include>**/*Test.java</include>
                             <include>**/*Test.scala</include>
