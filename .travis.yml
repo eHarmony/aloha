@@ -13,9 +13,15 @@ cache:
   directories:
   - $HOME/protobuf
 
+addons:
+  apt:
+    packages:
+    - libboost-program-options-dev
+
 scala:
     - 2.10.4
 
 before_install:
+    - cat /proc/version
     - source travis-install-protobuf.sh
     - bash travis-install-aloha-proto.sh
