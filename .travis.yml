@@ -1,3 +1,7 @@
+#
+# Before installing, we need to install protoc 2.4.1 and then checkout and build the aloha-proto project
+# in case the current aloha version is using a snapshot.  If it's not using a snapshot, no harm, no foul.
+
 language: scala
 scala:
     - 2.10.4
@@ -12,4 +16,3 @@ before_install:
     - cd aloha-proto
     - mvn clean install
     - cd -
-install: mvn clean package -DskipTests=false
