@@ -458,7 +458,9 @@ object VwJniModelTest extends Logging {
     @BeforeClass def createModel(): Unit = {
         val x = for {
             deleted <- Try { VwModelFile.delete }
-            _       <- Try { allocateModel() }
+
+            // Try doesn't catch ExceptionInInitializerError, but this is exactly what we want to catch, so wrap, if found.
+            _       <- Try { try { allocateModel() } catch { case e: ExceptionInInitializerError => throw new RuntimeException(e) } }
         } yield Unit
 
         if (x.isFailure) error(s"Couldn't properly allocate vw model: $VwModelPath")
