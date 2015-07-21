@@ -72,3 +72,7 @@ This seemingly tries to extract the user height (in centimeters) and if the valu
 
 The `[["=UNK", 1]]` represent a sequence of one key-value pair whose key is *=UNK* and whose value is 1.
 
+
+## License ##
+
+Aloha is released under the [MIT License](http://opensource.org/licenses/MIT).
