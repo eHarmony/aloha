@@ -45,6 +45,8 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |        numeric id of the model.
               |  --vw-args <value>
               |        arguments to vw
+              |  --external
+              |        link to a binary VW model rather than embedding it inline in the aloha model.
               |  --num-missing-thresh <value>
               |        number of missing features to allow before returning a 'no-prediction'.
               |  --note <value>

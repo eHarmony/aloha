@@ -18,7 +18,7 @@ import com.eharmony.aloha.semantics.func.{GenFunc, GeneratedAccessor}
 import com.eharmony.aloha.util.Logging
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.io.IOUtils
-import org.apache.commons.vfs2.VFS
+import org.apache.commons.vfs2
 import org.junit.Assert._
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
@@ -141,7 +141,9 @@ class VwJniModelTest {
                 Vector(h),
                 Nil,
                 Nil,
-                (f: Double) => f
+                (f: Double) => f,
+                None,
+                None
             )
             fail("should throw IllegalArgumentException")
         }
@@ -164,7 +166,9 @@ class VwJniModelTest {
                 Vector(h),
                 Nil,
                 Nil,
-                (f: Double) => f
+                (f: Double) => f,
+                None,
+                None
             )
             fail("should throw IllegalArgumentException")
         }
@@ -187,7 +191,9 @@ class VwJniModelTest {
                 Vector(),
                 Nil,
                 Nil,
-                (f: Double) => f
+                (f: Double) => f,
+                None,
+                None
             )
             fail("should throw IllegalArgumentException")
         }
@@ -202,13 +208,89 @@ class VwJniModelTest {
      * recoverability is out of the question.  So ignore the test.
      */
     @Ignore @Test def testCorruptedModel(): Unit = {
-        val badModel = VFS.getManager.resolveFile("res:VwJniModelTest-vw_bad.model").getName.getPath
+        val badModel = vfs2.VFS.getManager.resolveFile("res:VwJniModelTest-vw_bad.model").getName.getPath
         println(s"attempting to instantiate corrupted VW model: $badModel")
 
         // This try won't do anything because this is currently a SEG FAULT so the world will just blow up.
         Try { new VW(s"--quiet -i $badModel") }
     }
 
+
+
+    @Test def testResUrlDoesntCopyToLocal(): Unit = {
+        val resUrl = url("res:" + VwModelBaseName)
+        val res = model[Float](extJson(resUrl.toString))
+        assertFalse("'res' URLs should copy VW model to temp directory.", res.finalVwParams.contains(TmpDir))
+    }
+
+    @Test def testFileUrlDoesntCopyToLocal(): Unit = {
+        val fileUrl = url(VwModelPath).toString
+        val file = model[Float](extJson(fileUrl))
+        assertFalse("'file' URLs should not copy VW model to temp directory.", file.finalVwParams.contains(TmpDir))
+    }
+
+    @Test def testNakedUrlDoesntCopyToLocal(): Unit = {
+        val naked = model[Float](extJson(VwModelPath))
+        assertFalse("URLs with no protocol should not copy VW model to temp directory.", naked.finalVwParams.contains(TmpDir))
+
+    }
+
+    @Test def testTmpUrlCopiesToLocal(): Unit = {
+        val tmpUrl = url("tmp://temp_vw_model1")
+        val tmpUrlPath = tmpUrl.getName.getPath
+        vfs2.FileUtil.copyContent(url(VwModelPath), tmpUrl)
+        val tmp = model[Float](extJson(tmpUrl.toString))
+        assertTrue("'tmp' URLs should copy VW model to temp directory.", tmp.finalVwParams.contains(TmpDir))
+        assertFalse("'tmp' URLs should copy VW model to temp directory.", tmp.finalVwParams.contains(tmpUrlPath))
+    }
+
+    @Test def testRamUrlCopiesToLocal(): Unit = {
+        val ramUrl = url("ram://ram_vw_model1")
+        val ramUrlPath = ramUrl.getName.getPath
+        vfs2.FileUtil.copyContent(url(VwModelPath), ramUrl)
+        val ram = model[Float](extJson(ramUrl.toString))
+        assertTrue("'ram' URLs should copy VW model to temp directory.", ram.finalVwParams.contains(TmpDir))
+        assertFalse("'ram' URLs should copy VW model to temp directory.", ram.finalVwParams.contains(ramUrlPath))
+    }
+
+    @Test def testGzFileUrlCopiesToLocal(): Unit = {
+        val localUrl = url(VwModelPath)
+        val gzUrl = url("gz://" + VwModelPath + ".gz")
+        val gzUrlPath = gzUrl.getName.getPath
+        vfs2.FileUtil.copyContent(localUrl, gzUrl)
+
+        // Assert that gzipping actually transformed the file.
+        assertFalse("Gzipping should modify file",
+                    Base64.encodeBase64(vfs2.FileUtil.getContent(localUrl)) ==
+                    Base64.encodeBase64(vfs2.FileUtil.getContent(url(VwModelPath + ".gz"))))
+
+        // Show that we can take gzipped URLs and that they are copied to a local temp file.
+        val gz = model[Float](extJson(gzUrl.toString))
+        assertTrue("'gz' URLs should copy VW model to temp directory.", gz.finalVwParams.contains(TmpDir))
+    }
+
+    @Test def testExternalModel(): Unit = {
+        val b64Json =
+            s"""
+               |{
+               |  "modelType": "VwJNI",
+               |  "modelId": { "id": 0, "name": "" },
+               |  "features": {
+               |    "height": "Seq((\\"\\", 180.0))"
+               |  },
+               |  "vw": {
+               |    "params": "--quiet --loss_function logistic",
+               |    "model": "$VwB64Model"
+               |  }
+               |}
+             """.stripMargin.trim.parseJson
+
+        val m = model[Float](extJson(VwModelPath))
+        assertEquals(ExpVwOutput, m(missingHeight).get, 0)
+
+        val m1 = model[Float](b64Json)
+        assertEquals(m1(missingHeight).get, m(missingHeight).get, 0)
+    }
 
     /**
      * Can't test.  Catching throwable or setting test annotation to @Test(expected = classOf[Error]) causes the
@@ -253,10 +335,36 @@ class VwJniModelTest {
 }
 
 object VwJniModelTest extends Logging {
-    private[jni] val VwModelFile = new File(FileLocations.testClassesDirectory, "VwJniModelTest-vw.model")
+    private[jni] val VwModelBaseName = "VwJniModelTest-vw.model"
+    private[jni] val VwModelFile = new File(FileLocations.testClassesDirectory, VwModelBaseName)
     private[jni] val VwModelPath = VwModelFile.getCanonicalPath
 
     private[jni] lazy val VwB64Model = VwJniModel.readBinaryVwModelToB64String(new FileInputStream(VwModelFile))
+
+    private[jni] def url(s: String) = vfs2.VFS.getManager.resolveFile(s)
+
+    private[jni] val TmpDir = {
+        val tf = File.createTempFile("prefix_doesnt_matter", "suffix_doesnt_matter")
+        tf.deleteOnExit()
+        tf.getParent
+    }
+
+    private[jni] def extJson(urlStr: String) = {
+        s"""
+           |{
+           |  "modelType": "VwJNI",
+           |  "modelId": { "id": 0, "name": "" },
+           |  "features": {
+           |    "height": "Seq((\\"\\", 180.0))"
+           |  },
+           |  "vw": {
+           |    "params": "--quiet --loss_function logistic",
+           |    "modelUrl": "$urlStr"
+           |  }
+           |}
+         """.stripMargin.trim.parseJson
+    }
+
 
     val columns = Seq(
         "height_cm" -> CsvTypes.LongOptionType,

@@ -9,6 +9,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 import org.junit.{BeforeClass, Test}
 import spray.json.{DeserializationException, pimpString}
+import org.apache.commons.vfs2
 
 object CliTest extends IoCaptureCompanion {
     @BeforeClass def createModel(): Unit = VwJniModelTest.createModel()
@@ -44,6 +45,8 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |        numeric id of the model.
               |  --vw-args <value>
               |        arguments to vw
+              |  --external
+              |        link to a binary VW model rather than embedding it inline in the aloha model.
               |  --num-missing-thresh <value>
               |        number of missing features to allow before returning a 'no-prediction'.
               |  --note <value>
@@ -77,6 +80,8 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |        numeric id of the model.
               |  --vw-args <value>
               |        arguments to vw
+              |  --external
+              |        link to a binary VW model rather than embedding it inline in the aloha model.
               |  --num-missing-thresh <value>
               |        number of missing features to allow before returning a 'no-prediction'.
               |  --note <value>
@@ -110,6 +115,8 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |        numeric id of the model.
               |  --vw-args <value>
               |        arguments to vw
+              |  --external
+              |        link to a binary VW model rather than embedding it inline in the aloha model.
               |  --num-missing-thresh <value>
               |        number of missing features to allow before returning a 'no-prediction'.
               |  --note <value>
@@ -143,6 +150,8 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |        numeric id of the model.
               |  --vw-args <value>
               |        arguments to vw
+              |  --external
+              |        link to a binary VW model rather than embedding it inline in the aloha model.
               |  --num-missing-thresh <value>
               |        number of missing features to allow before returning a 'no-prediction'.
               |  --note <value>
@@ -176,6 +185,8 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |        numeric id of the model.
               |  --vw-args <value>
               |        arguments to vw
+              |  --external
+              |        link to a binary VW model rather than embedding it inline in the aloha model.
               |  --num-missing-thresh <value>
               |        number of missing features to allow before returning a 'no-prediction'.
               |  --note <value>
@@ -202,7 +213,7 @@ class CliTest extends TestWithIoCapture(CliTest) {
         }
     }
 
-    @Test def testHappy(): Unit = {
+    @Test def testHappyEmbedded(): Unit = {
         if (VwJniModelTest.VwModelFile.exists) {
             val args = Array(
                 "-m", VwJniModelTest.VwModelPath,
@@ -228,6 +239,43 @@ class CliTest extends TestWithIoCapture(CliTest) {
                    |  "vw": {
                    |    "params": "--quiet -t",
                    |    "model": """".stripMargin.trim + base64EncodedModelString + """"
+                   |  }
+                   |}
+                 """).stripMargin.parseJson
+
+            assertEquals(expected, outContent.parseJson)
+        }
+    }
+
+    @Test def testHappyExternal(): Unit = {
+        if (VwJniModelTest.VwModelFile.exists) {
+            val args = Array(
+                "-m", VwJniModelTest.VwModelPath,
+                "-s", "res:com/eharmony/aloha/models/vw/jni/good.logistic.aloha.js",
+                "-i", "0",
+                "-n", "model name",
+                "--vw-args", "--quiet -t",
+                "--external"
+            )
+
+            Cli.main(args)
+
+            val url = vfs2.VFS.getManager.resolveFile(VwJniModelTest.VwModelPath)
+
+            val expected =
+                ("""
+                   |{
+                   |  "modelType": "VwJNI",
+                   |  "modelId": { "id": 0, "name": "model name" },
+                   |  "features": {
+                   |    "height_mm": "Seq((\"1800\", 1.0))"
+                   |  },
+                   |  "namespaces": {
+                   |    "personal_features": [ "height_mm" ]
+                   |  },
+                   |  "vw": {
+                   |    "params": "--quiet -t",
+                   |    "modelUrl": """".stripMargin.trim + url + """"
                    |  }
                    |}
                  """).stripMargin.parseJson
