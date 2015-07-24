@@ -256,7 +256,6 @@ class VwJniModelTest {
     @Test def testGzFileUrlCopiesToLocal(): Unit = {
         val localUrl = url(VwModelPath)
         val gzUrl = url("gz://" + VwModelPath + ".gz")
-        val gzUrlPath = gzUrl.getName.getPath
         vfs2.FileUtil.copyContent(localUrl, gzUrl)
 
         // Assert that gzipping actually transformed the file.
@@ -268,6 +267,22 @@ class VwJniModelTest {
         val gz = model[Float](extJson(gzUrl.toString))
         assertTrue("'gz' URLs should copy VW model to temp directory.", gz.finalVwParams.contains(TmpDir))
     }
+
+    @Test def testBzip2FileUrlCopiesToLocal(): Unit = {
+        val localUrl = url(VwModelPath)
+        val bz2Url = url("bz2://" + VwModelPath + ".bz2")
+        vfs2.FileUtil.copyContent(localUrl, bz2Url)
+
+        // Assert that zipping actually transformed the file.
+        assertFalse("BZip2ing should modify file",
+            Base64.encodeBase64(vfs2.FileUtil.getContent(localUrl)) ==
+                Base64.encodeBase64(vfs2.FileUtil.getContent(url(VwModelPath + ".bz2"))))
+
+        // Show that we can take zipped URLs and that they are copied to a local temp file.
+        val bz2 = model[Float](extJson(bz2Url.toString))
+        assertTrue("'zip' URLs should copy VW model to temp directory.", bz2.finalVwParams.contains(TmpDir))
+    }
+
 
     @Test def testExternalModel(): Unit = {
         val b64Json =
