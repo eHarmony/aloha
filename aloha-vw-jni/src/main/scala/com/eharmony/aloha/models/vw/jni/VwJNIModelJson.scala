@@ -5,7 +5,9 @@ import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.models.reg.ConstantDeltaSpline
 import com.eharmony.aloha.models.reg.json.{Spec, SpecJson}
 import spray.json.DefaultJsonProtocol._
-import spray.json.RootJsonFormat
+import spray.json._
+
+import org.apache.commons.vfs2
 
 import scala.collection.immutable.ListMap
 
@@ -30,7 +32,7 @@ trait VwJniModelJson extends SpecJson {
      *               single string by imploding the list with a " " separator or it is one string.  If None,
      * @param model an optional model.  This is a base64 encoded representation of a native VW binary model.
      */
-    protected[this] case class Vw(model: String, params: Option[Either[Seq[String], String]] = Option(Right("")))
+    protected[this] case class Vw(model: Either[String, vfs2.FileObject], params: Option[Either[Seq[String], String]] = Option(Right("")))
 
     /**
      * Note that as is, this declaration will cause a compiler warning:
@@ -65,7 +67,47 @@ trait VwJniModelJson extends SpecJson {
         notes: Option[Seq[String]] = None,
         spline: Option[ConstantDeltaSpline] = None)
 
-    protected[this] final implicit val vwFormat: RootJsonFormat[Vw] = jsonFormat2(Vw.apply)
+    protected[this] implicit object vwFormat extends RootJsonFormat[Vw] {
+        override def read(json: JsValue) = {
+            val jso = json.asJsObject("Vw expected to be object")
+
+            val modelVal = jso.getFields("model") match {
+                case Seq(JsString(m)) => Some(m)
+                case _                => None
+            }
+
+            val modelUrlVal = jso.getFields("modelUrl") match {
+                case Seq(JsString(m)) => Some(m)
+                case _                => None
+            }
+
+            val model = (modelVal, modelUrlVal) match {
+                case (None, Some(u))    => Right(vfs2.VFS.getManager.resolveFile(u))
+                case (Some(m), None)    => Left(m)
+                case (Some(m), Some(u)) => throw new DeserializationException("Exactly one of 'model' and 'modelUrl' should be supplied. Both supplied: " + json.compactPrint)
+                case (None, None)       => throw new DeserializationException("Exactly one of 'model' and 'modelUrl' should be supplied. Neither supplied: " + json.compactPrint)
+            }
+
+            val vw = jso.getFields("params") match {
+                case Seq(params) => Vw(model, Option(params.convertTo[Either[Seq[String], String]]))
+                case Nil         => Vw(model)
+            }
+
+            vw
+        }
+
+        override def write(v: Vw) = {
+            val model = v.model match {
+                case Left(m)     => "model" -> JsString(m)
+                case Right(url)  => "modelUrl" -> JsString(url.toString)
+            }
+
+            val params = v.params.map(p => "params" -> p.toJson)
+            val fields = Seq(model) ++ params
+            JsObject(scala.collection.immutable.ListMap(fields:_*))
+        }
+    }
+
     protected[this] final implicit val splineJsonFormat = jsonFormat(ConstantDeltaSpline, "min", "max", "knots")
     protected[this] final implicit val vwJNIAstFormat: RootJsonFormat[VwJNIAst] = jsonFormat8(VwJNIAst.apply)
 }

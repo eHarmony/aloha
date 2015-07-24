@@ -25,6 +25,7 @@ object Cli {
         id: Long = 0,
         name: String = "",
         vwArgs: Option[String] = None,
+        externalModel: Boolean = false,
         numMissingThreshold: Option[Int] = None,
         notes: Vector[String] = Vector.empty,
         splineMin: Option[Double] = None,
@@ -33,10 +34,10 @@ object Cli {
 
     def main(args: Array[String]) {
         cliParser.parse(args, Config()) match {
-            case Some(Config(spec, model, id, name, vwArgs, numMissingThresh, notesList, min, max, knots)) =>
+            case Some(Config(spec, model, id, name, vwArgs, externalModel, numMissingThresh, notesList, min, max, knots)) =>
                 val spline = for (n <- min; x <- max; k <- knots) yield ConstantDeltaSpline(n, x, k)
                 val notes = Option(notesList) filter {_.nonEmpty}
-                val jsonAst = VwJniModel.json(spec, model, ModelId(id, name), vwArgs, numMissingThresh, notes, spline)
+                val jsonAst = VwJniModel.json(spec, model, ModelId(id, name), vwArgs, externalModel, numMissingThresh, notes, spline)
                 println(jsonAst.compactPrint)
             case None => // Will be taken care of by scopt.
         }
@@ -60,6 +61,9 @@ object Cli {
             opt[String]("vw-args") action { (x, c) =>
                 c.copy(vwArgs = Some(x))
             } text "arguments to vw" optional()
+            opt[Unit]("external") action { (x, c) =>
+                c.copy(externalModel = true)
+            } text "link to a binary VW model rather than embedding it inline in the aloha model." optional()
             opt[Int]("num-missing-thresh") action { (x, c) =>
                 c.copy(numMissingThreshold = Option(x))
             } text "number of missing features to allow before returning a 'no-prediction'." optional()
