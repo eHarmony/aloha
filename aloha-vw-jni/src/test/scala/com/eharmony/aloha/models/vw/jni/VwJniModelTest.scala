@@ -240,8 +240,14 @@ class VwJniModelTest {
         val tmpUrlPath = tmpUrl.getName.getPath
         vfs2.FileUtil.copyContent(url(VwModelPath), tmpUrl)
         val tmp = model[Float](extJson(tmpUrl.toString))
-        assertTrue("'tmp' URLs should copy VW model to temp directory.", tmp.finalVwParams.contains(TmpDir))
-        assertFalse("'tmp' URLs should copy VW model to temp directory.", tmp.finalVwParams.contains(tmpUrlPath))
+        val file = """^.*\s+-i\s*([^\s]*\.model).*$""".r
+        tmp.finalVwParams match {
+            case file(tmpFile) =>
+                assertFalse(s"Temp file ($tmpFile) should already be deleted.", new File(tmpFile).exists())
+                assertTrue("'tmp' URLs should copy VW model to temp directory.", tmp.finalVwParams.contains(TmpDir))
+                assertFalse("'tmp' URLs should copy VW model to temp directory.", tmp.finalVwParams.contains(tmpUrlPath))
+            case _ => fail("Should have a temp file location")
+        }
     }
 
     @Test def testRamUrlCopiesToLocal(): Unit = {
@@ -249,8 +255,15 @@ class VwJniModelTest {
         val ramUrlPath = ramUrl.getName.getPath
         vfs2.FileUtil.copyContent(url(VwModelPath), ramUrl)
         val ram = model[Float](extJson(ramUrl.toString))
-        assertTrue("'ram' URLs should copy VW model to temp directory.", ram.finalVwParams.contains(TmpDir))
-        assertFalse("'ram' URLs should copy VW model to temp directory.", ram.finalVwParams.contains(ramUrlPath))
+
+        val file = """^.*\s+-i\s*([^\s]*\.model).*$""".r
+        ram.finalVwParams match {
+            case file(tmpFile) =>
+                assertFalse(s"Temp file ($tmpFile) should already be deleted.", new File(tmpFile).exists())
+                assertTrue("'ram' URLs should copy VW model to temp directory.", ram.finalVwParams.contains(TmpDir))
+                assertFalse("'ram' URLs should copy VW model to temp directory.", ram.finalVwParams.contains(ramUrlPath))
+            case _ => fail("Should have a temp file location")
+        }
     }
 
     @Test def testGzFileUrlCopiesToLocal(): Unit = {
@@ -265,7 +278,14 @@ class VwJniModelTest {
 
         // Show that we can take gzipped URLs and that they are copied to a local temp file.
         val gz = model[Float](extJson(gzUrl.toString))
-        assertTrue("'gz' URLs should copy VW model to temp directory.", gz.finalVwParams.contains(TmpDir))
+
+        val file = """^.*\s+-i\s*([^\s]*\.model).*$""".r
+        gz.finalVwParams match {
+            case file(tmpFile) =>
+                assertFalse(s"Temp file ($tmpFile) should already be deleted.", new File(tmpFile).exists())
+                assertTrue("'gz' URLs should copy VW model to temp directory.", gz.finalVwParams.contains(TmpDir))
+            case _ => fail("Should have a temp file location")
+        }
     }
 
     @Test def testBzip2FileUrlCopiesToLocal(): Unit = {
@@ -280,9 +300,15 @@ class VwJniModelTest {
 
         // Show that we can take zipped URLs and that they are copied to a local temp file.
         val bz2 = model[Float](extJson(bz2Url.toString))
-        assertTrue("'zip' URLs should copy VW model to temp directory.", bz2.finalVwParams.contains(TmpDir))
-    }
 
+        val file = """^.*\s+-i\s*([^\s]*\.model).*$""".r
+        bz2.finalVwParams match {
+            case file(tmpFile) =>
+                assertFalse(s"Temp file ($tmpFile) should already be deleted.", new File(tmpFile).exists())
+                assertTrue("'zip' URLs should copy VW model to temp directory.", bz2.finalVwParams.contains(TmpDir))
+            case _ => fail("Should have a temp file location")
+        }
+    }
 
     @Test def testExternalModel(): Unit = {
         val b64Json =

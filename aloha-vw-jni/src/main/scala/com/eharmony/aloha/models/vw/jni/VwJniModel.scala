@@ -75,10 +75,15 @@ extends BaseModel[A, B]
     /**
      * The backing VW instance doing all of the regression work.
      */
-    @transient private[this] lazy val (model, allVwParams) = {
-        val localFile = VwJniModel.copyModelToLocal(modelId.getId(), vwModel)
-        VwJniModel.createVwJniModel(modelId.getId(), localFile, vwParams)
-    }
+    @transient private[this] lazy val (model, allVwParams) =
+        VwJniModel.copyModelToLocal(modelId.getId(), vwModel) match {
+            case Left(_) =>
+                VwJniModel.createVwJniModel(modelId.getId(), new File(vwModel.getName.getPath), vwParams)
+            case Right(tmpFile) =>
+                val modelAndParams = VwJniModel.createVwJniModel(modelId.getId(), tmpFile, vwParams)
+                tmpFile.delete()
+                modelAndParams
+        }
 
     /**
      * Used for testing.
@@ -274,16 +279,21 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
      * This copies non-local-file content to a local temp file and returns the file name.  If
      * @param modelId
      * @param vwModel
-     * @return
+     * @return return Right if a temp file was created, Left(vwModel) otherwise.
      */
-    private[jni] def copyModelToLocal(modelId: Long, vwModel: vfs2.FileObject): File = {
+    private[jni] def copyModelToLocal(modelId: Long, vwModel: vfs2.FileObject): Either[vfs2.FileObject, File] = {
         // TODO: Need to find a less brittle way to test this
         if ("file" == vwModel.getName.getScheme.toLowerCase) {
-            new File(vwModel.getName.getPath)
+            Left(vwModel)
         }
         else {
             val tmpFile = File.createTempFile(s"aloha.vw.$modelId.", ".model")
+
+            // While there will be an attempt to clean up the temp immediately after use, this is kept as an
+            // extra precaution in case something goes wrong.  Then there is still a change that the file will
+            // get cleaned up.
             tmpFile.deleteOnExit()
+
             val is = vwModel.getContent.getInputStream
             val os = new FileOutputStream(tmpFile)
             try {
@@ -293,7 +303,7 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
                 IOUtils.closeQuietly(is)
                 IOUtils.closeQuietly(os)
             }
-            tmpFile
+            Right(tmpFile)
         }
     }
 
