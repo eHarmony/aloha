@@ -1,10 +1,12 @@
 package com.eharmony.aloha.dataset.csv.encoding
 
+import com.eharmony.aloha.dataset.csv.json.{SyntheticEnumCsvColumn, EnumCsvColumn, CsvColumn}
 import spray.json._
 import spray.json.DefaultJsonProtocol.lift
 
 sealed trait Encoding {
     def finalizer[A](sep: String, nullString: String, values: Iterable[String]): Option[A] => String
+    def csvHeadersForColumn(c: CsvColumn): Seq[String]
 }
 
 object Encoding {
@@ -25,7 +27,10 @@ object Encoding {
 // TODO: Fill in
 case object ThermometerEncoding extends Encoding {
     override def finalizer[A](sep: String, nullString: String, values: Iterable[String]) =
-        throw new UnsupportedOperationException("not implemented!")
+        throw new UnsupportedOperationException("ThermometerEncoding not implemented!")
+
+    override def csvHeadersForColumn(c: CsvColumn): Seq[String] =
+        throw new UnsupportedOperationException("ThermometerEncoding not implemented!")
 }
 
 case object HotOneEncoding extends Encoding {
@@ -55,7 +60,13 @@ case object HotOneEncoding extends Encoding {
                     fold(missing(n, sep))(i => densify(i, n, sep)))
     }
 
-    def finalizer[A](sep: String, nullString: String, values: Iterable[String]): Option[A] => String = HotOne[A](sep, values.view.zipWithIndex.toMap)
+    override def csvHeadersForColumn(c: CsvColumn): Seq[String] = c match {
+        case e@EnumCsvColumn(name, _, _) => e.values.map(v => s"${name}_$v")
+        case SyntheticEnumCsvColumn(name, _, values, _) => values.map(v => s"${name}_$v")
+        case d => Seq(d.name)
+    }
+
+    override def finalizer[A](sep: String, nullString: String, values: Iterable[String]): Option[A] => String = HotOne[A](sep, values.view.zipWithIndex.toMap)
 }
 
 case object RegularEncoding extends Encoding {
@@ -67,5 +78,7 @@ case object RegularEncoding extends Encoding {
             }
     }
 
-    def finalizer[A](sep: String, nullString: String, values: Iterable[String]): Option[A] => String = Regular[A](nullString, values.toSet)
+    override def csvHeadersForColumn(c: CsvColumn): Seq[String] = Seq(c.name)
+
+    override def finalizer[A](sep: String, nullString: String, values: Iterable[String]): Option[A] => String = Regular[A](nullString, values.toSet)
 }

@@ -111,6 +111,63 @@ class DatasetCliTest {
         assertEquals(expected, output(outFile).trim)
     }
 
+    @Test def testCsvInCsvOutWithHeadersRegularEncoding(): Unit = {
+        val inFile = "ram://csvInCsvOut.in"
+        val outFile = "ram://csvInCsvOutWithHeadersRegularEncoding.out"
+
+        input(inFile,
+            "MALE,175,,,",
+            "FEMALE,,books|films|chinese food,,"
+        )
+
+        val expected = Seq(
+            "gender,weight,num_likes",
+            "MALE,170,0",
+            "FEMALE,NULL,3"
+        ).mkString("\n")
+
+        val args = Array[String](
+            "-i", inFile,
+            "-s", "res:com/eharmony/aloha/dataset/cli/csv_spec2.js",
+            "-c", "res:com/eharmony/aloha/dataset/cli/csv_types1.js",
+            "--cachedir", FileLocations.testGeneratedClasses.getCanonicalPath,
+            "--csv-headers",
+            "--csv", outFile
+        )
+
+        DatasetCli.main(args)
+        assertEquals(expected, output(outFile).trim)
+    }
+
+    @Test def testCsvInCsvOutWithHeadersHotOneEncoding(): Unit = {
+        val inFile = "ram://csvInCsvOut.in"
+        val outFile = "ram://csvInCsvOutWithHeadersHotOneEncoding.out"
+
+        input(inFile,
+            "MALE,175,,,",
+            "FEMALE,,books|films|chinese food,,"
+        )
+
+        val expected = Seq(
+            "gender_MALE,gender_FEMALE,weight,num_likes",
+            "1,0,170,0",
+            "0,1,NULL,3"
+        ).mkString("\n")
+
+        val args = Array[String](
+            "-i", inFile,
+            "-s", "res:com/eharmony/aloha/dataset/cli/csv_spec3.js",
+            "-c", "res:com/eharmony/aloha/dataset/cli/csv_types1.js",
+            "--cachedir", FileLocations.testGeneratedClasses.getCanonicalPath,
+            "--csv-headers",
+            "--csv", outFile
+        )
+
+        DatasetCli.main(args)
+        assertEquals(expected, output(outFile).trim)
+    }
+
+
     def input(vfsUrl: String, data: String*): Unit = {
         val content = VFS.getManager.resolveFile(vfsUrl).getContent
         new OutputStreamWriter(content.getOutputStream).append(data.mkString("\n")).close()

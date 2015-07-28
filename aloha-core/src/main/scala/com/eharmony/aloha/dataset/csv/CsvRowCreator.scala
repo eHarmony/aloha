@@ -11,12 +11,26 @@ import spray.json.JsValue
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success, Try}
 
-final case class CsvRowCreator[-A](features: FeatureExtractorFunction[A, String], separator: String = ",")
+/**
+ * A transformer that takes a value of a specified input type that produces string-based CSV data.
+ * @param features a representation of the features used to generate the row ouput.
+ * @param headers note that the dimensionality of this vector is equal to the dimensionality of the output vector
+ *                produced by features rather than the number of features used to produce the vector.  This is because
+ *                categorical variables can be expanded in different ways based on the [[Encoding]] used.
+ * @param separator the field separator
+ * @tparam A the input type that is transformed into CSV output.
+ */
+final case class CsvRowCreator[-A](features: FeatureExtractorFunction[A, String], headers: Vector[String], separator: String = ",")
     extends RowCreator[A] {
     def apply(data: A) = {
         val (missing, values) = features(data)
         (missing, values.mkString(separator))
     }
+
+    /**
+     * @return A string containing all the headers associated with the CSV rows created by this [[RowCreator]].
+     */
+    def headerString = headers.mkString(separator)
 }
 
 final object CsvRowCreator {
@@ -40,8 +54,8 @@ final object CsvRowCreator {
             val separator = jsonSpec.separator.getOrElse(Separator)
             val encoding = jsonSpec.encoding.getOrElse(Encoding)
 
-            val spec = getCovariates(semantics, jsonSpec, nullString, separator, encoding) map { cov => CsvRowCreator(cov, separator) }
-            spec
+            val creator = getCovariates(semantics, jsonSpec, nullString, separator, encoding) map { case (cov, headers) => CsvRowCreator(cov, headers, separator) }
+            creator
         }
 
         protected[this] def getCovariates(
@@ -49,38 +63,41 @@ final object CsvRowCreator {
                 cj: CsvJson,
                 nullString: String,
                 separator: String,
-                encoding: Encoding): Try[FeatureExtractorFunction[A, String]] = {
+                encoding: Encoding): Try[(FeatureExtractorFunction[A, String], Vector[String])] = {
+
 
             // Get a new semantics with the imports changed to reflect the imports from the Json Spec
             // Import of ExecutionContext.Implicits.global is necessary.
             val semanticsWithImports = semantics.copy[A](imports = cj.imports)
 
 
-            def compile(it: Iterator[CsvColumn], successes: List[(String, GenAggFunc[A, String])]): Try[FeatureExtractorFunction[A, String]] = {
+            def compile(it: Iterator[CsvColumn], successes: List[(String, GenAggFunc[A, String])], headers: Vector[String]): Try[(FeatureExtractorFunction[A, String], Vector[String])] = {
                 if (!it.hasNext)
-                    Success { StringFeatureExtractorFunction(successes.reverse.toIndexedSeq) }
+                    Success { (StringFeatureExtractorFunction(successes.reverse.toIndexedSeq), headers) }
                 else {
-                    val spec = it.next()
+                    val csvCol = it.next()
 
-                    val f = semanticsWithImports.createFunction[Option[spec.ColType]](spec.wrappedSpec, Some(spec.defVal))(spec.refInfo)
+                    val f = semanticsWithImports.createFunction[Option[csvCol.ColType]](csvCol.wrappedSpec, Some(csvCol.defVal))(csvCol.refInfo)
                     f match {
-                        case Left(msgs) => Failure { failure(spec.name, msgs) }
+                        case Left(msgs) => Failure { failure(csvCol.name, msgs) }
                         case Right(success) =>
+
+                            val headersForCol = encoding.csvHeadersForColumn(csvCol)
 
                             // Get the finalizer.  This is based on the encoding in the case of categorical variables
                             // but not in the case of scalars.
-                            val finalizer = spec.finalizer(separator, nullString) match {
+                            val finalizer = csvCol.finalizer(separator, nullString) match {
                                 case BasicFinalizer(fnl) => fnl
                                 case EncodingBasedFinalizer(fnl) => fnl(encoding)
                             }
 
                             val strFunc = success.andThenGenAggFunc(finalizer)
-                            compile(it, (spec.name, strFunc) :: successes)
+                            compile(it, (csvCol.name, strFunc) :: successes, headers ++ headersForCol)
                     }
                 }
             }
 
-            compile(cj.features.iterator, Nil)
+            compile(cj.features.iterator, Nil, Vector.empty)
         }
     }
 }

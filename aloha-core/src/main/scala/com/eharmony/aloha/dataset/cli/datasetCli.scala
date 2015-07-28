@@ -1,6 +1,6 @@
 package com.eharmony.aloha.dataset.cli
 
-import java.io.{Closeable, File, InputStream, PrintStream}
+import java.io._
 import java.util.regex.Matcher
 
 import com.eharmony.aloha
@@ -31,7 +31,7 @@ import scala.util.{Failure, Success, Try}
  * Created by rdeak on 6/17/15.
  */
 @CLI(flag = "--dataset")
-object DatasetCli extends Logging {
+object DatasetCli extends Logging { self =>
     import DatasetType.DatasetType
 
     private val CommandName = "dataset"
@@ -42,15 +42,17 @@ object DatasetCli extends Logging {
 
     def main(args: Array[String]): Unit = {
         cliParser.parse(args, Config()) match {
-            case Some(Config(chunkSize, cacheDir, Seq(inputType), Some(spec), inFile, datasets, cp)) =>
+            case Some(Config(chunkSize, cacheDir, Seq(inputType), Some(spec), inFile, datasets, cp, headersInCsv, csvHeaderFile)) =>
                 val (is, closeIn) = inStream(inFile)
 
                 // TODO: test par vs seq.
                 val lws = lineWriters(inputType, datasets, spec, cacheDir)
 
+                csvHeaderFile foreach { printCsvHeaderFile(lws, _) }
+
                 if (1 < chunkSize)
-                    runParallel(is, lws, chunkSize)
-                else runSequential(is, lws)
+                    runParallel(is, lws, chunkSize, headersInCsv)
+                else runSequential(is, lws, headersInCsv)
 
                 // Close the files.
                 lws.foreach(lw => lw.close())
@@ -63,7 +65,28 @@ object DatasetCli extends Logging {
         }
     }
 
-    private def runSequential[A](is: InputStream, lws: Seq[LineWriter[A]]): Unit = {
+    private final def findCsvLineWriters[A](lws: Seq[LineWriter[A]]) =
+        lws.collect { case lw@LineWriter(_, csv@CsvRowCreator(_, _, _), _, _) => (lw, csv) }
+
+    private final def printCsvHeaders[A](lws: Seq[LineWriter[A]]): Unit =
+        findCsvLineWriters(lws) foreach { case (lw, csv) => printCsvHeaders(csv, lw.out) }
+
+    private final def printCsvHeaderFile[A](lws: Seq[LineWriter[A]], file: FileObject): Unit =
+        findCsvLineWriters(lws).headOption foreach {
+            case (_, csv) => printCsvHeaders(csv, new PrintStream(file.getContent.getOutputStream), close = true)
+        }
+
+    private final def printCsvHeaders[A](csvRowCreator: CsvRowCreator[A], ps: PrintStream, close: Boolean = false): Unit = {
+        ps.println(csvRowCreator.headerString)
+        ps.flush()
+        if (close)
+            ps.close()
+    }
+
+    private def runSequential[A](is: InputStream, lws: Seq[LineWriter[A]], headersInCsv: Boolean): Unit = {
+        if (headersInCsv)
+            printCsvHeaders(lws)
+
         scala.io.Source.fromInputStream(is).getLines().zipWithIndex.foreach { line =>
             lws.foreach { lw =>
                 try {
@@ -77,7 +100,10 @@ object DatasetCli extends Logging {
         }
     }
 
-    private def runParallel[A](is: InputStream, lws: Seq[LineWriter[A]], chunkSize: Int): Unit = {
+    private def runParallel[A](is: InputStream, lws: Seq[LineWriter[A]], chunkSize: Int, headersInCsv: Boolean): Unit = {
+        if (headersInCsv)
+            printCsvHeaders(lws)
+
         val lwsp = lws.par
         scala.io.Source.fromInputStream(is).getLines().zipWithIndex.grouped(chunkSize).foreach { lines =>
             lwsp.foreach { lw =>
@@ -99,9 +125,9 @@ object DatasetCli extends Logging {
         }
     }
 
-    private class LineWriter[A](extractor: String => A, spec: RowCreator[A], out: PrintStream, closeStream: Boolean) extends (String => LineWriter[A]) with Closeable {
+    private case class LineWriter[A](extractor: String => A, rowCreator: RowCreator[A], out: PrintStream, closeStream: Boolean) extends (String => LineWriter[A]) with Closeable {
         override def apply(a: String): this.type = {
-            out.println(spec(extractor(a))._2)
+            out.println(rowCreator(extractor(a))._2)
             this
         }
         def flush(): this.type = {
@@ -112,9 +138,9 @@ object DatasetCli extends Logging {
     }
 
     private object LineWriter {
-        def apply[A](extractor: String => A, spec: RowCreator[A], outFile: Option[FileObject]): LineWriter[A] = {
+        def apply[A](extractor: String => A, rowCreator: RowCreator[A], outFile: Option[FileObject]): LineWriter[A] = {
             val (out, close) = outStream(outFile)
-            new LineWriter(extractor, spec, out, close)
+            new LineWriter(extractor, rowCreator, out, close)
         }
 
         /**
@@ -130,7 +156,7 @@ object DatasetCli extends Logging {
          * @return
          */
         def create[A](extractor: String => A, semantics: CompiledSemantics[A], datasetType: DatasetType, out: Option[FileObject], spec: FileObject): Try[LineWriter[A]] =
-            RowCreatorBuilder(semantics, List(datasetType.specProducer[A])).
+            RowCreatorBuilder(semantics, List(datasetType.rowCreatorProducer[A])).
                 fromVfs2(spec).
                 map(s => LineWriter(extractor, s, out))
 
@@ -150,7 +176,9 @@ object DatasetCli extends Logging {
                 val (p, untypedF) = getCsvPluginAndExtractorFunction(csvDef)
                 val f = untypedF.asInstanceOf[CharSequence => A]
                 val s = CompiledSemantics(TwitterEvalCompiler(classCacheDir = cacheDir), p, imports).asInstanceOf[CompiledSemantics[A]]
-                datasets.map { case(dsType, out) => dsType -> LineWriter.create(f, s, dsType, out, spec) }.flatMap {
+                datasets map {
+                    case(dsType, out) => dsType -> LineWriter.create(f, s, dsType, out, spec)
+                } flatMap {
                     case (dsType, Success(success)) => Option(success)
                     case (dsType, Failure(failure)) =>
                         System.err.println(s"Couldn't create writer for dataset type $dsType. Error: ${failure.getMessage}")
@@ -161,7 +189,9 @@ object DatasetCli extends Logging {
                 val p = untypedP.asInstanceOf[CompiledSemanticsProtoPlugin[A]]
                 val f = unTypedF.asInstanceOf[String => A]
                 val s = CompiledSemantics[A](TwitterEvalCompiler(classCacheDir = cacheDir), p, imports)
-                datasets.map { case(dsType, out) => dsType -> LineWriter.create(f, s, dsType, out, spec) }.flatMap {
+                datasets map {
+                    case(dsType, out) => dsType -> LineWriter.create(f, s, dsType, out, spec)
+                } flatMap {
                     case (dsType, Success(success)) => Option(success)
                     case (dsType, Failure(failure)) =>
                         System.err.println(s"Couldn't create writer for dataset type $dsType. Error: ${failure.getMessage}")
@@ -204,7 +234,7 @@ object DatasetCli extends Logging {
     private[this] def getImports(spec: FileObject): Seq[String] = {
         import spray.json.DefaultJsonProtocol._
         import spray.json.pimpString
-        StringReadable.fromVfs2(spec).parseJson.asJsObject("spec contain a JSON object").getFields("imports") match {
+        StringReadable.fromVfs2(spec).parseJson.asJsObject("rowCreator contain a JSON object").getFields("imports") match {
             case Seq(imp) => imp.convertTo[Vector[String]]
             case _        => Nil
         }
@@ -215,7 +245,7 @@ object DatasetCli extends Logging {
      * {{{
      *  -dataset                                     \
      *    -cp /file/to/some.jar, /file/to/other.jar  \
-     *    -s /file/to/spec.js                        \
+     *    -s /file/to/rowCreator.js                        \
      *    -p com.eharmony.SomeProto                  \  (csv|proto)
      *    -c /file/to/csv.def.js                     \
      *    -i /file/to/b64_proto_in.txt               \  if omitted, use STDIN
@@ -235,7 +265,7 @@ object DatasetCli extends Logging {
                 if (x < 1) reportError(s"parallel flag must provide a positive value.  Provided chunk size of ${c.chunkSize}. ASDF")
                 c.copy(chunkSize = x)
             } text "a list of Apache VFS URLs additional jars to be included on the classpath" optional()
-            opt[FileObject]('s', "spec") action { (x, c) =>
+            opt[FileObject]('s', "rowCreator") action { (x, c) =>
                 c.copy(spec = Option(x))
             } text "Apache VFS URL to a JSON specification file containing attributes of the dataset being created." required()
             opt[String]('p', "proto-input") action { (x, c) =>
@@ -267,6 +297,12 @@ object DatasetCli extends Logging {
             opt[Option[FileObject]](DatasetType.csv.toString) action { (x, c) =>
                 c.copy(datasets = c.datasets :+ DatasetType.csv -> x)
             } text "produce a CSV dataset and place the output in the specified location." maxOccurs (1)
+            opt[Unit]("csv-headers") action { (_, c) =>
+                c.copy(headersInCsv = true)
+            } text "Produce headers in CSV output." maxOccurs (1)
+            opt[FileObject]("csv-header-file") action { (f, c) =>
+                c.copy(csvHeaderFile = Some(f))
+            } text "Write CSV headers to the designated file." maxOccurs (1)
             checkConfig { c =>
                 if (c.chunkSize < 1)         Left(s"parallel flag must provide a positive value.  Provided chunk size of ${c.chunkSize}.")
                 if (c.inputTypes.isEmpty)    Left("No input type provided.  Provide one of the proto-input or csv-input options.")
@@ -288,7 +324,7 @@ object DatasetCli extends Logging {
         val vw, vw_labeled, vw_cb, libsvm, libsvm_labeled, csv = Value
 
         implicit class DatasetTypeOps(val v: DatasetType) extends AnyVal {
-            def specProducer[A]: RowCreatorProducer[A, RowCreator[A]] = v match {
+            def rowCreatorProducer[A]: RowCreatorProducer[A, RowCreator[A]] = v match {
                 case `vw`             => new VwRowCreator.Producer[A]
                 case `vw_labeled`     => new VwLabelRowCreator.Producer[A]
                 case `vw_cb`          => new VwContextualBanditRowCreator.Producer[A]
@@ -305,7 +341,9 @@ object DatasetCli extends Logging {
                       spec: Option[FileObject] = None,
                       input: Option[FileObject] = None,
                       datasets: Seq[(DatasetType, Option[FileObject])] = Nil,
-                      classPath: Seq[FileObject] = Nil)
+                      classPath: Seq[FileObject] = Nil,
+                      headersInCsv: Boolean = false,
+                      csvHeaderFile: Option[FileObject] = None)
 
     sealed trait InputType
     case class ProtoInputType(protoClass: String) extends InputType

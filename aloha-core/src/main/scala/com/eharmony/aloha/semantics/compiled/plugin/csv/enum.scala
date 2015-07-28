@@ -1,6 +1,6 @@
 package com.eharmony.aloha.semantics.compiled.plugin.csv
 
-import scala.language.dynamics
+import scala.language.{implicitConversions, dynamics}
 
 
 /** This class is designed to emulate Java enum values created by Google's Protocol Buffer library.
@@ -79,6 +79,8 @@ sealed trait EnumConstant {
 object EnumConstant {
     import spray.json.DefaultJsonProtocol.{IntJsonFormat, StringJsonFormat, jsonFormat}
     import spray.json.{JsValue, JsonFormat, pimpAny}
+
+    implicit def enumConstantToString(ec: EnumConstant): String = ec.name()
 
     implicit val enumConstantFormat = new JsonFormat[EnumConstant] {
         private[this] val format = jsonFormat(EnumConstantImpl.apply, "name", "ordinal", "number")
