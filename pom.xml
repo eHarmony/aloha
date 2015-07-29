@@ -329,6 +329,10 @@
                                     <requireUpperBoundDeps>
                                         <uniqueVersions>true</uniqueVersions>
                                     </requireUpperBoundDeps>
+                                    <banDuplicateClasses>
+                                        <ignoreClasses />
+                                        <findAllDuplicates>true</findAllDuplicates>
+                                    </banDuplicateClasses>
                                 </rules>
                             </configuration>
                             <goals>
@@ -336,6 +340,13 @@
                             </goals>
                         </execution>
                     </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>extra-enforcer-rules</artifactId>
+                            <version>1.0-alpha-3</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
 
                 <!-- TODO: Enable scalastyle plugin -->

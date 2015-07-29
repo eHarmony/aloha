@@ -73,7 +73,7 @@ class VwJniModelJsonTest {
              |  }
              |}
            """).stripMargin.parseJson
-      val actual = VwJniModel.json(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"), None, Some(Seq("This is a note")))
+      val actual = VwJniModel.json(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"), false, None, Some(Seq("This is a note")))
       assertEquals(expected, actual)
   }
 
@@ -102,7 +102,7 @@ class VwJniModelJsonTest {
              |}
            """).stripMargin.parseJson
 
-      val actual = VwJniModel.json(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"), None, None, Some(cds))
+      val actual = VwJniModel.json(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"), false, None, None, Some(cds))
       assertEquals(expected, actual)
   }
 
@@ -132,7 +132,7 @@ class VwJniModelJsonTest {
              |  }
              |}
            """).stripMargin.parseJson
-      val actual = VwJniModel.json(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"), None, Some(Seq("This is a note")), Some(cds))
+      val actual = VwJniModel.json(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"), false, None, Some(Seq("This is a note")), Some(cds))
       assertEquals(expected, actual)
   }
 }
