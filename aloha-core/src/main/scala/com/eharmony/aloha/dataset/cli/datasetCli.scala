@@ -1,6 +1,6 @@
 package com.eharmony.aloha.dataset.cli
 
-import java.io._
+import java.io.{Closeable, File, InputStream, PrintStream}
 import java.util.regex.Matcher
 
 import com.eharmony.aloha
@@ -27,11 +27,9 @@ import scala.annotation.tailrec
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success, Try}
 
-/**
- * Created by rdeak on 6/17/15.
- */
+
 @CLI(flag = "--dataset")
-object DatasetCli extends Logging { self =>
+object DatasetCli extends Logging {
     import DatasetType.DatasetType
 
     private val CommandName = "dataset"
@@ -265,7 +263,7 @@ object DatasetCli extends Logging { self =>
                 if (x < 1) reportError(s"parallel flag must provide a positive value.  Provided chunk size of ${c.chunkSize}. ASDF")
                 c.copy(chunkSize = x)
             } text "a list of Apache VFS URLs additional jars to be included on the classpath" optional()
-            opt[FileObject]('s', "rowCreator") action { (x, c) =>
+            opt[FileObject]('s', "spec") action { (x, c) =>
                 c.copy(spec = Option(x))
             } text "Apache VFS URL to a JSON specification file containing attributes of the dataset being created." required()
             opt[String]('p', "proto-input") action { (x, c) =>
