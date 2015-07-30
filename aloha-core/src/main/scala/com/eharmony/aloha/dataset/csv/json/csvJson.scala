@@ -66,9 +66,9 @@ extends DefaultJsonProtocol
                 case Some("byte") => o.convertTo[CsvColumnWithDefault[Byte]]
                 case Some("char") => o.convertTo[CsvColumnWithDefault[Char]]
                 case Some("boolean") => o.convertTo[CsvColumnWithDefault[Boolean]]
-                case Some("enum") if o.getFields("enumClass").exists { case JsString(_) => true; case _ => false } =>
+                case Some("enum") if (o.getFields("enumClass") match { case Seq(JsString(_)) => true; case _ => false }) =>
                     o.convertTo[EnumCsvColumn]
-                case Some("enum") if o.getFields("values").exists { case JsArray(_) => true; case _ => false } =>
+                case Some("enum") if (o.getFields("values") match { case Seq(JsArray(_)) => true; case _ => false }) =>
                     o.convertTo[SyntheticEnumCsvColumn]
                 case None =>
                     debug(s"No type provided.  Assuming Any.  Given: ${o.compactPrint}")
@@ -100,7 +100,7 @@ extends CsvColumn {
      */
     type ColType = Enum[_]
     private[this] val clazz = Class.forName(enumClass).asInstanceOf[Class[Enum[_]]]
-    private[this] def values = clazz.getEnumConstants.map(_.name)
+    def values = clazz.getEnumConstants.map(_.name).toVector
     def refInfo = RefInfoOps.option(RefInfoOps.fromSimpleClass(clazz))
     def defVal: Option[Enum[_]] = None
     def finalizer(sep: String, nullString: String) = EncodingBasedFinalizer((e: Encoding) => e.finalizer(sep, nullString, values))
