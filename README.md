@@ -1,6 +1,4 @@
-#Aloha#
-
-[![Build Status](https://travis-ci.org/eHarmony/aloha.svg?branch=master)](https://travis-ci.org/eHarmony/aloha)
+# Aloha [![Build Status](https://travis-ci.org/eHarmony/aloha.svg?branch=master)](https://travis-ci.org/eHarmony/aloha) [![Stories in Ready](https://badge.waffle.io/eHarmony/aloha.png?label=ready&title=Ready)](https://waffle.io/eHarmony/aloha) #
 
 The Aloha libraries provide implementations of machine learning models used at eHarmony.  The distinction between Aloha and other machine learning libraries such as [Weka](http://www.cs.waikato.ac.nz/ml/weka/), [Torch](http://www.torch.ch/), [Mahout](http://mahout.apache.org/), etc, is that Aloha models:
 
