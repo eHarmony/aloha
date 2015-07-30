@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/eHarmony/aloha.png?label=ready&title=Ready)](https://waffle.io/eHarmony/aloha)
 #Aloha#
 
 [![Build Status](https://travis-ci.org/eHarmony/aloha.svg?branch=master)](https://travis-ci.org/eHarmony/aloha)
