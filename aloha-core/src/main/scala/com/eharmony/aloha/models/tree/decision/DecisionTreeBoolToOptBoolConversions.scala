@@ -10,7 +10,7 @@ trait DecisionTreeBoolToOptBoolConversions {
       * @param b a Boolean to be converted to an Option[Boolean].
       * @return the lifted boolean.
       */
-    implicit def booleanToOptionBoolean(b: Boolean) = Option(b)
+    implicit def booleanToOptionBoolean(b: Boolean): Option[Boolean] = Option(b)
 }
 
 object DecisionTreeBoolToOptBoolConversions extends DecisionTreeBoolToOptBoolConversions

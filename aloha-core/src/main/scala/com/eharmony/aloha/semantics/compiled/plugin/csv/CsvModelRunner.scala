@@ -66,6 +66,15 @@ case class FileBasedCsvInputType(csvDef: FileObject) extends CsvInputType {
     }
 }
 
+sealed trait MissingFunction extends (String => Boolean)
+case object EmptyStringMissingFunction extends MissingFunction {
+    def apply(s: String) = s.isEmpty
+}
+
+case class RegexMissingFunction(regex: String) extends MissingFunction {
+    def apply(s: String) = s matches regex
+}
+
 case class InlineCsvInputType(
         colNamesToTypes: Seq[(String, CsvTypes.CsvType)] = Vector.empty,
         fieldIndices: Seq[(String, Int)] = Vector.empty,
@@ -78,10 +87,14 @@ case class InlineCsvInputType(
         errorOnOptMissingEnum: Boolean = false) extends CsvInputType {
 
     def csvPluginAndLines = {
-        val missingFunction: String => Boolean = if (missing.isEmpty) _.isEmpty else _ matches missing
+        val missingFunction: MissingFunction = if (missing.isEmpty) EmptyStringMissingFunction else RegexMissingFunction(missing)
         val plugin = CompiledSemanticsCsvPlugin(colNamesToTypes.toMap)
+
+        val enumClassMap = enums.toMap
+        val enumMap = colNameToEnumName.map{ case (name, className) => name -> enumClassMap(className) }.toMap
+
         val csvLines = CsvLines(fieldIndices.toMap,
-                                enums.toMap,
+                                enumMap,
                                 separator,
                                 intraFieldSeparator,
                                 missingFunction,

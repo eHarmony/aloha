@@ -38,7 +38,7 @@ case class Enum(className: String, private val constantsAndNumbers: (String, Int
       * @return an enum constant value.
       */
     @throws[IllegalArgumentException](cause = "When no enum constant with the provided name exists.")
-    def valueOf(enumConstant: String) = valueMap.getOrElse(enumConstant, throw new IllegalArgumentException(s"No enum const class $className.$enumConstant"))
+    def valueOf(enumConstant: String): EnumConstant = valueMap.getOrElse(enumConstant, throw new IllegalArgumentException(s"No enum const class $className.$enumConstant"))
 
     /** This function is the dynamic function allowing the caller to get an enum constant.  Unlike with an actual enum,
       * trying to access a non-existent enum constant cannot throw create a compile-time error.  It will however

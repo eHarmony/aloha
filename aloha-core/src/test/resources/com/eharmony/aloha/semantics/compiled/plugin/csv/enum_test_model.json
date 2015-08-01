@@ -1,0 +1,11 @@
+{
+  "modelType": "DecisionTree",
+  "modelId": { "id": 0, "name": "" },
+  "returnBest": true,
+  "missingDataOk": false,
+  "nodes": [
+    { "id": 0, "value": 0, "selector": { "selectorType": "linear", "predicates": [ "\"VAL_1\" == ${my.enum_val}.name", "true" ], "children": [ 1, 2 ] } },
+    { "id": 1, "value": 1 },
+    { "id": 2, "value": 2 }
+  ]
+}
