@@ -1,5 +1,6 @@
 package com.eharmony.aloha.semantics.compiled.plugin.csv
 
+import com.eharmony.aloha.io.StringReadable
 import com.eharmony.aloha.semantics.compiled.plugin.csv.CsvModelRunnerTest.csvExpected
 import org.apache.commons.vfs2.VFS
 import org.junit.Assert._
@@ -9,6 +10,58 @@ import org.junit.runners.BlockJUnit4ClassRunner
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class CsvModelRunnerTest {
+
+  @Test def testFileBasedCsvEnum(): Unit = {
+    val expected = """
+                     |1	VAL_1
+                     |2	VAL_2
+                     |0
+                   """.stripMargin.trim
+
+    val outFile = "ram://file_based_csv"
+
+    val args = Array(
+      "--output-type", "Int",
+      "--input-file", "res:com/eharmony/aloha/semantics/compiled/plugin/csv/csv_enum_sample_input.txt",
+      "--output-file", outFile,
+      "--imports", "com.eharmony.aloha.feature.BasicFunctions._",
+      "-A",
+      "-c", "res:com/eharmony/aloha/semantics/compiled/plugin/csv/input_csv_format.json",
+      "--predmissing", "missing_score",
+      "res:com/eharmony/aloha/semantics/compiled/plugin/csv/enum_test_model.json"
+    )
+
+    CsvModelRunner.main(args)
+    val output = StringReadable.fromVfs2(VFS.getManager.resolveFile(outFile))
+    assertEquals(expected, output.trim)
+  }
+
+  @Test def testInlineCsvEnum(): Unit = {
+    val expected = """
+                     |1	VAL_1
+                     |2	VAL_2
+                     |0
+                   """.stripMargin.trim
+
+    val outFile = "ram://inline_csv"
+
+    val args = Array(
+      "--output-type", "Int",
+      "--imports", "com.eharmony.aloha.feature.BasicFunctions._",
+      "--input-file", "res:com/eharmony/aloha/semantics/compiled/plugin/csv/csv_enum_sample_input.txt",
+      "--output-file", outFile,
+      "-A",
+      "-E", "my.EnumClass=VAL_1:1,VAL_2:2",
+      "-oe", "my.enum_val=my.EnumClass",
+      "--predmissing", "missing_score",
+      "res:com/eharmony/aloha/semantics/compiled/plugin/csv/enum_test_model.json"
+    )
+
+    CsvModelRunner.main(args)
+    val output = StringReadable.fromVfs2(VFS.getManager.resolveFile(outFile))
+    assertEquals(expected, output.trim)
+  }
+
   @Test def testInlineCsvDef() {
     // Use a temp file so we can get at the results for comparison.  Also shows how to write to a VFS file.
     val tmpFile = "ram://results.txt"

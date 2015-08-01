@@ -14,7 +14,7 @@ case class GracefulOptionalHandler(indices: Map[String, Int]) extends OptionalHa
 
     def produceOptions[A](vals: Array[String], f: Option[String => A], missing: String => Boolean): immutable.IndexedSeq[Option[A]] = {
         f.map(g => vals.map(v => if (missing(v)) None else try { Some(g(v)) } catch { case e: IllegalArgumentException => None }).toIndexedSeq).
-            getOrElse(RepeatedIndexedSeq.fill(vals.size)(None))
+            getOrElse(RepeatedIndexedSeq.fill(vals.length)(None))
     }
 }
 
@@ -25,7 +25,7 @@ case class FailFastOptionalHandler(indices: Map[String, Int]) extends OptionalHa
 
     def produceOptions[A](vals: Array[String], f: Option[String => A], missing: String => Boolean): immutable.IndexedSeq[Option[A]] = {
         f.map(g => vals.map(v => if (missing(v)) None else Some(g(v))).toIndexedSeq).
-            getOrElse(RepeatedIndexedSeq.fill(vals.size)(None))
+            getOrElse(RepeatedIndexedSeq.fill(vals.length)(None))
     }
 }
 

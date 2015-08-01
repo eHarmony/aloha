@@ -1,5 +1,7 @@
 package com.eharmony.aloha.semantics.compiled.plugin.csv
 
+import com.eharmony.aloha.semantics.compiled.plugin.csv.CsvLines.{NonErringOptEnumFunc, ErrorOnOptMissingFieldOptEnumFunc}
+
 import scala.annotation.varargs
 import scala.collection.{TraversableLike, GenTraversableLike}
 import scala.collection.generic.CanBuildFrom
@@ -24,8 +26,8 @@ case class CsvLines(
         errorOnOptMissingEnum: Boolean = false) {
 
     private[this] val optEnumFunc: String => Option[(String) => EnumConstant] =
-        if (errorOnOptMissingField) (s: String) => if (missingData(s)) None else Option(enums(s).valueOf)
-        else (s: String) => if (missingData(s)) None else enums.get(s).map(_.valueOf)
+        if (errorOnOptMissingField) ErrorOnOptMissingFieldOptEnumFunc(missingData, enums)
+        else NonErringOptEnumFunc(missingData, enums)
 
     private[this] val optHandler = if (errorOnOptMissingField) FailFastOptionalHandler(indices) else GracefulOptionalHandler(indices)
 
@@ -72,4 +74,19 @@ case class CsvLines(
      */
     @varargs def apply(first: String, rest: String*) =
         (first +: rest.toVector).map(CsvLineImpl(_, indices, enums, fs, ifs, missingData, optEnumFunc, optHandler))
+}
+
+object CsvLines {
+    sealed trait OptEnumFunc extends (String => Option[(String) => EnumConstant]) {
+        val missingDataFunc: String => Boolean
+        val enums: Map[String, Enum]
+    }
+
+    case class ErrorOnOptMissingFieldOptEnumFunc(missingDataFunc: String => Boolean, enums: Map[String, Enum]) extends OptEnumFunc {
+        def apply(s: String) = if (missingDataFunc(s)) None else Option(enums(s).valueOf)
+    }
+
+    case class NonErringOptEnumFunc(missingDataFunc: String => Boolean, enums: Map[String, Enum]) extends OptEnumFunc {
+        def apply(s: String) = if (missingDataFunc(s)) None else enums.get(s).map(_.valueOf)
+    }
 }

@@ -1,0 +1,15 @@
+{
+  "fs": ",",
+  "ifs": "|",
+  "missingData": "NULL",
+  "errorOnOptMissingField": false,
+  "errorOnOptMissingEnum": false,
+  "columns": [
+    {"name": "my.enum_val",
+      "type": "enum",
+      "optional": true,
+      "className": "my.EnumClass",
+      "values": [ "VAL_1", "VAL_2" ]
+    }
+  ]
+}
