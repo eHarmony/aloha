@@ -12,7 +12,7 @@ import scala.annotation.varargs
 case class CompiledSemanticsCsvPlugin(colNamesToTypes: Map[String, CsvTypes.CsvType] = Map.empty) extends CompiledSemanticsPlugin[CsvLine] {
 
    /**
-     * @return a [[scala.reflect.runtime.universe.TypeTag]] for input type A.
+     * A [[com.eharmony.aloha.reflect.RefInfo]] containing reflection information about input type A.
      */
     val refInfoA = RefInfo[CsvLine]
 

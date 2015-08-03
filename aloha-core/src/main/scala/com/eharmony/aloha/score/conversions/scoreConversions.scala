@@ -66,7 +66,8 @@ object RelaxedConversions extends BasicTypeScoreConversions[Option] {
 
     /** Get the score.  The Option tells the score exists.  The Right in the embedded Either contains the actual
       * score and the Left contains the type that actually exists in the
-      * [[com.eharmony.aloha.score.Scores.Score]] if querying the wrong type.
+      * [[https://github.com/eHarmony/aloha-proto/blob/master/src/main/proto/com.eharmony.aloha.score.Scores.proto com.eharmony.aloha.score.Scores.Score]]
+      * if querying the wrong type.
       * @param s the score
       * @tparam A the type to which the score should be converted.
       * @return

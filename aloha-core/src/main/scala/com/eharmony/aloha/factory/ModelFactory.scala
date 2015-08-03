@@ -104,7 +104,8 @@ case class ModelFactory(modelParsers: ModelParser*) extends JsValuePimpz {
       * @param json JSON to be parsed and translated to a model.
       * @tparam A input type of the resulting model
       * @tparam B output type of the resulting model
-      * @return A [[scala.util.Try]] statement potentially containing a subtype of Model.
+      * @return A [[http://scala-lang.org/api/current/#scala.util.Try scala.util.Try]] statement potentially containing
+      *         a subtype of Model.
       */
     def getModel[A: RefInfo, B: RefInfo: JsonReader: ScoreConverter](json: JsValue, semantics: Option[Semantics[A]] = None): Try[Model[A, B]] =
         getModelAndInfo[A, B](json, semantics).map(_.model)
