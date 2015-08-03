@@ -13,8 +13,8 @@ import com.eharmony.aloha.reflect.{RefInfoOps, RefInfo}
   */
 trait CompiledSemanticsPlugin[A] {
     /**
-      * @return a [[scala.reflect.runtime.universe.TypeTag]] for input type A.
-      */
+      * @return [[com.eharmony.aloha.reflect.RefInfo]] containing reflection information about input type A.
+     */
     def refInfoA: RefInfo[A]
 
     /** Generate the code necessary to compile into a function.

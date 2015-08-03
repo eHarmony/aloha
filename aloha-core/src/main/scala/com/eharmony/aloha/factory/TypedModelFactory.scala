@@ -17,9 +17,9 @@ import com.eharmony.aloha.io.multiple.{ SequenceMultipleReadable, MultipleAlohaR
  *
  * Note that there are essentially three factory interfaces associated with this factory.  Those are calling:
  *
- * 1.   methods from [[com.eharmony.aloha.io.AlohaReadable]]: This gives back a scala.util.Try[ [[com.eharmony.aloha.models.Model]] ] instance.
- * 1.   methods in the model value.  This gives back a scala.util.Try of an instance of M[A, B].
- * 1.   methods in the modelAndInfo value.  This gives back a scala.util.Try of an instance of [[com.eharmony.aloha.factory.ModelInfo]][ M[A, B] ].
+ 1.   methods from [[com.eharmony.aloha.io.AlohaReadable]]: This gives back a scala.util.Try[ [[com.eharmony.aloha.models.Model]] ] instance.
+ 1.   methods in the model value.  This gives back a scala.util.Try of an instance of M[A, B].
+ 1.   methods in the modelAndInfo value.  This gives back a scala.util.Try of an instance of [[com.eharmony.aloha.factory.ModelInfo]][ M[A, B] ].
  *
  * From Scala, it is recommended to use function from methods 2 or 3 above as more type information is retained.
  *
@@ -77,7 +77,8 @@ import com.eharmony.aloha.io.multiple.{ SequenceMultipleReadable, MultipleAlohaR
  * @param evidence$1 reflection information about type parameter A
  * @param evidence$2 reflection information about type parameter B
  * @param evidence$3 a way to read a variable of type B from JSON
- * @param evidence$4 a way to convert an instance of type B into a [[com.eharmony.aloha.score.Scores.Score]]
+ * @param evidence$4 a way to convert an instance of type B into a
+ *                   [[https://github.com/eHarmony/aloha-proto/blob/master/src/main/proto/com.eharmony.aloha.score.Scores.proto com.eharmony.aloha.score.Scores.Score]]
  * @tparam A the input type of models created by this factory
  * @tparam B the output type of models created by this factory
  * @tparam M the kind (as in higher kind) of models created.  This represents the greatest lower bound of all of the

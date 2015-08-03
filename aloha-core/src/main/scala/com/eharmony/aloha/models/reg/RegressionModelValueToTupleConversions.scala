@@ -14,7 +14,7 @@ import scala.language.implicitConversions
   * when prefixed will yield Iterable(("intercept", 1234.0))
   *
   * {{{
-  * {
+  *   * {
   *   "modelType": "Regression",
   *   "modelId": {"id": 0, "name": ""},
   *   "features": {
@@ -23,6 +23,8 @@ import scala.language.implicitConversions
   *   },
   *   ...
   * }
+  * }}}
+  *
   */
 // TODO, think about making this
 trait RegressionModelValueToTupleConversions {

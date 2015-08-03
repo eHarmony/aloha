@@ -16,7 +16,8 @@ import scala.util.{Failure, Success, Try}
  * @param features a representation of the features used to generate the row ouput.
  * @param headers note that the dimensionality of this vector is equal to the dimensionality of the output vector
  *                produced by features rather than the number of features used to produce the vector.  This is because
- *                categorical variables can be expanded in different ways based on the [[Encoding]] used.
+ *                categorical variables can be expanded in different ways based on the
+ *                [[com.eharmony.aloha.dataset.csv.encoding.Encoding]] used.
  * @param separator the field separator
  * @tparam A the input type that is transformed into CSV output.
  */

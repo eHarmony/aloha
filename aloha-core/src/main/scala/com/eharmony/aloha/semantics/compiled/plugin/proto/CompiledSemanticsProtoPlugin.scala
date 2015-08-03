@@ -47,9 +47,10 @@ import com.eharmony.aloha.util.EitherHelpers
  * }}}
  * @param dereferenceAsOptional Whether to treat dereferenced list variables as an Option.  If '''true''' treat the
  *                              return value of a dereference operation as an Option.  This removes the possibility
- *                              of a [[java.lang.IndexOutOfBoundsException]] being thrown.  Instead, it will silently
- *                              return None.  If '''false''', treat the returned value as a required field and don't
- *                              do any index checking.  The default value is '''true'''.
+ *                              of a [[http://docs.oracle.com/javase/7/docs/api/java/lang/IndexOutOfBoundsException.html java.lang.IndexOutOfBoundsException]]
+ *                              being thrown.  Instead, it will silently return None.  If '''false''', treat the
+ *                              returned value as a required field and don't do any index checking.  The default
+ *                              value is '''true'''.
  * @param refInfoA
  * @tparam A a type of generated protocol buffer message.
  */

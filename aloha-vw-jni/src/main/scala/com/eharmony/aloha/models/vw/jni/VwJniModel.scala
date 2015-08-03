@@ -44,7 +44,8 @@ import scala.util.{Failure, Success, Try}
  * @param namespaces mapping from namespace name to indices of features that will be placed in the namespace
  * @param finalizer a function that transforms the native VW output type (Float) to B
  * @param numMissingThreshold A threshold dictating how many missing features to allow before making the
- *                            prediction fail.  See [[com.eharmony.aloha.models.reg.RegressionFeatures.numMissingThreshold]]
+ *                            prediction fail.  See ''com.eharmony.aloha.models.reg.RegressionFeatures.numMissingThreshold''
+ *                            in aloha-core.
  * @param scb a score converter
  * @tparam A model input type
  * @tparam B model output type

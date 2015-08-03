@@ -22,8 +22,8 @@ import com.eharmony.aloha.factory.ex.AlohaFactoryException
   * should be:
   *
   - com.eharmony.aloha.models.ErrorSwallowingModel.errorMsg(ex)
-  - [[com.eharmony.aloha.models.ErrorSwallowingModel.ExMsgThrewMsg]]
-  - [[com.eharmony.aloha.models.ErrorSwallowingModel.StackTraceOmitted]]
+  - ''com.eharmony.aloha.models.ErrorSwallowingModel.ExMsgThrewMsg''
+  - ''com.eharmony.aloha.models.ErrorSwallowingModel.StackTraceOmitted''
   *
   * If the exception that is caught is a [[com.eharmony.aloha.semantics.SemanticsUdfException]], then
   * 3 additional fields are added to the end of the errors list in indices 3, 4, 5:

@@ -15,14 +15,14 @@ sealed trait Node[-A, +B] extends Tree[B, immutable.IndexedSeq, Node[A, B]] {
     /** Find the deepest node in the tree possible, given the data (in v), on which to branch.  Progress down the
       * decision tree until no further progress can be made and return the node.
       *
-      * [[scala.util.Right]][[com.eharmony.aloha.models.tree.decision.Leaf]] when a leaf is reached or
-      * [[scala.util.Right]][[(com.eharmony.aloha.models.tree.decision.InteriorNode, Option[String])]]
-      * when progress down the tree was stopped prior to reaching a leaf node.  The node in the tuple is the last node
-      * in which we could make a successful choice.
+      * [[scala.Right]] [ [[com.eharmony.aloha.models.tree.decision.Leaf]] ] when a leaf is reached or
+      * [[scala.Left]] [''InteriorNodeResult''] when progress down the tree
+      * was stopped prior to reaching a leaf node. The node in the ''InteriorNodeResult''
+      * is the last node in which we could make a successful choice.
       * @param v the input whose data is used to branch down the decision tree.
-      * @return either a [[scala.util.Right]][[com.eharmony.aloha.models.tree.decision.Leaf]] representing a
-      *         leaf node in the tree or a [[scala.util.Left]] with a node where no further progress down the tree
-      *         could be made and an optional sequence of log messages.
+      * @return either a [[scala.Right]] [ [[com.eharmony.aloha.models.tree.decision.Leaf]] ] representing a leaf node
+      *         in the tree or a [[scala.Left]] with a node where no further progress down the tree could be made and
+      *         an optional sequence of log messages.
       */
     def getNode(v: A): Either[InteriorNodeResult[A, B], Leaf[B]]
 }
@@ -55,15 +55,15 @@ object Node {
 
     /** Progress down the decision tree until no further progress can be made and return the node.
       *
-      * [[scala.util.Right]][[com.eharmony.aloha.models.tree.decision.Leaf]] when a leaf is reached or
-      * [[scala.util.Right]][[(com.eharmony.aloha.models.tree.decision.InteriorNode, Option[String])]]
-      * when progress down the tree was stopped prior to reaching a leaf node.  The node in the tuple is the last node
-      * in which we could make a successful choice.
+      * [[scala.Right]] [ [[com.eharmony.aloha.models.tree.decision.Leaf]] ] when a leaf is reached or
+      * [[scala.Right]] [''InteriorNodeResult''] when progress down the tree
+      * was stopped prior to reaching a leaf node.  The node in the ''InteriorNodeResult''
+      * is the last node in which we could make a successful choice.
       * @param n a node from which to start the search.
       * @param v the input whose data is used to branch down the decision tree.
-      * @return either a [[scala.util.Right]][[com.eharmony.aloha.models.tree.decision.Leaf]] representing a
-      *         leaf node in the tree or a [[scala.util.Left]] with a node where no further progress down the tree
-      *         could be made and an optional sequence of log messages.
+      * @return either a [[scala.Right]] [ [[com.eharmony.aloha.models.tree.decision.Leaf]] ] representing a leaf
+      *         node in the tree or a [[scala.Left]] with a node where no further progress down the tree could be made
+      *         and an optional sequence of log messages.
       */
     private[decision] def getNode[A, B](n: Node[A, B], v: A): Either[InteriorNodeResult[A, B], Leaf[B]] = n match {
         case leaf: Leaf[B] => Right(leaf)
@@ -85,10 +85,10 @@ object Node {
   */
 case class Leaf[+B](value: B) extends Node[Any, B] {
 
-    /** Return this node wrapped in a [[scala.util.Right]].
+    /** Return this node wrapped in a [[scala.Right]].
       *
       * @param v irrelevant input data. (Not used)
-      * @return either a [[scala.util.Right]][[com.eharmony.aloha.models.tree.decision.Leaf]] this node.
+      * @return either a [[scala.Right]] [ [[com.eharmony.aloha.models.tree.decision.Leaf]] ] this node.
       */
     def getNode(v: Any) = Right(this)
 
@@ -105,14 +105,14 @@ case class InteriorNode[-A, +B](
 
     /** Progress down the decision tree until no further progress can be made and return the node.
       *
-      * [[scala.util.Right]][[com.eharmony.aloha.models.tree.decision.Leaf]] when a leaf is reached or
-      * [[scala.util.Right]][[(com.eharmony.aloha.models.tree.decision.InteriorNode, Option[String])]]
-      * when progress down the tree was stopped prior to reaching a leaf node.  The node in the tuple is the last node
-      * in which we could make a successful choice.
+      * [[scala.Right]] [ [[com.eharmony.aloha.models.tree.decision.Leaf]] ] when a leaf is reached or
+      * [[scala.Right]] [''InteriorNodeResult''] when progress down the tree
+      * was stopped prior to reaching a leaf node. The node in the tuple is the last node in which we could make a
+      * successful choice.
       * @param v the input whose data is used to branch down the decision tree.
-      * @return either a [[scala.util.Right]][[com.eharmony.aloha.models.tree.decision.Leaf]] representing a
-      *         leaf node in the tree or a [[scala.util.Left]] with a node where no further progress down the tree
-      *         could be made and an optional sequence of log messages.
+      * @return either a [[scala.Right]] [ [[com.eharmony.aloha.models.tree.decision.Leaf]] ] representing a leaf node
+      *         in the tree or a [[scala.Left]] with a node where no further progress down the tree could be made and
+      *         an optional sequence of log messages.
       */
     def getNode(v: A): Either[InteriorNodeResult[A, B], Leaf[B]] = Node.getNode(this, v)
 }
