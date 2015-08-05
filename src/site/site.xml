@@ -107,6 +107,9 @@
                 <dependencies>
                     <tocTopMax>4</tocTopMax>
                 </dependencies>
+                <model_formats>
+                    <tocTopMax>3</tocTopMax>
+                </model_formats>
             </pages>
         </reflowSkin>
     </custom>
