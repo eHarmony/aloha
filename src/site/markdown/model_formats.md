@@ -55,7 +55,7 @@ random data on which future models can be trained.  It's sampling is constant ti
 values in the distribution.
 
 
-### JSON Fields
+### (CD) JSON Fields
 
 <table>
   <tr>
@@ -66,7 +66,7 @@ values in the distribution.
     <th>Default</th>
   </tr>
   <tr>
-    <td>modelType</td>
+    <td><a href="#aCD_modelType">modelType</a></td>
     <td>String</td>
     <td>N / A</td>
     <td>true</td>
@@ -80,28 +80,28 @@ values in the distribution.
     <td>N / A</td>
   </tr>
   <tr>
-    <td>features</td>
+    <td><a href="#aCD_features">features</a></td>
     <td>Array</td>
     <td>String</td>
     <td>true</td>
     <td>N / A</td>
   </tr>
   <tr>
-    <td>probabilities</td>
+    <td><a href="#aCD_probabilities">probabilities</a></td>
     <td>Array</td>
     <td>Number</td>
     <td>true</td>
     <td>N / A</td>
   </tr>
   <tr>
-    <td>labels</td>
+    <td><a href="#aCD_labels">labels</a></td>
     <td>Array</td>
     <td><b>OUTPUT</b></td>
     <td>true</td>
     <td>N / A</td>
   </tr>
   <tr>
-    <td>missingOk</td>
+    <td><a href="#aCD_missing">missingOk</a></td>
     <td>Boolean</td>
     <td>N / A</td>
     <td>false</td>
@@ -110,15 +110,15 @@ values in the distribution.
 </table> 
 
 
-### JSON Field Descriptions
+### (CD) JSON Field Descriptions
 
 
-#### modelType
+#### (CD) modelType
 
 `modelType` field must be `CategoricalDistribution`.
 
 
-#### features 
+#### (CD) features 
 
 `features` is an array of strings, where each string contains an aloha feature specification.  Each of these strings
 should just contain a variable definition.  These features are used to create a hash on which the psuedo-randomness
@@ -139,7 +139,7 @@ including an example of issues that can arise, see
 [Ryan Deak](https://deaktator.github.io).
 
 
-####  probabilities
+#### (CD) probabilities
 
 `probabilities` is an array of non-negative numbers.  These values, once 
 [normalized](https://en.wikipedia.org/wiki/Normalization_\(statistics\)), will provide the probability of 
@@ -158,7 +158,7 @@ both perfectly fine, but I would opt for the second:
 [ 0.33, 0.33, 0.33 ]
 ```
 
-#### labels
+#### (CD) labels
 
 `labels` are the actual values returned when a value is sampled from the distribution.  The *type of value* in 
 `labels` is dependent on the model's output type.  For instance, if the model output type is a string, then the 
@@ -166,13 +166,13 @@ JSON value type in `labels` will be  strings.  If the output type is a 64-bit fl
 array will be number.
 
 
-#### missingOk
+#### (CD) missingOk
 
 `missingOk` determines whether the model should return a value when at least one of the values in `features` 
 could not be determined.  If `false`, no score will be returned.  If `true`, then  
 
 
-### JSON Examples
+### (CD) JSON Examples
 
 This example samples values *{ 1, 2, 3, 4 }* based on a user ID and the number of days since Jan 1, 1970.  This means
 that for any day, regardless of how many times the model is called, the same user will always get the same value.  This
@@ -210,7 +210,7 @@ probabilistically model the sender of the message that was received by either *A
 
 A constant model always returns the same score value.
 
-### JSON Fields
+### (C) JSON Fields
 
 <table>
   <tr>
@@ -221,7 +221,7 @@ A constant model always returns the same score value.
     <th>Default</th>
   </tr>
   <tr>
-    <td>modelType</td>
+    <td><a href="#aC_modelType">modelType</a></td>
     <td>String</td>
     <td>N / A</td>
     <td>true</td>
@@ -235,7 +235,7 @@ A constant model always returns the same score value.
     <td>N / A</td>
   </tr>
   <tr>
-    <td>value</td>
+    <td><a href="#aC_value">value</a></td>
     <td><b>OUTPUT</b></td>
     <td>N / A</td>
     <td>true</td>
@@ -243,18 +243,18 @@ A constant model always returns the same score value.
   </tr>
 </table> 
 
-### JSON Field Descriptions
+### (C) JSON Field Descriptions
 
 
-#### modelType
+#### (C) modelType
 
 `modelType` field must be `Constant`.
 
-#### value
+#### (C) value
 
 `value` field's *type* is dependent on the model's output type.
 
-### JSON Examples
+### (C) JSON Examples
 
 Always return *1*.  Whether *1* is a 32-bit integer, 64-bit integer, 32-bit or 64-bit float is dependent on the 
 output type of the model.    
@@ -287,7 +287,7 @@ Aloha encodes trees as a [graph](https://en.wikipedia.org/wiki/Graph_\(mathemati
 code could be extended to [DAG](https://en.wikipedia.org/wiki/Directed_acyclic_graph)s in a straightforward way.  
 The first node in the `nodes` array is considered to be the root node.
 
-### JSON Fields
+### (DT) JSON Fields
 
 <table>
   <tr>
@@ -298,7 +298,7 @@ The first node in the `nodes` array is considered to be the root node.
     <th>Default</th>
   </tr>
   <tr>
-    <td>modelType</td>
+    <td><a href="#aDT_modelType">modelType</a></td>
     <td>String</td>
     <td>N / A</td>
     <td>true</td>
@@ -312,37 +312,37 @@ The first node in the `nodes` array is considered to be the root node.
     <td>N / A</td>
   </tr>
   <tr>
-    <td>returnBest</td>
+    <td><a href="#aDT_returnBest">returnBest</a></td>
     <td>Boolean</td>
     <td>N / A</td>
     <td>true</td>
     <td>N / A</td>
   </tr>
   <tr>
-    <td>missingDataOk</td>
+    <td><a href="#aDT_missingDataOk">missingDataOk</a></td>
     <td>Boolean</td>
     <td>N / A</td>
     <td>true</td>
     <td>N / A</td>
   </tr>
   <tr>
-    <td>nodes</td>
+    <td><a href="#aDT_nodes">nodes</a></td>
     <td>Array</td>
-    <td><b>Node<sup>*</sup></b></td>
+    <td><a href="#aDT_nodes">Node<sup>*</sup></a></td>
     <td>true</td>
     <td>N / A</td>
   </tr>
 </table> 
 
 
-### JSON Field Descriptions
+### (DT) JSON Field Descriptions
 
 
-#### modelType
+#### (DT) modelType
 
 `modelType` field must be `DecisionTree`.
 
-#### returnBest
+#### (DT) returnBest
 
 `returnBest` is a Boolean that when *true* let's the decision tree return a value associated with an 
 [internal node](https://en.wikipedia.org/wiki/Tree_\(data_structure\)#Terminologies_used_in_Trees) when no 
@@ -355,7 +355,7 @@ The most common being that the branching logic at a given node is not
 [exhaustive](https://en.wikipedia.org/wiki/Collectively_exhaustive_events).  When this happens, the tree algorithm 
 checks if it can proceed to any of its children and the predicates associated with each child returns false.
 
-#### missingDataOk
+#### (DT) missingDataOk
 
 `missingDataOk` is a Boolean telling whether missing data is OK.  In the event that `missingDataOk` is set to *false*,
 when a variable in a node selector is missing, the node selector should stop and report to the decision tree that it
@@ -365,7 +365,7 @@ If `missingDataOk` is *true*, then when a node selector encounters missing data,
 when a `linear` node selector encounters missing data in one of the predicate, it will assume the predicate is *false* 
 and continue on the next the predicate.  This behavior may vary across node selectors of different types.
 
-#### nodes
+#### (DT) nodes
 
 `nodes` contains the list of nodes in the decision tree.  As was mentioned above, trees are encoded in a tabular 
 way to provide future extensibility to [DAG](https://en.wikipedia.org/wiki/Directed_acyclic_graph)s.  The first node 
@@ -380,37 +380,37 @@ in the `nodes` array is considered to be the root node. The structure of a node 
     <th>Default</th>
   </tr>
   <tr>
-    <td>id</td>
+    <td><a href="#aNode_id">id</a></td>
     <td>Number</td>
     <td>N / A</td>
     <td>true</td>
     <td>N / A</td>
   </tr>
   <tr>
-    <td>value</td>
+    <td><a href="#aNode_value">value</a></td>
     <td><b>OUTPUT</b></td>
     <td>N / A</td>
     <td>true</td>
     <td>N / A</td>
   </tr>
   <tr>
-    <td>selector</td>
-    <td><b>Node Selector<sup>*</sup></b></td>
+    <td><a href="#Node_Selectors">selector</a></td>
+    <td><a href="#Node_Selectors">Node Selector<sup>*</sup></a></td>
     <td>N / A</td>
     <td>false</td>
     <td>N / A</td>
   </tr>
 </table>
 
-##### id
+##### (Node) id
 
 `id` is the node id and is used by [node selectors](#Node_Selectors) to determine which child to traverse.
 
-##### value
+##### (Node) value
 
 `value` is the value to return when the decision tree algorithm selects a node whose value should be returned. 
 
-##### selector
+##### (Node) selector
 
 `selector` is the data type responsible for determining which child to traverse.  It is required for internal nodes
  but should not be included for leaf nodes.  For the different type of node selectors, see the 
@@ -444,21 +444,21 @@ in *O*(*N*) time where *N* is node's the number of children.
     <th>Default</th>
   </tr>
   <tr>
-    <td>selectorType</td>
+    <td><a href="#alinear_ns_selectorType">selectorType</a></td>
     <td>String</td>
     <td>N / A</td>
     <td>true</td>
     <td>N / A</td>
   </tr>
   <tr>
-    <td>children</td>
+    <td><a href="#alinear_ns_children">children</a></td>
     <td>Array</td>
     <td>Number</td>
     <td>true</td>
     <td>N / A</td>
   </tr>
   <tr>
-    <td>predicates</td>
+    <td><a href="#alinear_ns_predicates">predicates</a></td>
     <td>Array</td>
     <td>String</td>
     <td>true</td>
@@ -466,17 +466,17 @@ in *O*(*N*) time where *N* is node's the number of children.
   </tr>
 </table> 
 
-##### selectorType
+##### (linear ns) selectorType
 
 `selectorType` must be `linear`.
 
-##### children
+##### (linear ns) children
 
 `children` is a list of `node` `id` values.  This is array is [parallel](https://en.wikipedia.org/wiki/Parallel_array)
 to the `predicates` array.  If index *i* in `predicates` is the first predicate yielding *true*, then the value at 
 index *i* in `children` will contain the *id* of the node that will be visited.
 
-##### predicates 
+##### (linear ns) predicates 
 
 The `predicates` array contains strings where each string is an aloha feature specification representing a Boolean 
 function.  This is array is [parallel](https://en.wikipedia.org/wiki/Parallel_array) to the `children` array.  If 
@@ -498,28 +498,28 @@ selector algorithm acts in *O*(1) time regardless of the number of children.
     <th>Default</th>
   </tr>
   <tr>
-    <td>selectorType</td>
+    <td><a href="#arandom_ns_selectorType">selectorType</a></td>
     <td>String</td>
     <td>N / A</td>
     <td>true</td>
     <td>N / A</td>
   </tr>
   <tr>
-    <td>children</td>
+    <td><a href="#arandom_ns_children">children</a></td>
     <td>Array</td>
     <td>Number</td>
     <td>true</td>
     <td>N / A</td>
   </tr>
   <tr>
-    <td>probabilities</td>
+    <td><a href="#arandom_ns_probabilities">probabilities</a></td>
     <td>Array</td>
     <td>Number</td>
     <td>true</td>
     <td>N / A</td>
   </tr>
   <tr>
-    <td>features</td>
+    <td><a href="#arandom_ns_features">features</a></td>
     <td>Array</td>
     <td>String</td>
     <td>true</td>
@@ -527,11 +527,11 @@ selector algorithm acts in *O*(1) time regardless of the number of children.
   </tr>
 </table>
 
-##### selectorType
+##### (random ns) selectorType
 
 `selectorType` must be `random`.
 
-##### children
+##### (random ns) children
 
 `children` is a list of `node` `id` values.  This is array is [parallel](https://en.wikipedia.org/wiki/Parallel_array)
 to the `probabilities` array.  Samples drawn from the 
@@ -544,7 +544,7 @@ array.  In such a case, if `returnBest` is set to *true* then when the sampling 
 selects last index in `probabilities`, the *current node* (and not a child node) is selected.  See JSON examples
 for how this is useful.
 
-##### probabilities
+##### (random ns) probabilities
 
 `probabilities` is a (possibly unnormalized) [probability vector](https://en.wikipedia.org/wiki/Probability_vector).
 This array is [parallel](https://en.wikipedia.org/wiki/Parallel_array) to the `children` array.  Samples drawn 
@@ -573,7 +573,7 @@ of *1/3*, we should **NOT** encode them as:
 [ 0.33, 0.34, 0.33]
 ```
 
-##### features
+##### (random ns) features
 
 `features` is an array of strings, where each string contains an aloha feature specification.  Each of these strings
 should just contain a variable definition.  These features are used to create a hash on which the psuedo-randomness
@@ -594,7 +594,10 @@ including an example of issues that can arise, see
 [Ryan Deak](https://deaktator.github.io).
 
 
-### JSON Examples
+### (DT) JSON Examples
+
+
+#### (DT) One Node Tree Example
 
 The simplest tree would be a one node tree that is equivalent to a [Constant model](#Constant_model):
 
@@ -607,6 +610,8 @@ The simplest tree would be a one node tree that is equivalent to a [Constant mod
   "nodes": [ { "id": 1, "value": 1 } ]
 }
 ```
+
+#### (DT) Three Node Tree Example
 
 A basic tree with one split can be encoded as follows (deeper trees can just repeat the pattern).  It will output the 
 string "*short*" when the height is less than 66 (*presumably inches*).  If height is greater then or equal 66, 
@@ -635,6 +640,8 @@ parse when the model output type is `String`.
 }
 ```
 
+#### (DT) Random Branching Example
+
 In the following example, we have a randomized split based on user id where 90% of the time, the value 1 is returned
 and 10% of the time, -1 is returned.  If the user ID is missing, the output value will be 0.  This is just for 
 illustration purposes.  Usually, you'll want to add a constant salt to `features` like `[ "${profile.user_id}", "1" ]`.
@@ -661,6 +668,8 @@ illustration purposes.  Usually, you'll want to add a constant salt to `features
   ]
 }
 ```
+
+#### (DT) Short-Circuit Random Branching Example
 
 As was mentioned above, you could have a situation where you want to do something randomly with some probability
 by making the `children` array 1 element shorter than the `probabilities` array.  Let's say that we want to do 
@@ -693,7 +702,114 @@ model as follows:
 
 ## Double-to-Long model
 
-asdf
+The Double-to-Long model provides an [affine transformation](https://en.wikipedia.org/wiki/Affine_transformation) 
+from Double values to Long values.  It works by applying the following tranformation: 
+
+*v* = *scale* &times; *value* + *translation*  
+*v*&prime; = *IF round THEN* round(*v*) *ELSE* floor(*v*)  
+*output* = max(*clampUpper*, min(*v*&prime;, *clampUpper*))
+
+This model is useful for [eHarmony](http://www.eharmony.com)-specific purposes, but others may find it useful. 
+
+### (DtL) JSON Fields
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aDtL_modelType">modelType</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td>modelId</td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aDtL_submodel">submodel</a></td>
+    <td><b>Model<sup>*</sup></b></td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aDtL_scale">scale</a></td>
+    <td>Number</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td><a href="#aDtL_translation">translation</a></td>
+    <td>Number</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td><a href="#aDtL_clampLower">clampLower</a></td>
+    <td>Number</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>-&infin;</td>
+  </tr>
+  <tr>
+    <td><a href="#aDtL_clampUpper">clampUpper</a></td>
+    <td>Number</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>&infin;</td>
+  </tr>
+  <tr>
+    <td><a href="#aDtL_round">round</a></td>
+    <td>Boolean</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>false</td>
+  </tr>
+</table> 
+
+
+### (DtL) JSON Field Descriptions
+
+#### (DtL) modelType
+
+`modelType` field must be `DoubleToLong`.
+
+#### (DtL) submodel
+
+`submodel` must either be a JSON object containing an Aloha model or it can be a JSON object with exactly one field,
+`import` whose associated value is a JSON string containing an 
+[Apache VFS](https://commons.apache.org/proper/commons-vfs/filesystems.html) URL.  For instance: 
+
+```json
+{ "import": "/path/to/aloha/model.json" }
+```
+
+Either way, the submodel is expected to be a model that takes the same input type as the Double-to-Long model itself
+and the submodel should have an output type of Double.  The output to of the Double-to-Long model is obviously 
+expected to be a 64-bit long-valued integer. 
+
+#### (DtL) scale
+#### (DtL) translation
+#### (DtL) clampLower
+#### (DtL) clampUpper
+#### (DtL) round
+
+
+### (DtL) JSON Examples
+
+
 
 
 ## Error model
