@@ -705,7 +705,7 @@ model as follows:
 The Double-to-Long model provides an [affine transformation](https://en.wikipedia.org/wiki/Affine_transformation) 
 from Double values to Long values.  It works by applying the following tranformation: 
 
-*v* = *scale* &times; *value* + *translation*  
+*v* = *scale* &times; *submodel value* + *translation*  
 *v*&prime; = *IF round THEN* round(*v*) *ELSE* floor(*v*)  
 *output* = max(*clampUpper*, min(*v*&prime;, *clampUpper*))
 
