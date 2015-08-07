@@ -1762,7 +1762,7 @@ names to an Array of feature names to be placed in that
 
 #### (VW) numMissingThreshold
 
-See [Regression model features](#aR_numMissingThreshold) for details.
+See [Regression model numMissingThreshold](#aR_numMissingThreshold) for details.
 
 #### (VW) notes
 
@@ -1770,7 +1770,7 @@ This is just an optional Array of Strings for documentation purposes.
 
 #### (VW) spline
 
-See [Regression model features](#aR_spline) for details.
+See [Regression model spline](#aR_spline) for details.
 
 ### (VW) JSON Examples
 
