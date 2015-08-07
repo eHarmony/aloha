@@ -801,44 +801,476 @@ and the submodel should have an output type of Double.  The output to of the Dou
 expected to be a 64-bit long-valued integer. 
 
 #### (DtL) scale
+
+`scale` is the multiplier in the affine transformation.  It can be any 64-bit float.  When not supplied, the default 
+value will be 1.
+
 #### (DtL) translation
+
+`translation` is the additive term in the affine transformation.  It can be any 64-bit float.  When not supplied, 
+the default value will be 0.
+
 #### (DtL) clampLower
+
+`clampLower` is lower [clamp](https://en.wikipedia.org/wiki/Clamping_\(graphics\)) value.  It is a 64-bit long-valued
+int.  When not supplied, the default value will be `-9,223,372,036,854,775,808`.
+
 #### (DtL) clampUpper
+
+`clampUpper` is upper [clamp](https://en.wikipedia.org/wiki/Clamping_\(graphics\)) value.  It is a 64-bit long-valued
+int.  When not supplied, the default value will be `9,223,372,036,854,775,807`.
+
 #### (DtL) round
 
+`round` is a Boolean that determines whether the affine-transformed value should be rounded (`true`) or 
+[floored](https://en.wikipedia.org/wiki/Floor_and_ceiling_functions) (`false`).   
 
 ### (DtL) JSON Examples
 
+#### (DtL) Minimal Example
 
+A double-to-long model whose submodel is a constant model returning 5.5.  The outer model floors *5.5* to the 64-bit long 
+value *5*.
+
+```json
+{
+  "modelType": "DoubleToLong",
+  "modelId": { "id": 0, "name": "" },
+  "submodel": {
+    "modelType": "Constant",
+    "modelId": { "id": 1, "name": "Constant model returning 5.5" },
+    "value": 5.5
+  }
+}
+```
+
+#### (DtL) Full Example
+
+A double-to-long model whose submodel is a constant model returning -13.  The outer model multiplies by *0.5*, adds *2*,
+rounds, then takes the min of `clampUpper` (*8*) and *9*, which comes out to *8*.
+
+```json
+{
+  "modelType": "DoubleToLong",
+  "modelId": { "id": 0, "name": "" },
+  "clampLower": 6,
+  "clampUpper": 8,
+  "scale": -0.5,
+  "translation": 2,
+  "rouind": true,
+  "submodel": {
+    "modelType": "Constant",
+    "modelId": { "id": 1, "name": "Constant model returning -13" },
+    "value": -13
+  }
+}
+```
 
 
 ## Error model
 
-asdf
+An error model returns an error.  This is not the same as throwing an exception.  Error models return values.
 
+### (E) JSON Fields
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aE_modelType">modelType</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td>modelId</td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aE_errors">errors</a></td>
+    <td>Array</td>
+    <td>String</td>
+    <td>true</td>
+    <td>Array[ "Error with unspecified reason." ]</td>
+  </tr>
+</table> 
+
+
+### (E) JSON Field Descriptions
+
+#### (E) modelType
+
+`modelType` field must be `Error`.
+
+#### (E) errors
+
+`errors` is an array of error strings to provide.  This is an optional parameter.  An empty array is permitted. 
+
+### (E) JSON Examples
+
+```json
+{
+  "modelType": "Error",
+  "modelId": { "id": 0, "name": "" },
+}
+```
+
+```json
+{
+  "modelType": "Error",
+  "modelId": { "id": 0, "name": "" },
+  "errors": [ "error 1", "error 2" ]
+}
+```
 
 ## Error-swallowing model
 
-asdf
+Error swallowing model makes an attempt to trap exceptions and return them as errors instead.  While this is not 
+foolproof, it was tested against 
+[SchrodingerException](https://github.com/eHarmony/aloha/blob/master/aloha-core/src/main/scala/com/eharmony/aloha/ex/SchrodingerException.scala),
+an exception specifically designed to be as harmful as possible.  The implementation uses `scala.util.Try` which means
+errors errors that are caught are dictated by 
+[scala.util.control.NonFatal](https://github.com/scala/scala/blob/v2.10.3/src/library/scala/util/control/NonFatal.scala).
 
+### (ES) JSON Fields
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aES_modelType">modelType</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td>modelId</td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aES_submodel">submodel</a></td>
+    <td><b>Model<sup>*</sup></b></td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aES_recordErrorStackTraces">recordErrorStackTraces</a></td>
+    <td>Boolean</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>true</td>
+  </tr>
+</table> 
+
+### (ES) JSON Field Descriptions
+
+#### (ES) modelType
+
+`modelType` field must be `ErrorSwallowingModel`.
+
+#### (ES) submodel
+
+`submodel` must either be a JSON object containing an Aloha model or it can be a JSON object with exactly one field,
+`import` whose associated value is a JSON string containing an 
+[Apache VFS](https://commons.apache.org/proper/commons-vfs/filesystems.html) URL.  For instance: 
+
+```json
+{ "import": "/path/to/aloha/model.json" }
+```
+
+Either way, the submodel is expected to be a model with the same input and output type as the Error-swalling model 
+itself.
+
+#### (ES) recordErrorStackTraces
+
+`recordErrorStackTraces` is a boolean indicating whether to record stack traces in the returned error.
+
+### (ES) JSON Examples
+
+```json
+{
+  "modelType": "ErrorSwallowingModel",
+  "modelId": { "id": 0, "name": "0" },
+  "recordErrorStackTraces": true,
+  "submodel": {
+    "modelType": "Regression",
+    "modelId": { "id": 1, "name": "1" },
+    "features": {
+      "evil_feature": "throw new RuntimeException"
+    },
+    "weights": {}
+  }
+}
+```
 
 ## Model decision tree model
 
-asdf
+Model decision tree models are just like [Decision tree models](#Decision_tree_model) exception that the `value` field
+must either be a JSON object containing an Aloha model or it can be a JSON object with exactly one field,
+`import` whose associated value is a JSON string containing an 
+[Apache VFS](https://commons.apache.org/proper/commons-vfs/filesystems.html) URL.  For instance: 
 
+```json
+{ "import": "/path/to/aloha/model.json" }
+```
+
+The submodels input and output types are expected to be the same as the input and output type of the model decision 
+tree model.  The model works by using the decision tree algorithm to select a node containing a model, and then it 
+applies the same input data to the model it finds in the node. 
+
+For more information, see the section on [Decision tree models](#Decision_tree_model).
 
 ## Regression model
 
-asdf
+The regression model inplementation in aloha is a [sparse](https://en.wikipedia.org/wiki/Sparse_matrix) 
+[polynomial regression](https://en.wikipedia.org/wiki/Polynomial_regression) model.  This is a superset and therefore
+subsumes [linear regression](https://en.wikipedia.org/wiki/Linear_regression) models.
+
+### (R) JSON Fields
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aR_modelType">modelType</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td>modelId</td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aR_features">features</a></td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aR_weights">weights</a></td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aR_higherOrderFeatures">higherOrderFeatures</a></td>
+    <td>Array</td>
+    <td>Object</td>
+    <td>false</td>
+    <td>Empty Array</td>
+  </tr>
+  <tr>
+    <td><a href="#aR_spline">spline</a></td>
+    <td>Array</td>
+    <td>Object</td>
+    <td>false</td>
+    <td>Empty Array</td>
+  </tr>
+  <tr>
+    <td><a href="#aR_numMissingThreshold">numMissingThreshold</a></td>
+    <td>Number</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>&infin;</td>
+  </tr>
+</table> 
+
+
+### (R) JSON Field Descriptions
+
+#### (R) modelType
+#### (R) features
+#### (R) weights
+#### (R) higherOrderFeatures
+#### (R) spline
+#### (R) numMissingThreshold
+
+
+### (R) JSON Examples
 
 
 ## Segmentation model
 
-asdf
+Description.
+
+### (S) JSON Fields
+
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aS_modelType">modelType</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td>modelId</td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aS_subModel">subModel</a></td>
+    <td><b>Model<sup>*</sup></b></td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aS_subModelOutputType">subModelOutputType</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aS_thresholds">thresholds</a></td>
+    <td><b>Output</b></td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aS_labels">labels</a></td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+</table> 
+
+### (S) JSON Field Descriptions
+
+#### (S) modelType
+#### (S) subModel
+#### (S) subModelOutputType
+#### (S) thresholds
+#### (S) labels
+
+### (S) JSON Examples
 
 
 ## Vowpal Wabbit model
 
-asdf
+Description.
 
+### (VW) JSON Fields
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aVW_modelType">modelType</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td>modelId</td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aS_features">features</a></td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aS_vw">vw</a></td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aVW_namespaces">namespaces</a></td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aVW_numMissingThreshold">numMissingThreshold</a></td>
+    <td>Number</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aVW_notes">notes</a></td>
+    <td>Array</td>
+    <td>String</td>
+    <td>false</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aVW_spline">spline</a></td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>N / A</td>
+  </tr>
+</table> 
+
+### (VW) JSON Field Descriptions
+
+#### (VW) modelType
+#### (VW) features
+#### (VW) vw
+#### (VW) namespaces
+#### (VW) numMissingThreshold
+#### (VW) notes
+#### (VW) spline
+
+### (VW) JSON Examples
 
