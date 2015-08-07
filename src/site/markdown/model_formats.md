@@ -1484,7 +1484,12 @@ returned.
 
 ## Segmentation model
 
-Description.
+Segmentation models take a submodel that returns a value with an imposed 
+[total ordering](https://en.wikipedia.org/wiki/Total_order) and then create a
+[partition](https://en.wikipedia.org/wiki/Partition_of_a_set) on the set of values the submodel produces.  The 
+segmentation model maps elements in the same induced 
+[equivalence class](https://en.wikipedia.org/wiki/Equivalence_class) to a label unique to each class.
+
 
 ### (S) JSON Fields
 
@@ -1512,7 +1517,7 @@ Description.
     <td>N / A</td>
   </tr>
   <tr>
-    <td><a href="#aS_subModel">subModel</a></td>
+    <td><a href="#aS_subModel"><b>subModel</b></a></td>
     <td><b>Model<sup>*</sup></b></td>
     <td>N / A</td>
     <td>true</td>
@@ -1527,15 +1532,15 @@ Description.
   </tr>
   <tr>
     <td><a href="#aS_thresholds">thresholds</a></td>
-    <td><b>Output</b></td>
-    <td>N / A</td>
+    <td>subModel Output</td>
+    <td><b>subModel Output</b></td>
     <td>true</td>
     <td>N / A</td>
   </tr>
   <tr>
     <td><a href="#aS_labels">labels</a></td>
-    <td>Object</td>
-    <td>N / A</td>
+    <td>Array</td>
+    <td><b>Output</b></td>
     <td>true</td>
     <td>N / A</td>
   </tr>
@@ -1544,18 +1549,117 @@ Description.
 ### (S) JSON Field Descriptions
 
 #### (S) modelType
+
+`modelType` field must be `Segmentation`.
+
 #### (S) subModel
+
+`submodel` must either be a JSON object containing an Aloha model or it can be a JSON object with exactly one field,
+`import` whose associated value is a JSON string containing an 
+[Apache VFS](https://commons.apache.org/proper/commons-vfs/filesystems.html) URL.  For instance: 
+
+```json
+{ "import": "/path/to/aloha/model.json" }
+```
+
+Either way, the submodel is expected to be a model that takes the same input type as the Segmentation model itself
+and the submodel should have an output type dicated by the [subModelOutputType](#aS_subModelOutputType) value.
+
+
 #### (S) subModelOutputType
+
+`subModelOutputType` determined the output type of the submodel.  `subModelOutputType` must be one of:
+
+* Byte
+* Short
+* Int
+* Long
+* Float
+* Double
+* String
+
 #### (S) thresholds
+
+`thresholds` is the set of values that partitions the space into intervals.  It should be sorted according to the
+natural [total ordering](https://en.wikipedia.org/wiki/Total_order) associated with the output type of the submodel.  
+This Array must have one less element than the `labels` Array.  If, for instance, the submodel produces a value 
+"less than" the first value in `thresholds`, then the first element in `labels` is returned.  If that's not the case, 
+the search continues until an element in `thresholds` is greater than the submodel output.  If there is no such value, 
+the last element in `labels` is returned.
+
 #### (S) labels
 
+`labels` contains the labels associated with each [equivalence class](https://en.wikipedia.org/wiki/Equivalence_class) 
+induced by `thresholds`.  The type of each label must be the same as the Segmentation model output type.  `labels`
+must have one more element that `thresholds`.  See [thresholds](#aS_thresholds) section for more details.
+
 ### (S) JSON Examples
+
+The following shows a model whose output type is String, with a submodel that returns a value in { 1, 4, 5, 7 }.  
+The mapping from submodel value to Segmentation model value is: 
+
+<table>
+  <tr>
+    <th>subModel</th>
+    <th>Segmentation</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>smallest</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>second smallest</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td>second largest</td>
+  </tr>
+  <tr>
+    <td>7</td>
+    <td>largest</td>
+  </tr>
+</table> 
+
+
+```json
+{
+  "modelType": "Segmentation",
+  "modelId": { "id": 0, "name": "" },
+  "thresholds": [ 2, 5, 6 ],
+  "labels": [ "smallest", "second smallest", "second largest", "largest" ],
+  "subModelOutputType": "Int",
+  "subModel": {
+    "modelType": "CategoricalDistribution",
+    "modelId": { "id": 1, "name": "" },
+    "features": [ "${profile.id}", "1" ],
+    "probabilities": [ 0.25, 0.25, 0.25, 0.25 ] ,
+    "labels": [ 1, 4, 5, 7 ],
+    "missingOk": true
+  }
+}
+```
 
 
 ## Vowpal Wabbit model
 
-Description.
+The [Vowpal Wabbit](https://github.com/JohnLangford/vowpal_wabbit/wiki) model provides the feature extraction 
+capabilities of Aloha native [Regression model](#Regression_model), but delegates to VW's 
+[JNI layer](https://github.com/JohnLangford/vowpal_wabbit/tree/master/java) for prediction, which is much more 
+powerful.  Note that this shares a fair amount of code with [Regression model](#Regression_model) so be sure to
+look at the docs there.
+ 
+**NOTE**: This model is in module **aloha-vw-jni**, not **aloha-core**.  To use, be sure to include the proper 
+maven dependency: 
 
+```xml
+<dependency>
+  <groupId>com.eharmony</groupId>
+  <artifactId>aloha-vw-jni</artifactId>
+  <version>...</version>
+<dependency> 
+```
+ 
 ### (VW) JSON Fields
 
 <table>
@@ -1627,12 +1731,83 @@ Description.
 ### (VW) JSON Field Descriptions
 
 #### (VW) modelType
+
+`modelType` field must be `VwJNI`.
+
 #### (VW) features
+
+See [Regression model features](#aR_features) for details.
+
 #### (VW) vw
+
+`vw` is an object with two parameters: `model` and `params`.  `model` can either be a base-64 encoded string containing
+the raw data encoded in a vw regressor saved with the `-f` flag, or it can be an 
+[Apache VFS](https://commons.apache.org/proper/commons-vfs/filesystems.html) URL.  `params` can be a String or an 
+Array of Strings.  If it is an Array of Strings the Array will imploded into a string with a String separator `" "` 
+added in between the contents of the constituent elements. 
+
+
 #### (VW) namespaces
+
+This is a JSON object representing a map from [namespace](https://github.com/JohnLangford/vowpal_wabbit/wiki/Input-format) 
+names to an Array of feature names to be placed in that 
+[namespace](https://github.com/JohnLangford/vowpal_wabbit/wiki/Input-format).  For example:
+
+```json
+  ...
+  "namespaces": {
+    "personal_features": [ "height_mm" ]
+  }
+```
+
 #### (VW) numMissingThreshold
+
+See [Regression model features](#aR_numMissingThreshold) for details.
+
 #### (VW) notes
+
+This is just an optional Array of Strings for documentation purposes.
+
 #### (VW) spline
+
+See [Regression model features](#aR_spline) for details.
 
 ### (VW) JSON Examples
 
+
+```json
+{
+  "modelType": "VwJNI",
+  "modelId": { "id": 0, "name": "" },
+  "features": {
+    "height_mm": "Seq((\"1800\", 1.0))"
+  },
+  "namespaces": {
+    "personal_features": [ "height_mm" ]
+  },
+  "vw": {
+    "params": "--quiet -t",
+    "model": "[base64 encoded model string here]"
+  }
+}
+```
+
+```json
+{
+  "modelType": "VwJNI",
+  "modelId": { "id": 0, "name": "model name" },
+  "features": {
+    "height_mm": "Seq((\"1800\", 1.0))"
+  },
+  "notes": [
+    "This is a note"
+  ],
+  "namespaces": {
+    "personal_features": [ "height_mm" ]
+  },
+  "vw": {
+    "params": ["--quiet", "-t"],
+    "model": "file:///Users/xyz/model.vw"
+  }
+}
+```
