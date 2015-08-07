@@ -1110,12 +1110,374 @@ subsumes [linear regression](https://en.wikipedia.org/wiki/Linear_regression) mo
 ### (R) JSON Field Descriptions
 
 #### (R) modelType
+
+`modelType` field must be `Regression`.
+
 #### (R) features
+
+`features` is the map of features that are included in the model.  The keys in the `features` represent the feature 
+names in the values can take on one of two forms.  They can either be a String or a JSON object.  If they are a JSON
+object, they must have the following format: 
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aR_feature_spec">spec</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aR_feature_defVal">defVal</a></td>
+    <td>Array</td>
+    <td>Array (2 elements. 0: (String) feature name, 1: (Number) feature value)</td>
+    <td>false</td>
+    <td>Empty Array</td>
+  </tr>
+</table>
+
+##### (R) feature spec
+
+`spec` contains an Aloha feature specification.  These feature specifications produce functions whose input type
+is the same as the regression model's input type and the output type is an iterable collection of 
+(*String*, *Double*) key-value pairs.  Specifically, the Scala type is `scala.collection.Iterable[(String, Double)]`.
+An example of such a `spec` string is:
+
+```json
+"Seq((\"\", ${profile.height}))"
+```
+
+This creates one key-value pair whose *key* is the empty string and whose *value* is the height extract from a 
+profile.  One might ask, "*why would the key be the empty string?*"  The answer is that the keys are prepended with the 
+feature name.  So, for instance, the above *spec* string might be included in a feature as follows: 
+
+```json
+{
+  "modelType": "Regression",
+  ...
+  "features": {
+    "height": { "spec": "Seq((\"\", ${profile.height}))" }
+  }
+  ...
+}
+```
+
+Given the above model, let's say the `profile.height` yields a value of *66*.  Then the feature key-value pairs produced 
+would be: { `("height", 66)` }.
+
+There is a lot of supporting code available to the aloha user when importing 
+`com.eharmony.aloha.feature.BasicFunctions._`.  Among these is an implicit conversion from numeric types to sequences
+of key-value pairs.  This allows the user to write the previously mentioned aloha function specification as: 
+ 
+```json
+"${profile.height}"
+```
+
+Aloha will take care of converting it to:
+
+```json
+"Seq((\"\", ${profile.height}))"
+```
+
+assuming `profile.height` is an appropriate numeric type.
+
+##### (R) feature defVal
+
+**NOTE**: [Ryan Deak](https://deaktator.github.io), author of Aloha has expressed a personal distaste for the use
+of this feature.  It can however create better models are the cost of readability and error reporting.
+
+`defVal` is the value that is returned if the `spec` references an variable whose presence is *optional* and 
+whose value is not present for the current model input.  As with the Iterable of key-value pairs produced by the 
+function created by `spec`, keys will have the *feature name* prepended in the final feature value (see below for
+an example).  
+
+`defVal` is a JSON Array of Arrays.  The inner Array should contain a String followed by a Number.  For instance, you 
+may want to use something like the following: 
+
+```json
+[["=UNKNOWN", 1]]
+```
+  
+We use this in a lot of our models.  Let's put this into context: 
+
+```json
+{
+  "modelType": "Regression",
+  ...
+  "features": {
+    "height": { "spec": "Seq((\"\", ${profile.height}))", "defVal": [["=UNKNOWN", 1]] }
+  }
+  ...
+}
+```
+
+and imagine `profile.height` is an optional variable that is not present in the current model input.  Then the model
+can't produce the key-value for *height* feature and defaults to using `defVal` to produce: 
+{ `("height=UNKNOWN", 1)` }.  The reason we use the value *1* is that this is exactly the form of an 
+[indicator variable](https://en.wikipedia.org/wiki/Dummy_variable_\(statistics\)).  That way, the regression model
+can have an associated weight in the **&beta;** vector.
+
+There is a consequence of providing a `defVal`.  When the `defVal` field is provided and its value non-empty Array,
+this will affect the reporting of the number of missing features.  For more information, see the 
+[numMissingThreshold](#aR_numMissingThreshold) section. 
+
+##### (R) spec (as a String)
+
+As was mentioned above, features values in the regression model JSON can either be represented as a String or Object.
+The Object case shown above.  If you don't provide a `defVal` in the above object, the specification Object can 
+be replaced with just the `spec` value.  For instance, the example from above: 
+
+```json
+{
+  "modelType": "Regression",
+  ...
+  "features": {
+    "height": { "spec": "Seq((\"\", ${profile.height}))" }
+  }
+  ...
+}
+```
+
+could be rewritten as: 
+
+```json
+{
+  "modelType": "Regression",
+  ...
+  "features": {
+    "height": "Seq((\"\", ${profile.height}))"
+  }
+  ...
+}
+```
+
+and with what we learned about imports, if `com.eharmony.aloha.feature.BasicFunctions._` is imported, the JSON can 
+be simplified further to: 
+
+```json
+{
+  "modelType": "Regression",
+  ...
+  "features": {
+    "height": "${profile.height}"
+  }
+  ...
+}
+```
+
+This is easier to read and write and more aesthetically pleasing in general.
+
 #### (R) weights
+
+`weights` is a representation of the *first-order* feature weights in the regression **&betal** vector.  By 
+*first-order*, we mean terms of [degree](https://en.wikipedia.org/wiki/Degree_of_a_polynomial) of *1* in the 
+[polynomial](https://en.wikipedia.org/wiki/Polynomial) expression which is being regressed in the model.
+
+`weights` is a JSON Object where the keys are the same as the keys produced in the feature map.  The values are the
+weights associated with the each feature value.  
+
+**NOTE**: Only if the feature values (the numbers in the [feature](#aR_features) key-value pairs) are 
+[standardized](https://en.wikipedia.org/wiki/Standard_score#Calculation_from_raw_score), can one infer feature
+importance from the magnitude of the weight values.  This is because if the weights are not 
+[standardized](https://en.wikipedia.org/wiki/Standard_score#Calculation_from_raw_score), the scales of the feature 
+values will differ and the weights will adapt to these scales.
+
+An example of weights is: 
+
+```json
+{
+  "modelType": "Regression",
+  ...
+  "weights": {
+    "height": 1.23,
+    "weight": -2.34
+  }
+  ...
+}
+```
+
 #### (R) higherOrderFeatures
+
+`higherOrderFeatures` encodes the weights associated with terms in the 
+[polynomial](https://en.wikipedia.org/wiki/Polynomial) expression with 
+[degree](https://en.wikipedia.org/wiki/Degree_of_a_polynomial) greater than *1*.  This is optional and is used for
+[polynomial regression](https://en.wikipedia.org/wiki/Polynomial_regression) models but is not necessary for 
+[linear regression](https://en.wikipedia.org/wiki/Linear_regression) models.  It is an *optional* field.  An example
+looks like: 
+
+```json
+{
+  "modelType": "Regression",
+  "features": {
+    "m_ht_lt_63": "ind(${male.height} < 63)",
+    "f_ht_gt_66": "ind(66 < ${female.height})",
+  },
+  ...
+  "higherOrderFeatures": [
+    { 
+      "wt": -5.1, 
+      "features": { 
+        "m_ht_lt_63": ["m_ht_lt_63=true"], 
+        "f_ht_gt_66": ["f_ht_gt_66=true"] 
+      }
+    },
+    { 
+      "wt": 1.2,
+      "features": {
+        "m_ht_lt_63": ["m_ht_lt_63=false"],
+        "f_ht_gt_66": ["f_ht_gt_66=false"]
+      }
+    }
+  ]
+}
+```
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aR_higherOrderFeatures_wt">wt</a></td>
+    <td>Number</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aR_higherOrderFeatures_features">features</a></td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+</table>
+
+Given `features` with feature names "*m_ht_lt_63*" and "*f_ht_gt_66*", where "*m_ht_lt_63*" is an indicator variable
+meaning male in a [dyad](https://en.wikipedia.org/wiki/Dyad_\(sociology\)) has a height of less than 63 inches and 
+"*f_ht_gt_66*" means the female's height is greater than 66 inches, we see that when the male is on the shorter 
+side and the female is taller, this has a disproportionally large negative effect versus when the male is either 
+not that much shorter (&le; 3 inches) or is taller than the the female.
+
+##### (R) higherOrderFeatures wt
+
+We can tell this because the `wt` field in each higher-order features.  This is the weight associated with the 
+**&beta;** for the feature.  Within the features
+
+##### (R) higherOrderFeatures features
+
+`features` is a map where the keys are the feature names from the top-level [features](#aR_features) map in the 
+regression model.  The value associated with a key is a non-empty Array containing the **feature keys** from the 
+features created by the top-level [features](#aR_features) map.  That is, when a feature function produces the 
+Iterable of (*String*, *Double*) key-value pairs, the *String* in the first index of the tuple is the String that 
+that goes in this Array.  It is possible to have Arrays of length larger than two.  This will happen most commonly 
+occurs when the term of interest in the polynomial is some variable raised to a power.  
+
+For instance, imagine someone throwing a ball 80 mph (35.7632 *m*/*s*) at a 30&deg; angle with a release point 
+8.25ft (2.5146 *m*) off the ground.  The vertical velocity component is 17.8816 *m*/*s* = 0.5 &times; 35.7632. 
+Using the equation from [classical mechanics](https://en.wikipedia.org/wiki/Classical_mechanics): 
+
+<em>h</em>(<em>t</em>) = 1/2<em>gt</em><sup>2</sup> + <em>v</em><sub>0</sub><em>t</em> + <em>h</em><sub>0</sub> &nbsp; &nbsp; Where <em>g</em> = -9.8 <em>m</em>/<em>s</em> 
+
+the height of the ball in meters could be encoded as:
+
+```json
+{
+  "modelType": "Regression",
+  "modelId": { "id": 0, "name": "80mph throw at 30 degree angle" },
+  "features": {
+    "indicator": "indicator",
+    "time": "${time}"
+  },
+  "weights": {
+    "intercept": 2.5146,
+    "time": 17.8816
+  },
+  "higherOrderFeatures": [
+    { "wt": -4.9, "features": { "time": [ "time", "time" ] } } 
+  ]
+}
+```
+
 #### (R) spline
+
+`spline` is an optional field representing a 
+[spline](https://en.wikipedia.org/wiki/Spline_\(mathematics\)) function.  The spline is applied to the inner product 
+of the feature vector, **X** and the **&beta** vector (**X&beta**); and acts like an 
+[inverse link function](https://en.wikipedia.org/wiki/Generalized_linear_model#Link_function) in 
+[GLM](https://en.wikipedia.org/wiki/Generalized_linear_model)s.  The reason a spline is provided rather than an 
+explicit link is that oftentimes we want to [calibrate](https://en.wikipedia.org/wiki/Calibration_\(statistics\)) 
+our classifiers to ensure that the class probabilities yield accurate estimates.  For more information see
+[Charles Elkan](http://cseweb.ucsd.edu/~elkan/)'s and [Bianca Zadrozny](http://www2.ic.uff.br/~bianca/)'s papers on 
+model calibration or checkout Jan Hendrik Metzen's 
+[blog post on calibration](https://jmetzen.github.io/2015-04-14/calibration.html) for a nice explanation.
+
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aR_spline_min">min</a></td>
+    <td>Number</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aR_spline_max">max</a></td>
+    <td>Number</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+    <tr>
+      <td><a href="#aR_spline_knots">knots</a></td>
+      <td>Array</td>
+      <td>Number</td>
+      <td>true</td>
+      <td>N / A</td>
+    </tr>
+</table>
+
+##### (R) spline min
+
+`min` is the minimum value in the [domain](https://en.wikipedia.org/wiki/Domain_of_a_function) of the spline.  Values
+less than `min` will be [clamped](https://en.wikipedia.org/wiki/Clamping_\(graphics\)).
+
+##### (R) spline max
+
+`max` is the minimum value in the [domain](https://en.wikipedia.org/wiki/Domain_of_a_function) of the spline.  Values
+greater than `max` will be [clamped](https://en.wikipedia.org/wiki/Clamping_\(graphics\)).
+
+##### (R) spline knots
+
+`knots` defines the [piecewise lineaer](https://en.wikipedia.org/wiki/Piecewise_linear_function) 
+[spline](https://en.wikipedia.org/wiki/Spline_\(mathematics\)).  The knots are the values of the 
+[codmain](https://en.wikipedia.org/wiki/Codomain).  The associated 
+[domain](https://en.wikipedia.org/wiki/Domain_of_a_function) values can be calculated from the `min`, `max` and size
+of the `knots` Array.  The size of `knots` must be at least two, unless in the special case `min` equals `max`, in
+which case knots is expected to contain *exactly* one element.
+
 #### (R) numMissingThreshold
 
+`numMissingThreshold` is an optional integral value.  When supplied, if the number of [features](#aR_features) that
+yield empty Iterables (*size zero*) **exceeds** `numMissingThreshold`, then an error rather than a score will be 
+returned.  
 
 ### (R) JSON Examples
 
