@@ -1,0 +1,16 @@
+{
+  "separator": ",",
+  "encoding": "hotOne",
+  "imports":[ "com.eharmony.aloha.feature.BasicFunctions._" ],
+  "features": [
+    { "name": "age",            "spec": "${rings} + 1.5",   "type": "double"},
+    { "name": "sex",            "spec":"${sex}",            "type": "enum", "values": [ "M","F","I"] },
+    { "name": "length",         "spec":"${length}",         "type": "double" },
+    { "name": "diameter",       "spec":"${diameter}",       "type": "double" },
+    { "name": "height",         "spec":"${height}",         "type": "double" },
+    { "name": "whole_weight",   "spec":"${whole_weight}",   "type": "double" },
+    { "name": "shucked_weight", "spec":"${shucked_weight}", "type": "double" },
+    { "name": "viscera_weight", "spec":"${viscera_weight}", "type": "double" },
+    { "name": "shell_weight",   "spec":"${shell_weight}",   "type": "double" }
+  ]
+}

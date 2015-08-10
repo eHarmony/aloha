@@ -1,0 +1,23 @@
+{
+  "notes": [
+    "The abalone dataset https://archive.ics.uci.edu/ml/datasets/Abalone",
+    "is dense with no null values.  So we can omit missingData, ",
+    "errorOnOptMissingField, and errorOnOptMissingEnum.  The age equals",
+    "rings + 1.5."
+  ],
+  "fs":  ",",
+  "ifs": "|",
+  "columns": [
+    { "name": "sex",            "type": "enum",
+      "className": "Sex",
+      "values": [ "M", "F", "I" ] },
+    { "name": "length",         "type": "double" },
+    { "name": "diameter",       "type": "double" },
+    { "name": "height",         "type": "double" },
+    { "name": "whole_weight",   "type": "double" },
+    { "name": "shucked_weight", "type": "double" },
+    { "name": "viscera_weight", "type": "double" },
+    { "name": "shell_weight",   "type": "double" },
+    { "name": "rings",          "type": "int" }
+  ]
+}
