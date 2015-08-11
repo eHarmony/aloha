@@ -22,9 +22,23 @@ repository.
 
 ## [**R**](https://www.r-project.org)
 
-The use of **R** across machine learning applications is pervasive, so not supporting **R** in anyway would be 
+The use of **R** across machine learning applications is pervasive, so not supporting **R** in any way would be 
 ludicrous.  While we are considering adding more native **R** support to Aloha, it's not on the immediate roadmap.
 In the meantime, you can use Aloha to create data to pipe to **R** scripts rather easily.  For instance: 
+
+```bash
+#!/usr/bin/env bash
+
+(cat <<EOM
+# BASH SCRIPT HERE!!!
+EOM
+) \
+| \
+R --slave --quiet --vanilla \
+| \
+grep -
+
+```
 
 
 
@@ -38,11 +52,12 @@ Working with [scikit-learn](http://scikit-learn.org/stable/) is easy.  Since it'
 #!/usr/bin/env python
 ```
 
-Then you can incorporate aloha into your data pipeline rather easily.  For instance, aloha doesn't currently have any 
-mechanism for computing regularization paths.  So, if we wanted to use scikit-learn's implementation of the 
-[LARS algorithm](https://en.wikipedia.org/wiki/Least-angle_regression) to compute and chart the regularization path 
-of the [Abalone](https://archive.ics.uci.edu/ml/datasets/Abalone) dataset, we can do this by writing a small python 
-script, and using aloha to create the dataset that is fed to the tool.  
+Incorporating Aloha into a scikit-learn pipeline is rather easy.  For instance, Aloha doesn't currently have any 
+mechanism for computing regularization paths.  So, one can use scikit-learn's implementation of the 
+[LARS algorithm](https://en.wikipedia.org/wiki/Least-angle_regression) to compute regularization paths. Let's say
+we wanted to compute and chart the regularization paths for the [Abalone](https://archive.ics.uci.edu/ml/datasets/Abalone) dataset. 
+We could write a small python script that does this generically and use Aloha to create the dataset to be fed to 
+the script.  
 
 ### scikit-learn Example
 
@@ -51,16 +66,16 @@ We use Aloha to get the [Abalone](https://archive.ics.uci.edu/ml/datasets/Abalon
 is then piped to scikit-learn for learning and visualization:
 
 ```bash
-aloha-cli/bin/aloha-cli \
+aloha-cli/bin/aloha-cli                                                                   \
   -cp $(find $PWD/aloha-cli/target -name "*dependenc*.jar" ):\
-$(find $HOME/.m2/repository/commons-httpclient -name "commons-httpclient-*.jar") \
-  --dataset \
-  -i https://archive.ics.uci.edu/ml/machine-learning-databases/abalone/abalone.data \
+$(find $HOME/.m2/repository/commons-httpclient -name "commons-httpclient-*.jar")          \
+  --dataset                                                                               \
+  -i https://archive.ics.uci.edu/ml/machine-learning-databases/abalone/abalone.data       \
   -c $PWD/aloha-core/src/test/resources/com/eharmony/aloha/dataset/cli/abalone_types.json \
-  -s $PWD/aloha-core/src/test/resources/com/eharmony/aloha/dataset/cli/abalone_spec.json \
-  --csv-headers \
-  --csv - \
-| \
+  -s $PWD/aloha-core/src/test/resources/com/eharmony/aloha/dataset/cli/abalone_spec.json  \
+  --csv-headers                                                                           \
+  --csv -                                                                                 \
+|                                                                                         \
 lars.py
 ```
 
@@ -74,6 +89,11 @@ on the scikit-learn site):
 
 ```python
 #!/usr/bin/env python
+
+# ================================================================================
+# Expects CSV data on STDIN where the first column contains the dependent variable 
+# and the first row is a header row containing the variable names.
+# ================================================================================
 
 import sys
 import numpy as np
@@ -96,9 +116,7 @@ dataset = np.loadtxt(raw_data, delimiter=",")
 X = dataset[:,1:cols]
 y = dataset[:,0]
 
-print("Computing regularization path using the LARS ...")
 alphas, _, coefs = linear_model.lars_path(X, y, method='lasso', verbose=True)
-
 xx = np.sum(np.abs(coefs.T), axis=1)
 xx /= xx[-1]
 
