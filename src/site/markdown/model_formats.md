@@ -27,7 +27,7 @@ This is just a suggestion but it will pay huge dividends in terms of cleaner dat
 ## Model Types
 
 * [Categorical distribution model](#Categorical_distribution_model): 
-  returns psuedo-random values based on a designated
+  returns pseudo-random values based on a designated
   [Categorical distribution](https://en.wikipedia.org/wiki/Categorical_distribution) 
 * [Constant model](#Constant_model): returns a constant value
 * [Decision tree model](#Decision_tree_model): a standard [decision tree](https://en.wikipedia.org/wiki/Decision_tree)
@@ -49,7 +49,7 @@ This is just a suggestion but it will pay huge dividends in terms of cleaner dat
 
 ## Categorical distribution model
 
-A Categorical distribution model returns psuedo-random values based on a designated
+A Categorical distribution model returns pseudo-random values based on a designated
 [Categorical distribution](https://en.wikipedia.org/wiki/Categorical_distribution).  It can be used for collecting 
 random data on which future models can be trained.  Its sampling is constant time, regardless of the number of 
 values in the distribution.
@@ -121,7 +121,7 @@ values in the distribution.
 #### (CD) features 
 
 `features` is an array of strings, where each string contains an Aloha feature specification.  Each of these strings
-should just contain a variable definition.  These features are used to create a hash on which the psuedo-randomness
+should just contain a variable definition.  These features are used to create a hash on which the pseudo-randomness
 is based.  It can be thought of as the [statistical unit](https://en.wikipedia.org/wiki/Statistical_unit) for the 
 experiment being run.
 
@@ -858,7 +858,7 @@ rounds, then takes the min of `clampUpper` (*8*) and *9*, which comes out to *8*
   "clampUpper": 8,
   "scale": -0.5,
   "translation": 2,
-  "rouind": true,
+  "round": true,
   "submodel": {
     "modelType": "Constant",
     "modelId": { "id": 1, "name": "Constant model returning -13" },
