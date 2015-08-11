@@ -17,7 +17,7 @@
 > assign any special semantic meaning to these fields, *Aloha users* ***SHOULD*** *place special importance 
 > on the uniqueness of the numeric `id`.*  
 
-This is just a suggestion but it will pay huge dividends in terms cleaner data collection:
+This is just a suggestion but it will pay huge dividends in terms of cleaner data collection:
 
 > Models should for practical purposes by immutable.  This means that whenever a model is edited in such a way that 
 > the model functionally changes, the model's `modelId`'s `id` field should be changed **And all ancestor models' 
@@ -51,7 +51,7 @@ This is just a suggestion but it will pay huge dividends in terms cleaner data c
 
 A Categorical distribution model returns psuedo-random values based on a designated
 [Categorical distribution](https://en.wikipedia.org/wiki/Categorical_distribution).  It can be used for collecting 
-random data on which future models can be trained.  It's sampling is constant time, regardless of the number of 
+random data on which future models can be trained.  Its sampling is constant time, regardless of the number of 
 values in the distribution.
 
 
@@ -120,7 +120,7 @@ values in the distribution.
 
 #### (CD) features 
 
-`features` is an array of strings, where each string contains an aloha feature specification.  Each of these strings
+`features` is an array of strings, where each string contains an Aloha feature specification.  Each of these strings
 should just contain a variable definition.  These features are used to create a hash on which the psuedo-randomness
 is based.  It can be thought of as the [statistical unit](https://en.wikipedia.org/wiki/Statistical_unit) for the 
 experiment being run.
@@ -143,7 +143,7 @@ including an example of issues that can arise, see
 
 `probabilities` is an array of non-negative numbers.  These values, once 
 [normalized](https://en.wikipedia.org/wiki/Normalization_\(statistics\)), will provide the probability of 
-selecting on of the associated *labels* in the at the same index in the 
+selecting one of the associated *labels* at the same index in the 
 [parallel](https://en.wikipedia.org/wiki/Parallel_array) `labels` array.  While these values needn't be normalized 
 in the JSON, it may help to supply normalized values if exact normalized probabilities can be provided.  If exact 
 values cannot be provided, it's OK to provide approximations, so long as the ratios are the same as the final 
@@ -169,7 +169,7 @@ array will be number.
 #### (CD) missingOk
 
 `missingOk` determines whether the model should return a value when at least one of the values in `features` 
-could not be determined.  If `false`, no score will be returned.  If `true`, then  
+could not be determined.  If `false`, no score will be returned.  If `true`, then 
 
 
 ### (CD) JSON Examples
@@ -208,7 +208,7 @@ probabilistically model the sender of the message that was received by either *A
 
 ## Constant model
 
-A constant model always returns the same score value.
+A constant model always returns the same value.
 
 ### (C) JSON Fields
 
@@ -350,9 +350,9 @@ further progress down the tree can be made.
 
 When set to false, the model returns an error rather than a score.
 
-Usually, in a decision tree, when given a datum, a path to a leaf cannot be traversed, it indicates a problem.  
-The most common being that the branching logic at a given node is not 
-[exhaustive](https://en.wikipedia.org/wiki/Collectively_exhaustive_events).  When this happens, the tree algorithm 
+Usually, in a decision tree, when given a datum and a path to a leaf cannot be traversed it indicates a problem.  
+The most common problem being that the branching logic at a given node is not 
+[exhaustive](https://en.wikipedia.org/wiki/Collectively_exhaustive_events).  This will happen when the tree algorithm 
 checks if it can proceed to any of its children and the predicates associated with each child returns false.
 
 #### (DT) missingDataOk
@@ -404,7 +404,8 @@ in the `nodes` array is considered to be the root node. The structure of a node 
 
 ##### (Node) id
 
-`id` is the node id and is used by [node selectors](#Node_Selectors) to determine which child to traverse.
+`id` is the node id and is used by [node selectors](#Node_Selectors) to determine which child to traverse.  Note that 
+this is considered separately from the model's `id`.
 
 ##### (Node) value
 
@@ -472,21 +473,21 @@ in *O*(*N*) time where *N* is node's the number of children.
 
 ##### (linear ns) children
 
-`children` is a list of `node` `id` values.  This is array is [parallel](https://en.wikipedia.org/wiki/Parallel_array)
+`children` is a list of `node` `id` values.  This array is [parallel](https://en.wikipedia.org/wiki/Parallel_array)
 to the `predicates` array.  If index *i* in `predicates` is the first predicate yielding *true*, then the value at 
 index *i* in `children` will contain the *id* of the node that will be visited.
 
 ##### (linear ns) predicates 
 
-The `predicates` array contains strings where each string is an aloha feature specification representing a Boolean 
-function.  This is array is [parallel](https://en.wikipedia.org/wiki/Parallel_array) to the `children` array.  If 
+The `predicates` array contains strings where each string is an Aloha feature specification representing a Boolean 
+function.  This array is [parallel](https://en.wikipedia.org/wiki/Parallel_array) to the `children` array.  If 
 index *i* in `predicates` is the first predicate yielding *true*, then the value at index *i* in `children` will 
 contain the *id* of the node that will be visited.
 
 
 #### Random Node Selector
 
-A random node selector provides a way of psueudo-randomly splitting traffic between one or more outcomes.  This 
+A random node selector provides a way of pseudo-randomly splitting traffic between one or more outcomes.  This 
 selector algorithm acts in *O*(1) time regardless of the number of children.
 
 <table>
@@ -533,13 +534,13 @@ selector algorithm acts in *O*(1) time regardless of the number of children.
 
 ##### (random ns) children
 
-`children` is a list of `node` `id` values.  This is array is [parallel](https://en.wikipedia.org/wiki/Parallel_array)
+`children` is a list of `node` `id` values.  This array is [parallel](https://en.wikipedia.org/wiki/Parallel_array)
 to the `probabilities` array.  Samples drawn from the 
 [Categorical distribution](https://en.wikipedia.org/wiki/Categorical_distribution) backed by `probabilities` yield an
 index into the `children` array.  The `id` at the chosen index in the `children` array is used to select the child
 to traverse. 
 
-**Note**: There is a special case when the length of `children` can be one less than the length of the `probabilties`
+**Note**: There is a special case when the length of `children` can be one less than the length of the `probabilities`
 array.  In such a case, if `returnBest` is set to *true* then when the sampling from the categorical distribution 
 selects last index in `probabilities`, the *current node* (and not a child node) is selected.  See JSON examples
 for how this is useful.
@@ -566,7 +567,7 @@ may be preferable to
 [ 1, 1, 1 ]
 ```
 
-What should not be done is compromise the ratios for readability.  For instance, if we want to encode probabilities 
+What should not be done is to compromise the ratios for readability.  For instance, if we want to encode probabilities 
 of *1/3*, we should **NOT** encode them as:
 
 ```json
@@ -575,8 +576,8 @@ of *1/3*, we should **NOT** encode them as:
 
 ##### (random ns) features
 
-`features` is an array of strings, where each string contains an aloha feature specification.  Each of these strings
-should just contain a variable definition.  These features are used to create a hash on which the psuedo-randomness
+`features` is an array of strings, where each string contains an Aloha feature specification.  Each of these strings
+should just contain a variable definition.  These features are used to create a hash on which the pseudo-randomness
 is based.  It can be thought of as the [statistical unit](https://en.wikipedia.org/wiki/Statistical_unit) for the 
 experiment being run.
 
@@ -703,13 +704,13 @@ model as follows:
 ## Double-to-Long model
 
 The Double-to-Long model provides an [affine transformation](https://en.wikipedia.org/wiki/Affine_transformation) 
-from Double values to Long values.  It works by applying the following tranformation: 
+from Double values to Long values.  It works by applying the following transformation: 
 
 *v* = *scale* &times; *submodel value* + *translation*  
 *v*&prime; = *IF round THEN* round(*v*) *ELSE* floor(*v*)  
 *output* = max(*clampUpper*, min(*v*&prime;, *clampUpper*))
 
-This model is useful for [eHarmony](http://www.eharmony.com)-specific purposes, but others may find it useful. 
+This model is useful for [eHarmony](http://www.eharmony.com)-specific purposes, but others may find it useful as well. 
 
 ### (DtL) JSON Fields
 
@@ -812,12 +813,12 @@ the default value will be 0.
 
 #### (DtL) clampLower
 
-`clampLower` is lower [clamp](https://en.wikipedia.org/wiki/Clamping_\(graphics\)) value.  It is a 64-bit long-valued
+`clampLower` is the lower [clamp](https://en.wikipedia.org/wiki/Clamping_\(graphics\)) value.  It is a 64-bit long-valued
 int.  When not supplied, the default value will be `-9,223,372,036,854,775,808`.
 
 #### (DtL) clampUpper
 
-`clampUpper` is upper [clamp](https://en.wikipedia.org/wiki/Clamping_\(graphics\)) value.  It is a 64-bit long-valued
+`clampUpper` is the upper [clamp](https://en.wikipedia.org/wiki/Clamping_\(graphics\)) value.  It is a 64-bit long-valued
 int.  When not supplied, the default value will be `9,223,372,036,854,775,807`.
 
 #### (DtL) round
@@ -937,8 +938,8 @@ An error model returns an error.  This is not the same as throwing an exception.
 Error swallowing model makes an attempt to trap exceptions and return them as errors instead.  While this is not 
 foolproof, it was tested against 
 [SchrodingerException](https://github.com/eHarmony/aloha/blob/master/aloha-core/src/main/scala/com/eharmony/aloha/ex/SchrodingerException.scala),
-an exception specifically designed to be as harmful as possible.  The implementation uses `scala.util.Try` which means
-errors errors that are caught are dictated by 
+an exception specifically designed to be as harmful as possible.  The implementation uses `scala.util.Try` which means 
+errors that are caught are dictated by 
 [scala.util.control.NonFatal](https://github.com/scala/scala/blob/v2.10.3/src/library/scala/util/control/NonFatal.scala).
 
 ### (ES) JSON Fields
@@ -997,7 +998,7 @@ errors errors that are caught are dictated by
 { "import": "/path/to/aloha/model.json" }
 ```
 
-Either way, the submodel is expected to be a model with the same input and output type as the Error-swalling model 
+Either way, the submodel is expected to be a model with the same input and output type as the Error-swallowing model 
 itself.
 
 #### (ES) recordErrorStackTraces
@@ -1033,7 +1034,7 @@ must either be a JSON object containing an Aloha model or it can be a JSON objec
 { "import": "/path/to/aloha/model.json" }
 ```
 
-The submodels input and output types are expected to be the same as the input and output type of the model decision 
+The submodels, input, and output types are expected to be the same as the input and output type of the model decision 
 tree model.  The model works by using the decision tree algorithm to select a node containing a model, and then it 
 applies the same input data to the model it finds in the node. 
 
@@ -1041,8 +1042,8 @@ For more information, see the section on [Decision tree models](#Decision_tree_m
 
 ## Regression model
 
-The regression model inplementation in aloha is a [sparse](https://en.wikipedia.org/wiki/Sparse_matrix) 
-[polynomial regression](https://en.wikipedia.org/wiki/Polynomial_regression) model.  This is a superset and therefore
+The regression model implementation in aloha is a [sparse](https://en.wikipedia.org/wiki/Sparse_matrix) 
+[polynomial regression](https://en.wikipedia.org/wiki/Polynomial_regression) model.  This is a superset of and therefore
 subsumes [linear regression](https://en.wikipedia.org/wiki/Linear_regression) models.
 
 ### (R) JSON Fields
@@ -1116,7 +1117,7 @@ subsumes [linear regression](https://en.wikipedia.org/wiki/Linear_regression) mo
 #### (R) features
 
 `features` is the map of features that are included in the model.  The keys in the `features` represent the feature 
-names in the values can take on one of two forms.  They can either be a String or a JSON object.  If they are a JSON
+names; the values can take on one of two forms.  They can either be a String or a JSON object.  If they are a JSON
 object, they must have the following format: 
 
 <table>
@@ -1172,9 +1173,9 @@ feature name.  So, for instance, the above *spec* string might be included in a 
 Given the above model, let's say the `profile.height` yields a value of *66*.  Then the feature key-value pairs produced 
 would be: { `("height", 66)` }.
 
-There is a lot of supporting code available to the aloha user when importing 
+There is a lot of supporting code available to the Aloha user when importing 
 `com.eharmony.aloha.feature.BasicFunctions._`.  Among these is an implicit conversion from numeric types to sequences
-of key-value pairs.  This allows the user to write the previously mentioned aloha function specification as: 
+of key-value pairs.  This allows the user to write the previously mentioned Aloha function specification as: 
  
 ```json
 "${profile.height}"
@@ -1191,9 +1192,9 @@ assuming `profile.height` is an appropriate numeric type.
 ##### (R) feature defVal
 
 **NOTE**: [Ryan Deak](https://deaktator.github.io), author of Aloha has expressed a personal distaste for the use
-of this feature.  It can however create better models are the cost of readability and error reporting.
+of this feature.  It can however create better models at the cost of readability and error reporting.
 
-`defVal` is the value that is returned if the `spec` references an variable whose presence is *optional* and 
+`defVal` is the value that is returned if the `spec` references a variable whose presence is *optional* and 
 whose value is not present for the current model input.  As with the Iterable of key-value pairs produced by the 
 function created by `spec`, keys will have the *feature name* prepended in the final feature value (see below for
 an example).  
@@ -1205,7 +1206,7 @@ may want to use something like the following:
 [["=UNKNOWN", 1]]
 ```
   
-We use this in a lot of our models.  Let's put this into context: 
+eHarmony uses this in a lot of their models.  Let's put this into context: 
 
 ```json
 {
@@ -1224,14 +1225,14 @@ can't produce the key-value for *height* feature and defaults to using `defVal` 
 [indicator variable](https://en.wikipedia.org/wiki/Dummy_variable_\(statistics\)).  That way, the regression model
 can have an associated weight in the **&beta;** vector.
 
-There is a consequence of providing a `defVal`.  When the `defVal` field is provided and its value non-empty Array,
+There is a consequence of providing a `defVal`.  When the `defVal` field is provided and its value is the non-empty Array,
 this will affect the reporting of the number of missing features.  For more information, see the 
 [numMissingThreshold](#aR_numMissingThreshold) section. 
 
 ##### (R) spec (as a String)
 
-As was mentioned above, features values in the regression model JSON can either be represented as a String or Object.
-The Object case shown above.  If you don't provide a `defVal` in the above object, the specification Object can 
+As was mentioned above, features values in the regression model JSON can either be represented as a String or Object,
+the Object case is shown above.  If you don't provide a `defVal` in the above object, the specification Object can 
 be replaced with just the `spec` value.  For instance, the example from above: 
 
 ```json
@@ -1379,7 +1380,7 @@ We can tell this because the `wt` field in each higher-order features.  This is 
 `features` is a map where the keys are the feature names from the top-level [features](#aR_features) map in the 
 regression model.  The value associated with a key is a non-empty Array containing the **feature keys** from the 
 features created by the top-level [features](#aR_features) map.  That is, when a feature function produces the 
-Iterable of (*String*, *Double*) key-value pairs, the *String* in the first index of the tuple is the String that 
+Iterable of (*String*, *Double*) key-value pairs, the *String* in the first index of the tuple is the String 
 that goes in this Array.  It is possible to have Arrays of length larger than two.  This will happen most commonly 
 occurs when the term of interest in the polynomial is some variable raised to a power.  
 
@@ -1466,10 +1467,10 @@ greater than `max` will be [clamped](https://en.wikipedia.org/wiki/Clamping_\(gr
 
 ##### (R) spline knots
 
-`knots` defines the [piecewise lineaer](https://en.wikipedia.org/wiki/Piecewise_linear_function) 
+`knots` defines the [piecewise linear](https://en.wikipedia.org/wiki/Piecewise_linear_function) 
 [spline](https://en.wikipedia.org/wiki/Spline_\(mathematics\)).  The knots are the values of the 
 [codmain](https://en.wikipedia.org/wiki/Codomain).  The associated 
-[domain](https://en.wikipedia.org/wiki/Domain_of_a_function) values can be calculated from the `min`, `max` and size
+[domain](https://en.wikipedia.org/wiki/Domain_of_a_function) values can be calculated from the `min`, `max`, and size
 of the `knots` Array.  The size of `knots` must be at least two, unless in the special case `min` equals `max`, in
 which case knots is expected to contain *exactly* one element.
 
@@ -1563,12 +1564,12 @@ segmentation model maps elements in the same induced
 ```
 
 Either way, the submodel is expected to be a model that takes the same input type as the Segmentation model itself
-and the submodel should have an output type dicated by the [subModelOutputType](#aS_subModelOutputType) value.
+and the submodel should have an output type dictated by the [subModelOutputType](#aS_subModelOutputType) value.
 
 
 #### (S) subModelOutputType
 
-`subModelOutputType` determined the output type of the submodel.  `subModelOutputType` must be one of:
+`subModelOutputType` is determined by the output type of the submodel.  `subModelOutputType` must be one of:
 
 * Byte
 * Short
@@ -1644,10 +1645,10 @@ The mapping from submodel value to Segmentation model value is:
 ## Vowpal Wabbit model
 
 The [Vowpal Wabbit](https://github.com/JohnLangford/vowpal_wabbit/wiki) model provides the feature extraction 
-capabilities of Aloha native [Regression model](#Regression_model), but delegates to VW's 
+capabilities of an Aloha native [Regression model](#Regression_model), but delegates to VW's 
 [JNI layer](https://github.com/JohnLangford/vowpal_wabbit/tree/master/java) for prediction, which is much more 
 powerful.  Note that this shares a fair amount of code with [Regression model](#Regression_model) so be sure to
-look at the docs there.
+look at the docs there too.
  
 **NOTE**: This model is in module **aloha-vw-jni**, not **aloha-core**.  To use, be sure to include the proper 
 maven dependency: 
@@ -1741,7 +1742,7 @@ See [Regression model features](#aR_features) for details.
 #### (VW) vw
 
 `vw` is an object with two parameters: `model` and `params`.  `model` can either be a base-64 encoded string containing
-the raw data encoded in a vw regressor saved with the `-f` flag, or it can be an 
+the raw data encoded in a VW regressor saved with the `-f` flag, or it can be an 
 [Apache VFS](https://commons.apache.org/proper/commons-vfs/filesystems.html) URL.  `params` can be a String or an 
 Array of Strings.  If it is an Array of Strings the Array will imploded into a string with a String separator `" "` 
 added in between the contents of the constituent elements. 
