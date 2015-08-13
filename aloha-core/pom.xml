@@ -362,8 +362,7 @@
 								-->
 								<echo message="Compiling protobuf source to .class files." />
 								<exec executable="javac" failonerror="true">
-									<arg line="-d ${project.build.testOutputDirectory} -classpath ${settings.localRepository}/com/google/protobuf/protobuf-java/${protobuf.version}/protobuf-java-${protobuf.version}.jar ${project.build.directory}/generated-test-sources/com/eharmony/aloha/test/proto/TestProtoBuffs.java ${project.build.directory}/generated-test-sources/com/eharmony/aloha/test/proto/Testing.java" />
-								</exec>
+									<arg line="-d ${project.build.testOutputDirectory} -classpath ${settings.localRepository}/com/google/protobuf/protobuf-java/${protobuf.version}/protobuf-java-${protobuf.version}.jar ${project.build.directory}/generated-test-sources/com/eharmony/aloha/test/proto/TestProtoBuffs.java ${project.build.directory}/generated-test-sources/com/eharmony/aloha/test/proto/Testing.java ${project.build.directory}/generated-test-sources/com/eharmony/aloha/test/proto/AbaloneProtos.java" />								</exec>
 							</tasks>
 						</configuration>
 						<goals>

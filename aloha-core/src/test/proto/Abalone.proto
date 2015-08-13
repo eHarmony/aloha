@@ -1,0 +1,49 @@
+package com.eharmony.aloha.test.proto;
+
+option java_outer_classname="AbaloneProtos";
+
+// A reencoding of the Abalone dataset in the UCI machine learning repository.
+// https://archive.ics.uci.edu/ml/datasets/Abalone
+//
+// Data has been organized in a more natural, hierarchical way.
+//
+message Abalone {
+    enum Sex {
+        MALE   = 1;
+        FEMALE = 2;
+        INFANT = 3;
+    }
+
+    message Weight {
+        // whole abalone (in grams).
+        optional float whole = 1;
+
+        // weight of meat (in grams).
+        optional float shucked = 2;
+
+        // gut weight (after bleeding) (in grams).
+        optional float viscera = 3;
+
+        // after being dried (in grams).
+        optional float shell = 4;
+    }
+
+    optional Sex sex = 1;
+
+    // Longest shell measurement (in mm).
+    optional float length = 2;
+
+    // perpendicular to length (in mm).
+    optional float diameter = 3;
+
+    // with meat in shell (in mm).
+    optional float height = 4;
+
+    optional Weight weight = 5;
+
+    // +1.5 gives the age in years
+    optional int32 rings = 6;
+
+    // Some text that may or may not be relevant. Not in original dataset.
+    optional string some_text = 7;
+}
