@@ -169,7 +169,8 @@ array will be number.
 #### (CD) missingOk
 
 `missingOk` determines whether the model should return a value when at least one of the values in `features` 
-could not be determined.  If `false`, no score will be returned.  If `true`, then  
+could not be determined.  If `false`, no score will be returned.  If `true`, then a constant be used in place of 
+the feature value and will be incorporated into the hash.
 
 
 ### (CD) JSON Examples
@@ -857,7 +858,7 @@ rounds, then takes the min of `clampUpper` (*8*) and *9*, which comes out to *8*
   "clampUpper": 8,
   "scale": -0.5,
   "translation": 2,
-  "rouind": true,
+  "round": true,
   "submodel": {
     "modelType": "Constant",
     "modelId": { "id": 1, "name": "Constant model returning -13" },
