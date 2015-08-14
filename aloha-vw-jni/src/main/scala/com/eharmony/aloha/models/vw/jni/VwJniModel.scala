@@ -23,6 +23,7 @@ import com.eharmony.aloha.util.{EitherHelpers, Logging}
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.io.IOUtils
 import org.apache.commons.vfs2
+import org.apache.commons.vfs2.FileObject
 import spray.json.{DeserializationException, JsValue, JsonReader, pimpAny, pimpString}
 import vw.VW
 
@@ -35,7 +36,7 @@ import scala.util.{Failure, Success, Try}
 /**
  * Model that delegates to a VW JNI model.
  * @param modelId a modelId
- * @param vwModel a FileObject pointing to a VW binary model.
+ * @param vwModelUrl a String-based Apache VFS URL pointing to a VW binary model.
  * @param vwParams VW parameters.  These are the same as the ones that would be passed on the command line,
  *                 directly to VW.
  * @param featureNames names of features (parallel to featureFunctions)
@@ -53,7 +54,7 @@ import scala.util.{Failure, Success, Try}
  */
 final case class VwJniModel[-A, +B](
     modelId: ModelIdentity,
-    vwModel: vfs2.FileObject,
+    vwModelUrl: String,
     vwParams: String,
     featureNames: sci.IndexedSeq[String],
     featureFunctions: sci.IndexedSeq[GenAggFunc[A, Iterable[(String, Double)]]],
@@ -73,18 +74,59 @@ extends BaseModel[A, B]
     private[this] val vwRowCreator =
         new VwRowCreator(SparseFeatureExtractorFunction(featureNames zip featureFunctions), defaultNs, namespaces, None)
 
+
+    @transient private[this] lazy val modelLocationAndDelete = {
+        val url = vfs2.VFS.getManager.resolveFile(vwModelUrl)
+        VwJniModel.copyModelToLocal(modelId.getId(), url) fold (f => (new File(f.getName.getPath), false), f => (f, true))
+    }
+
+    @transient private[this] lazy val allVwParams =
+        VwJniModel.updatedVwModelParams(modelId.getId(), modelLocationAndDelete._1, vwParams)
+
+    @transient private[this] lazy val model = {
+        val m = VwJniModel.createVwJniModel(allVwParams)
+        if (modelLocationAndDelete._2) {
+            modelLocationAndDelete._1.delete()
+        }
+        m
+    }
+
+
+    //    private[jni] def updatedVwModelParams(modelId: Long, vwModel: File, vwParams: String): String = {
+//    private[jni] def createVwJniModel(updatedVwParams: String): VW = new VW(updatedVwParams)
+
+    // copyModelToLocal(modelId: Long, vwModel: vfs2.FileObject): Either[vfs2.FileObject, File]
+//
+//    @transient private[this] lazy val (model, allVwParams) = {
+//        val vfsUrl = vfs2.VFS.getManager.resolveFile(vwModelUrl)
+//
+//        VwJniModel.copyModelToLocal(modelId.getId(), vfsUrl) match {
+//            case Left(_) =>
+//                VwJniModel.createVwJniModel(modelId.getId(), new File(vfsUrl.getName.getPath), vwParams)
+//            case Right(tmpFile) =>
+//                val modelAndParams = VwJniModel.createVwJniModel(modelId.getId(), tmpFile, vwParams)
+//                tmpFile.delete()
+//                modelAndParams
+//        }
+//    }
+
+
+
     /**
      * The backing VW instance doing all of the regression work.
      */
-    @transient private[this] lazy val (model, allVwParams) =
-        VwJniModel.copyModelToLocal(modelId.getId(), vwModel) match {
-            case Left(_) =>
-                VwJniModel.createVwJniModel(modelId.getId(), new File(vwModel.getName.getPath), vwParams)
-            case Right(tmpFile) =>
-                val modelAndParams = VwJniModel.createVwJniModel(modelId.getId(), tmpFile, vwParams)
-                tmpFile.delete()
-                modelAndParams
-        }
+//    @transient private[this] lazy val (model, allVwParams) = {
+//        val vfsUrl = vfs2.VFS.getManager.resolveFile(vwModelUrl)
+//
+//        VwJniModel.copyModelToLocal(modelId.getId(), vfsUrl) match {
+//            case Left(_) =>
+//                VwJniModel.createVwJniModel(modelId.getId(), new File(vfsUrl.getName.getPath), vwParams)
+//            case Right(tmpFile) =>
+//                val modelAndParams = VwJniModel.createVwJniModel(modelId.getId(), tmpFile, vwParams)
+//                tmpFile.delete()
+//                modelAndParams
+//        }
+//    }
 
     /**
      * Used for testing.
@@ -151,9 +193,12 @@ extends BaseModel[A, B]
 }
 
 object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Logging {
+
+    case class SerializedBinaryVwModel(base64EncodedModel: String)
+
     def apply[A, B](
             modelId: ModelIdentity,
-            b64EncodedVwModel: String,
+            b64EncodedVwModel: SerializedBinaryVwModel,
             vwParams: String,
             featureNames: sci.IndexedSeq[String],
             featureFunctions: sci.IndexedSeq[GenAggFunc[A, Iterable[(String, Double)]]],
@@ -162,9 +207,10 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
             finalizer: Double => B,
             numMissingThreshold: Option[Int],
             spline: Option[Spline])(implicit scb: ScoreConverter[B]): VwJniModel[A, B] = {
-        val allocatedModel = allocateModel(modelId.getId(), b64EncodedVwModel)
-        val vwModel = vfs2.VFS.getManager.resolveFile(allocatedModel.getCanonicalPath)
-        new VwJniModel[A, B](modelId, vwModel, vwParams, featureNames, featureFunctions,
+        val allocatedModel = allocateModel(modelId.getId(), b64EncodedVwModel.base64EncodedModel)
+//        val vwModel = vfs2.VFS.getManager.resolveFile(allocatedModel.getCanonicalPath)
+
+        new VwJniModel[A, B](modelId, allocatedModel.getCanonicalPath, vwParams, featureNames, featureFunctions,
                              defaultNs, namespaces, finalizer, numMissingThreshold, spline)(scb)
     }
 
@@ -208,8 +254,8 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
                         val defaultNs = (indices.keySet -- (Set.empty[String] /: nssRaw)(_ ++ _._2)).flatMap(indices.get).toList
 
                         vw.vw.model match {
-                            case Left(model) => VwJniModel(vw.modelId, model, vwParams, names, functions, defaultNs, nss, cf, vw.numMissingThreshold, vw.spline)
-                            case Right(url)  => VwJniModel(vw.modelId, url, vwParams, names, functions, defaultNs, nss, cf, vw.numMissingThreshold, vw.spline)
+                            case Left(model) => VwJniModel(vw.modelId, SerializedBinaryVwModel(model), vwParams, names, functions, defaultNs, nss, cf, vw.numMissingThreshold, vw.spline)
+                            case Right(url)  => VwJniModel(vw.modelId, url.toString, vwParams, names, functions, defaultNs, nss, cf, vw.numMissingThreshold, vw.spline)
                         }
                 }
             }
@@ -258,23 +304,21 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
         f
     }
 
-    /**
-     * Create a vw.VW object from a base64-encoded binary VW model and a set of VW parameters.
-     * @param modelId A numeric model ID
-     * @param vwModel the file pointing to the binary VW model
-     * @param vwParams the parameters passed to the vw.VW JNI wrapper
-     * @return a vw.VW JNI wrapper model.
-     */
-    private[jni] def createVwJniModel(modelId: Long, vwModel: File, vwParams: String): (VW, String) = {
+    private[jni] def updatedVwModelParams(modelId: Long, vwModel: File, vwParams: String): String = {
         val initialRegressorParam = s" -i ${vwModel.getCanonicalPath} "
 
         if (vwParams matches initialRegressorPresent)
             throw new IllegalArgumentException(s"For model $modelId, initial regressor (-i) vw parameter supplied and model provided.")
 
-        val finalParams = initialRegressorParam + vwParams
-        val vwJniModel = new VW(finalParams)
-        (vwJniModel, finalParams)
+        initialRegressorParam + vwParams
     }
+
+    /**
+     * Create a vw.VW object.
+     * @param allVwParams the parameters passed to the vw.VW JNI wrapper
+     * @return a vw.VW JNI wrapper model.
+     */
+    private[jni] def createVwJniModel(allVwParams: String): VW = new VW(allVwParams)
 
     /**
      * This copies non-local-file content to a local temp file and returns the file name.  If
