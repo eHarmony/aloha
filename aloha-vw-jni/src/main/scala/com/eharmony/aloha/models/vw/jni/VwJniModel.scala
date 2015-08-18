@@ -90,44 +90,7 @@ extends BaseModel[A, B]
         }
         m
     }
-
-
-    //    private[jni] def updatedVwModelParams(modelId: Long, vwModel: File, vwParams: String): String = {
-//    private[jni] def createVwJniModel(updatedVwParams: String): VW = new VW(updatedVwParams)
-
-    // copyModelToLocal(modelId: Long, vwModel: vfs2.FileObject): Either[vfs2.FileObject, File]
-//
-//    @transient private[this] lazy val (model, allVwParams) = {
-//        val vfsUrl = vfs2.VFS.getManager.resolveFile(vwModelUrl)
-//
-//        VwJniModel.copyModelToLocal(modelId.getId(), vfsUrl) match {
-//            case Left(_) =>
-//                VwJniModel.createVwJniModel(modelId.getId(), new File(vfsUrl.getName.getPath), vwParams)
-//            case Right(tmpFile) =>
-//                val modelAndParams = VwJniModel.createVwJniModel(modelId.getId(), tmpFile, vwParams)
-//                tmpFile.delete()
-//                modelAndParams
-//        }
-//    }
-
-
-
-    /**
-     * The backing VW instance doing all of the regression work.
-     */
-//    @transient private[this] lazy val (model, allVwParams) = {
-//        val vfsUrl = vfs2.VFS.getManager.resolveFile(vwModelUrl)
-//
-//        VwJniModel.copyModelToLocal(modelId.getId(), vfsUrl) match {
-//            case Left(_) =>
-//                VwJniModel.createVwJniModel(modelId.getId(), new File(vfsUrl.getName.getPath), vwParams)
-//            case Right(tmpFile) =>
-//                val modelAndParams = VwJniModel.createVwJniModel(modelId.getId(), tmpFile, vwParams)
-//                tmpFile.delete()
-//                modelAndParams
-//        }
-//    }
-
+    
     /**
      * Used for testing.
      * @return
