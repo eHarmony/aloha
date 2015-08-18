@@ -23,7 +23,6 @@ import com.eharmony.aloha.util.{EitherHelpers, Logging}
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.io.IOUtils
 import org.apache.commons.vfs2
-import org.apache.commons.vfs2.FileObject
 import spray.json.{DeserializationException, JsValue, JsonReader, pimpAny, pimpString}
 import vw.VW
 
