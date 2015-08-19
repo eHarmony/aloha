@@ -164,7 +164,7 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
             finalizer: Double => B,
             numMissingThreshold: Option[Int],
             spline: Option[Spline],
-            fsType: FsType = FsType.vfs2)(implicit scb: ScoreConverter[B]): VwJniModel[A, B] = {
+            fsType: FsType)(implicit scb: ScoreConverter[B]): VwJniModel[A, B] = {
         val allocatedModel = allocateModel(modelId.getId(), b64EncodedVwModel)
         val vwModel = FsInstance.fromFsType(fsType)(allocatedModel.getCanonicalPath)
         new VwJniModel[A, B](modelId, vwModel, vwParams, featureNames, featureFunctions,
@@ -211,7 +211,7 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
                         val defaultNs = (indices.keySet -- (Set.empty[String] /: nssRaw)(_ ++ _._2)).flatMap(indices.get).toList
 
                         vw.vw.model match {
-                            case Left(model) => VwJniModel(vw.modelId, model, vwParams, names, functions, defaultNs, nss, cf, vw.numMissingThreshold, vw.spline)
+                            case Left(model) => VwJniModel(vw.modelId, model._1, vwParams, names, functions, defaultNs, nss, cf, vw.numMissingThreshold, vw.spline, model._2)
                             case Right(url)  => VwJniModel(vw.modelId, url, vwParams, names, functions, defaultNs, nss, cf, vw.numMissingThreshold, vw.spline)
                         }
                 }
@@ -390,7 +390,7 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
         val vwObj = if (externalModel) Vw(Right(model), vwParams)
                     else {
                         val b64Model = VwJniModel.readBinaryVwModelToB64String(model.inputStream)
-                        Vw(Left(b64Model), vwParams)
+                        Vw(Left((b64Model, model.fsType)), vwParams)
                     }
 
         VwJNIAst(VwJniModel.parser.modelType, id, features, vwObj, ns, numMissingThreshold, notes, spline).toJson

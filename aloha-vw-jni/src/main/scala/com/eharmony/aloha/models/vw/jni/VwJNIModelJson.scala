@@ -2,6 +2,8 @@ package com.eharmony.aloha.models.vw.jni
 
 import com.eharmony.aloha.factory.Formats.listMapFormat
 import com.eharmony.aloha.id.ModelId
+import com.eharmony.aloha.io.fs.FsType
+import com.eharmony.aloha.io.fs.FsType.FsType
 import com.eharmony.aloha.io.fs.{FsInstance, FsType}
 import com.eharmony.aloha.models.reg.ConstantDeltaSpline
 import com.eharmony.aloha.models.reg.json.{Spec, SpecJson}
@@ -31,7 +33,7 @@ trait VwJniModelJson extends SpecJson {
      *               single string by imploding the list with a " " separator or it is one string.  If None,
      * @param model an optional model.  This is a base64 encoded representation of a native VW binary model.
      */
-    protected[this] case class Vw(model: Either[String, FsInstance], params: Option[Either[Seq[String], String]] = Option(Right("")))
+    protected[this] case class Vw(model: Either[(String, FsType), FsInstance], params: Option[Either[Seq[String], String]] = Option(Right("")))
 
     /**
      * Note that as is, this declaration will cause a compiler warning:
@@ -88,7 +90,7 @@ trait VwJniModelJson extends SpecJson {
 
             val model = (modelVal, modelUrlVal, fsType) match {
                 case (None, Some(u), t)    => Right(FsInstance.fromFsType(t)(u))
-                case (Some(m), None, _)    => Left(m)
+                case (Some(m), None, t)    => Left((m, t))
                 case (Some(m), Some(u), _) => throw new DeserializationException("Exactly one of 'model' and 'modelUrl' should be supplied. Both supplied: " + json.compactPrint)
                 case (None, None, _)       => throw new DeserializationException("Exactly one of 'model' and 'modelUrl' should be supplied. Neither supplied: " + json.compactPrint)
             }
@@ -104,9 +106,7 @@ trait VwJniModelJson extends SpecJson {
         override def write(v: Vw) = {
             val model = v.model match {
                 case Left(m) =>
-                    Seq("model" -> JsString(m))
-                case Right(fsInstance) if fsInstance.fsType == FsType.vfs2 =>
-                    Seq("modelUrl" -> JsString(fsInstance.descriptor))
+                    Seq("model" -> JsString(m._1), "via" -> JsString(m._2.toString))
                 case Right(fs) =>
                     Seq("modelUrl" -> JsString(fs.descriptor), "via" -> JsString(fs.fsType.toString))
             }
