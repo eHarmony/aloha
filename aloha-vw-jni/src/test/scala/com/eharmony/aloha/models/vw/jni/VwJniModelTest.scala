@@ -7,6 +7,7 @@ import com.eharmony.aloha.FileLocations
 import com.eharmony.aloha.factory.JavaJsonFormats._
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
+import com.eharmony.aloha.io.fs.FsType
 import com.eharmony.aloha.models.TypeCoercion
 import com.eharmony.aloha.reflect.RefInfo
 import com.eharmony.aloha.score.conversions.ScoreConverter
@@ -144,7 +145,8 @@ class VwJniModelTest {
                 Nil,
                 (f: Double) => f,
                 None,
-                None
+                None,
+                FsType.vfs2
             )
             fail("should throw IllegalArgumentException")
         }
@@ -169,7 +171,8 @@ class VwJniModelTest {
                 Nil,
                 (f: Double) => f,
                 None,
-                None
+                None,
+                FsType.vfs2
             )
             fail("should throw IllegalArgumentException")
         }
@@ -194,7 +197,8 @@ class VwJniModelTest {
                 Nil,
                 (f: Double) => f,
                 None,
-                None
+                None,
+                FsType.vfs2
             )
             fail("should throw IllegalArgumentException")
         }
