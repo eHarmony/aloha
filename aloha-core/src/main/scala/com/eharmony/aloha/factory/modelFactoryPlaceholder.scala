@@ -17,6 +17,7 @@ import com.eharmony.aloha.io.StringReadable
   * @param via
   * @author R. M. Deak
   */
+// TODO: Consolidate this with the code in vw-jni.
 private[factory] case class ImportedModelPlaceholderAst(`import`: String, via: Option[String]) {
     def toJsValue: Try[ImportedModelPlaceholder] = via match {
         case None => Try { Vfs2ImportedModelPlaceholder(`import`) }

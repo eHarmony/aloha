@@ -3,6 +3,7 @@ package com.eharmony.aloha.models.vw.jni
 import java.io.FileInputStream
 
 import com.eharmony.aloha.id.ModelId
+import com.eharmony.aloha.io.fs.Vfs2FsInstance
 import com.eharmony.aloha.models.reg.ConstantDeltaSpline
 import com.eharmony.matching.testhelp.io.IoCaptureCompanion
 import org.apache.commons.vfs2.VFS
@@ -22,8 +23,8 @@ object VwJniModelJsonTest extends IoCaptureCompanion {
   @BeforeClass def createModel(): Unit = VwJniModelTest.createModel()
   lazy val base64EncodedModelString = VwJniModel.readBinaryVwModelToB64String(new FileInputStream(VwJniModelTest.VwModelFile))
   val vfs = VFS.getManager
-  val vfsModel = vfs.resolveFile(VwJniModelTest.VwModelPath)
-  val vfsSpec = vfs.resolveFile("res:com/eharmony/aloha/models/vw/jni/good.logistic.aloha.js")
+  val vfsModel = Vfs2FsInstance(VwJniModelTest.VwModelPath)
+  val vfsSpec = Vfs2FsInstance("res:com/eharmony/aloha/models/vw/jni/good.logistic.aloha.js")
   val cds = ConstantDeltaSpline(0, 1, IndexedSeq(0.25, 0.75))
 }
 

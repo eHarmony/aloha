@@ -2,12 +2,11 @@ package com.eharmony.aloha.models.vw.jni
 
 import com.eharmony.aloha.factory.Formats.listMapFormat
 import com.eharmony.aloha.id.ModelId
+import com.eharmony.aloha.io.fs.{FsInstance, FsType}
 import com.eharmony.aloha.models.reg.ConstantDeltaSpline
 import com.eharmony.aloha.models.reg.json.{Spec, SpecJson}
 import spray.json.DefaultJsonProtocol._
 import spray.json._
-
-import org.apache.commons.vfs2
 
 import scala.collection.immutable.ListMap
 
@@ -32,7 +31,7 @@ trait VwJniModelJson extends SpecJson {
      *               single string by imploding the list with a " " separator or it is one string.  If None,
      * @param model an optional model.  This is a base64 encoded representation of a native VW binary model.
      */
-    protected[this] case class Vw(model: Either[String, vfs2.FileObject], params: Option[Either[Seq[String], String]] = Option(Right("")))
+    protected[this] case class Vw(model: Either[String, FsInstance], params: Option[Either[Seq[String], String]] = Option(Right("")))
 
     /**
      * Note that as is, this declaration will cause a compiler warning:
@@ -81,11 +80,17 @@ trait VwJniModelJson extends SpecJson {
                 case _                => None
             }
 
-            val model = (modelVal, modelUrlVal) match {
-                case (None, Some(u))    => Right(vfs2.VFS.getManager.resolveFile(u))
-                case (Some(m), None)    => Left(m)
-                case (Some(m), Some(u)) => throw new DeserializationException("Exactly one of 'model' and 'modelUrl' should be supplied. Both supplied: " + json.compactPrint)
-                case (None, None)       => throw new DeserializationException("Exactly one of 'model' and 'modelUrl' should be supplied. Neither supplied: " + json.compactPrint)
+            // Default to VFS2.
+            val fsType = jso.getFields("via") match {
+                case Seq(via) => jso.convertTo(FsType.JsonReader("via"))
+                case _        => FsType.vfs2
+            }
+
+            val model = (modelVal, modelUrlVal, fsType) match {
+                case (None, Some(u), t)    => Right(FsInstance.fromFsType(t)(u))
+                case (Some(m), None, _)    => Left(m)
+                case (Some(m), Some(u), _) => throw new DeserializationException("Exactly one of 'model' and 'modelUrl' should be supplied. Both supplied: " + json.compactPrint)
+                case (None, None, _)       => throw new DeserializationException("Exactly one of 'model' and 'modelUrl' should be supplied. Neither supplied: " + json.compactPrint)
             }
 
             val vw = jso.getFields("params") match {
@@ -98,12 +103,16 @@ trait VwJniModelJson extends SpecJson {
 
         override def write(v: Vw) = {
             val model = v.model match {
-                case Left(m)     => "model" -> JsString(m)
-                case Right(url)  => "modelUrl" -> JsString(url.toString)
+                case Left(m) =>
+                    Seq("model" -> JsString(m))
+                case Right(fsInstance) if fsInstance.fsType == FsType.vfs2 =>
+                    Seq("modelUrl" -> JsString(fsInstance.descriptor))
+                case Right(fs) =>
+                    Seq("modelUrl" -> JsString(fs.descriptor), "via" -> JsString(fs.fsType.toString))
             }
 
             val params = v.params.map(p => "params" -> p.toJson)
-            val fields = Seq(model) ++ params
+            val fields = model ++ params
             JsObject(scala.collection.immutable.ListMap(fields:_*))
         }
     }
