@@ -39,6 +39,8 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |        spec is an Apache VFS URL to an aloha spec file.
               |  -m <value> | --model <value>
               |        model is an Apache VFS URL to a VW binary model.
+              |  --fs-type <value>
+              |        file system type: vfs1, vfs2, file. default = vfs2.
               |  -n <value> | --name <value>
               |        name of the model.
               |  -i <value> | --id <value>
@@ -74,6 +76,8 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |        spec is an Apache VFS URL to an aloha spec file.
               |  -m <value> | --model <value>
               |        model is an Apache VFS URL to a VW binary model.
+              |  --fs-type <value>
+              |        file system type: vfs1, vfs2, file. default = vfs2.
               |  -n <value> | --name <value>
               |        name of the model.
               |  -i <value> | --id <value>
@@ -109,6 +113,8 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |        spec is an Apache VFS URL to an aloha spec file.
               |  -m <value> | --model <value>
               |        model is an Apache VFS URL to a VW binary model.
+              |  --fs-type <value>
+              |        file system type: vfs1, vfs2, file. default = vfs2.
               |  -n <value> | --name <value>
               |        name of the model.
               |  -i <value> | --id <value>
@@ -133,73 +139,21 @@ class CliTest extends TestWithIoCapture(CliTest) {
     }
 
     @Test def testSpecFileDoesntExist(): Unit = {
-        Cli.main(Array("-m", VwJniModelTest.VwModelPath, "-s", "res:SPECTHATDOESNTEXIST"))
-        val expected =
-            """
-              |Error: Option --spec failed when given 'res:SPECTHATDOESNTEXIST'. Badly formed URI "res:SPECTHATDOESNTEXIST".
-              |vw """.stripMargin + aloha.version + """
-              |Usage: vw [options]
-              |
-              |  -s <value> | --spec <value>
-              |        spec is an Apache VFS URL to an aloha spec file.
-              |  -m <value> | --model <value>
-              |        model is an Apache VFS URL to a VW binary model.
-              |  -n <value> | --name <value>
-              |        name of the model.
-              |  -i <value> | --id <value>
-              |        numeric id of the model.
-              |  --vw-args <value>
-              |        arguments to vw
-              |  --external
-              |        link to a binary VW model rather than embedding it inline in the aloha model.
-              |  --num-missing-thresh <value>
-              |        number of missing features to allow before returning a 'no-prediction'.
-              |  --note <value>
-              |        notes to add to the model. Can provide this many parameter times.
-              |  --spline-min <value>
-              |        min value for spline domain. (must additional provide spline-max and spline-knots).
-              |  --spline-max <value>
-              |        max value for spline domain. (must additional provide spline-min and spline-knots).
-              |  --spline-knots <value>
-              |        max value for spline domain. (must additional provide spline-min, spline-delta, and spline-knots).
-            """.stripMargin
-
-        assertEquals(expected.trim, errContent.trim)
+        try {
+            Cli.main(Array("-m", VwJniModelTest.VwModelPath, "-s", "res:SPECTHATDOESNTEXIST"))
+        }
+        catch {
+            case e: vfs2.FileSystemException => assertEquals("Badly formed URI \"res:SPECTHATDOESNTEXIST\".", e.getMessage)
+        }
     }
 
     @Test def testModelFileDoesntExist(): Unit = {
-        Cli.main(Array("-m", "res:SPECTHATDOESNTEXIST", "-s", "res:com/eharmony/aloha/models/vw/jni/good.logistic.aloha.js"))
-        val expected =
-            """
-              |Error: Option --model failed when given 'res:SPECTHATDOESNTEXIST'. Badly formed URI "res:SPECTHATDOESNTEXIST".
-              |vw """.stripMargin + aloha.version + """
-              |Usage: vw [options]
-              |
-              |  -s <value> | --spec <value>
-              |        spec is an Apache VFS URL to an aloha spec file.
-              |  -m <value> | --model <value>
-              |        model is an Apache VFS URL to a VW binary model.
-              |  -n <value> | --name <value>
-              |        name of the model.
-              |  -i <value> | --id <value>
-              |        numeric id of the model.
-              |  --vw-args <value>
-              |        arguments to vw
-              |  --external
-              |        link to a binary VW model rather than embedding it inline in the aloha model.
-              |  --num-missing-thresh <value>
-              |        number of missing features to allow before returning a 'no-prediction'.
-              |  --note <value>
-              |        notes to add to the model. Can provide this many parameter times.
-              |  --spline-min <value>
-              |        min value for spline domain. (must additional provide spline-max and spline-knots).
-              |  --spline-max <value>
-              |        max value for spline domain. (must additional provide spline-min and spline-knots).
-              |  --spline-knots <value>
-              |        max value for spline domain. (must additional provide spline-min, spline-delta, and spline-knots).
-            """.stripMargin
-
-        assertEquals(expected.trim, errContent.trim)
+        try {
+            Cli.main(Array("-m", "res:SPECTHATDOESNTEXIST", "-s", "res:com/eharmony/aloha/models/vw/jni/good.logistic.aloha.js"))
+        }
+        catch {
+            case e: vfs2.FileSystemException => assertEquals("Badly formed URI \"res:SPECTHATDOESNTEXIST\".", e.getMessage)
+        }
     }
 
     @Test def testArrayJson(): Unit = {
@@ -275,7 +229,7 @@ class CliTest extends TestWithIoCapture(CliTest) {
                    |  },
                    |  "vw": {
                    |    "params": "--quiet -t",
-                   |    "modelUrl": """".stripMargin.trim + url + """"
+                   |    "modelUrl": """".stripMargin.trim + url.getName.getPath + """"
                    |  }
                    |}
                  """).stripMargin.parseJson
