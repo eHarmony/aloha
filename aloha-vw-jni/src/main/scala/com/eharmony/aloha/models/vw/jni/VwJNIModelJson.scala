@@ -31,7 +31,8 @@ trait VwJniModelJson extends SpecJson {
      * warning.
      * @param params VW initialization parameters.  This is either a sequence of parameters that will be made into a
      *               single string by imploding the list with a " " separator or it is one string.  If None,
-     * @param model an optional model.  This is a base64 encoded representation of a native VW binary model.
+     * @param model an optional model.  This is a base64 encoded representation of a native VW binary model or a VFS
+     *              url stating where to get that model.
      */
     protected[this] case class Vw(model: Either[String, FsInstance], params: Option[Either[Seq[String], String]] = Option(Right("")))
 
