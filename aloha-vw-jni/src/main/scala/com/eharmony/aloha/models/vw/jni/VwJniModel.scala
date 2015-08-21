@@ -54,7 +54,7 @@ import scala.util.{Failure, Success, Try}
  */
 final case class VwJniModel[-A, +B](
     modelId: ModelIdentity,
-    vwModel: Either[FsInstance, String],
+    vwModel: Either[String, FsInstance],
     vwParams: String,
     featureNames: sci.IndexedSeq[String],
     featureFunctions: sci.IndexedSeq[GenAggFunc[A, Iterable[(String, Double)]]],
@@ -153,20 +153,6 @@ extends BaseModel[A, B]
 }
 
 object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Logging {
-    def apply[A, B](
-            modelId: ModelIdentity,
-            b64EncodedVwModel: String,
-            vwParams: String,
-            featureNames: sci.IndexedSeq[String],
-            featureFunctions: sci.IndexedSeq[GenAggFunc[A, Iterable[(String, Double)]]],
-            defaultNs: List[Int],
-            namespaces: List[(String, List[Int])],
-            finalizer: Double => B,
-            numMissingThreshold: Option[Int],
-            spline: Option[Spline])(implicit scb: ScoreConverter[B]): VwJniModel[A, B] = {
-        new VwJniModel[A, B](modelId, Right(b64EncodedVwModel), vwParams, featureNames, featureFunctions,
-                             defaultNs, namespaces, finalizer, numMissingThreshold, spline)(scb)
-    }
 
     private[this] val initialRegressorPresent = """^(.*\s)?-i.*$"""
 
@@ -207,10 +193,7 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
 
                         val defaultNs = (indices.keySet -- (Set.empty[String] /: nssRaw)(_ ++ _._2)).flatMap(indices.get).toList
 
-                        vw.vw.model match {
-                            case Left(model) => VwJniModel(vw.modelId, model, vwParams, names, functions, defaultNs, nss, cf, vw.numMissingThreshold, vw.spline)
-                            case Right(url)  => VwJniModel(vw.modelId, Left(url), vwParams, names, functions, defaultNs, nss, cf, vw.numMissingThreshold, vw.spline)
-                        }
+                        VwJniModel(vw.modelId, vw.vw.model, vwParams, names, functions, defaultNs, nss, cf, vw.numMissingThreshold, vw.spline)
                 }
             }
         }
@@ -298,9 +281,10 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
      * @param vwModel either the FsInstance pointing to the VW model or the Base64 encoded VW model.
      * @return return Right if a temp file was created, Left(vwModel) otherwise.
      */
-    private[jni] def copyModelToLocal(modelId: Long, vwModel: Either[FsInstance, String]): Either[File, File] = {
+    private[jni] def copyModelToLocal(modelId: Long, vwModel: Either[String, FsInstance]): Either[File, File] = {
       vwModel match {
-        case Left(fsInstance) => fsInstance.localFile.toLeft {
+        case Left(b64EncodedVwModel) => Left(allocateModel(modelId, b64EncodedVwModel))
+        case Right(fsInstance) => fsInstance.localFile.toLeft {
           val tmpFile = File.createTempFile(s"aloha.vw.$modelId.", ".model")
 
           // While there will be an attempt to clean up the temp immediately after use, this is kept as an
@@ -320,9 +304,7 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
 
           tmpFile
         }
-        case Right(b64EncodedVwModel) => Left(allocateModel(modelId, b64EncodedVwModel))
       }
-
     }
 
     /**

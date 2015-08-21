@@ -136,7 +136,7 @@ class VwJniModelTest {
         try {
             VwJniModel(
                 ModelId.empty,
-                VwB64Model,
+                Left(VwB64Model),
                 "--quiet",
                 Vector("height_mm"),
                 Vector(h),
@@ -161,7 +161,7 @@ class VwJniModelTest {
         try {
             VwJniModel(
                 ModelId.empty,
-                VwB64Model,
+                Left(VwB64Model),
                 "--quiet",
                 Vector(),
                 Vector(h),
@@ -186,7 +186,7 @@ class VwJniModelTest {
         try {
             VwJniModel(
                 ModelId.empty,
-                VwB64Model,
+                Left(VwB64Model),
                 "--quiet",
                 Vector("height_mm"),
                 Vector(),
