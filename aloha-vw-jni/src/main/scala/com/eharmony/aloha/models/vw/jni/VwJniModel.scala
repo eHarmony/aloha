@@ -54,7 +54,7 @@ import scala.util.{Failure, Success, Try}
  */
 final case class VwJniModel[-A, +B](
     modelId: ModelIdentity,
-    vwModel: FsInstance,
+    vwModel: Either[FsInstance, String],
     vwParams: String,
     featureNames: sci.IndexedSeq[String],
     featureFunctions: sci.IndexedSeq[GenAggFunc[A, Iterable[(String, Double)]]],
@@ -165,9 +165,7 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
             numMissingThreshold: Option[Int],
             spline: Option[Spline],
             fsType: FsType)(implicit scb: ScoreConverter[B]): VwJniModel[A, B] = {
-        val allocatedModel = allocateModel(modelId.getId(), b64EncodedVwModel)
-        val vwModel = FsInstance.fromFsType(fsType)(allocatedModel.getCanonicalPath)
-        new VwJniModel[A, B](modelId, vwModel, vwParams, featureNames, featureFunctions,
+        new VwJniModel[A, B](modelId, Right(b64EncodedVwModel), vwParams, featureNames, featureFunctions,
                              defaultNs, namespaces, finalizer, numMissingThreshold, spline)(scb)
     }
 
@@ -212,7 +210,7 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
 
                         vw.vw.model match {
                             case Left(model) => VwJniModel(vw.modelId, model._1, vwParams, names, functions, defaultNs, nss, cf, vw.numMissingThreshold, vw.spline, model._2)
-                            case Right(url)  => VwJniModel(vw.modelId, url, vwParams, names, functions, defaultNs, nss, cf, vw.numMissingThreshold, vw.spline)
+                            case Right(url)  => VwJniModel(vw.modelId, Left(url), vwParams, names, functions, defaultNs, nss, cf, vw.numMissingThreshold, vw.spline)
                         }
                 }
             }
@@ -301,27 +299,31 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
      * @param vwModel
      * @return return Right if a temp file was created, Left(vwModel) otherwise.
      */
-    private[jni] def copyModelToLocal(modelId: Long, vwModel: FsInstance): Either[File, File] = {
-        vwModel.localFile.toLeft {
-            val tmpFile = File.createTempFile(s"aloha.vw.$modelId.", ".model")
+    private[jni] def copyModelToLocal(modelId: Long, vwModel: Either[FsInstance, String]): Either[File, File] = {
+      vwModel match {
+        case Left(fsInstance) => fsInstance.localFile.toLeft {
+          val tmpFile = File.createTempFile(s"aloha.vw.$modelId.", ".model")
 
-            // While there will be an attempt to clean up the temp immediately after use, this is kept as an
-            // extra precaution in case something goes wrong.  Then there is still a change that the file will
-            // get cleaned up.
-            tmpFile.deleteOnExit()
+          // While there will be an attempt to clean up the temp immediately after use, this is kept as an
+          // extra precaution in case something goes wrong.  Then there is still a change that the file will
+          // get cleaned up.
+          tmpFile.deleteOnExit()
 
-            val is = vwModel.inputStream
-            val os = new FileOutputStream(tmpFile)
-            try {
-                IOUtils.copyLarge(is, os)
-            }
-            finally {
-                IOUtils.closeQuietly(is)
-                IOUtils.closeQuietly(os)
-            }
+          val is = fsInstance.inputStream
+          val os = new FileOutputStream(tmpFile)
+          try {
+            IOUtils.copyLarge(is, os)
+          }
+          finally {
+            IOUtils.closeQuietly(is)
+            IOUtils.closeQuietly(os)
+          }
 
-            tmpFile
+          tmpFile
         }
+        case Right(b64EncodedVwModel) => Left(allocateModel(modelId, b64EncodedVwModel))
+      }
+
     }
 
     /**

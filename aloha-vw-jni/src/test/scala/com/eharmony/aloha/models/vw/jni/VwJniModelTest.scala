@@ -45,8 +45,7 @@ class VwJniModelTest {
     /**
      * This test works locally but fails on jenkins.  Ignore for now.
      */
-    @Ignore
-    @Test def testSerialization(): Unit = {
+    @Ignore @Test def testSerialization(): Unit = {
         val m = model[Double](typeTestJson)
 
         val baos = new ByteArrayOutputStream()
@@ -455,6 +454,7 @@ object VwJniModelTest extends Logging {
            |    "personal_features": [ "height_mm", "weight", "hair" ]
            |  },
            |  "vw": {
+           |    "via": "vfs1",
            |    "params": [
            |      "--quiet",
            |      "-t"
