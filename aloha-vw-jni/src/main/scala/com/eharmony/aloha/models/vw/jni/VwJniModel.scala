@@ -283,7 +283,7 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
      */
     private[jni] def copyModelToLocal(modelId: Long, vwModel: Either[String, FsInstance]): Either[File, File] = {
       vwModel match {
-        case Left(b64EncodedVwModel) => Left(allocateModel(modelId, b64EncodedVwModel))
+        case Left(b64EncodedVwModel) => Right(allocateModel(modelId, b64EncodedVwModel))
         case Right(fsInstance) => fsInstance.localFile.toLeft {
           val tmpFile = File.createTempFile(s"aloha.vw.$modelId.", ".model")
 
