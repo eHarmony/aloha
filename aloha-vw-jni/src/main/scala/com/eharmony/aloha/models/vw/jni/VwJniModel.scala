@@ -36,7 +36,7 @@ import scala.util.{Failure, Success, Try}
 /**
  * Model that delegates to a VW JNI model.
  * @param modelId a modelId
- * @param vwModel a FileObject pointing to a VW binary model.
+ * @param vwModel either the FsInstance pointing the the VW model or the Base64 encoded VW model.
  * @param vwParams VW parameters.  These are the same as the ones that would be passed on the command line,
  *                 directly to VW.
  * @param featureNames names of features (parallel to featureFunctions)
@@ -295,8 +295,8 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
 
     /**
      * This copies non-local-file content to a local temp file and returns the file name.  If
-     * @param modelId
-     * @param vwModel
+     * @param modelId the model ID
+     * @param vwModel either the FsInstance pointing the the VW model or the Base64 encoded VW model.
      * @return return Right if a temp file was created, Left(vwModel) otherwise.
      */
     private[jni] def copyModelToLocal(modelId: Long, vwModel: Either[FsInstance, String]): Either[File, File] = {
