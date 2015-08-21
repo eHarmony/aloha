@@ -33,6 +33,7 @@ package object fs {
         def inputStream: InputStream
         def outputStream(append: Boolean = false): OutputStream
         def localFile: Option[File]
+        def isLocal = localFile.isDefined
         def descriptor: String
     }
 
