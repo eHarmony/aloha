@@ -144,8 +144,7 @@ class VwJniModelTest {
                 Nil,
                 (f: Double) => f,
                 None,
-                None,
-                FsType.vfs2
+                None
             )
             fail("should throw IllegalArgumentException")
         }
@@ -170,8 +169,7 @@ class VwJniModelTest {
                 Nil,
                 (f: Double) => f,
                 None,
-                None,
-                FsType.vfs2
+                None
             )
             fail("should throw IllegalArgumentException")
         }
@@ -196,8 +194,7 @@ class VwJniModelTest {
                 Nil,
                 (f: Double) => f,
                 None,
-                None,
-                FsType.vfs2
+                None
             )
             fail("should throw IllegalArgumentException")
         }
@@ -454,7 +451,6 @@ object VwJniModelTest extends Logging {
            |    "personal_features": [ "height_mm", "weight", "hair" ]
            |  },
            |  "vw": {
-           |    "via": "vfs1",
            |    "params": [
            |      "--quiet",
            |      "-t"

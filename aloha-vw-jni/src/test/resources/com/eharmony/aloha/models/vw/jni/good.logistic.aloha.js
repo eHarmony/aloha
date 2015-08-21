@@ -8,7 +8,6 @@
     {"name": "personal_features", "features": [ "height_mm" ] }
   ],
   "vw": {
-    "via": "vfs2",
     "params": [
       "--quiet",
       "-t"

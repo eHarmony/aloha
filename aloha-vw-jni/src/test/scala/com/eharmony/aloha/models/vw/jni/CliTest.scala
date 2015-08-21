@@ -191,7 +191,6 @@ class CliTest extends TestWithIoCapture(CliTest) {
                    |    "personal_features": [ "height_mm" ]
                    |  },
                    |  "vw": {
-                   |    "via": "vfs2",
                    |    "params": "--quiet -t",
                    |    "model": """".stripMargin.trim + base64EncodedModelString + """"
                    |  }
@@ -229,7 +228,6 @@ class CliTest extends TestWithIoCapture(CliTest) {
                    |    "personal_features": [ "height_mm" ]
                    |  },
                    |  "vw": {
-                   |    "via": "vfs2",
                    |    "params": "--quiet -t",
                    |    "modelUrl": """".stripMargin.trim + url.getName.getPath + """"
                    |  }
