@@ -4,6 +4,9 @@ import org.junit.Assert._
 import org.junit.{Ignore, Test}
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
+import com.eharmony.aloha.feature.MapImplicitRegressionConversion._
+import scala.{collection => sc}
+
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class SkipGramsTest {
@@ -28,12 +31,12 @@ class SkipGramsTest {
   val allTests = Seq(s1, s2, s3)
 
   @Test def test2SkipTrigrams(): Unit = {
-    assertEquals(insurgent2skip3Grams, SkipGrams.skipGrams(s2, 3, 2))
+    assertEquals(insurgent2skip3Grams, SkipGrams.skipGrams(s2, 3, 2).coerce)
   }
 
   @Test def testBagOfWords(): Unit = {
     allTests foreach { s =>
-      val bow = SkipGrams.bag(s).toMap
+      val bow = SkipGrams.bag(s).coerce
       val exp = kSkipNGramsNaive(s, 1, 0)
       assertEquals(s"For '$s', wrong bag of words: ", exp, bow)
     }
@@ -41,7 +44,7 @@ class SkipGramsTest {
 
   @Test def testNGrams(): Unit = {
     for (n <- 1 to 4; s <- allTests) {
-      val bow = SkipGrams.nGrams(s, n).toMap
+      val bow = SkipGrams.nGrams(s, n).coerce
       val exp = kSkipNGramsNaive(s, n, 0)
       assertEquals(s"For '$s', wrong $n-grams: ", exp, bow)
     }
@@ -53,7 +56,7 @@ class SkipGramsTest {
                  k <- 0 to maxK
                  n <- 1 to 4
                  s <- allTests if n != 1 || k == 0
-               } yield (n, k, SkipGrams.skipGrams(s, n, k, "", " ", "").map(p => (p._1, p._2.toInt)).toVector.sortWith(_._1 < _._1))
+               } yield (n, k, SkipGrams.skipGrams(s, n, k, "", " ", "").coerce.map(p => (p._1, p._2.toInt)).toVector.sortWith(_._1 < _._1))
 
     val sorted = data.sortWith { case ((n1, k1, v1), (n2, k2, v2)) =>
       n1 < n2 || (n1 == n2 && v1.head._1 < v2.head._1) || (n1 == n2 && v1.head._1 == v2.head._1 && k1 < k2)
@@ -67,7 +70,7 @@ class SkipGramsTest {
   @Ignore @Test def testSkipGrams(): Unit = {
     val maxK = allTests.map(_.split("""\s+""").length).max - 2
     for (k <- 0 to maxK; n <- 1 to 4; s <- allTests if n != 1 || k == 0) {
-      val bow = SkipGrams.skipGrams(s, n, k).toMap
+      val bow = SkipGrams.skipGrams(s, n, k).coerce
       val exp = kSkipNGramsNaive(s, n, k)
       assertEquals(s"For '$s', wrong $k-skip $n-grams: ", exp, bow)
     }
@@ -75,7 +78,7 @@ class SkipGramsTest {
 
   @Test def testTrigrams(): Unit = {
     allTests foreach { s =>
-      val bow = SkipGrams.nGrams(s, 3).toMap
+      val bow = SkipGrams.nGrams(s, 3).coerce
       val exp = kSkipNGramsNaive(s, 3, 0)
       assertEquals(s"For '$s', wrong trigrams: ", exp, bow)
     }
@@ -153,12 +156,11 @@ class SkipGramsTest {
    * @param k maximum token skip distance
    * @return
    */
-  private[this] def kSkipNGramsNaive(s: String, n: Int, k: Int): Map[String, Double] = n match {
+  private[this] def kSkipNGramsNaive(s: String, n: Int, k: Int): sc.Map[String, Double] = n match {
     case 1 if k == 0 => oneGramsNaive(s)
     case 2           => kSkipBigramsNaive(s, k)
     case 3           => kSkipTrigramsNaive(s, k)
     case 4           => kSkip4GramsNaive(s, k)
-
   }
 
   /**
@@ -166,7 +168,7 @@ class SkipGramsTest {
    * @param s string from which features are extracted
    * @return
    */
-  private[this] def oneGramsNaive(s: String): Map[String, Double] = {
+  private[this] def oneGramsNaive(s: String): sc.Map[String, Double] = {
     val result = s split """\s+""" groupBy identity  map { case (k, v) => "=" + k -> v.length.toDouble }
     result
   }
@@ -177,7 +179,7 @@ class SkipGramsTest {
    * @param k maximum token skip distance
    * @return
    */
-  private[this] def kSkipBigramsNaive(s: String, k: Int): Map[String, Double] = {
+  private[this] def kSkipBigramsNaive(s: String, k: Int): sc.Map[String, Double] = {
     val tokens = s.split("""\s+""")
     val n = tokens.length
     val result = (for {
@@ -195,7 +197,7 @@ class SkipGramsTest {
    * @param k maximum token skip distance
    * @return
    */
-  private[this] def kSkipTrigramsNaive(s: String, k: Int): Map[String, Double] = {
+  private[this] def kSkipTrigramsNaive(s: String, k: Int): sc.Map[String, Double] = {
     val tokens = s.split("""\s+""")
     val n = tokens.length
     val result = (for {
@@ -214,7 +216,7 @@ class SkipGramsTest {
    * @param k maximum token skip distance
    * @return
    */
-  private[this] def kSkip4GramsNaive(s: String, k: Int): Map[String, Double] = {
+  private[this] def kSkip4GramsNaive(s: String, k: Int): sc.Map[String, Double] = {
     val tokens = s.split("""\s+""")
     val n = tokens.length
     val result = (for {
@@ -226,5 +228,9 @@ class SkipGramsTest {
         ).groupBy(identity).
         mapValues(_.size.toDouble)
     result
+  }
+
+  private[this] implicit class MapCoercion[C](val m: sc.Map[String, C]) {
+    def coerce(implicit ev: sc.Map[String, C] => sc.Map[String, Double]) = ev(m)
   }
 }
