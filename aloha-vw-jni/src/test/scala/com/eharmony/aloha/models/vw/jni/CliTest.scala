@@ -8,7 +8,7 @@ import org.junit.Assert._
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 import org.junit.{BeforeClass, Test}
-import spray.json.{DeserializationException, pimpString}
+import spray.json.{JsObject, DeserializationException, pimpString}
 import org.apache.commons.vfs2
 
 object CliTest extends IoCaptureCompanion {
@@ -191,14 +191,16 @@ class CliTest extends TestWithIoCapture(CliTest) {
                    |    "personal_features": [ "height_mm" ]
                    |  },
                    |  "vw": {
-                   |    "via": "vfs2",
                    |    "params": "--quiet -t",
                    |    "model": """".stripMargin.trim + base64EncodedModelString + """"
                    |  }
                    |}
                  """).stripMargin.parseJson
 
-            assertEquals(expected, outContent.parseJson)
+            val fields = outContent.parseJson.asJsObject.fields
+            val actual = JsObject(fields + ("vw" -> JsObject(fields("vw").asJsObject.fields - "creationDate")))
+
+            assertEquals(expected, actual)
         }
     }
 
@@ -229,14 +231,17 @@ class CliTest extends TestWithIoCapture(CliTest) {
                    |    "personal_features": [ "height_mm" ]
                    |  },
                    |  "vw": {
-                   |    "via": "vfs2",
                    |    "params": "--quiet -t",
-                   |    "modelUrl": """".stripMargin.trim + url.getName.getPath + """"
+                   |    "modelUrl": """".stripMargin.trim + url.getName.getPath + """",
+                   |    "via": "vfs2"
                    |  }
                    |}
                  """).stripMargin.parseJson
 
-            assertEquals(expected, outContent.parseJson)
+            val fields = outContent.parseJson.asJsObject.fields
+            val actual = JsObject(fields + ("vw" -> JsObject(fields("vw").asJsObject.fields - "creationDate")))
+
+            assertEquals(expected, actual)
         }
     }
 }

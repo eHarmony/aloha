@@ -33,6 +33,7 @@ package object fs {
         def inputStream: InputStream
         def outputStream(append: Boolean = false): OutputStream
         def localFile: Option[File]
+        def existsLocally = localFile exists (_.exists)
         def descriptor: String
     }
 
