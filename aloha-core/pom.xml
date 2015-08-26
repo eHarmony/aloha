@@ -24,7 +24,7 @@
 			<url>${site.deploy.url}${project.artifactId}</url>
 		</site>
 		<snapshotRepository>
-			<id>ossrh</id>
+			<id>internal-snapshots</id>
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
 		<repository>

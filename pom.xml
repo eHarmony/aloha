@@ -27,7 +27,7 @@
             <url>${site.deploy.url}</url>
         </site>
         <snapshotRepository>
-            <id>ossrh</id>
+            <id>internal-snapshots</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
         <repository>
@@ -361,18 +361,6 @@
                             <version>1.0-alpha-3</version>
                         </dependency>
                     </dependencies>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.sonatype.plugins</groupId>
-                    <artifactId>nexus-staging-maven-plugin</artifactId>
-                    <version>1.6.5</version>
-                    <extensions>true</extensions>
-                    <configuration>
-                        <serverId>ossrh</serverId>
-                        <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                        <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                    </configuration>
                 </plugin>
 
                 <!-- TODO: Enable scalastyle plugin -->
