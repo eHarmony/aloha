@@ -28,14 +28,6 @@
             <!-- Note that GitHub does not like having leading slash here -->
             <url>${site.deploy.url}${project.artifactId}</url>
         </site>
-        <snapshotRepository>
-            <id>internal-snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
     </distributionManagement>
 
 
