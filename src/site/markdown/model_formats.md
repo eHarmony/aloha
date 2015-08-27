@@ -19,7 +19,7 @@
 
 This is just a suggestion but it will pay huge dividends in terms of cleaner data collection:
 
-> Models should for practical purposes by immutable.  This means that whenever a model is edited in such a way that 
+> Models should for practical purposes be immutable.  This means that whenever a model is edited in such a way that 
 > the model functionally changes, the model's `modelId`'s `id` field should be changed **And all ancestor models' 
 > `modelId`'s `id` field should change.**
 
@@ -163,14 +163,14 @@ both perfectly fine, but I would opt for the second:
 `labels` are the actual values returned when a value is sampled from the distribution.  The *type of value* in 
 `labels` is dependent on the model's output type.  For instance, if the model output type is a string, then the 
 JSON value type in `labels` will be  strings.  If the output type is a 64-bit float, the JSON type in the `labels` 
-array will be number.
+array will be `Number`.
 
 
 #### (CD) missingOk
 
 `missingOk` determines whether the model should return a value when at least one of the values in `features` 
-could not be determined.  If `false`, no score will be returned.  If `true`, then a constant be used in place of 
-the feature value and will be incorporated into the hash.
+could not be determined.  If `false`, no score will be returned.  If `true`, then a constant will be used in place 
+of the feature value and will be incorporated into the hash.
 
 
 ### (CD) JSON Examples
@@ -285,7 +285,7 @@ Decision trees are what one might expect from a [decision tree](https://en.wikip
 encode the ability to return different values based on 
 [predicates](https://en.wikipedia.org/wiki/Predicate_\(mathematical_logic\)) that hold for a given input datum.
 Aloha encodes trees as a [graph](https://en.wikipedia.org/wiki/Graph_\(mathematics\))-like structure so that the
-code could be extended to [DAG](https://en.wikipedia.org/wiki/Directed_acyclic_graph)s in a straightforward way.  
+code could be extended to [DAG](https://en.wikipedia.org/wiki/Directed_acyclic_graph)s in a straightforward way.
 The first node in the `nodes` array is considered to be the root node.
 
 ### (DT) JSON Fields
@@ -345,32 +345,33 @@ The first node in the `nodes` array is considered to be the root node.
 
 #### (DT) returnBest
 
-`returnBest` is a Boolean that when *true* let's the decision tree return a value associated with an 
+`returnBest` is a Boolean that when `true` let's the decision tree return a value associated with an 
 [internal node](https://en.wikipedia.org/wiki/Tree_\(data_structure\)#Terminologies_used_in_Trees) when no 
 further progress down the tree can be made.  
 
 When set to false, the model returns an error rather than a score.
 
-Usually, in a decision tree, when given a datum and a path to a leaf cannot be traversed it indicates a problem.  
-The most common problem being that the branching logic at a given node is not 
-[exhaustive](https://en.wikipedia.org/wiki/Collectively_exhaustive_events).  This will happen when the tree algorithm 
-checks if it can proceed to any of its children and the predicates associated with each child returns false.
+Usually, in a decision tree, the inability to produce a path from the tree root to a leaf is indicative of a problem.
+The most common problem being that the branching logic at a given node is not
+[exhaustive](https://en.wikipedia.org/wiki/Collectively_exhaustive_events).  This will happen when the tree algorithm
+checks if it can proceed to any of its children and the predicates associated with each child return `false`.
 
 #### (DT) missingDataOk
 
-`missingDataOk` is a Boolean telling whether missing data is OK.  In the event that `missingDataOk` is set to *false*,
+`missingDataOk` is a Boolean telling whether missing data is OK.  In the event that `missingDataOk` is set to `false`,
 when a variable in a node selector is missing, the node selector should stop and report to the decision tree that it
-can't make a decision on which child to traverse.  The subsequent behavior is dictated by [returnBest](#returnBest).
+can't make a decision on which child to traverse.  The subsequent behavior is dictated by [returnBest](#aDT_returnBest).
 
-If `missingDataOk` is *true*, then when a node selector encounters missing data, it can still recover.  For instance, 
-when a `linear` node selector encounters missing data in one of the predicate, it will assume the predicate is *false* 
-and continue on the next the predicate.  This behavior may vary across node selectors of different types.
+If `missingDataOk` is `true`, then when a node selector encounters missing data, it can still recover.  For instance,
+when a `linear` node selector encounters missing data in one of the predicates, it will assume the predicate evaluates
+to `false` and will continue on to the next predicate.  This behavior may vary across node selectors of different
+types.
 
 #### (DT) nodes
 
-`nodes` contains the list of nodes in the decision tree.  As was mentioned above, trees are encoded in a tabular 
-way to provide future extensibility to [DAG](https://en.wikipedia.org/wiki/Directed_acyclic_graph)s.  The first node 
-in the `nodes` array is considered to be the root node. The structure of a node is as follows: 
+`nodes` contains the list of nodes in the decision tree.  As was mentioned above, trees are encoded in a tabular
+way to provide future extensibility to decision [DAG](https://en.wikipedia.org/wiki/Directed_acyclic_graph)s.  The 
+first node in the `nodes` array is considered to be the root node. The structure of a node is as follows:
 
 <table>
   <tr>
@@ -406,11 +407,11 @@ in the `nodes` array is considered to be the root node. The structure of a node 
 ##### (Node) id
 
 `id` is the node id and is used by [node selectors](#Node_Selectors) to determine which child to traverse.  Note that 
-this is considered separately from the model's `id`.
+this is independent of the model's `id`.
 
 ##### (Node) value
 
-`value` is the value to return when the decision tree algorithm selects a node whose value should be returned. 
+`value` in nodes are the values potentially return by the decision tree when a given node is selected. 
 
 ##### (Node) selector
 
@@ -616,7 +617,7 @@ The simplest tree would be a one node tree that is equivalent to a [Constant mod
 #### (DT) Three Node Tree Example
 
 A basic tree with one split can be encoded as follows (deeper trees can just repeat the pattern).  It will output the 
-string "*short*" when the height is less than 66 (*presumably inches*).  If height is greater then or equal 66, 
+string "*short*" when the height is less than 66 (*presumably inches*).  If height is greater than or equal to 66, 
 "*tall*" is returned.  Note that the `value` field is related to the model output type so this model will only 
 parse when the model output type is `String`.
 
@@ -629,7 +630,7 @@ parse when the model output type is `String`.
   "nodes": [ 
     { 
       "id": 1, 
-      "value": 1,
+      "value": "This value won't be returned b/c returnBest and missingDataOk are both false.",
       "selector": { 
         "selectorType": "linear",
         "predicates": [ "${profile.height} < 66", "true" ],
@@ -848,8 +849,8 @@ value *5*.
 
 #### (DtL) Full Example
 
-A double-to-long model whose submodel is a constant model returning -13.  The outer model multiplies by *0.5*, adds *2*,
-rounds, then takes the min of `clampUpper` (*8*) and *9*, which comes out to *8*.
+A double-to-long model whose submodel is a constant model returning `-13`.  The outer model multiplies by `-0.5`, adds 
+`2`, rounds, then takes the min of `clampUpper` (`8`) and `9`, which comes out to `8`.
 
 ```json
 {
@@ -938,7 +939,7 @@ An error model returns an error.  This is not the same as throwing an exception.
 
 Error swallowing model makes an attempt to trap exceptions and return them as errors instead.  While this is not 
 foolproof, it was tested against 
-[SchrodingerException](https://github.com/eHarmony/aloha/blob/master/aloha-core/src/main/scala/com/eharmony/aloha/ex/SchrodingerException.scala),
+[SchrodingerException](https://deaktator.github.io/2015/08/07/can-your-exception-handling-code-handle-the-schrodingerexception-juggernaut/),
 an exception specifically designed to be as harmful as possible.  The implementation uses `scala.util.Try` which means 
 errors that are caught are dictated by 
 [scala.util.control.NonFatal](https://github.com/scala/scala/blob/v2.10.3/src/library/scala/util/control/NonFatal.scala).
@@ -1027,23 +1028,25 @@ itself.
 ## Model decision tree model
 
 Model decision tree models are just like [Decision tree models](#Decision_tree_model) exception that the `value` field
-must either be a JSON object containing an Aloha model or it can be a JSON object with exactly one field,
-`import` whose associated value is a JSON string containing an 
-[Apache VFS](https://commons.apache.org/proper/commons-vfs/filesystems.html) URL.  For instance: 
+must either be a JSON object containing an Aloha model or it can be a JSON object representing a model import.
+For instance: 
 
 ```json
 { "import": "/path/to/aloha/model.json" }
 ```
 
+where `import` is a JSON string containing an
+[Apache VFS](https://commons.apache.org/proper/commons-vfs/filesystems.html) URL.  
+
 The submodels, input, and output types are expected to be the same as the input and output type of the model decision 
 tree model.  The model works by using the decision tree algorithm to select a node containing a model, and then it 
-applies the same input data to the model it finds in the node. 
+applies the submodel it finds in the node to the same input data that was passed to the decision tree. 
 
 For more information, see the section on [Decision tree models](#Decision_tree_model).
 
 ## Regression model
 
-The regression model implementation in aloha is a [sparse](https://en.wikipedia.org/wiki/Sparse_matrix) 
+The regression model implementation in Aloha is a [sparse](https://en.wikipedia.org/wiki/Sparse_matrix) 
 [polynomial regression](https://en.wikipedia.org/wiki/Polynomial_regression) model.  This is a superset of and therefore
 subsumes [linear regression](https://en.wikipedia.org/wiki/Linear_regression) models.
 
@@ -1207,7 +1210,7 @@ may want to use something like the following:
 [["=UNKNOWN", 1]]
 ```
   
-eHarmony uses this in a lot of their models.  Let's put this into context: 
+[eHarmony](http://www.eharmony.com) uses this in a lot of models.  Let's put this into context: 
 
 ```json
 {
@@ -1278,8 +1281,8 @@ This is easier to read and write and more aesthetically pleasing in general.
 
 #### (R) weights
 
-`weights` is a representation of the *first-order* feature weights in the regression **&betal** vector.  By 
-*first-order*, we mean terms of [degree](https://en.wikipedia.org/wiki/Degree_of_a_polynomial) of *1* in the 
+`weights` is a representation of the *first-order* feature weights in the regression **&beta;** vector.  By
+*first-order*, we mean terms of [degree](https://en.wikipedia.org/wiki/Degree_of_a_polynomial) *1* in the
 [polynomial](https://en.wikipedia.org/wiki/Polynomial) expression which is being regressed in the model.
 
 `weights` is a JSON Object where the keys are the same as the keys produced in the feature map.  The values are the
@@ -1398,7 +1401,7 @@ the height of the ball in meters could be encoded as:
   "modelType": "Regression",
   "modelId": { "id": 0, "name": "80mph throw at 30 degree angle" },
   "features": {
-    "indicator": "indicator",
+    "intercept": "intercept",
     "time": "${time}"
   },
   "weights": {
@@ -1415,7 +1418,7 @@ the height of the ball in meters could be encoded as:
 
 `spline` is an optional field representing a 
 [spline](https://en.wikipedia.org/wiki/Spline_\(mathematics\)) function.  The spline is applied to the inner product 
-of the feature vector, **X** and the **&beta** vector (**X&beta**); and acts like an 
+of the feature vector, **X** and the **&betal** vector (**X&beta;**); and acts like an 
 [inverse link function](https://en.wikipedia.org/wiki/Generalized_linear_model#Link_function) in 
 [GLM](https://en.wikipedia.org/wiki/Generalized_linear_model)s.  The reason a spline is provided rather than an 
 explicit link is that oftentimes we want to [calibrate](https://en.wikipedia.org/wiki/Calibration_\(statistics\)) 
@@ -1483,6 +1486,52 @@ returned.
 
 ### (R) JSON Examples
 
+#### (R) Basic Example
+
+This is the most basic regression model there is, just an intercept term:
+
+> 0.5 = **&beta;X** = [0.5]<sup>T</sup>[1]<sup>T</sup>
+
+```json
+{
+  "modelType": "Regression",
+  "modelId": { "id": 0, "name": "basic example" },
+  "features": { "intercept": "intercept" },
+  "weights": { "intercept": 0.5 }
+}
+```
+
+There is a little bit going on here behind the scenes.  The `intercept` function that appears as the sole *value* in 
+the `features` map is a special function that is included when importing `com.eharmony.aloha.feature.BasicFuncions._`. 
+It is in the `com.eharmony.aloha.feature.Intercept` trait that is mixed into `BasicFuncions`.  What this function does
+is create one key-value pair: `("", 1.0)`.  Then, as has been mentioned before, the feature name is prepended to the 
+key, so the final key-value pair is `("intercept", 1.0)`.  Then the associated weight (which is the     
+             
+
+#### (R) higherOrderFeatures Example
+
+This is repeated from the [higherOrderFeatures features](#aR_higherOrderFeatures_features) section.  It illusrates 
+modeling the equation
+<em>h</em>(<em>t</em>) = 1/2<em>gt</em><sup>2</sup> + <em>v</em><sub>0</sub><em>t</em> + <em>h</em><sub>0</sub>.  See
+that section for more information.
+
+```json
+{
+  "modelType": "Regression",
+  "modelId": { "id": 0, "name": "80mph throw at 30 degree angle" },
+  "features": {
+    "intercept": "intercept",
+    "time": "${time}"
+  },
+  "weights": {
+    "intercept": 2.5146,
+    "time": 17.8816
+  },
+  "higherOrderFeatures": [
+    { "wt": -4.9, "features": { "time": [ "time", "time" ] } } 
+  ]
+}
+```
 
 ## Segmentation model
 
@@ -1556,8 +1605,8 @@ segmentation model maps elements in the same induced
 
 #### (S) subModel
 
-`submodel` must either be a JSON object containing an Aloha model or it can be a JSON object with exactly one field,
-`import` whose associated value is a JSON string containing an 
+`submodel` must either be a JSON object containing an Aloha model or it can be a JSON object that represents the 
+import of an external model.  The `import` field has an associated value which is a JSON string containing an 
 [Apache VFS](https://commons.apache.org/proper/commons-vfs/filesystems.html) URL.  For instance: 
 
 ```json
@@ -1662,6 +1711,20 @@ maven dependency:
 <dependency> 
 ```
  
+VW does not need to be installed on the computer where the Aloha VW model is used.  The VW JNI library is contains
+operating system-specific versions of the VW library, so it will be included transitively when the `aloha-vw-jni`
+maven dependency is pulled in.  Since VW is **not binary compatible across versions**, the trained VW binary model
+needs to be trained on the same VW version that is included in the `aloha-vw-jni`
+[POM](https://github.com/eHarmony/aloha/blob/master/aloha-vw-jni/pom.xml).  Make sure to look for this dependency.
+
+```xml
+<dependency>
+ <groupId>com.github.johnlangford</groupId>
+ <artifactId>vw-jni</artifactId>
+ <version>[THIS VERSION NEEDS TO MATCH THE VW USED TO TRAIN THE MODEL]</version>
+<dependency>
+```
+
 ### (VW) JSON Fields
 
 <table>
@@ -1742,11 +1805,98 @@ See [Regression model features](#aR_features) for details.
 
 #### (VW) vw
 
-`vw` is an object with two parameters: `model` and `params`.  `model` can either be a base-64 encoded string containing
-the raw data encoded in a VW regressor saved with the `-f` flag, or it can be an 
-[Apache VFS](https://commons.apache.org/proper/commons-vfs/filesystems.html) URL.  `params` can be a String or an 
-Array of Strings.  If it is an Array of Strings the Array will imploded into a string with a String separator `" "` 
-added in between the contents of the constituent elements. 
+The `vw` Object has two main components.  The first component is a representation of the binary VW model, or 
+"*initial regressor*" in VW terminology.  This is the model parameterization.  The second component is set of 
+parameters used by VW.  This includes things like link function, prediction ranges, skip grams, namespace 
+interactions, regularization, etc.  To see descriptions of these parameters, see the 
+[VW wiki](https://github.com/JohnLangford/vowpal_wabbit/wiki) or run: 
+  
+```bash
+vw -h
+```
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aVW_vw_creationTime">creationTime</a></td>
+    <td>Number</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>number of milliseconds since <a href="https://en.wikipedia.org/wiki/Unix_time">epoch</a> for current time.</td>
+  </tr>
+  <tr>
+    <td><a href="#aVW_vw_model">model</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aVW_vw_modelUrl">modelUrl</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aVW_vw_via">via</a></td>
+    <td>String with one of: "<em>file</em>", "<em>vfs1</em>", "<em>vfs2</em>"</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aVW_vw_params">params</a></td>
+    <td>String or Array of String</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>Empty String</td>
+  </tr>
+</table>
+
+##### (VW) vw creationTime
+
+`creationTime` is optional and is used to when copying the content of the binary VW model to the local disk on the 
+computer where the Aloha model is run.  When no value is supplied, the value will be set to 
+`java.lang.System.currentTimeMillis()`.
+
+##### (VW) vw model
+
+Exactly one of `model` or `modelUrl` is required.  When `model` is provided, it should be a base64-encoded string 
+containing the content of the binary VW model.  For instance, this may be something like the string: 
+
+"`BgAAADguMC4wAG0AAAAAAACAPxIAAAAAAAAAAAAAAAAAAAABAAAAAAA=`"
+
+which might come from: 
+
+```bash
+echo "" | vw -f model.vw 2>/dev/null && cat model.vw | base64 && rm -f model.vw
+```
+
+##### (VW) vw modelUrl
+
+Exactly one of `model` or `modelUrl` is required.  When `modelUrl` is provided, it should be a string contain an
+[Apache VFS](https://commons.apache.org/proper/commons-vfs/filesystems.html) URL.  This is location from which the
+content will be copied to the local disk.
+
+##### (VW) vw via
+
+`via` is not required.  It is a string value and can be one of `file`, `vfs1`, `vfs2`.  It provides a way for Aloha 
+users to use different versions of [Apache VFS](https://commons.apache.org/proper/commons-vfs/).  This is useful 
+because VFS provides a common interface to different file systems.  Since VFS provides a plugin architecture, 
+different plugins might be available to different versions of VFS.  For instance, the HDFS plugin eHarmony uses 
+(at the time of this writing) is a VFS 1 plugin.
+
+##### (VW) vw params
+
+`params` is not required.  It can either be specified as a string or an Array of strings (which are joined with a 
+space in between each item).  This is how VW parameters are specified.   
 
 
 #### (VW) namespaces
