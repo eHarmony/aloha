@@ -42,7 +42,7 @@ See the [Getting Started Guide](getting_started.html).
 
 <a href="eg/dataset/index.html" class="btn btn-primary btn-large btn-block">Learn to Create a Dataset</a>
 
-<a href="eg/model/index.html" class="btn btn-primary btn-large btn-block">Learn to Create a Model</a>
+<a href="model_formats.html" class="btn btn-primary btn-large btn-block">Learn to Create a Model</a>
 
 
 Maven Setup

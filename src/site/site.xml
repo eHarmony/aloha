@@ -25,6 +25,8 @@
             <!--<theme>bootswatch-readable</theme>-->
             <navbarInverse>false</navbarInverse>
 
+            <skinAttribution>false</skinAttribution>
+
             <highlightJs>false</highlightJs>
 
             <!--<highlightJs>true</highlightJs>-->
@@ -48,13 +50,12 @@
             <toc offsetTop="40">top</toc>
             <tocTopMax>6</tocTopMax>
 
-            <topNav>Dataset Examples|Model Examples|Modules</topNav>
+            <topNav>Code|Model Formats|Dataset Examples</topNav>
 
             <bottomNav maxSpan="9" >
                 <column>Main|reports</column>
-                <column>Modules|API Docs</column>
+                <column>API Docs|Contribute</column>
                 <column>Dataset Examples</column>
-                <column>Model Examples</column>
             </bottomNav>
             <bottomDescription>
                 <![CDATA[
@@ -107,6 +108,9 @@
                 <dependencies>
                     <tocTopMax>4</tocTopMax>
                 </dependencies>
+                <model_formats>
+                    <tocTopMax>3</tocTopMax>
+                </model_formats>
             </pages>
         </reflowSkin>
     </custom>
@@ -119,6 +123,7 @@
 
         <links>
             <item name="Code" href="http://github.com/eharmony/aloha/"/>
+            <item name="Model Formats" href="model_formats.html" />
         </links>
 
         <menu name="Main" inherit="top">
@@ -133,8 +138,6 @@
             <item name="aloha-cli" href="aloha-cli/scaladocs/index.html" />
         </menu>
 
-        <menu name="Modules" ref="modules" />
-
         <menu name="Dataset Examples" inherit="top" >
             <item name="CSV" href="eg/dataset/csv.html" />
             <item name="VW Unlabeled" href="eg/dataset/vw.html" />
@@ -144,16 +147,10 @@
             <item name="LIBSVM Labeled" href="eg/dataset/labeled_libsvm.html" />
         </menu>
 
-        <menu name="Model Examples" inherit="top">
-            <item name="Regression" href="eg/model/reg.html" />
-            <item name="Decision Tree" href="eg/model/decision_tree.html" />
-            <item name="Model Decision Tree" href="eg/model/model_decision_tree.html" />
-        </menu>
-
         <menu name="Contribute" inherit="top">
-            <item name="Contribute" href="contribute.html" />
             <item name="Issues" href="http://github.com/eharmony/aloha/issues/" />
             <item name="Fork on GitHub" href="http://github.com/eharmony/aloha/" />
+            <item name="Contribute" href="contribute.html" />
         </menu>
 
         <menu name="Maven Documentation" ref="reports" inherit="top"/>
