@@ -33,7 +33,7 @@
             <!--<highlightJsTheme>github</highlightJsTheme>-->
 
             <!-- Put this back -->
-            <absoluteResourceURL>http://eharmony.github.io/aloha/</absoluteResourceURL>
+            <absoluteResourceURL>http://eharmony.github.io/aloha</absoluteResourceURL>
             <brand>
                 <!-- Brand text in top-left part of the site -->
                 <name>
@@ -75,6 +75,12 @@
                         <body />
                         <columns>2</columns>
                     </sections>
+                    <endContent>
+                        <script src="$resourcePath/js/aloha-release-version.js"></script>
+                        <script type="text/javascript">
+                            $(document).ready(function() {alohaReleaseVersion('\#version');});
+                        </script>
+                    </endContent>
                 </index>
                 <eg-dataset>
                     <sections>
