@@ -39,6 +39,8 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |        spec is an Apache VFS URL to an aloha spec file.
               |  -m <value> | --model <value>
               |        model is an Apache VFS URL to a VW binary model.
+              |  --fs-type <value>
+              |        file system type: vfs1, vfs2, file. default = vfs2.
               |  -n <value> | --name <value>
               |        name of the model.
               |  -i <value> | --id <value>

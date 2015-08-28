@@ -3,12 +3,13 @@ package com.eharmony.aloha.models.vw.jni
 import java.io.FileInputStream
 
 import com.eharmony.aloha.id.ModelId
+import com.eharmony.aloha.io.fs.Vfs2FsInstance
 import com.eharmony.aloha.models.reg.ConstantDeltaSpline
 import com.eharmony.matching.testhelp.io.IoCaptureCompanion
 import org.apache.commons.vfs2.VFS
 import org.junit.Assert._
 import org.junit.{BeforeClass, Test}
-import spray.json.pimpString
+import spray.json.{JsObject, pimpString}
 
 /**
  * These tests are now designed to pass if the VW model cannot be created in the BeforeClass method.
@@ -22,8 +23,8 @@ object VwJniModelJsonTest extends IoCaptureCompanion {
   @BeforeClass def createModel(): Unit = VwJniModelTest.createModel()
   lazy val base64EncodedModelString = VwJniModel.readBinaryVwModelToB64String(new FileInputStream(VwJniModelTest.VwModelFile))
   val vfs = VFS.getManager
-  val vfsModel = vfs.resolveFile(VwJniModelTest.VwModelPath)
-  val vfsSpec = vfs.resolveFile("res:com/eharmony/aloha/models/vw/jni/good.logistic.aloha.js")
+  val vfsModel = Vfs2FsInstance(VwJniModelTest.VwModelPath)
+  val vfsSpec = Vfs2FsInstance("res:com/eharmony/aloha/models/vw/jni/good.logistic.aloha.js")
   val cds = ConstantDeltaSpline(0, 1, IndexedSeq(0.25, 0.75))
 }
 
@@ -49,7 +50,10 @@ class VwJniModelJsonTest {
              |}
            """).stripMargin.parseJson
       val actual = VwJniModel.json(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"))
-      assertEquals(expected, actual)
+
+      val fields = actual.asJsObject.fields
+      val act = JsObject(fields + ("vw" -> JsObject(fields("vw").asJsObject.fields - "creationDate")))
+      assertEquals(expected, act)
   }
 
   @Test def withNotes() = {
@@ -74,7 +78,10 @@ class VwJniModelJsonTest {
              |}
            """).stripMargin.parseJson
       val actual = VwJniModel.json(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"), false, None, Some(Seq("This is a note")))
-      assertEquals(expected, actual)
+
+      val fields = actual.asJsObject.fields
+      val act = JsObject(fields + ("vw" -> JsObject(fields("vw").asJsObject.fields - "creationDate")))
+      assertEquals(expected, act)
   }
 
   @Test def withSpline() = {
@@ -103,7 +110,10 @@ class VwJniModelJsonTest {
            """).stripMargin.parseJson
 
       val actual = VwJniModel.json(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"), false, None, None, Some(cds))
-      assertEquals(expected, actual)
+
+      val fields = actual.asJsObject.fields
+      val act = JsObject(fields + ("vw" -> JsObject(fields("vw").asJsObject.fields - "creationDate")))
+      assertEquals(expected, act)
   }
 
   @Test def withNotesAndSpline() = {
@@ -133,6 +143,9 @@ class VwJniModelJsonTest {
              |}
            """).stripMargin.parseJson
       val actual = VwJniModel.json(vfsSpec, vfsModel, ModelId(0, "model name"), Some("--quiet -t"), false, None, Some(Seq("This is a note")), Some(cds))
-      assertEquals(expected, actual)
+
+      val fields = actual.asJsObject.fields
+      val act = JsObject(fields + ("vw" -> JsObject(fields("vw").asJsObject.fields - "creationDate")))
+      assertEquals(expected, act)
   }
 }

@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>com.eharmony</groupId>
 		<artifactId>aloha</artifactId>
-		<version>2.0.0-SNAPSHOT</version>
+		<version>2.0.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>aloha-core</artifactId>
@@ -23,14 +23,6 @@
 			<!-- Note that GitHub does not like having leading slash here -->
 			<url>${site.deploy.url}${project.artifactId}</url>
 		</site>
-		<snapshotRepository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
-		<repository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-		</repository>
 	</distributionManagement>
 
 	<properties>

@@ -18,7 +18,8 @@ object BasicFunctions
   with SparsityTransforms
   with RegressionModelValueToTupleConversions
   with DecisionTreeBoolToOptBoolConversions
-  with BagOfWords {
+  with SkipGrams
+  with MapImplicitRegressionConversion {
 
   final protected[feature] val DefaultForMissingDataInReg = Seq(("=UNK", 1.0))
 }
