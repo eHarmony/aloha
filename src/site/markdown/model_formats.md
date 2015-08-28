@@ -1505,7 +1505,10 @@ There is a little bit going on here behind the scenes.  The `intercept` function
 the `features` map is a special function that is included when importing `com.eharmony.aloha.feature.BasicFuncions._`. 
 It is in the `com.eharmony.aloha.feature.Intercept` trait that is mixed into `BasicFuncions`.  What this function does
 is create one key-value pair: `("", 1.0)`.  Then, as has been mentioned before, the feature name is prepended to the 
-key, so the final key-value pair is `("intercept", 1.0)`.  Then the associated weight (which is the     
+key, so the final key-value pair is `("intercept", 1.0)`.  The `1.0` represents the 
+[bias term](https://en.wikipedia.org/wiki/Artificial_neuron#Basic_structure) and the associated `intercept` in the 
+`weights` map represents the model's output when all [covariate](https://en.wikipedia.org/wiki/Covariate) data is 
+omitted.
              
 
 #### (R) higherOrderFeatures Example
@@ -1699,7 +1702,7 @@ capabilities of an Aloha native [Regression model](#Regression_model), but deleg
 [JNI layer](https://github.com/JohnLangford/vowpal_wabbit/tree/master/java) for prediction, which is much more 
 powerful.  Note that this shares a fair amount of code with [Regression model](#Regression_model) so be sure to
 look at the docs there.
- 
+
 **NOTE**: This model is in module **aloha-vw-jni**, not **aloha-core**.  To use, be sure to include the proper 
 maven dependency: 
 
@@ -1711,7 +1714,7 @@ maven dependency:
 <dependency> 
 ```
  
-VW does not need to be installed on the computer where the Aloha VW model is used.  The VW JNI library is contains
+VW does not need to be installed on the computer where the Aloha VW model is used.  The VW JNI library contains
 operating system-specific versions of the VW library, so it will be included transitively when the `aloha-vw-jni`
 maven dependency is pulled in.  Since VW is **not binary compatible across versions**, the trained VW binary model
 needs to be trained on the same VW version that is included in the `aloha-vw-jni`
@@ -1806,8 +1809,8 @@ See [Regression model features](#aR_features) for details.
 #### (VW) vw
 
 The `vw` Object has two main components.  The first component is a representation of the binary VW model, or 
-"*initial regressor*" in VW terminology.  This is the model parameterization.  The second component is set of 
-parameters used by VW.  This includes things like link function, prediction ranges, skip grams, namespace 
+"*initial regressor*" in VW terminology.  This is the model parameterization.  The second component is the set of 
+parameters used by VW.  This includes things like the link function, prediction ranges, skip grams, namespace 
 interactions, regularization, etc.  To see descriptions of these parameters, see the 
 [VW wiki](https://github.com/JohnLangford/vowpal_wabbit/wiki) or run: 
   
@@ -1868,8 +1871,8 @@ computer where the Aloha model is run.  When no value is supplied, the value wil
 
 ##### (VW) vw model
 
-Exactly one of `model` or `modelUrl` is required.  When `model` is provided, it should be a base64-encoded string 
-containing the content of the binary VW model.  For instance, this may be something like the string: 
+Exactly one of `model` or `modelUrl` is required.  When `model` is provided, it should be a string 
+with the base64-encoded content of the binary VW model.  For instance, this may be something like the string: 
 
 "`BgAAADguMC4wAG0AAAAAAACAPxIAAAAAAAAAAAAAAAAAAAABAAAAAAA=`"
 
@@ -1882,7 +1885,7 @@ echo "" | vw -f model.vw 2>/dev/null && cat model.vw | base64 && rm -f model.vw
 ##### (VW) vw modelUrl
 
 Exactly one of `model` or `modelUrl` is required.  When `modelUrl` is provided, it should be a string contain an
-[Apache VFS](https://commons.apache.org/proper/commons-vfs/filesystems.html) URL.  This is location from which the
+[Apache VFS](https://commons.apache.org/proper/commons-vfs/filesystems.html) URL.  This is the location from which the
 content will be copied to the local disk.
 
 ##### (VW) vw via
