@@ -48,10 +48,21 @@ See the [Getting Started Guide](getting_started.html).
 Maven Setup
 -----------
 
-```xml
+<!--
 <dependency>
   <groupId>com.eharmony</groupId>
   <artifactId>aloha-core</artifactId>
   <version>2.0.0</version>
 </dependency>
-```
+-->
+
+<div class="source"> 
+ <div class="source"> 
+  <pre class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-title">dependency</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-title">groupId</span>&gt;</span>com.eharmony<span class="hljs-tag">&lt;/<span class="hljs-title">groupId</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-title">artifactId</span>&gt;</span>aloha-core<span class="hljs-tag">&lt;/<span class="hljs-title">artifactId</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-title">version</span>&gt;</span><span id="version"></span><span class="hljs-tag">&lt;/<span class="hljs-title">version</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-title">dependency</span>&gt;</span>
+</pre> 
+ </div> 
+</div>
