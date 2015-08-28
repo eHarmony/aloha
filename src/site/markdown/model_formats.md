@@ -1862,8 +1862,8 @@ vw -h
 
 ##### (VW) vw creationTime
 
-`creationTime` is optional and is used to when copying the content of the binary VW model to the local disk on the 
-computer where the Aloha model is run.  When no value is supplied, the value will be set to 
+`creationTime` is optional and is used when copying the content of the binary VW model to the local disk on the 
+computer where the Aloha model is run.  When no value is supplied, the value will be set to
 `java.lang.System.currentTimeMillis()`.
 
 ##### (VW) vw model
@@ -1887,7 +1887,7 @@ content will be copied to the local disk.
 
 ##### (VW) vw via
 
-`via` is not required.  It is a string value and can be one of `file`, `vfs1`, `vfs2`.  It provides a way for Aloha 
+`via` is optional.  It is a string and can be one of: `file`, `vfs1`, `vfs2`.  It provides a way for Aloha 
 users to use different versions of [Apache VFS](https://commons.apache.org/proper/commons-vfs/).  This is useful 
 because VFS provides a common interface to different file systems.  Since VFS provides a plugin architecture, 
 different plugins might be available to different versions of VFS.  For instance, the HDFS plugin eHarmony uses 
@@ -1901,11 +1901,14 @@ space in between each item).  This is how VW parameters are specified.
 
 #### (VW) namespaces
 
-This is a JSON object representing a map from [namespace](https://github.com/JohnLangford/vowpal_wabbit/wiki/Input-format) 
+A JSON object representing a map from [namespace](https://github.com/JohnLangford/vowpal_wabbit/wiki/Input-format) 
 names to an Array of feature names to be placed in that 
 [namespace](https://github.com/JohnLangford/vowpal_wabbit/wiki/Input-format).  For example:
 
 ```json
+  "features": {
+    "height_mm": "${profile.height_cm} * 10"
+  },
   ...
   "namespaces": {
     "personal_features": [ "height_mm" ]
@@ -1926,6 +1929,7 @@ See [Regression model spline](#aR_spline) for details.
 
 ### (VW) JSON Examples
 
+#### (VW) Base64 Encoded Model JSON Example
 
 ```json
 {
@@ -1944,6 +1948,9 @@ See [Regression model spline](#aR_spline) for details.
 }
 ```
 
+#### (VW) Model URL JSON Example
+
+
 ```json
 {
   "modelType": "VwJNI",
@@ -1960,6 +1967,30 @@ See [Regression model spline](#aR_spline) for details.
   "vw": {
     "params": ["--quiet", "-t"],
     "model": "file:///Users/xyz/model.vw"
+  }
+}
+```
+
+#### (VW) Model URL via 'vfs1' JSON Example
+
+
+```json
+{
+  "modelType": "VwJNI",
+  "modelId": { "id": 0, "name": "model name" },
+  "features": {
+    "height_mm": "Seq((\"1800\", 1.0))"
+  },
+  "notes": [
+    "This is a note"
+  ],
+  "namespaces": {
+    "personal_features": [ "height_mm" ]
+  },
+  "vw": {
+    "params": ["--quiet", "-t"],
+    "model": "hdfs://some/path/to/data",
+    "via": "vfs1"
   }
 }
 ```
