@@ -1,0 +1,212 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>reflect - aloha-core 2.0.1-SNAPSHOT API - com.eharmony.aloha.reflect</title>
+          <meta name="description" content="reflect - aloha - core 2.0.1 - SNAPSHOT API - com.eharmony.aloha.reflect" />
+          <meta name="keywords" content="reflect aloha core 2.0.1 SNAPSHOT API com.eharmony.aloha.reflect" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../index.html';
+            var hash = 'com.eharmony.aloha.reflect.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../../../lib/package_big.png" />
+        <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.eharmony">eharmony</a>.<a href="../package.html" class="extype" name="com.eharmony.aloha">aloha</a></p>
+        <h1>reflect</h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">reflect</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A facade layer on top of the scala reflection APIs to avoid bugs currently in the TypeTag
+implementation.</p><p>Because of <a href="https://issues.scala-lang.org/browse/SI-7555" target="_blank">SI-7555</a>, we want to insulate
+ourselves from reflection bugs. We do want to make the switch painless when we finally go
+from scala.reflect.Manifest to scala.reflect.runtime.universe.TypeTag based reflection.  To
+accomplish this, we add a layer of indirection and later, we'll only have to modify the facade
+assuming that all of the code using reflection refers to the facade.  Once everything has
+settled down on the scala reflection landscape, we'll refer directly to the reflection APIs.
+</p></div><div class="toggleContainer block">
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent"><a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+        </div></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        <div id="order">
+              <span class="filtertype">Ordering</span>
+              <ol>
+                
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By inheritance</span></li>
+              </ol>
+            </div>
+        <div id="ancestors">
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="com.eharmony.aloha.reflect"><span>reflect</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show all</span></li>
+            </ol>
+            <a href="http://docs.scala-lang.org/overviews/scaladoc/usage.html#members" target="_blank">Learn more about member selection</a>
+          </div>
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="com.eharmony.aloha.reflect.RefInfo" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="RefInfo[A]=Manifest[A]"></a>
+      <a id="RefInfo[A]:RefInfo[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">RefInfo</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> = <span class="extype" name="scala.reflect.Manifest">Manifest</span>[<span class="extype" name="com.eharmony.aloha.reflect.RefInfo.A">A</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Type alias for Reflection meta-information type.</p><div class="fullcomment"><div class="comment cmt"><p>Type alias for Reflection meta-information type.  Manifest, TypeTag, etc.
+Currently, this is Manifest.  Once [https://issues.scala-lang.org/browse/SI-7555 SI-7555] is
+addressed, we can move over to a scala.reflect.runtime.universe.TypeTag based implementation.</p><p><b>NOTE</b>: If all goes well, we should be able to just swap this one type definition and
+everything will still work (once scala 2.10-based reflection is fixed).  If this isn't the
+case, we need to add and reference additional functionality in the facade layer.
+</p></div></div>
+    </li><li name="com.eharmony.aloha.reflect.RefInfoOps" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="RefInfoOps[RefInfoType[_]]extendsAnyRef"></a>
+      <a id="RefInfoOps[RefInfoType[_]]:RefInfoOps[RefInfoType]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="RefInfoOps.html"><span class="name">RefInfoOps</span></a><span class="tparams">[<span name="RefInfoType">RefInfoType<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4>
+      <p class="comment cmt">A facade layer on top of the scala reflection APIs to avoid bugs currently in the reflection implementation.</p>
+    </li><li name="com.eharmony.aloha.reflect.ReflectionConversions" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ReflectionConversionsextendsAnyRef"></a>
+      <a id="ReflectionConversions:ReflectionConversions"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="ReflectionConversions.html"><span class="name">ReflectionConversions</span></a><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="com.eharmony.aloha.reflect.RefInfo" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="RefInfo"></a>
+      <a id="RefInfo:RefInfo"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="RefInfo$.html"><span class="name">RefInfo</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="com.eharmony.aloha.reflect.RefInfoOps" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="RefInfoOps"></a>
+      <a id="RefInfoOps:RefInfoOps"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="RefInfoOps$.html"><span class="name">RefInfoOps</span></a><span class="result"> extends <a href="RefInfoOps.html" class="extype" name="com.eharmony.aloha.reflect.RefInfoOps">RefInfoOps</a>[<a href="#RefInfo[A]=Manifest[A]" class="extmbr" name="com.eharmony.aloha.reflect.RefInfo">RefInfo</a>] with <a href="../util/EitherHelpers.html" class="extype" name="com.eharmony.aloha.util.EitherHelpers">EitherHelpers</a></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Concrete implementations for retrieving and manipulating reflection meta information.</p>
+    </li><li name="com.eharmony.aloha.reflect.ReflectionConversions" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ReflectionConversions"></a>
+      <a id="ReflectionConversions:ReflectionConversions"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ReflectionConversions$.html"><span class="name">ReflectionConversions</span></a><span class="result"> extends <a href="ReflectionConversions.html" class="extype" name="com.eharmony.aloha.reflect.ReflectionConversions">ReflectionConversions</a></span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        <div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+            </div>
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
+    </body>
+      </html>

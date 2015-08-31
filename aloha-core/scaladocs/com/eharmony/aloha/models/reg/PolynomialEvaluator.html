@@ -1,0 +1,545 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>PolynomialEvaluator - aloha-core 2.0.1-SNAPSHOT API - com.eharmony.aloha.models.reg.PolynomialEvaluator</title>
+          <meta name="description" content="PolynomialEvaluator - aloha - core 2.0.1 - SNAPSHOT API - com.eharmony.aloha.models.reg.PolynomialEvaluator" />
+          <meta name="keywords" content="PolynomialEvaluator aloha core 2.0.1 SNAPSHOT API com.eharmony.aloha.models.reg.PolynomialEvaluator" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../../index.html';
+            var hash = 'com.eharmony.aloha.models.reg.PolynomialEvaluator';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="type">
+      <div id="definition">
+        <a href="PolynomialEvaluator$.html" title="Go to companion"><img src="../../../../../lib/class_to_object_big.png" /></a>
+        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.eharmony">eharmony</a>.<a href="../../package.html" class="extype" name="com.eharmony.aloha">aloha</a>.<a href="../package.html" class="extype" name="com.eharmony.aloha.models">models</a>.<a href="package.html" class="extype" name="com.eharmony.aloha.models.reg">reg</a></p>
+        <h1><a href="PolynomialEvaluator$.html" title="Go to companion">PolynomialEvaluator</a></h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <span class="name">PolynomialEvaluator</span><span class="params">(<span name="value">value: <a href="Coefficient.html" class="extype" name="com.eharmony.aloha.models.reg.Coefficient">Coefficient</a></span>, <span name="descendants">descendants: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="" class="extype" name="com.eharmony.aloha.models.reg.PolynomialEvaluator">PolynomialEvaluator</a>] = <span class="defval" name="scala.this.Predef.Map.empty[String, com.eharmony.aloha.models.reg.PolynomialEvaluator]">...</span></span>)</span><span class="result"> extends <a href="MapTreeLike.html" class="extype" name="com.eharmony.aloha.models.reg.MapTreeLike">MapTreeLike</a>[<span class="extype" name="scala.Predef.String">String</span>, <a href="Coefficient.html" class="extype" name="com.eharmony.aloha.models.reg.Coefficient">Coefficient</a>] with <a href="PolynomialEvaluationAlgo.html" class="extype" name="com.eharmony.aloha.models.reg.PolynomialEvaluationAlgo">PolynomialEvaluationAlgo</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Provides a method to evaluate polynomials given an input.  Default implementation of
+<a href="PolynomialEvaluationAlgo.html" class="extype" name="com.eharmony.aloha.models.reg.PolynomialEvaluationAlgo">com.eharmony.aloha.models.reg.PolynomialEvaluationAlgo</a>.</p></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"></dd><dt class="param">descendants</dt><dd class="cmt"><p>
+</p></dd></dl><div class="toggleContainer block">
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="PolynomialEvaluationAlgo.html" class="extype" name="com.eharmony.aloha.models.reg.PolynomialEvaluationAlgo">PolynomialEvaluationAlgo</a>, <a href="MapTreeLike.html" class="extype" name="com.eharmony.aloha.models.reg.MapTreeLike">MapTreeLike</a>[<span class="extype" name="scala.Predef.String">String</span>, <a href="Coefficient.html" class="extype" name="com.eharmony.aloha.models.reg.Coefficient">Coefficient</a>], <a href="../tree/Tree.html" class="extype" name="com.eharmony.aloha.models.tree.Tree">Tree</a>[<a href="Coefficient.html" class="extype" name="com.eharmony.aloha.models.reg.Coefficient">Coefficient</a>, [+V]<span class="extype" name="scala.collection.immutable.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="com.eharmony.aloha.models.reg.&lt;refinement&gt;.L.V">V</span>], <a href="MapTreeLike.html" class="extype" name="com.eharmony.aloha.models.reg.MapTreeLike">MapTreeLike</a>[<span class="extype" name="scala.Predef.String">String</span>, <a href="Coefficient.html" class="extype" name="com.eharmony.aloha.models.reg.Coefficient">Coefficient</a>]], <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+        </div></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        <div id="order">
+              <span class="filtertype">Ordering</span>
+              <ol>
+                
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By inheritance</span></li>
+              </ol>
+            </div>
+        <div id="ancestors">
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="com.eharmony.aloha.models.reg.PolynomialEvaluator"><span>PolynomialEvaluator</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="com.eharmony.aloha.models.reg.PolynomialEvaluationAlgo"><span>PolynomialEvaluationAlgo</span></li><li class="in" name="com.eharmony.aloha.models.reg.MapTreeLike"><span>MapTreeLike</span></li><li class="in" name="com.eharmony.aloha.models.tree.Tree"><span>Tree</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show all</span></li>
+            </ol>
+            <a href="http://docs.scala-lang.org/overviews/scaladoc/usage.html#members" target="_blank">Learn more about member selection</a>
+          </div>
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        <div id="constructors" class="members">
+              <h3>Instance Constructors</h3>
+              <ol><li name="com.eharmony.aloha.models.reg.PolynomialEvaluator#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="&lt;init&gt;(value:com.eharmony.aloha.models.reg.Coefficient,descendants:Map[String,com.eharmony.aloha.models.reg.PolynomialEvaluator]):com.eharmony.aloha.models.reg.PolynomialEvaluator"></a>
+      <a id="&lt;init&gt;:PolynomialEvaluator"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">new</span>
+      </span>
+      <span class="symbol">
+        <span class="name">PolynomialEvaluator</span><span class="params">(<span name="value">value: <a href="Coefficient.html" class="extype" name="com.eharmony.aloha.models.reg.Coefficient">Coefficient</a></span>, <span name="descendants">descendants: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="" class="extype" name="com.eharmony.aloha.models.reg.PolynomialEvaluator">PolynomialEvaluator</a>] = <span class="defval" name="scala.this.Predef.Map.empty[String, com.eharmony.aloha.models.reg.PolynomialEvaluator]">...</span></span>)</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"></dd><dt class="param">descendants</dt><dd class="cmt"><p>
+</p></dd></dl></div>
+    </li></ol>
+            </div>
+
+        
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="!=(x$1:AnyRef):Boolean"></a>
+      <a id="!=(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.Any#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="!=(x$1:Any):Boolean"></a>
+      <a id="!=(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="##():Int"></a>
+      <a id="##():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="==(x$1:AnyRef):Boolean"></a>
+      <a id="==(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.Any#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="==(x$1:Any):Boolean"></a>
+      <a id="==(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asInstanceOf[T0]:T0"></a>
+      <a id="asInstanceOf[T0]:T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.reg.PolynomialEvaluationAlgo#at" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="at(x:IndexedSeq[Iterable[(String,Double)]]):Double"></a>
+      <a id="at(IndexedSeq[Iterable[(String,Double)]]):Double"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">at</span><span class="params">(<span name="x">x: <a href="../../../../../scala/package.html#IndexedSeq[+A]=IndexedSeq[A]" class="extmbr" name="scala.IndexedSeq">IndexedSeq</a>[<a href="../../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]]</span>)</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Evaluate the polynomial represented by this object at the point x.</p><div class="fullcomment"><div class="comment cmt"><p>Evaluate the polynomial represented by this object at the point x.</p></div><dl class="paramcmts block"><dt class="param">x</dt><dd class="cmt"><p>A representation of a point.  The representation is as follows:
+         The outer indexed sequence represents groups of features in feature space generated by the same
+         feature expander.  The inner sequence is an iterable sequence of key value pairs.  This representation
+         is used because it allows efficient encoding of sparse feature spaces.  For instance, we can very
+         easily encode multi-part bag of word models as follows.  Let's say the 0th index in the outer sequence
+         represents the title of HTML documents and the 1st index represents text inside the body tags in the
+         HTML document.</p><pre><span class="kw">case</span> <span class="kw">class</span> Doc(title: <span class="std">String</span>, body: <span class="std">String</span>) {
+  <span class="kw">def</span> multiPartBagOfWords = IndexedSeq(tokens(title), tokens(body))
+  <span class="kw">private</span>[<span class="kw">this</span>] <span class="kw">def</span> tokens(s: <span class="std">String</span>) = s.trim.toLowerCase.split(<span class="lit">"\\W+"</span>).groupBy(identity).mapValues(_.size.toDouble)
+}
+
+<span class="kw">val</span> fox = Doc(<span class="lit">"fox story"</span>, <span class="lit">"The quick brown fox jumps over the lazy dog"</span>)
+<span class="kw">val</span> p: PolynomialEvaluationAlgo = ...
+p at fox.multiPartBagOfWords</pre></dd><dt>returns</dt><dd class="cmt"><p>this polynomial evaluated at x.
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="PolynomialEvaluationAlgo.html" class="extype" name="com.eharmony.aloha.models.reg.PolynomialEvaluationAlgo">PolynomialEvaluationAlgo</a></dd></dl></div>
+    </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="clone():Object"></a>
+      <a id="clone():AnyRef"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.reg.PolynomialEvaluator#descendants" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="descendants:Map[String,com.eharmony.aloha.models.reg.PolynomialEvaluator]"></a>
+      <a id="descendants:Map[String,PolynomialEvaluator]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">descendants</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="" class="extype" name="com.eharmony.aloha.models.reg.PolynomialEvaluator">PolynomialEvaluator</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">
+</p><div class="fullcomment"><div class="comment cmt"><p>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.eharmony.aloha.models.reg.PolynomialEvaluator">PolynomialEvaluator</a> → <a href="../tree/Tree.html" class="extype" name="com.eharmony.aloha.models.tree.Tree">Tree</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.tree.Tree#dfs" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="dfs():Iterator[(This,Int)]"></a>
+      <a id="dfs():Iterator[(MapTreeLike[String,Coefficient],Int)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">dfs</span><span class="params">()</span><span class="result">: <a href="../../../../../scala/package.html#Iterator[+A]=Iterator[A]" class="extmbr" name="scala.Iterator">Iterator</a>[(<a href="MapTreeLike.html" class="extype" name="com.eharmony.aloha.models.reg.MapTreeLike">MapTreeLike</a>[<span class="extype" name="scala.Predef.String">String</span>, <a href="Coefficient.html" class="extype" name="com.eharmony.aloha.models.reg.Coefficient">Coefficient</a>], <span class="extype" name="scala.Int">Int</span>)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Get a NON thread-safe iterator over the nodes in the tree for a DFS ordering.</p><div class="fullcomment"><div class="comment cmt"><p>Get a NON thread-safe iterator over the nodes in the tree for a DFS ordering.  Each iterator value contains
+the node in the tree and the depth (root has 0 depth).
+This iterator requires O(B * D) auxiliary space where B is the branching factor and D is the tree depth.</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a NON thread-safe iterator over the nodes in the tree for a DFS ordering.
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../tree/Tree.html" class="extype" name="com.eharmony.aloha.models.tree.Tree">Tree</a></dd></dl></div>
+    </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="eq(x$1:AnyRef):Boolean"></a>
+      <a id="eq(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="finalize():Unit"></a>
+      <a id="finalize():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getClass():Class[_]"></a>
+      <a id="getClass():Class[_]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.reg.PolynomialEvaluationAlgo#hBig" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hBig(x:IndexedSeq[Iterable[(String,Double)]],s:scala.collection.mutable.Stack[(com.eharmony.aloha.models.reg.MapTreeLike[String,com.eharmony.aloha.models.reg.Coefficient],Double)],sum:Double):Double"></a>
+      <a id="hBig(IndexedSeq[Iterable[(String,Double)]],Stack[(MapTreeLike[String,Coefficient],Double)],Double):Double"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hBig</span><span class="params">(<span name="x">x: <a href="../../../../../scala/package.html#IndexedSeq[+A]=IndexedSeq[A]" class="extmbr" name="scala.IndexedSeq">IndexedSeq</a>[<a href="../../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]]</span>, <span name="s">s: <span class="extype" name="scala.collection.mutable.Stack">Stack</span>[(<a href="MapTreeLike.html" class="extype" name="com.eharmony.aloha.models.reg.MapTreeLike">MapTreeLike</a>[<span class="extype" name="scala.Predef.String">String</span>, <a href="Coefficient.html" class="extype" name="com.eharmony.aloha.models.reg.Coefficient">Coefficient</a>], <span class="extype" name="scala.Double">Double</span>)]</span>, <span name="sum">sum: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">A tail-recursive variant of hSmall that won't stack overflow on deep trees.</p><div class="fullcomment"><div class="comment cmt"><p>A tail-recursive variant of hSmall that won't stack overflow on deep trees.  This function is slower in
+empirical tests that hSmall.</p></div><dl class="paramcmts block"><dt class="param">x</dt><dd class="cmt"><p>an input vector</p></dd><dt class="param">s</dt><dd class="cmt"><p>a stack of trees and current sums at those trees (replaces call stack in non-tail-recursive hSmall).</p></dd><dt class="param">sum</dt><dd class="cmt"><p>the current sum.</p></dd><dt>returns</dt><dd class="cmt"><p>this polynomial evaluated at x.
+</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="PolynomialEvaluationAlgo.html" class="extype" name="com.eharmony.aloha.models.reg.PolynomialEvaluationAlgo">PolynomialEvaluationAlgo</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.reg.PolynomialEvaluationAlgo#hSmall" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hSmall(x:IndexedSeq[Iterable[(String,Double)]],xSize:Int,t:com.eharmony.aloha.models.reg.MapTreeLike[String,com.eharmony.aloha.models.reg.Coefficient],prod:Double):Double"></a>
+      <a id="hSmall(IndexedSeq[Iterable[(String,Double)]],Int,MapTreeLike[String,Coefficient],Double):Double"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hSmall</span><span class="params">(<span name="x">x: <a href="../../../../../scala/package.html#IndexedSeq[+A]=IndexedSeq[A]" class="extmbr" name="scala.IndexedSeq">IndexedSeq</a>[<a href="../../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]]</span>, <span name="xSize">xSize: <span class="extype" name="scala.Int">Int</span></span>, <span name="t">t: <a href="MapTreeLike.html" class="extype" name="com.eharmony.aloha.models.reg.MapTreeLike">MapTreeLike</a>[<span class="extype" name="scala.Predef.String">String</span>, <a href="Coefficient.html" class="extype" name="com.eharmony.aloha.models.reg.Coefficient">Coefficient</a>]</span>, <span name="prod">prod: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Accumulate, in a depth-first way, the evaluation of the polynomial.</p><div class="fullcomment"><div class="comment cmt"><p>Accumulate, in a depth-first way, the evaluation of the polynomial.</p><p><b>NOTE</b>: This algorithm is recursive (but not tail-recursive) by seems to be about 20% faster than the
+following tail-recursive equivalent.  This is probably due to additional object creation in the tail-recursive
+method.  Tuple2 instances must be created and the linked list containers probably needs to be created.  In the
+non-tail recursive version, we don't do any of this and only perform arithmetic operations (aside from the
+iterators and the Options created in the descendant lookup).</p><p>We aren't too afraid of stack overflows because these trees will typically be shallow.  This is because most
+use cases don't involve polynomials in thousands of variables (or of degree in the thousands).  That being
+said, stack overflows are a real possibility (in test at a depth of ~3000).  To combat this, hBig is provided
+but not yet integrated into the at function.</p><pre><span class="kw">import</span> collection.mutable.{Stack <span class="kw">=&gt;</span> MStack}
+<span class="kw">def</span> h3(x: IndexedSeq[<span class="std">Seq</span>[(<span class="std">String</span>, <span class="std">Double</span>)]], s: MStack[(MapTreeLike[<span class="std">String</span>, Value], <span class="std">Double</span>)], z: <span class="std">Double</span>): <span class="std">Double</span> = {
+  <span class="kw">if</span> (s.isEmpty) z
+  <span class="kw">else</span> {
+    <span class="kw">val</span> h = s.pop
+    <span class="kw">for</span> (i <span class="kw">&lt;-</span> h._1.value.applicableFeatures; p <span class="kw">&lt;-</span> x(i); c <span class="kw">&lt;-</span> h._1.descendants.get(p._1)) s.push((c, p._2 * h._2))
+    h3(x, s, z + h._1.value.weight * h._2)
+  }
+}</pre></div><dl class="paramcmts block"><dt class="param">x</dt><dd class="cmt"><p>an input vector</p></dd><dt class="param">xSize</dt><dd class="cmt"><p>size of input vector (computed once for possible speed improvement).</p></dd><dt class="param">t</dt><dd class="cmt"><p>a tree containing the information necessary to compute the higher order inner product</p></dd><dt class="param">prod</dt><dd class="cmt"><p>product of the items in the path from the root to leaf.</p></dd><dt>returns</dt><dd class="cmt"><p>this polynomial evaluated at x.
+</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="PolynomialEvaluationAlgo.html" class="extype" name="com.eharmony.aloha.models.reg.PolynomialEvaluationAlgo">PolynomialEvaluationAlgo</a></dd></dl></div>
+    </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ne(x$1:AnyRef):Boolean"></a>
+      <a id="ne(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notify():Unit"></a>
+      <a id="notify():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#notifyAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notifyAll():Unit"></a>
+      <a id="notifyAll():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
+      <a id="synchronized[T0](⇒T0):T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.reg.PolynomialEvaluator#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toString():String"></a>
+      <a id="toString():String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Need to overload so that calling toString doesn't stack overflow like it would with the default implementation.</p><div class="fullcomment"><div class="comment cmt"><p>Need to overload so that calling toString doesn't stack overflow like it would with the default implementation.</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.eharmony.aloha.models.reg.PolynomialEvaluator">PolynomialEvaluator</a> → AnyRef → Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.reg.PolynomialEvaluator#value" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="value:com.eharmony.aloha.models.reg.Coefficient"></a>
+      <a id="value:Coefficient"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">value</span><span class="result">: <a href="Coefficient.html" class="extype" name="com.eharmony.aloha.models.reg.Coefficient">Coefficient</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.eharmony.aloha.models.reg.PolynomialEvaluator">PolynomialEvaluator</a> → <a href="../tree/Tree.html" class="extype" name="com.eharmony.aloha.models.tree.Tree">Tree</a></dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait():Unit"></a>
+      <a id="wait():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long,x$2:Int):Unit"></a>
+      <a id="wait(Long,Int):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long):Unit"></a>
+      <a id="wait(Long):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        <div class="parent" name="scala.Serializable">
+              <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="java.io.Serializable">
+              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="scala.Product">
+              <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
+            </div><div class="parent" name="scala.Equals">
+              <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
+            </div><div class="parent" name="com.eharmony.aloha.models.reg.PolynomialEvaluationAlgo">
+              <h3>Inherited from <a href="PolynomialEvaluationAlgo.html" class="extype" name="com.eharmony.aloha.models.reg.PolynomialEvaluationAlgo">PolynomialEvaluationAlgo</a></h3>
+            </div><div class="parent" name="com.eharmony.aloha.models.reg.MapTreeLike">
+              <h3>Inherited from <a href="MapTreeLike.html" class="extype" name="com.eharmony.aloha.models.reg.MapTreeLike">MapTreeLike</a>[<span class="extype" name="scala.Predef.String">String</span>, <a href="Coefficient.html" class="extype" name="com.eharmony.aloha.models.reg.Coefficient">Coefficient</a>]</h3>
+            </div><div class="parent" name="com.eharmony.aloha.models.tree.Tree">
+              <h3>Inherited from <a href="../tree/Tree.html" class="extype" name="com.eharmony.aloha.models.tree.Tree">Tree</a>[<a href="Coefficient.html" class="extype" name="com.eharmony.aloha.models.reg.Coefficient">Coefficient</a>, [+V]<span class="extype" name="scala.collection.immutable.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="com.eharmony.aloha.models.reg.&lt;refinement&gt;.L.V">V</span>], <a href="MapTreeLike.html" class="extype" name="com.eharmony.aloha.models.reg.MapTreeLike">MapTreeLike</a>[<span class="extype" name="scala.Predef.String">String</span>, <a href="Coefficient.html" class="extype" name="com.eharmony.aloha.models.reg.Coefficient">Coefficient</a>]]</h3>
+            </div><div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+            </div>
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
+    </body>
+      </html>

@@ -1,0 +1,317 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>func - aloha-core 2.0.1-SNAPSHOT API - com.eharmony.aloha.semantics.func</title>
+          <meta name="description" content="func - aloha - core 2.0.1 - SNAPSHOT API - com.eharmony.aloha.semantics.func" />
+          <meta name="keywords" content="func aloha core 2.0.1 SNAPSHOT API com.eharmony.aloha.semantics.func" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../../index.html';
+            var hash = 'com.eharmony.aloha.semantics.func.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../../../../lib/package_big.png" />
+        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.eharmony">eharmony</a>.<a href="../../package.html" class="extype" name="com.eharmony.aloha">aloha</a>.<a href="../package.html" class="extype" name="com.eharmony.aloha.semantics">semantics</a></p>
+        <h1>func</h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">func</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="com.eharmony.aloha.semantics.func.EnrichedErrorGenAggFunc" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="EnrichedErrorGenAggFunc[-A,+B]extendsGenAggFunc[A,B]withProductwithSerializable"></a>
+      <a id="EnrichedErrorGenAggFunc[-A,+B]:EnrichedErrorGenAggFunc[A,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="EnrichedErrorGenAggFunc.html"><span class="name">EnrichedErrorGenAggFunc</span></a><span class="tparams">[<span name="A">-A</span>, <span name="B">+B</span>]</span><span class="params">(<span name="unsafe">unsafe: <a href="GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.EnrichedErrorGenAggFunc.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.EnrichedErrorGenAggFunc.B">B</span>]</span>)</span><span class="result"> extends <a href="GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.EnrichedErrorGenAggFunc.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.EnrichedErrorGenAggFunc.B">B</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">A wrapper around an unsafe GenAggFunc that will catch exceptions and rethrow
+<a href="../SemanticsUdfException.html" class="extype" name="com.eharmony.aloha.semantics.SemanticsUdfException">com.eharmony.aloha.semantics.SemanticsUdfException</a> with the appropriate information filled in.</p>
+    </li><li name="com.eharmony.aloha.semantics.func.GenAggFunc" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="GenAggFunc[-A,+B]extendsA=&gt;B"></a>
+      <a id="GenAggFunc[-A,+B]:GenAggFunc[A,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="GenAggFunc.html"><span class="name">GenAggFunc</span></a><span class="tparams">[<span name="A">-A</span>, <span name="B">+B</span>]</span><span class="result"> extends (<span class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc.A">A</span>) ⇒ <span class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc.B">B</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">A trait for generated functions that aggregate the values of other functions.</p>
+    </li><li name="com.eharmony.aloha.semantics.func.GenAggFuncAccessorProblems" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GenAggFuncAccessorProblemsextendsProductwithSerializable"></a>
+      <a id="GenAggFuncAccessorProblems:GenAggFuncAccessorProblems"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="GenAggFuncAccessorProblems.html"><span class="name">GenAggFuncAccessorProblems</span></a><span class="params">(<span name="missing">missing: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="errors">errors: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.eharmony.aloha.semantics.func.GenFunc0" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GenFunc0[-A,+B]extendsGenAggFunc[A,B]withProductwithSerializable"></a>
+      <a id="GenFunc0[-A,+B]:GenFunc0[A,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="GenFunc0.html"><span class="name">GenFunc0</span></a><span class="tparams">[<span name="A">-A</span>, <span name="B">+B</span>]</span><span class="params">(<span name="specification">specification: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="f">f: (<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc0.A">A</span>) ⇒ <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc0.B">B</span></span>)</span><span class="result"> extends <a href="GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc0.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc0.B">B</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.eharmony.aloha.semantics.func.GenFunc1" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GenFunc1[-A,B1,+C]extendsGenAggFunc[A,C]withProductwithSerializable"></a>
+      <a id="GenFunc1[-A,B1,+C]:GenFunc1[A,B1,C]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="GenFunc1.html"><span class="name">GenFunc1</span></a><span class="tparams">[<span name="A">-A</span>, <span name="B1">B1</span>, <span name="C">+C</span>]</span><span class="params">(<span name="specification">specification: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="f">f: (<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc1.B1">B1</span>) ⇒ <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc1.C">C</span></span>, <span name="f1">f1: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc1.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc1.B1">B1</span>]</span>)</span><span class="result"> extends <a href="GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc1.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc1.C">C</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.eharmony.aloha.semantics.func.GenFunc10" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GenFunc10[-A,B1,B2,B3,B4,B5,B6,B7,B8,B9,B10,+C]extendsGenAggFunc[A,C]withProductwithSerializable"></a>
+      <a id="GenFunc10[-A,B1,B2,B3,B4,B5,B6,B7,B8,B9,B10,+C]:GenFunc10[A,B1,B2,B3,B4,B5,B6,B7,B8,B9,B10,C]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="GenFunc10.html"><span class="name">GenFunc10</span></a><span class="tparams">[<span name="A">-A</span>, <span name="B1">B1</span>, <span name="B2">B2</span>, <span name="B3">B3</span>, <span name="B4">B4</span>, <span name="B5">B5</span>, <span name="B6">B6</span>, <span name="B7">B7</span>, <span name="B8">B8</span>, <span name="B9">B9</span>, <span name="B10">B10</span>, <span name="C">+C</span>]</span><span class="params">(<span name="specification">specification: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="f">f: (<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.B1">B1</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.B2">B2</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.B3">B3</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.B4">B4</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.B5">B5</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.B6">B6</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.B7">B7</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.B8">B8</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.B9">B9</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.B10">B10</span>) ⇒ <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.C">C</span></span>, <span name="f1">f1: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.B1">B1</span>]</span>, <span name="f2">f2: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.B2">B2</span>]</span>, <span name="f3">f3: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.B3">B3</span>]</span>, <span name="f4">f4: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.B4">B4</span>]</span>, <span name="f5">f5: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.B5">B5</span>]</span>, <span name="f6">f6: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.B6">B6</span>]</span>, <span name="f7">f7: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.B7">B7</span>]</span>, <span name="f8">f8: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.B8">B8</span>]</span>, <span name="f9">f9: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.B9">B9</span>]</span>, <span name="f10">f10: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.B10">B10</span>]</span>)</span><span class="result"> extends <a href="GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc10.C">C</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.eharmony.aloha.semantics.func.GenFunc2" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GenFunc2[-A,B1,B2,+C]extendsGenAggFunc[A,C]withProductwithSerializable"></a>
+      <a id="GenFunc2[-A,B1,B2,+C]:GenFunc2[A,B1,B2,C]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="GenFunc2.html"><span class="name">GenFunc2</span></a><span class="tparams">[<span name="A">-A</span>, <span name="B1">B1</span>, <span name="B2">B2</span>, <span name="C">+C</span>]</span><span class="params">(<span name="specification">specification: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="f">f: (<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc2.B1">B1</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc2.B2">B2</span>) ⇒ <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc2.C">C</span></span>, <span name="f1">f1: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc2.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc2.B1">B1</span>]</span>, <span name="f2">f2: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc2.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc2.B2">B2</span>]</span>)</span><span class="result"> extends <a href="GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc2.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc2.C">C</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.eharmony.aloha.semantics.func.GenFunc3" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GenFunc3[-A,B1,B2,B3,+C]extendsGenAggFunc[A,C]withProductwithSerializable"></a>
+      <a id="GenFunc3[-A,B1,B2,B3,+C]:GenFunc3[A,B1,B2,B3,C]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="GenFunc3.html"><span class="name">GenFunc3</span></a><span class="tparams">[<span name="A">-A</span>, <span name="B1">B1</span>, <span name="B2">B2</span>, <span name="B3">B3</span>, <span name="C">+C</span>]</span><span class="params">(<span name="specification">specification: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="f">f: (<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc3.B1">B1</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc3.B2">B2</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc3.B3">B3</span>) ⇒ <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc3.C">C</span></span>, <span name="f1">f1: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc3.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc3.B1">B1</span>]</span>, <span name="f2">f2: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc3.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc3.B2">B2</span>]</span>, <span name="f3">f3: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc3.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc3.B3">B3</span>]</span>)</span><span class="result"> extends <a href="GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc3.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc3.C">C</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.eharmony.aloha.semantics.func.GenFunc4" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GenFunc4[-A,B1,B2,B3,B4,+C]extendsGenAggFunc[A,C]withProductwithSerializable"></a>
+      <a id="GenFunc4[-A,B1,B2,B3,B4,+C]:GenFunc4[A,B1,B2,B3,B4,C]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="GenFunc4.html"><span class="name">GenFunc4</span></a><span class="tparams">[<span name="A">-A</span>, <span name="B1">B1</span>, <span name="B2">B2</span>, <span name="B3">B3</span>, <span name="B4">B4</span>, <span name="C">+C</span>]</span><span class="params">(<span name="specification">specification: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="f">f: (<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc4.B1">B1</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc4.B2">B2</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc4.B3">B3</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc4.B4">B4</span>) ⇒ <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc4.C">C</span></span>, <span name="f1">f1: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc4.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc4.B1">B1</span>]</span>, <span name="f2">f2: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc4.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc4.B2">B2</span>]</span>, <span name="f3">f3: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc4.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc4.B3">B3</span>]</span>, <span name="f4">f4: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc4.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc4.B4">B4</span>]</span>)</span><span class="result"> extends <a href="GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc4.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc4.C">C</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.eharmony.aloha.semantics.func.GenFunc5" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GenFunc5[-A,B1,B2,B3,B4,B5,+C]extendsGenAggFunc[A,C]withProductwithSerializable"></a>
+      <a id="GenFunc5[-A,B1,B2,B3,B4,B5,+C]:GenFunc5[A,B1,B2,B3,B4,B5,C]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="GenFunc5.html"><span class="name">GenFunc5</span></a><span class="tparams">[<span name="A">-A</span>, <span name="B1">B1</span>, <span name="B2">B2</span>, <span name="B3">B3</span>, <span name="B4">B4</span>, <span name="B5">B5</span>, <span name="C">+C</span>]</span><span class="params">(<span name="specification">specification: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="f">f: (<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc5.B1">B1</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc5.B2">B2</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc5.B3">B3</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc5.B4">B4</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc5.B5">B5</span>) ⇒ <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc5.C">C</span></span>, <span name="f1">f1: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc5.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc5.B1">B1</span>]</span>, <span name="f2">f2: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc5.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc5.B2">B2</span>]</span>, <span name="f3">f3: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc5.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc5.B3">B3</span>]</span>, <span name="f4">f4: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc5.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc5.B4">B4</span>]</span>, <span name="f5">f5: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc5.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc5.B5">B5</span>]</span>)</span><span class="result"> extends <a href="GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc5.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc5.C">C</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.eharmony.aloha.semantics.func.GenFunc6" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GenFunc6[-A,B1,B2,B3,B4,B5,B6,+C]extendsGenAggFunc[A,C]withProductwithSerializable"></a>
+      <a id="GenFunc6[-A,B1,B2,B3,B4,B5,B6,+C]:GenFunc6[A,B1,B2,B3,B4,B5,B6,C]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="GenFunc6.html"><span class="name">GenFunc6</span></a><span class="tparams">[<span name="A">-A</span>, <span name="B1">B1</span>, <span name="B2">B2</span>, <span name="B3">B3</span>, <span name="B4">B4</span>, <span name="B5">B5</span>, <span name="B6">B6</span>, <span name="C">+C</span>]</span><span class="params">(<span name="specification">specification: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="f">f: (<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc6.B1">B1</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc6.B2">B2</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc6.B3">B3</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc6.B4">B4</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc6.B5">B5</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc6.B6">B6</span>) ⇒ <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc6.C">C</span></span>, <span name="f1">f1: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc6.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc6.B1">B1</span>]</span>, <span name="f2">f2: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc6.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc6.B2">B2</span>]</span>, <span name="f3">f3: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc6.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc6.B3">B3</span>]</span>, <span name="f4">f4: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc6.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc6.B4">B4</span>]</span>, <span name="f5">f5: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc6.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc6.B5">B5</span>]</span>, <span name="f6">f6: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc6.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc6.B6">B6</span>]</span>)</span><span class="result"> extends <a href="GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc6.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc6.C">C</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.eharmony.aloha.semantics.func.GenFunc7" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GenFunc7[-A,B1,B2,B3,B4,B5,B6,B7,+C]extendsGenAggFunc[A,C]withProductwithSerializable"></a>
+      <a id="GenFunc7[-A,B1,B2,B3,B4,B5,B6,B7,+C]:GenFunc7[A,B1,B2,B3,B4,B5,B6,B7,C]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="GenFunc7.html"><span class="name">GenFunc7</span></a><span class="tparams">[<span name="A">-A</span>, <span name="B1">B1</span>, <span name="B2">B2</span>, <span name="B3">B3</span>, <span name="B4">B4</span>, <span name="B5">B5</span>, <span name="B6">B6</span>, <span name="B7">B7</span>, <span name="C">+C</span>]</span><span class="params">(<span name="specification">specification: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="f">f: (<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc7.B1">B1</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc7.B2">B2</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc7.B3">B3</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc7.B4">B4</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc7.B5">B5</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc7.B6">B6</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc7.B7">B7</span>) ⇒ <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc7.C">C</span></span>, <span name="f1">f1: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc7.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc7.B1">B1</span>]</span>, <span name="f2">f2: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc7.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc7.B2">B2</span>]</span>, <span name="f3">f3: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc7.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc7.B3">B3</span>]</span>, <span name="f4">f4: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc7.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc7.B4">B4</span>]</span>, <span name="f5">f5: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc7.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc7.B5">B5</span>]</span>, <span name="f6">f6: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc7.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc7.B6">B6</span>]</span>, <span name="f7">f7: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc7.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc7.B7">B7</span>]</span>)</span><span class="result"> extends <a href="GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc7.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc7.C">C</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.eharmony.aloha.semantics.func.GenFunc8" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GenFunc8[-A,B1,B2,B3,B4,B5,B6,B7,B8,+C]extendsGenAggFunc[A,C]withProductwithSerializable"></a>
+      <a id="GenFunc8[-A,B1,B2,B3,B4,B5,B6,B7,B8,+C]:GenFunc8[A,B1,B2,B3,B4,B5,B6,B7,B8,C]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="GenFunc8.html"><span class="name">GenFunc8</span></a><span class="tparams">[<span name="A">-A</span>, <span name="B1">B1</span>, <span name="B2">B2</span>, <span name="B3">B3</span>, <span name="B4">B4</span>, <span name="B5">B5</span>, <span name="B6">B6</span>, <span name="B7">B7</span>, <span name="B8">B8</span>, <span name="C">+C</span>]</span><span class="params">(<span name="specification">specification: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="f">f: (<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc8.B1">B1</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc8.B2">B2</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc8.B3">B3</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc8.B4">B4</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc8.B5">B5</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc8.B6">B6</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc8.B7">B7</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc8.B8">B8</span>) ⇒ <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc8.C">C</span></span>, <span name="f1">f1: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc8.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc8.B1">B1</span>]</span>, <span name="f2">f2: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc8.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc8.B2">B2</span>]</span>, <span name="f3">f3: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc8.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc8.B3">B3</span>]</span>, <span name="f4">f4: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc8.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc8.B4">B4</span>]</span>, <span name="f5">f5: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc8.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc8.B5">B5</span>]</span>, <span name="f6">f6: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc8.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc8.B6">B6</span>]</span>, <span name="f7">f7: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc8.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc8.B7">B7</span>]</span>, <span name="f8">f8: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc8.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc8.B8">B8</span>]</span>)</span><span class="result"> extends <a href="GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc8.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc8.C">C</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.eharmony.aloha.semantics.func.GenFunc9" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GenFunc9[-A,B1,B2,B3,B4,B5,B6,B7,B8,B9,+C]extendsGenAggFunc[A,C]withProductwithSerializable"></a>
+      <a id="GenFunc9[-A,B1,B2,B3,B4,B5,B6,B7,B8,B9,+C]:GenFunc9[A,B1,B2,B3,B4,B5,B6,B7,B8,B9,C]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="GenFunc9.html"><span class="name">GenFunc9</span></a><span class="tparams">[<span name="A">-A</span>, <span name="B1">B1</span>, <span name="B2">B2</span>, <span name="B3">B3</span>, <span name="B4">B4</span>, <span name="B5">B5</span>, <span name="B6">B6</span>, <span name="B7">B7</span>, <span name="B8">B8</span>, <span name="B9">B9</span>, <span name="C">+C</span>]</span><span class="params">(<span name="specification">specification: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="f">f: (<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.B1">B1</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.B2">B2</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.B3">B3</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.B4">B4</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.B5">B5</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.B6">B6</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.B7">B7</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.B8">B8</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.B9">B9</span>) ⇒ <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.C">C</span></span>, <span name="f1">f1: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.B1">B1</span>]</span>, <span name="f2">f2: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.B2">B2</span>]</span>, <span name="f3">f3: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.B3">B3</span>]</span>, <span name="f4">f4: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.B4">B4</span>]</span>, <span name="f5">f5: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.B5">B5</span>]</span>, <span name="f6">f6: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.B6">B6</span>]</span>, <span name="f7">f7: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.B7">B7</span>]</span>, <span name="f8">f8: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.B8">B8</span>]</span>, <span name="f9">f9: <a href="GeneratedAccessor.html" class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor">GeneratedAccessor</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.B9">B9</span>]</span>)</span><span class="result"> extends <a href="GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.GenFunc9.C">C</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.eharmony.aloha.semantics.func.GeneratedAccessor" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GeneratedAccessor[-A,+B]extendsA=&gt;BwithProductwithSerializable"></a>
+      <a id="GeneratedAccessor[-A,+B]:GeneratedAccessor[A,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="GeneratedAccessor.html"><span class="name">GeneratedAccessor</span></a><span class="tparams">[<span name="A">-A</span>, <span name="B">+B</span>]</span><span class="params">(<span name="descriptor">descriptor: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="function">function: (<span class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor.A">A</span>) ⇒ <span class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor.B">B</span></span>, <span name="code">code: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol">scala.None</span></span>)</span><span class="result"> extends (<span class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor.A">A</span>) ⇒ <span class="extype" name="com.eharmony.aloha.semantics.func.GeneratedAccessor.B">B</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">An extractor function containing additional information about itself.</p>
+    </li><li name="com.eharmony.aloha.semantics.func.OptionalFunc" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="OptionalFunc[-A,+B]extendsGenAggFunc[A,B]withProductwithSerializable"></a>
+      <a id="OptionalFunc[-A,+B]:OptionalFunc[A,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="OptionalFunc.html"><span class="name">OptionalFunc</span></a><span class="tparams">[<span name="A">-A</span>, <span name="B">+B</span>]</span><span class="params">(<span name="function">function: <a href="GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.OptionalFunc.A">A</span>, <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.eharmony.aloha.semantics.func.OptionalFunc.B">B</span>]]</span>, <span name="default">default: <span class="extype" name="com.eharmony.aloha.semantics.func.OptionalFunc.B">B</span></span>)</span><span class="result"> extends <a href="GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.semantics.func.OptionalFunc.A">A</span>, <span class="extype" name="com.eharmony.aloha.semantics.func.OptionalFunc.B">B</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="com.eharmony.aloha.semantics.func.GenFunc" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GenFunc"></a>
+      <a id="GenFunc:GenFunc"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="GenFunc$.html"><span class="name">GenFunc</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">Provides a series of functions that create instances of GenFuncN.</p>
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
+    </body>
+      </html>

@@ -1,0 +1,213 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>compiled - aloha-core 2.0.1-SNAPSHOT API - com.eharmony.aloha.semantics.compiled</title>
+          <meta name="description" content="compiled - aloha - core 2.0.1 - SNAPSHOT API - com.eharmony.aloha.semantics.compiled" />
+          <meta name="keywords" content="compiled aloha core 2.0.1 SNAPSHOT API com.eharmony.aloha.semantics.compiled" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../../index.html';
+            var hash = 'com.eharmony.aloha.semantics.compiled.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../../../../lib/package_big.png" />
+        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.eharmony">eharmony</a>.<a href="../../package.html" class="extype" name="com.eharmony.aloha">aloha</a>.<a href="../package.html" class="extype" name="com.eharmony.aloha.semantics">semantics</a></p>
+        <h1>compiled</h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">compiled</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="com.eharmony.aloha.semantics.compiled.CompiledSemantics" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CompiledSemantics[A]extendsCompiledSemanticsLike[A]withErrorEnrichingSemantics[A]withLoggingwithProductwithSerializable"></a>
+      <a id="CompiledSemantics[A]:CompiledSemantics[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="CompiledSemantics.html"><span class="name">CompiledSemantics</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="compiler">compiler: <a href="../../io/ContainerReadable.html" class="extype" name="com.eharmony.aloha.io.ContainerReadable">ContainerReadable</a>[<span class="extype" name="scala.util.Try">Try</span>]</span>, <span name="plugin">plugin: <a href="CompiledSemanticsPlugin.html" class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemanticsPlugin">CompiledSemanticsPlugin</a>[<span class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemantics.A">A</span>]</span>, <span name="imports">imports: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="provideSemanticsUdfException">provideSemanticsUdfException: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ec">ec: <span class="extype" name="scala.concurrent.ExecutionContext">ExecutionContext</span></span>)</span><span class="result"> extends <a href="CompiledSemanticsLike.html" class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemanticsLike">CompiledSemanticsLike</a>[<span class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemantics.A">A</span>] with <a href="../ErrorEnrichingSemantics.html" class="extype" name="com.eharmony.aloha.semantics.ErrorEnrichingSemantics">ErrorEnrichingSemantics</a>[<span class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemantics.A">A</span>] with <a href="../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">A semantics that can interpret complicated expressions by compiling the expressions.</p>
+    </li><li name="com.eharmony.aloha.semantics.compiled.CompiledSemanticsLike" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="CompiledSemanticsLike[A]extendsSemantics[A]withEitherHelperswithLogging"></a>
+      <a id="CompiledSemanticsLike[A]:CompiledSemanticsLike[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="CompiledSemanticsLike.html"><span class="name">CompiledSemanticsLike</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="../Semantics.html" class="extype" name="com.eharmony.aloha.semantics.Semantics">Semantics</a>[<span class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemanticsLike.A">A</span>] with <a href="../../util/EitherHelpers.html" class="extype" name="com.eharmony.aloha.util.EitherHelpers">EitherHelpers</a> with <a href="../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.eharmony.aloha.semantics.compiled.CompiledSemanticsPlugin" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="CompiledSemanticsPlugin[A]extendsAnyRef"></a>
+      <a id="CompiledSemanticsPlugin[A]:CompiledSemanticsPlugin[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="CompiledSemanticsPlugin.html"><span class="name">CompiledSemanticsPlugin</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4>
+      <p class="comment cmt">A semantics object is responsible for parsing a variable accessor specification inside a dollar sign-curly brace
+expression (that may be embedded in a larger expression).</p>
+    </li><li name="com.eharmony.aloha.semantics.compiled.OptionalAccessorCode" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="OptionalAccessorCodeextendsVariableAccessorCodewithProductwithSerializable"></a>
+      <a id="OptionalAccessorCode:OptionalAccessorCode"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="OptionalAccessorCode.html"><span class="name">OptionalAccessorCode</span></a><span class="params">(<span name="body">body: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="VariableAccessorCode.html" class="extype" name="com.eharmony.aloha.semantics.compiled.VariableAccessorCode">VariableAccessorCode</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.eharmony.aloha.semantics.compiled.RequiredAccessorCode" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="RequiredAccessorCodeextendsVariableAccessorCodewithProductwithSerializable"></a>
+      <a id="RequiredAccessorCode:RequiredAccessorCode"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="RequiredAccessorCode.html"><span class="name">RequiredAccessorCode</span></a><span class="params">(<span name="body">body: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="VariableAccessorCode.html" class="extype" name="com.eharmony.aloha.semantics.compiled.VariableAccessorCode">VariableAccessorCode</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.eharmony.aloha.semantics.compiled.VariableAccessorCode" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="VariableAccessorCodeextendsAnyRef"></a>
+      <a id="VariableAccessorCode:VariableAccessorCode"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="VariableAccessorCode.html"><span class="name">VariableAccessorCode</span></a><span class="result"> extends <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="com.eharmony.aloha.semantics.compiled.CompiledSemantics" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CompiledSemantics"></a>
+      <a id="CompiledSemantics:CompiledSemantics"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CompiledSemantics$.html"><span class="name">CompiledSemantics</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Companion class containing canonical class names for wrapper classes uses in compilation.</p>
+    </li><li name="com.eharmony.aloha.semantics.compiled.compiler" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="compiler"></a>
+      <a id="compiler:compiler"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="compiler/package.html"><span class="name">compiler</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="com.eharmony.aloha.semantics.compiled.plugin" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="plugin"></a>
+      <a id="plugin:plugin"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="plugin/package.html"><span class="name">plugin</span></a>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../../lib/template.js"></script>
+    </body>
+      </html>

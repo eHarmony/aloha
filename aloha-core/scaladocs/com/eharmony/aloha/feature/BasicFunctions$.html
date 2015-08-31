@@ -1,0 +1,1468 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>BasicFunctions - aloha-core 2.0.1-SNAPSHOT API - com.eharmony.aloha.feature.BasicFunctions</title>
+          <meta name="description" content="BasicFunctions - aloha - core 2.0.1 - SNAPSHOT API - com.eharmony.aloha.feature.BasicFunctions" />
+          <meta name="keywords" content="BasicFunctions aloha core 2.0.1 SNAPSHOT API com.eharmony.aloha.feature.BasicFunctions" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../index.html';
+            var hash = 'com.eharmony.aloha.feature.BasicFunctions$';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../../../lib/object_big.png" />
+        <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.eharmony">eharmony</a>.<a href="../package.html" class="extype" name="com.eharmony.aloha">aloha</a>.<a href="package.html" class="extype" name="com.eharmony.aloha.feature">feature</a></p>
+        <h1>BasicFunctions</h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <span class="name">BasicFunctions</span><span class="result"> extends <a href="DefaultPossessor.html" class="extype" name="com.eharmony.aloha.feature.DefaultPossessor">DefaultPossessor</a> with <a href="BasicMath.html" class="extype" name="com.eharmony.aloha.feature.BasicMath">BasicMath</a> with <a href="Comparisons.html" class="extype" name="com.eharmony.aloha.feature.Comparisons">Comparisons</a> with <a href="Sos2.html" class="extype" name="com.eharmony.aloha.feature.Sos2">Sos2</a> with <a href="CustomSos2.html" class="extype" name="com.eharmony.aloha.feature.CustomSos2">CustomSos2</a> with <a href="Indicator.html" class="extype" name="com.eharmony.aloha.feature.Indicator">Indicator</a> with <a href="Intercept.html" class="extype" name="com.eharmony.aloha.feature.Intercept">Intercept</a> with <a href="TimeConstants.html" class="extype" name="com.eharmony.aloha.feature.TimeConstants">TimeConstants</a> with <a href="SparsityTransforms.html" class="extype" name="com.eharmony.aloha.feature.SparsityTransforms">SparsityTransforms</a> with <a href="../models/reg/RegressionModelValueToTupleConversions.html" class="extype" name="com.eharmony.aloha.models.reg.RegressionModelValueToTupleConversions">RegressionModelValueToTupleConversions</a> with <a href="../models/tree/decision/DecisionTreeBoolToOptBoolConversions.html" class="extype" name="com.eharmony.aloha.models.tree.decision.DecisionTreeBoolToOptBoolConversions">DecisionTreeBoolToOptBoolConversions</a> with <a href="SkipGrams.html" class="extype" name="com.eharmony.aloha.feature.SkipGrams">SkipGrams</a> with <a href="MapImplicitRegressionConversion.html" class="extype" name="com.eharmony.aloha.feature.MapImplicitRegressionConversion">MapImplicitRegressionConversion</a></span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"></div><div class="toggleContainer block">
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent"><a href="MapImplicitRegressionConversion.html" class="extype" name="com.eharmony.aloha.feature.MapImplicitRegressionConversion">MapImplicitRegressionConversion</a>, <a href="SkipGrams.html" class="extype" name="com.eharmony.aloha.feature.SkipGrams">SkipGrams</a>, <a href="../models/tree/decision/DecisionTreeBoolToOptBoolConversions.html" class="extype" name="com.eharmony.aloha.models.tree.decision.DecisionTreeBoolToOptBoolConversions">DecisionTreeBoolToOptBoolConversions</a>, <a href="../models/reg/RegressionModelValueToTupleConversions.html" class="extype" name="com.eharmony.aloha.models.reg.RegressionModelValueToTupleConversions">RegressionModelValueToTupleConversions</a>, <a href="SparsityTransforms.html" class="extype" name="com.eharmony.aloha.feature.SparsityTransforms">SparsityTransforms</a>, <a href="TimeConstants.html" class="extype" name="com.eharmony.aloha.feature.TimeConstants">TimeConstants</a>, <a href="Intercept.html" class="extype" name="com.eharmony.aloha.feature.Intercept">Intercept</a>, <a href="Indicator.html" class="extype" name="com.eharmony.aloha.feature.Indicator">Indicator</a>, <a href="CustomSos2.html" class="extype" name="com.eharmony.aloha.feature.CustomSos2">CustomSos2</a>, <a href="Sos2.html" class="extype" name="com.eharmony.aloha.feature.Sos2">Sos2</a>, <a href="Comparisons.html" class="extype" name="com.eharmony.aloha.feature.Comparisons">Comparisons</a>, <a href="BasicMath.html" class="extype" name="com.eharmony.aloha.feature.BasicMath">BasicMath</a>, <a href="DefaultPossessor.html" class="extype" name="com.eharmony.aloha.feature.DefaultPossessor">DefaultPossessor</a>, <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+        </div></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        <div id="order">
+              <span class="filtertype">Ordering</span>
+              <ol>
+                
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By inheritance</span></li>
+              </ol>
+            </div>
+        <div id="ancestors">
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="com.eharmony.aloha.feature.BasicFunctions"><span>BasicFunctions</span></li><li class="in" name="com.eharmony.aloha.feature.MapImplicitRegressionConversion"><span>MapImplicitRegressionConversion</span></li><li class="in" name="com.eharmony.aloha.feature.SkipGrams"><span>SkipGrams</span></li><li class="in" name="com.eharmony.aloha.models.tree.decision.DecisionTreeBoolToOptBoolConversions"><span>DecisionTreeBoolToOptBoolConversions</span></li><li class="in" name="com.eharmony.aloha.models.reg.RegressionModelValueToTupleConversions"><span>RegressionModelValueToTupleConversions</span></li><li class="in" name="com.eharmony.aloha.feature.SparsityTransforms"><span>SparsityTransforms</span></li><li class="in" name="com.eharmony.aloha.feature.TimeConstants"><span>TimeConstants</span></li><li class="in" name="com.eharmony.aloha.feature.Intercept"><span>Intercept</span></li><li class="in" name="com.eharmony.aloha.feature.Indicator"><span>Indicator</span></li><li class="in" name="com.eharmony.aloha.feature.CustomSos2"><span>CustomSos2</span></li><li class="in" name="com.eharmony.aloha.feature.Sos2"><span>Sos2</span></li><li class="in" name="com.eharmony.aloha.feature.Comparisons"><span>Comparisons</span></li><li class="in" name="com.eharmony.aloha.feature.BasicMath"><span>BasicMath</span></li><li class="in" name="com.eharmony.aloha.feature.DefaultPossessor"><span>DefaultPossessor</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show all</span></li>
+            </ol>
+            <a href="http://docs.scala-lang.org/overviews/scaladoc/usage.html#members" target="_blank">Learn more about member selection</a>
+          </div>
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="!=(x$1:AnyRef):Boolean"></a>
+      <a id="!=(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.Any#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="!=(x$1:Any):Boolean"></a>
+      <a id="!=(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="##():Int"></a>
+      <a id="##():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="==(x$1:AnyRef):Boolean"></a>
+      <a id="==(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.Any#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="==(x$1:Any):Boolean"></a>
+      <a id="==(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.TimeConstants#DAYS_PER_WEEK" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="DAYS_PER_WEEK:Int(7)"></a>
+      <a id="DAYS_PER_WEEK:Int(7)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">DAYS_PER_WEEK</span><span class="result">: Int(7)</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Days in one week (7) (ISO)
+</p><div class="fullcomment"><div class="comment cmt"><p>Days in one week (7) (ISO)
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TimeConstants.html" class="extype" name="com.eharmony.aloha.feature.TimeConstants">TimeConstants</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.BasicFunctions#DefaultForMissingDataInReg" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="DefaultForMissingDataInReg:Seq[(String,Double)]"></a>
+      <a id="DefaultForMissingDataInReg:Seq[(String,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">DefaultForMissingDataInReg</span><span class="result">: <span class="extype" name="scala.collection.Seq">Seq</span>[(<span class="extype" name="java.lang.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">The <i>suggested</i> default Iterable that should be emitted when data is missing or unexpected in some way.</p><div class="fullcomment"><div class="comment cmt"><p>The <i>suggested</i> default Iterable that should be emitted when data is missing or unexpected in some way.
+This is provided to the feature generating functions but not doesn't act as a substitute for the framework's
+responsibility for handling missing data.</p><p><b>Note</b>: The keys (1st field) present in the Iterable's Tuple2s should be prefixed with &quot;=&quot;.  This is
+because (as the name suggests, it is mainly for regression models which have a specific format for generated
+features.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="package.html" class="extype" name="com.eharmony.aloha.feature">com.eharmony.aloha.feature</a>] </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="com.eharmony.aloha.feature.BasicFunctions">BasicFunctions</a> → <a href="DefaultPossessor.html" class="extype" name="com.eharmony.aloha.feature.DefaultPossessor">DefaultPossessor</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.TimeConstants#HOURS_PER_DAY" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="HOURS_PER_DAY:Int(24)"></a>
+      <a id="HOURS_PER_DAY:Int(24)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">HOURS_PER_DAY</span><span class="result">: Int(24)</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Hours in a typical day (24) (ISO).</p><div class="fullcomment"><div class="comment cmt"><p>Hours in a typical day (24) (ISO).
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TimeConstants.html" class="extype" name="com.eharmony.aloha.feature.TimeConstants">TimeConstants</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.TimeConstants#HOURS_PER_WEEK" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="HOURS_PER_WEEK:Int(168)"></a>
+      <a id="HOURS_PER_WEEK:Int(168)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">HOURS_PER_WEEK</span><span class="result">: Int(168)</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Hours in a typical week.</p><div class="fullcomment"><div class="comment cmt"><p>Hours in a typical week.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TimeConstants.html" class="extype" name="com.eharmony.aloha.feature.TimeConstants">TimeConstants</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.TimeConstants#MILLIS_PER_DAY" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="MILLIS_PER_DAY:Int(86400000)"></a>
+      <a id="MILLIS_PER_DAY:Int(86400000)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">MILLIS_PER_DAY</span><span class="result">: Int(86400000)</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Milliseconds in a typical day (ISO).</p><div class="fullcomment"><div class="comment cmt"><p>Milliseconds in a typical day (ISO).
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TimeConstants.html" class="extype" name="com.eharmony.aloha.feature.TimeConstants">TimeConstants</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.TimeConstants#MILLIS_PER_HOUR" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="MILLIS_PER_HOUR:Int(3600000)"></a>
+      <a id="MILLIS_PER_HOUR:Int(3600000)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">MILLIS_PER_HOUR</span><span class="result">: Int(3600000)</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Milliseconds in one hour (ISO)
+</p><div class="fullcomment"><div class="comment cmt"><p>Milliseconds in one hour (ISO)
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TimeConstants.html" class="extype" name="com.eharmony.aloha.feature.TimeConstants">TimeConstants</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.TimeConstants#MILLIS_PER_MINUTE" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="MILLIS_PER_MINUTE:Int(60000)"></a>
+      <a id="MILLIS_PER_MINUTE:Int(60000)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">MILLIS_PER_MINUTE</span><span class="result">: Int(60000)</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Milliseconds in one minute (ISO)
+</p><div class="fullcomment"><div class="comment cmt"><p>Milliseconds in one minute (ISO)
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TimeConstants.html" class="extype" name="com.eharmony.aloha.feature.TimeConstants">TimeConstants</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.TimeConstants#MILLIS_PER_SECOND" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="MILLIS_PER_SECOND:Int(1000)"></a>
+      <a id="MILLIS_PER_SECOND:Int(1000)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">MILLIS_PER_SECOND</span><span class="result">: Int(1000)</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Milliseconds in one second (1000) (ISO)
+</p><div class="fullcomment"><div class="comment cmt"><p>Milliseconds in one second (1000) (ISO)
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TimeConstants.html" class="extype" name="com.eharmony.aloha.feature.TimeConstants">TimeConstants</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.TimeConstants#MILLIS_PER_WEEK" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="MILLIS_PER_WEEK:Int(604800000)"></a>
+      <a id="MILLIS_PER_WEEK:Int(604800000)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">MILLIS_PER_WEEK</span><span class="result">: Int(604800000)</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Milliseconds in a typical week (ISO).</p><div class="fullcomment"><div class="comment cmt"><p>Milliseconds in a typical week (ISO).
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TimeConstants.html" class="extype" name="com.eharmony.aloha.feature.TimeConstants">TimeConstants</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.TimeConstants#MINUTES_PER_DAY" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="MINUTES_PER_DAY:Int(1440)"></a>
+      <a id="MINUTES_PER_DAY:Int(1440)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">MINUTES_PER_DAY</span><span class="result">: Int(1440)</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Minutes in a typical day (ISO).</p><div class="fullcomment"><div class="comment cmt"><p>Minutes in a typical day (ISO).
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TimeConstants.html" class="extype" name="com.eharmony.aloha.feature.TimeConstants">TimeConstants</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.TimeConstants#MINUTES_PER_HOUR" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="MINUTES_PER_HOUR:Int(60)"></a>
+      <a id="MINUTES_PER_HOUR:Int(60)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">MINUTES_PER_HOUR</span><span class="result">: Int(60)</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Minutes in one hour (ISO)
+</p><div class="fullcomment"><div class="comment cmt"><p>Minutes in one hour (ISO)
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TimeConstants.html" class="extype" name="com.eharmony.aloha.feature.TimeConstants">TimeConstants</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.TimeConstants#MINUTES_PER_WEEK" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="MINUTES_PER_WEEK:Int(10080)"></a>
+      <a id="MINUTES_PER_WEEK:Int(10080)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">MINUTES_PER_WEEK</span><span class="result">: Int(10080)</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Minutes in a typical week (ISO).</p><div class="fullcomment"><div class="comment cmt"><p>Minutes in a typical week (ISO).
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TimeConstants.html" class="extype" name="com.eharmony.aloha.feature.TimeConstants">TimeConstants</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.TimeConstants#SECONDS_PER_DAY" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="SECONDS_PER_DAY:Int(86400)"></a>
+      <a id="SECONDS_PER_DAY:Int(86400)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">SECONDS_PER_DAY</span><span class="result">: Int(86400)</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Seconds in a typical day (ISO).</p><div class="fullcomment"><div class="comment cmt"><p>Seconds in a typical day (ISO).
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TimeConstants.html" class="extype" name="com.eharmony.aloha.feature.TimeConstants">TimeConstants</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.TimeConstants#SECONDS_PER_HOUR" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="SECONDS_PER_HOUR:Int(3600)"></a>
+      <a id="SECONDS_PER_HOUR:Int(3600)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">SECONDS_PER_HOUR</span><span class="result">: Int(3600)</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Seconds in one hour (ISO)
+</p><div class="fullcomment"><div class="comment cmt"><p>Seconds in one hour (ISO)
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TimeConstants.html" class="extype" name="com.eharmony.aloha.feature.TimeConstants">TimeConstants</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.TimeConstants#SECONDS_PER_MINUTE" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="SECONDS_PER_MINUTE:Int(60)"></a>
+      <a id="SECONDS_PER_MINUTE:Int(60)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">SECONDS_PER_MINUTE</span><span class="result">: Int(60)</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Seconds in one minute (60) (ISO)
+</p><div class="fullcomment"><div class="comment cmt"><p>Seconds in one minute (60) (ISO)
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TimeConstants.html" class="extype" name="com.eharmony.aloha.feature.TimeConstants">TimeConstants</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.TimeConstants#SECONDS_PER_WEEK" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="SECONDS_PER_WEEK:Int(604800)"></a>
+      <a id="SECONDS_PER_WEEK:Int(604800)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">SECONDS_PER_WEEK</span><span class="result">: Int(604800)</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Seconds in a typical week (ISO).</p><div class="fullcomment"><div class="comment cmt"><p>Seconds in a typical week (ISO).
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TimeConstants.html" class="extype" name="com.eharmony.aloha.feature.TimeConstants">TimeConstants</a></dd></dl></div>
+    </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asInstanceOf[T0]:T0"></a>
+      <a id="asInstanceOf[T0]:T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.MapImplicitRegressionConversion#atomicIntMapToDoubleConversion" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="atomicIntMapToDoubleConversion(m:scala.collection.Map[String,java.util.concurrent.atomic.AtomicInteger]):scala.collection.Map[String,Double]"></a>
+      <a id="atomicIntMapToDoubleConversion(Map[String,AtomicInteger]):Map[String,Double]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">atomicIntMapToDoubleConversion</span><span class="params">(<span name="m">m: <span class="extype" name="scala.collection.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="java.util.concurrent.atomic.AtomicInteger">AtomicInteger</span>]</span>)</span><span class="result">: <span class="extype" name="scala.collection.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="MapImplicitRegressionConversion.html" class="extype" name="com.eharmony.aloha.feature.MapImplicitRegressionConversion">MapImplicitRegressionConversion</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.MapImplicitRegressionConversion#atomicLongMapToDoubleConversion" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="atomicLongMapToDoubleConversion(m:scala.collection.Map[String,java.util.concurrent.atomic.AtomicLong]):scala.collection.Map[String,Double]"></a>
+      <a id="atomicLongMapToDoubleConversion(Map[String,AtomicLong]):Map[String,Double]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">atomicLongMapToDoubleConversion</span><span class="params">(<span name="m">m: <span class="extype" name="scala.collection.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="java.util.concurrent.atomic.AtomicLong">AtomicLong</span>]</span>)</span><span class="result">: <span class="extype" name="scala.collection.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="MapImplicitRegressionConversion.html" class="extype" name="com.eharmony.aloha.feature.MapImplicitRegressionConversion">MapImplicitRegressionConversion</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.SkipGrams#bag" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="bag(str:String,prefix:String,suffix:String,splitString:String):scala.collection.Map[String,Int]"></a>
+      <a id="bag(String,String,String,String):Map[String,Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">bag</span><span class="params">(<span name="str">str: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="prefix">prefix: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;=&quot;</span></span>, <span name="suffix">suffix: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="splitString">splitString: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;&quot;\s+&quot;&quot;&quot;</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="SkipGrams.html" class="extype" name="com.eharmony.aloha.feature.SkipGrams">SkipGrams</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.tree.decision.DecisionTreeBoolToOptBoolConversions#booleanToOptionBoolean" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="booleanToOptionBoolean(b:Boolean):Option[Boolean]"></a>
+      <a id="booleanToOptionBoolean(Boolean):Option[Boolean]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">booleanToOptionBoolean</span><span class="params">(<span name="b">b: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Allows conversion from a Boolean to an option of a Boolean.</p><div class="fullcomment"><div class="comment cmt"><p>Allows conversion from a Boolean to an option of a Boolean.  It is used to lift the boolean value into the
+computational context of an Option.  This function has many names in many  different contexts (<i>point</i>,
+<i>return</i>, etc).  For more info, see <a href="http://en.wikipedia.org/wiki/Monad_(functional_programming)" target="_blank">http://en.wikipedia.org/wiki/Monad_(functional_programming)</a></p></div><dl class="paramcmts block"><dt class="param">b</dt><dd class="cmt"><p>a Boolean to be converted to an Option[Boolean].</p></dd><dt>returns</dt><dd class="cmt"><p>the lifted boolean.
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../models/tree/decision/DecisionTreeBoolToOptBoolConversions.html" class="extype" name="com.eharmony.aloha.models.tree.decision.DecisionTreeBoolToOptBoolConversions">DecisionTreeBoolToOptBoolConversions</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.reg.RegressionModelValueToTupleConversions#byteToIterableTuple2EmptyStringDouble" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="byteToIterableTuple2EmptyStringDouble(x:Byte):Iterable[(String,Double)]"></a>
+      <a id="byteToIterableTuple2EmptyStringDouble(Byte):Iterable[(String,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">byteToIterableTuple2EmptyStringDouble</span><span class="params">(<span name="x">x: <span class="extype" name="scala.Byte">Byte</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../models/reg/RegressionModelValueToTupleConversions.html" class="extype" name="com.eharmony.aloha.models.reg.RegressionModelValueToTupleConversions">RegressionModelValueToTupleConversions</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.BasicMath#clamp" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="clamp(x:Int,min:Int,max:Int):Int"></a>
+      <a id="clamp(Int,Int,Int):Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">clamp</span><span class="params">(<span name="x">x: <span class="extype" name="scala.Int">Int</span></span>, <span name="min">min: <span class="extype" name="scala.Int">Int</span></span>, <span name="max">max: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="BasicMath.html" class="extype" name="com.eharmony.aloha.feature.BasicMath">BasicMath</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.BasicMath#clamp" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="clamp(x:Long,min:Long,max:Long):Long"></a>
+      <a id="clamp(Long,Long,Long):Long"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">clamp</span><span class="params">(<span name="x">x: <span class="extype" name="scala.Long">Long</span></span>, <span name="min">min: <span class="extype" name="scala.Long">Long</span></span>, <span name="max">max: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="BasicMath.html" class="extype" name="com.eharmony.aloha.feature.BasicMath">BasicMath</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.BasicMath#clamp" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="clamp(x:Float,min:Float,max:Float):Float"></a>
+      <a id="clamp(Float,Float,Float):Float"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">clamp</span><span class="params">(<span name="x">x: <span class="extype" name="scala.Float">Float</span></span>, <span name="min">min: <span class="extype" name="scala.Float">Float</span></span>, <span name="max">max: <span class="extype" name="scala.Float">Float</span></span>)</span><span class="result">: <span class="extype" name="scala.Float">Float</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="BasicMath.html" class="extype" name="com.eharmony.aloha.feature.BasicMath">BasicMath</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.BasicMath#clamp" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="clamp(x:Double,min:Double,max:Double):Double"></a>
+      <a id="clamp(Double,Double,Double):Double"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">clamp</span><span class="params">(<span name="x">x: <span class="extype" name="scala.Double">Double</span></span>, <span name="min">min: <span class="extype" name="scala.Double">Double</span></span>, <span name="max">max: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="BasicMath.html" class="extype" name="com.eharmony.aloha.feature.BasicMath">BasicMath</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="clone():Object"></a>
+      <a id="clone():AnyRef"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.CustomSos2#csos2" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="csos2(value:Option[Double],knots:Int*):Iterable[(String,Double)]"></a>
+      <a id="csos2(Option[Double],Int*):Iterable[(String,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">csos2</span><span class="params">(<span name="value">value: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Double">Double</span>]</span>, <span name="knots">knots: <span class="extype" name="scala.Int">Int</span>*</span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"></dd><dt class="param">knots</dt><dd class="cmt"><p>should contain at least two knots and knots should be</p></dd><dt>returns</dt><dd class="cmt"><p>
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="CustomSos2.html" class="extype" name="com.eharmony.aloha.feature.CustomSos2">CustomSos2</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.CustomSos2#csos2" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="csos2(value:Double,knots:Int*):Iterable[(String,Double)]"></a>
+      <a id="csos2(Double,Int*):Iterable[(String,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">csos2</span><span class="params">(<span name="value">value: <span class="extype" name="scala.Double">Double</span></span>, <span name="knots">knots: <span class="extype" name="scala.Int">Int</span>*</span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="CustomSos2.html" class="extype" name="com.eharmony.aloha.feature.CustomSos2">CustomSos2</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.CustomSos2#csos2Fast" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="csos2Fast(value:Option[Double],knots:Int*):Iterable[(String,Double)]"></a>
+      <a id="csos2Fast(Option[Double],Int*):Iterable[(String,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">csos2Fast</span><span class="params">(<span name="value">value: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Double">Double</span>]</span>, <span name="knots">knots: <span class="extype" name="scala.Int">Int</span>*</span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="CustomSos2.html" class="extype" name="com.eharmony.aloha.feature.CustomSos2">CustomSos2</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.CustomSos2#csos2Fast" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="csos2Fast(value:Double,knots:Int*):Iterable[(String,Double)]"></a>
+      <a id="csos2Fast(Double,Int*):Iterable[(String,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">csos2Fast</span><span class="params">(<span name="value">value: <span class="extype" name="scala.Double">Double</span></span>, <span name="knots">knots: <span class="extype" name="scala.Int">Int</span>*</span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="CustomSos2.html" class="extype" name="com.eharmony.aloha.feature.CustomSos2">CustomSos2</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.CustomSos2#csos2I" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="csos2I(v:Double,knots:IndexedSeq[Int],ignoreChecks:Boolean):Iterable[(Int,Double)]"></a>
+      <a id="csos2I(Double,IndexedSeq[Int],Boolean):Iterable[(Int,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">csos2I</span><span class="params">(<span name="v">v: <span class="extype" name="scala.Double">Double</span></span>, <span name="knots">knots: <a href="../../../../scala/package.html#IndexedSeq[+A]=IndexedSeq[A]" class="extmbr" name="scala.IndexedSeq">IndexedSeq</a>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="ignoreChecks">ignoreChecks: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="scala.Int">Int</span>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">v</dt><dd class="cmt"></dd><dt class="param">knots</dt><dd class="cmt"></dd><dt class="param">ignoreChecks</dt><dd class="cmt"><p>(default false)</p></dd><dt>returns</dt><dd class="cmt"><p>
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="CustomSos2.html" class="extype" name="com.eharmony.aloha.feature.CustomSos2">CustomSos2</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.SparsityTransforms#densifyFn" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="densifyFn[A,B,F[C]&lt;:scala.collection.generic.FilterMonadic[C,F[C]],That](denseDomain:F[A],sparseMapping:A=&gt;Option[B],whenMissing:B)(implicitcbf:scala.collection.generic.CanBuildFrom[F[A],B,That]):That"></a>
+      <a id="densifyFn[A,B,F[C]&lt;:FilterMonadic[C,F[C]],That](F[A],(A)⇒Option[B],B)(CanBuildFrom[F[A],B,That]):That"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">densifyFn</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>, <span name="F">F<span class="tparams">[<span name="C">C</span>]</span> &lt;: <span class="extype" name="scala.collection.generic.FilterMonadic">FilterMonadic</span>[<span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyFn.F.C">C</span>, <span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyFn.F">F</span>[<span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyFn.F.C">C</span>]]</span>, <span name="That">That</span>]</span><span class="params">(<span name="denseDomain">denseDomain: <span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyFn.F">F</span>[<span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyFn.A">A</span>]</span>, <span name="sparseMapping">sparseMapping: (<span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyFn.A">A</span>) ⇒ <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyFn.B">B</span>]</span>, <span name="whenMissing">whenMissing: <span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyFn.B">B</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="cbf">cbf: <span class="extype" name="scala.collection.generic.CanBuildFrom">CanBuildFrom</span>[<span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyFn.F">F</span>[<span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyFn.A">A</span>], <span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyFn.B">B</span>, <span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyFn.That">That</span>]</span>)</span><span class="result">: <span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyFn.That">That</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Given a sparse mapping represented as a function (<i>sparseMapping</i>) from the input domain <i>A</i> to a range of
+optional values (<i>Option[B]</i>), convert to a dense format of the appropriate container type.</p><div class="fullcomment"><div class="comment cmt"><p>Given a sparse mapping represented as a function (<i>sparseMapping</i>) from the input domain <i>A</i> to a range of
+optional values (<i>Option[B]</i>), convert to a dense format of the appropriate container type.  This is done by
+composing <i>f = g ∘ sparseMapping</i>, where <i>g</i> is defined as:</p><p><pre>
+       ⎧ y            if x = Some(y)
+g(x) = ⎨
+       ⎩ whenMissing  otherwise
+</pre></p><p>and mapping <i>f</i> over <i>denseDomain</i>.</p><p>An example:</p><pre><span class="kw">val</span> denseDomain = <span class="num">3</span> to <span class="num">6</span>
+<span class="kw">val</span> sparseKeys = <span class="std">Array</span>(<span class="num">4</span>, <span class="num">6</span>)
+<span class="kw">val</span> sparseVals = Iterable(<span class="num">1</span>, <span class="num">2</span>)
+<span class="kw">val</span> sparseMapping = (sparseKeys zip sparseVals).toMap.get _   <span class="cmt">// Int => Option[Int]</span>
+<span class="kw">val</span> whenMissing = <span class="num">0</span>
+
+<span class="kw">val</span> result = densify(denseDomain, sparseMapping, whenMissing)
+<span class="kw">val</span> expected = Vector(<span class="num">0</span>, <span class="num">1</span>, <span class="num">0</span>, <span class="num">2</span>)
+
+<span class="cmt">// NOTE: The resulting container type is a Vector because of the type of denseDomain.</span>
+assert(result.getClass.getCanonicalName == <span class="lit">"scala.collection.immutable.Vector"</span>)
+assert(result == expected)</pre></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>type of the dense domain</p></dd><dt class="tparam">B</dt><dd class="cmt"><p>type of the dense range</p></dd><dt class="tparam">F</dt><dd class="cmt"><p>the container type of the input.  An attempt is made to make the output container type as close as
+          possible to the input container type.  While this is a FilterMonadic, it really only needs to be a
+          functor (because we only care about the map function.  Flatmap doesn't matter).</p></dd><dt class="tparam">That</dt><dd class="cmt"><p>the resulting type implementation.</p></dd><dt class="param">denseDomain</dt><dd class="cmt"><p>the domain of dense values provided as the preimage to the sparse mapping specified by
+                   the parallel iterables.</p></dd><dt class="param">sparseMapping</dt><dd class="cmt"><p>a mapping from the input domain to an option of the output domain.  Once composed with
+                     <i>whenMissing</i> this map all values of the domain an appropriate value in the range of the
+                     function.</p></dd><dt class="param">whenMissing</dt><dd class="cmt"><p>the resulting value when an item from denseDomain isn't contained in sparseKeys.</p></dd><dt class="param">cbf</dt><dd class="cmt"><p>a CanBuildFrom object</p></dd><dt>returns</dt><dd class="cmt"><p>the dense image of the mapping from the dense domain, using sparseMapping and whenMissing.
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="SparsityTransforms.html" class="extype" name="com.eharmony.aloha.feature.SparsityTransforms">SparsityTransforms</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.SparsityTransforms#densifyMap" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="densifyMap[A,B,F[C]&lt;:scala.collection.generic.FilterMonadic[C,F[C]],That](denseDomain:F[A],sparseFeatures:Map[A,B],whenMissing:B)(implicitcbf:scala.collection.generic.CanBuildFrom[F[A],B,That]):That"></a>
+      <a id="densifyMap[A,B,F[C]&lt;:FilterMonadic[C,F[C]],That](F[A],Map[A,B],B)(CanBuildFrom[F[A],B,That]):That"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">densifyMap</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>, <span name="F">F<span class="tparams">[<span name="C">C</span>]</span> &lt;: <span class="extype" name="scala.collection.generic.FilterMonadic">FilterMonadic</span>[<span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyMap.F.C">C</span>, <span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyMap.F">F</span>[<span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyMap.F.C">C</span>]]</span>, <span name="That">That</span>]</span><span class="params">(<span name="denseDomain">denseDomain: <span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyMap.F">F</span>[<span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyMap.A">A</span>]</span>, <span name="sparseFeatures">sparseFeatures: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyMap.A">A</span>, <span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyMap.B">B</span>]</span>, <span name="whenMissing">whenMissing: <span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyMap.B">B</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="cbf">cbf: <span class="extype" name="scala.collection.generic.CanBuildFrom">CanBuildFrom</span>[<span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyMap.F">F</span>[<span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyMap.A">A</span>], <span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyMap.B">B</span>, <span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyMap.That">That</span>]</span>)</span><span class="result">: <span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyMap.That">That</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Given a sparse mapping represented as a map (<i>sparseFeatures</i>), convert to a dense format of the appropriate
+container type.</p><div class="fullcomment"><div class="comment cmt"><p>Given a sparse mapping represented as a map (<i>sparseFeatures</i>), convert to a dense format of the appropriate
+container type.  This is done by creating a map based on <i>sparseFeatures</i> with a default value specified by
+<i>whenMissing</i> and mapping the new map's apply function over <i>denseDomain</i>.</p><p>An example:</p><pre><span class="kw">val</span> denseDomain = <span class="num">3</span> to <span class="num">6</span>
+<span class="kw">val</span> sparseKeys = <span class="std">Array</span>(<span class="num">4</span>, <span class="num">6</span>)
+<span class="kw">val</span> sparseVals = Iterable(<span class="num">1</span>, <span class="num">2</span>)
+<span class="kw">val</span> sparseFeatures = (sparseKeys zip sparseVals).toMap
+<span class="kw">val</span> whenMissing = <span class="num">0</span>
+
+<span class="kw">val</span> result = densify(denseDomain, sparseFeatures, whenMissing)
+<span class="kw">val</span> expected = Vector(<span class="num">0</span>, <span class="num">1</span>, <span class="num">0</span>, <span class="num">2</span>)
+
+<span class="cmt">// NOTE: The resulting container type is a Vector because of the type of denseDomain.</span>
+assert(result.getClass.getCanonicalName == <span class="lit">"scala.collection.immutable.Vector"</span>)
+assert(result == expected)</pre></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>type of the dense domain</p></dd><dt class="tparam">B</dt><dd class="cmt"><p>type of the dense range</p></dd><dt class="tparam">F</dt><dd class="cmt"><p>the container type of the input.  An attempt is made to make the output container type as close as
+          possible to the input container type.  While this is a FilterMonadic, it really only needs to be a
+          functor (because we only care about the map function.  Flatmap doesn't matter).</p></dd><dt class="tparam">That</dt><dd class="cmt"><p>the resulting type implementation.</p></dd><dt class="param">denseDomain</dt><dd class="cmt"><p>the domain of dense values provided as the preimage to the sparse mapping specified by
+                   the parallel iterables.</p></dd><dt class="param">sparseFeatures</dt><dd class="cmt"><p>a map from the domain to range</p></dd><dt class="param">whenMissing</dt><dd class="cmt"><p>the resulting value when an item from denseDomain isn't contained in sparseKeys.</p></dd><dt class="param">cbf</dt><dd class="cmt"><p>a CanBuildFrom object</p></dd><dt>returns</dt><dd class="cmt"><p>the dense image of the mapping from the dense domain, using sparseMapping and whenMissing.
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="SparsityTransforms.html" class="extype" name="com.eharmony.aloha.feature.SparsityTransforms">SparsityTransforms</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.SparsityTransforms#densifyPI" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="densifyPI[A,B,F[C]&lt;:scala.collection.generic.FilterMonadic[C,F[C]],That](denseDomain:F[A],sparseKeys:Iterable[A],sparseVals:Iterable[B],whenMissing:B)(implicitcbf:scala.collection.generic.CanBuildFrom[F[A],B,That]):That"></a>
+      <a id="densifyPI[A,B,F[C]&lt;:FilterMonadic[C,F[C]],That](F[A],Iterable[A],Iterable[B],B)(CanBuildFrom[F[A],B,That]):That"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">densifyPI</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>, <span name="F">F<span class="tparams">[<span name="C">C</span>]</span> &lt;: <span class="extype" name="scala.collection.generic.FilterMonadic">FilterMonadic</span>[<span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyPI.F.C">C</span>, <span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyPI.F">F</span>[<span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyPI.F.C">C</span>]]</span>, <span name="That">That</span>]</span><span class="params">(<span name="denseDomain">denseDomain: <span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyPI.F">F</span>[<span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyPI.A">A</span>]</span>, <span name="sparseKeys">sparseKeys: <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[<span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyPI.A">A</span>]</span>, <span name="sparseVals">sparseVals: <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[<span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyPI.B">B</span>]</span>, <span name="whenMissing">whenMissing: <span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyPI.B">B</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="cbf">cbf: <span class="extype" name="scala.collection.generic.CanBuildFrom">CanBuildFrom</span>[<span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyPI.F">F</span>[<span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyPI.A">A</span>], <span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyPI.B">B</span>, <span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyPI.That">That</span>]</span>)</span><span class="result">: <span class="extype" name="com.eharmony.aloha.feature.SparsityTransforms.densifyPI.That">That</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Given a sparse mapping represented as key-value pairs in parallel iterables, convert to a dense format of the
+appropriate container type.</p><div class="fullcomment"><div class="comment cmt"><p>Given a sparse mapping represented as key-value pairs in parallel iterables, convert to a dense format of the
+appropriate container type.  This is done by mapping over the <i>denseDomain</i>, determining whether a key
+exists in <i>sparseKeys</i>. If a key exists, the associated value is substituted; otherwise, substitute with the
+<i>whenMissing</i> value.</p><p>In the event of duplicate keys, for each pair of duplicate keys, the key-value pair associated with the second
+encountered key will be used.</p><p>An example:</p><pre><span class="kw">val</span> denseDomain = <span class="num">3</span> to <span class="num">6</span>
+<span class="kw">val</span> sparseKeys = <span class="std">Array</span>(<span class="num">4</span>, <span class="num">6</span>)
+<span class="kw">val</span> sparseVals = Iterable(<span class="num">1</span>, <span class="num">2</span>)
+<span class="kw">val</span> sparseValOptions = sparseVals.map(<span class="std">Option</span>.apply)
+<span class="kw">val</span> whenMissing = <span class="std">None</span>
+
+<span class="kw">val</span> result = densify(denseDomain, sparseKeys, sparseValOptions, whenMissing)
+<span class="kw">val</span> expected = Vector(<span class="std">None</span>, <span class="std">Some</span>(<span class="num">1</span>), <span class="std">None</span>, <span class="std">Some</span>(<span class="num">2</span>))
+
+<span class="cmt">// NOTE: The resulting container type is a Vector because of the type of denseDomain.</span>
+assert(result.getClass.getCanonicalName == <span class="lit">"scala.collection.immutable.Vector"</span>)
+assert(result == expected)</pre><p>Notice in the example above that when all of the keys are contained in denseDomain, then when sparsifying the
+results of densify, we get back the original sparseVals:</p><pre>assert(result.flatten == sparseVals)</pre></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>type of the dense domain</p></dd><dt class="tparam">B</dt><dd class="cmt"><p>type of the dense range</p></dd><dt class="tparam">F</dt><dd class="cmt"><p>the container type of the input.  An attempt is made to make the output container type as close as
+          possible to the input container type.  While this is a FilterMonadic, it really only needs to be a
+          functor (because we only care about the map function.  Flatmap doesn't matter).</p></dd><dt class="tparam">That</dt><dd class="cmt"><p>the resulting type implementation.</p></dd><dt class="param">denseDomain</dt><dd class="cmt"><p>the domain of dense values provided as the preimage to the sparse mapping specified by
+                   the parallel iterables.</p></dd><dt class="param">sparseKeys</dt><dd class="cmt"><p>the keys in the sparse mapping (NOTE: (sparseKeys(i), sparseVals(i)) represents a key-value
+                  pair)</p></dd><dt class="param">sparseVals</dt><dd class="cmt"><p>the values in the sparse mapping</p></dd><dt class="param">whenMissing</dt><dd class="cmt"><p>the resulting value when an item from denseDomain isn't contained in sparseKeys.</p></dd><dt class="param">cbf</dt><dd class="cmt"><p>a CanBuildFrom object</p></dd><dt>returns</dt><dd class="cmt"><p>the dense image of the mapping from the dense domain, using the mapping created by
+        sparseKeys, sparseVals and whenMissing.
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="SparsityTransforms.html" class="extype" name="com.eharmony.aloha.feature.SparsityTransforms">SparsityTransforms</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.reg.RegressionModelValueToTupleConversions#doubleToIterableTuple2EmptyStringDouble" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="doubleToIterableTuple2EmptyStringDouble(x:Double):Iterable[(String,Double)]"></a>
+      <a id="doubleToIterableTuple2EmptyStringDouble(Double):Iterable[(String,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">doubleToIterableTuple2EmptyStringDouble</span><span class="params">(<span name="x">x: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../models/reg/RegressionModelValueToTupleConversions.html" class="extype" name="com.eharmony.aloha.models.reg.RegressionModelValueToTupleConversions">RegressionModelValueToTupleConversions</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.DefaultPossessor#empty" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="empty:Iterable[(String,Double)]"></a>
+      <a id="empty:Iterable[(String,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">empty</span><span class="result">: <span class="extype" name="scala.collection.Iterable">Iterable</span>[(<span class="extype" name="java.lang.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="package.html" class="extype" name="com.eharmony.aloha.feature">com.eharmony.aloha.feature</a>] </dd><dt>Definition Classes</dt><dd><a href="DefaultPossessor.html" class="extype" name="com.eharmony.aloha.feature.DefaultPossessor">DefaultPossessor</a></dd></dl></div>
+    </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="eq(x$1:AnyRef):Boolean"></a>
+      <a id="eq(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(x$1:Any):Boolean"></a>
+      <a id="equals(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="finalize():Unit"></a>
+      <a id="finalize():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.MapImplicitRegressionConversion#floatMapToDoubleConversion" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="floatMapToDoubleConversion(m:scala.collection.Map[String,Float]):scala.collection.Map[String,Double]"></a>
+      <a id="floatMapToDoubleConversion(Map[String,Float]):Map[String,Double]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">floatMapToDoubleConversion</span><span class="params">(<span name="m">m: <span class="extype" name="scala.collection.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Float">Float</span>]</span>)</span><span class="result">: <span class="extype" name="scala.collection.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="MapImplicitRegressionConversion.html" class="extype" name="com.eharmony.aloha.feature.MapImplicitRegressionConversion">MapImplicitRegressionConversion</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.reg.RegressionModelValueToTupleConversions#floatToIterableTuple2EmptyStringDouble" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="floatToIterableTuple2EmptyStringDouble(x:Float):Iterable[(String,Double)]"></a>
+      <a id="floatToIterableTuple2EmptyStringDouble(Float):Iterable[(String,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">floatToIterableTuple2EmptyStringDouble</span><span class="params">(<span name="x">x: <span class="extype" name="scala.Float">Float</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../models/reg/RegressionModelValueToTupleConversions.html" class="extype" name="com.eharmony.aloha.models.reg.RegressionModelValueToTupleConversions">RegressionModelValueToTupleConversions</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.Comparisons#geLe" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="geLe[A,B&gt;:A](x:A,lb:A,ub:A)(implicito:Ordering[B]):Boolean"></a>
+      <a id="geLe[A,B&gt;:A](A,A,A)(Ordering[B]):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">geLe</span><span class="tparams">[<span name="A">A</span>, <span name="B">B &gt;: <span class="extype" name="com.eharmony.aloha.feature.Comparisons.geLe.A">A</span></span>]</span><span class="params">(<span name="x">x: <span class="extype" name="com.eharmony.aloha.feature.Comparisons.geLe.A">A</span></span>, <span name="lb">lb: <span class="extype" name="com.eharmony.aloha.feature.Comparisons.geLe.A">A</span></span>, <span name="ub">ub: <span class="extype" name="com.eharmony.aloha.feature.Comparisons.geLe.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="o">o: <a href="../../../../scala/package.html#Ordering[T]=scala.math.Ordering[T]" class="extmbr" name="scala.Ordering">Ordering</a>[<span class="extype" name="com.eharmony.aloha.feature.Comparisons.geLe.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Is lb &lt;= x and x &lt;= ub?</p><div class="fullcomment"><div class="comment cmt"><p>Is lb &lt;= x and x &lt;= ub?</p></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>type of inputs</p></dd><dt class="tparam">B</dt><dd class="cmt"><p>type of ordering used for comparison.  This must be a super type of the values being compared.</p></dd><dt class="param">x</dt><dd class="cmt"><p>value to be compared against lower bound and upper bound</p></dd><dt class="param">lb</dt><dd class="cmt"><p>lower bound (inclusive)</p></dd><dt class="param">ub</dt><dd class="cmt"><p>upper bound (inclusive)</p></dd><dt class="param">o</dt><dd class="cmt"><p>an ordering</p></dd><dt>returns</dt><dd class="cmt"><p>true if the lb &lt;= x and x &lt;= ub; otherwise, false.
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Comparisons.html" class="extype" name="com.eharmony.aloha.feature.Comparisons">Comparisons</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.Comparisons#geLt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="geLt[A,B&gt;:A](x:A,lb:A,ub:A)(implicito:Ordering[B]):Boolean"></a>
+      <a id="geLt[A,B&gt;:A](A,A,A)(Ordering[B]):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">geLt</span><span class="tparams">[<span name="A">A</span>, <span name="B">B &gt;: <span class="extype" name="com.eharmony.aloha.feature.Comparisons.geLt.A">A</span></span>]</span><span class="params">(<span name="x">x: <span class="extype" name="com.eharmony.aloha.feature.Comparisons.geLt.A">A</span></span>, <span name="lb">lb: <span class="extype" name="com.eharmony.aloha.feature.Comparisons.geLt.A">A</span></span>, <span name="ub">ub: <span class="extype" name="com.eharmony.aloha.feature.Comparisons.geLt.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="o">o: <a href="../../../../scala/package.html#Ordering[T]=scala.math.Ordering[T]" class="extmbr" name="scala.Ordering">Ordering</a>[<span class="extype" name="com.eharmony.aloha.feature.Comparisons.geLt.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Is lb &lt;= x and x &lt; ub?</p><div class="fullcomment"><div class="comment cmt"><p>Is lb &lt;= x and x &lt; ub?</p></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>type of inputs</p></dd><dt class="tparam">B</dt><dd class="cmt"><p>type of ordering used for comparison.  This must be a super type of the values being compared.</p></dd><dt class="param">x</dt><dd class="cmt"><p>value to be compared against lower bound and upper bound</p></dd><dt class="param">lb</dt><dd class="cmt"><p>lower bound (inclusive)</p></dd><dt class="param">ub</dt><dd class="cmt"><p>upper bound (exclusive)</p></dd><dt class="param">o</dt><dd class="cmt"><p>an ordering</p></dd><dt>returns</dt><dd class="cmt"><p>true if the lb &lt;= x and x &lt; ub; otherwise, false.
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Comparisons.html" class="extype" name="com.eharmony.aloha.feature.Comparisons">Comparisons</a></dd></dl></div>
+    </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getClass():Class[_]"></a>
+      <a id="getClass():Class[_]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.Comparisons#gtLe" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="gtLe[A,B&gt;:A](x:A,lb:A,ub:A)(implicito:Ordering[B]):Boolean"></a>
+      <a id="gtLe[A,B&gt;:A](A,A,A)(Ordering[B]):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">gtLe</span><span class="tparams">[<span name="A">A</span>, <span name="B">B &gt;: <span class="extype" name="com.eharmony.aloha.feature.Comparisons.gtLe.A">A</span></span>]</span><span class="params">(<span name="x">x: <span class="extype" name="com.eharmony.aloha.feature.Comparisons.gtLe.A">A</span></span>, <span name="lb">lb: <span class="extype" name="com.eharmony.aloha.feature.Comparisons.gtLe.A">A</span></span>, <span name="ub">ub: <span class="extype" name="com.eharmony.aloha.feature.Comparisons.gtLe.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="o">o: <a href="../../../../scala/package.html#Ordering[T]=scala.math.Ordering[T]" class="extmbr" name="scala.Ordering">Ordering</a>[<span class="extype" name="com.eharmony.aloha.feature.Comparisons.gtLe.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Is lb &lt; x and x &lt;= ub?</p><div class="fullcomment"><div class="comment cmt"><p>Is lb &lt; x and x &lt;= ub?</p></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>type of inputs</p></dd><dt class="tparam">B</dt><dd class="cmt"><p>type of ordering used for comparison.  This must be a super type of the values being compared.</p></dd><dt class="param">x</dt><dd class="cmt"><p>value to be compared against lower bound and upper bound</p></dd><dt class="param">lb</dt><dd class="cmt"><p>lower bound (exclusive)</p></dd><dt class="param">ub</dt><dd class="cmt"><p>upper bound (inclusive)</p></dd><dt class="param">o</dt><dd class="cmt"><p>an ordering</p></dd><dt>returns</dt><dd class="cmt"><p>true if the lb &lt; x and x &lt;= ub; otherwise, false.
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Comparisons.html" class="extype" name="com.eharmony.aloha.feature.Comparisons">Comparisons</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.Comparisons#gtLt" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="gtLt[A,B&gt;:A](x:A,lb:A,ub:A)(implicito:Ordering[B]):Boolean"></a>
+      <a id="gtLt[A,B&gt;:A](A,A,A)(Ordering[B]):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">gtLt</span><span class="tparams">[<span name="A">A</span>, <span name="B">B &gt;: <span class="extype" name="com.eharmony.aloha.feature.Comparisons.gtLt.A">A</span></span>]</span><span class="params">(<span name="x">x: <span class="extype" name="com.eharmony.aloha.feature.Comparisons.gtLt.A">A</span></span>, <span name="lb">lb: <span class="extype" name="com.eharmony.aloha.feature.Comparisons.gtLt.A">A</span></span>, <span name="ub">ub: <span class="extype" name="com.eharmony.aloha.feature.Comparisons.gtLt.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="o">o: <a href="../../../../scala/package.html#Ordering[T]=scala.math.Ordering[T]" class="extmbr" name="scala.Ordering">Ordering</a>[<span class="extype" name="com.eharmony.aloha.feature.Comparisons.gtLt.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Is lb &lt; x and x &lt; ub?</p><div class="fullcomment"><div class="comment cmt"><p>Is lb &lt; x and x &lt; ub?</p></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>type of inputs</p></dd><dt class="tparam">B</dt><dd class="cmt"><p>type of ordering used for comparison.  This must be a super type of the values being compared.</p></dd><dt class="param">x</dt><dd class="cmt"><p>value to be compared against lower bound and upper bound</p></dd><dt class="param">lb</dt><dd class="cmt"><p>lower bound (exclusive)</p></dd><dt class="param">ub</dt><dd class="cmt"><p>upper bound (exclusive)</p></dd><dt class="param">o</dt><dd class="cmt"><p>an ordering</p></dd><dt>returns</dt><dd class="cmt"><p>true if the lb &lt; x and x &lt; ub; otherwise, false.
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Comparisons.html" class="extype" name="com.eharmony.aloha.feature.Comparisons">Comparisons</a></dd></dl></div>
+    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode():Int"></a>
+      <a id="hashCode():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.Indicator#ind" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ind[E&lt;:Enum[E]](e:E):Iterable[(String,Double)]"></a>
+      <a id="ind[E&lt;:Enum[E]](E):Iterable[(String,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ind</span><span class="tparams">[<span name="E">E &lt;: <span class="extype" name="java.lang.Enum">Enum</span>[<span class="extype" name="com.eharmony.aloha.feature.Indicator.ind.E">E</span>]</span>]</span><span class="params">(<span name="e">e: <span class="extype" name="com.eharmony.aloha.feature.Indicator.ind.E">E</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Iterable">Iterable</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Indicator for any Enum class.</p><div class="fullcomment"><div class="comment cmt"><p>Indicator for any Enum class.</p></div><dl class="paramcmts block"><dt class="tparam">E</dt><dd class="cmt"><p>The enum type</p></dd><dt class="param">e</dt><dd class="cmt"><p>a java enum constant</p></dd><dt>returns</dt><dd class="cmt"><p>an indicator.
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Indicator.html" class="extype" name="com.eharmony.aloha.feature.Indicator">Indicator</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.Indicator#ind" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ind(a:Iterable[Option[String]]):Iterable[(String,Double)]"></a>
+      <a id="ind(Iterable[Option[String]]):Iterable[(String,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ind</span><span class="params">(<span name="a">a: <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[<span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Indicator.html" class="extype" name="com.eharmony.aloha.feature.Indicator">Indicator</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.Indicator#ind" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ind(a:Iterable[String])(implicitd:DummyImplicit):Iterable[(String,Double)]"></a>
+      <a id="ind(Iterable[String])(DummyImplicit):Iterable[(String,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ind</span><span class="params">(<span name="a">a: <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="d">d: <span class="extype" name="scala.Predef.DummyImplicit">DummyImplicit</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Indicator.html" class="extype" name="com.eharmony.aloha.feature.Indicator">Indicator</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.Indicator#ind" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ind(a:String):Iterable[(String,Double)]"></a>
+      <a id="ind(String):Iterable[(String,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ind</span><span class="params">(<span name="a">a: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Indicator.html" class="extype" name="com.eharmony.aloha.feature.Indicator">Indicator</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.Indicator#ind" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ind[A&gt;:AnyValwithString](a:Option[A]):Iterable[(String,Double)]"></a>
+      <a id="ind[A&gt;:AnyValwithString](Option[A]):Iterable[(String,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ind</span><span class="tparams">[<span name="A">A &gt;: <span class="extype" name="scala.AnyVal">AnyVal</span> with <span class="extype" name="scala.Predef.String">String</span></span>]</span><span class="params">(<span name="a">a: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.eharmony.aloha.feature.Indicator.ind.A">A</span>]</span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Indicator.html" class="extype" name="com.eharmony.aloha.feature.Indicator">Indicator</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.Indicator#ind" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ind(a:AnyVal):Iterable[(String,Double)]"></a>
+      <a id="ind(AnyVal):Iterable[(String,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ind</span><span class="params">(<span name="a">a: <span class="extype" name="scala.AnyVal">AnyVal</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Indicator.html" class="extype" name="com.eharmony.aloha.feature.Indicator">Indicator</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.MapImplicitRegressionConversion#intMapToDoubleConversion" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="intMapToDoubleConversion(m:scala.collection.Map[String,Int]):scala.collection.Map[String,Double]"></a>
+      <a id="intMapToDoubleConversion(Map[String,Int]):Map[String,Double]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">intMapToDoubleConversion</span><span class="params">(<span name="m">m: <span class="extype" name="scala.collection.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Int">Int</span>]</span>)</span><span class="result">: <span class="extype" name="scala.collection.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="MapImplicitRegressionConversion.html" class="extype" name="com.eharmony.aloha.feature.MapImplicitRegressionConversion">MapImplicitRegressionConversion</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.reg.RegressionModelValueToTupleConversions#intToIterableTuple2EmptyStringDouble" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="intToIterableTuple2EmptyStringDouble(x:Int):Iterable[(String,Double)]"></a>
+      <a id="intToIterableTuple2EmptyStringDouble(Int):Iterable[(String,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">intToIterableTuple2EmptyStringDouble</span><span class="params">(<span name="x">x: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../models/reg/RegressionModelValueToTupleConversions.html" class="extype" name="com.eharmony.aloha.models.reg.RegressionModelValueToTupleConversions">RegressionModelValueToTupleConversions</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.Intercept#intercept" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="intercept():Iterable[(String,Double)]"></a>
+      <a id="intercept():Iterable[(String,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">intercept</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.collection.Iterable">Iterable</span>[(<span class="extype" name="java.lang.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Provides an intercept function that returns a sequence of one key-value pair:</p><div class="fullcomment"><div class="comment cmt"><p>Provides an intercept function that returns a sequence of one key-value pair:</p><pre>assert(intercept() == <span class="std">Seq</span>((<span class="lit">""</span>, <span class="num">1.0</span>)))</pre></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Intercept.html" class="extype" name="com.eharmony.aloha.feature.Intercept">Intercept</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.BasicMath#log2" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="log2(x:Double):Double"></a>
+      <a id="log2(Double):Double"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">log2</span><span class="params">(<span name="x">x: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="BasicMath.html" class="extype" name="com.eharmony.aloha.feature.BasicMath">BasicMath</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.MapImplicitRegressionConversion#longMapToDoubleConversion" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="longMapToDoubleConversion(m:scala.collection.Map[String,Long]):scala.collection.Map[String,Double]"></a>
+      <a id="longMapToDoubleConversion(Map[String,Long]):Map[String,Double]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">longMapToDoubleConversion</span><span class="params">(<span name="m">m: <span class="extype" name="scala.collection.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Long">Long</span>]</span>)</span><span class="result">: <span class="extype" name="scala.collection.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="MapImplicitRegressionConversion.html" class="extype" name="com.eharmony.aloha.feature.MapImplicitRegressionConversion">MapImplicitRegressionConversion</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.reg.RegressionModelValueToTupleConversions#longToIterableTuple2EmptyStringDouble" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="longToIterableTuple2EmptyStringDouble(x:Long):Iterable[(String,Double)]"></a>
+      <a id="longToIterableTuple2EmptyStringDouble(Long):Iterable[(String,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">longToIterableTuple2EmptyStringDouble</span><span class="params">(<span name="x">x: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../models/reg/RegressionModelValueToTupleConversions.html" class="extype" name="com.eharmony.aloha.models.reg.RegressionModelValueToTupleConversions">RegressionModelValueToTupleConversions</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.SkipGrams#nGrams" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="nGrams(s:String,n:Int,sep:String,prefix:String,suffix:String,splitString:String):scala.collection.Map[String,Int]"></a>
+      <a id="nGrams(String,Int,String,String,String,String):Map[String,Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">nGrams</span><span class="params">(<span name="s">s: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="n">n: <span class="extype" name="scala.Int">Int</span></span>, <span name="sep">sep: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;_&quot;</span></span>, <span name="prefix">prefix: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;=&quot;</span></span>, <span name="suffix">suffix: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="splitString">splitString: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;&quot;\s+&quot;&quot;&quot;</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="SkipGrams.html" class="extype" name="com.eharmony.aloha.feature.SkipGrams">SkipGrams</a></dd></dl></div>
+    </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ne(x$1:AnyRef):Boolean"></a>
+      <a id="ne(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notify():Unit"></a>
+      <a id="notify():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#notifyAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notifyAll():Unit"></a>
+      <a id="notifyAll():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.reg.RegressionModelValueToTupleConversions#shortToIterableTuple2EmptyStringDouble" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="shortToIterableTuple2EmptyStringDouble(x:Short):Iterable[(String,Double)]"></a>
+      <a id="shortToIterableTuple2EmptyStringDouble(Short):Iterable[(String,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">shortToIterableTuple2EmptyStringDouble</span><span class="params">(<span name="x">x: <span class="extype" name="scala.Short">Short</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../models/reg/RegressionModelValueToTupleConversions.html" class="extype" name="com.eharmony.aloha.models.reg.RegressionModelValueToTupleConversions">RegressionModelValueToTupleConversions</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.SkipGrams#skipGrams" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="skipGrams(str:String,n:Int,k:Int,sep:String,prefix:String,suffix:String,splitString:String):scala.collection.Map[String,Int]"></a>
+      <a id="skipGrams(String,Int,Int,String,String,String,String):Map[String,Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">skipGrams</span><span class="params">(<span name="str">str: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="n">n: <span class="extype" name="scala.Int">Int</span></span>, <span name="k">k: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">0</span></span>, <span name="sep">sep: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;_&quot;</span></span>, <span name="prefix">prefix: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;=&quot;</span></span>, <span name="suffix">suffix: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="splitString">splitString: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;&quot;\s+&quot;&quot;&quot;</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="SkipGrams.html" class="extype" name="com.eharmony.aloha.feature.SkipGrams">SkipGrams</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.Sos2#sos2" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="sos2(value:Double,min:Long,max:Long,delta:Long):Iterable[(String,Double)]"></a>
+      <a id="sos2(Double,Long,Long,Long):Iterable[(String,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sos2</span><span class="params">(<span name="value">value: <span class="extype" name="scala.Double">Double</span></span>, <span name="min">min: <span class="extype" name="scala.Long">Long</span></span>, <span name="max">max: <span class="extype" name="scala.Long">Long</span></span>, <span name="delta">delta: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Like sos2U but no underflows are reported.</p><div class="fullcomment"><div class="comment cmt"><p>Like sos2U but no underflows are reported.  Instead the values are first clamped to be in range so in the
+event value &lt; min, return a tuple representing the min.</p></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"><p>number to be sos<sub>2</sub> binned</p></dd><dt class="param">min</dt><dd class="cmt"><p>minimum bin value</p></dd><dt class="param">max</dt><dd class="cmt"><p>minimum bin value</p></dd><dt class="param">delta</dt><dd class="cmt"><p>bin size</p></dd><dt>returns</dt><dd class="cmt"><p>sos<sub>2</sub> binned value
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Sos2.html" class="extype" name="com.eharmony.aloha.feature.Sos2">Sos2</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.Sos2#sos2" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="sos2(value:Option[Double],min:Long,max:Long,delta:Long,underflowKey:String,unknownKey:String):Iterable[(String,Double)]"></a>
+      <a id="sos2(Option[Double],Long,Long,Long,String,String):Iterable[(String,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sos2</span><span class="params">(<span name="value">value: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Double">Double</span>]</span>, <span name="min">min: <span class="extype" name="scala.Long">Long</span></span>, <span name="max">max: <span class="extype" name="scala.Long">Long</span></span>, <span name="delta">delta: <span class="extype" name="scala.Long">Long</span></span>, <span name="underflowKey">underflowKey: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="unknownKey">unknownKey: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">See <a href="Sos2.html" class="extype" name="com.eharmony.aloha.feature.Sos2">com.eharmony.aloha.feature.Sos2</a>.</p><div class="fullcomment"><div class="comment cmt"><p>See <a href="Sos2.html" class="extype" name="com.eharmony.aloha.feature.Sos2">com.eharmony.aloha.feature.Sos2</a>.
+</p></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"><p>number to be sos<sub>2</sub> binned</p></dd><dt class="param">min</dt><dd class="cmt"><p>minimum bin value</p></dd><dt class="param">max</dt><dd class="cmt"><p>minimum bin value</p></dd><dt class="param">delta</dt><dd class="cmt"><p>bin size</p></dd><dt class="param">underflowKey</dt><dd class="cmt"><p>When value &lt; min, an underflow key-value pair is emitted.  This controls the key that is
+                    emitted.</p></dd><dt class="param">unknownKey</dt><dd class="cmt"><p>When value is missing, a separate key-value pair is emitted.  This controls the key that is
+                  emitted.</p></dd><dt>returns</dt><dd class="cmt"><p>sos<sub>2</sub> binned value
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Sos2.html" class="extype" name="com.eharmony.aloha.feature.Sos2">Sos2</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.Sos2#sos2" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="sos2(value:Option[Double],min:Long,max:Long,delta:Long):Iterable[(String,Double)]"></a>
+      <a id="sos2(Option[Double],Long,Long,Long):Iterable[(String,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sos2</span><span class="params">(<span name="value">value: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Double">Double</span>]</span>, <span name="min">min: <span class="extype" name="scala.Long">Long</span></span>, <span name="max">max: <span class="extype" name="scala.Long">Long</span></span>, <span name="delta">delta: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Sos2.html" class="extype" name="com.eharmony.aloha.feature.Sos2">Sos2</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.Sos2#sos2I" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="sos2I(value:Double,min:Long,max:Long,delta:Long):Seq[(Int,Double)]"></a>
+      <a id="sos2I(Double,Long,Long,Long):Seq[(Int,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sos2I</span><span class="params">(<span name="value">value: <span class="extype" name="scala.Double">Double</span></span>, <span name="min">min: <span class="extype" name="scala.Long">Long</span></span>, <span name="max">max: <span class="extype" name="scala.Long">Long</span></span>, <span name="delta">delta: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.Seq">Seq</span>[(<span class="extype" name="scala.Int">Int</span>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">This is the purest form of sos<sub>2</sub> binning that clamps the values in the [<i>min</i>, <i>max</i>] interval and then
+bins.</p><div class="fullcomment"><div class="comment cmt"><p>This is the purest form of sos<sub>2</sub> binning that clamps the values in the [<i>min</i>, <i>max</i>] interval and then
+bins.</p><pre>scala&gt;  (<span class="num">0</span> to <span class="num">10</span>).map(_ / <span class="num">4.0</span> - <span class="num">0.25</span>).map(v <span class="kw">=&gt;</span> s<span class="lit">"$v\t${sos2(v, 0, 2, 1)}"</span>).foreach(println)
+-<span class="num">0.25</span>  <span class="std">List</span>((<span class="num">0</span>,<span class="num">1.0</span>))
+<span class="num">0.0</span>    <span class="std">List</span>((<span class="num">0</span>,<span class="num">1.0</span>))
+<span class="num">0.25</span>   <span class="std">List</span>((<span class="num">0</span>,<span class="num">0.75</span>), (<span class="num">1</span>,<span class="num">0.25</span>))
+<span class="num">0.5</span>    <span class="std">List</span>((<span class="num">0</span>,<span class="num">0.5</span>), (<span class="num">1</span>,<span class="num">0.5</span>))
+<span class="num">0.75</span>   <span class="std">List</span>((<span class="num">0</span>,<span class="num">0.25</span>), (<span class="num">1</span>,<span class="num">0.75</span>))
+<span class="num">1.0</span>    <span class="std">List</span>((<span class="num">1</span>,<span class="num">1.0</span>))
+<span class="num">1.25</span>   <span class="std">List</span>((<span class="num">1</span>,<span class="num">0.75</span>), (<span class="num">2</span>,<span class="num">0.25</span>))
+<span class="num">1.5</span>    <span class="std">List</span>((<span class="num">1</span>,<span class="num">0.5</span>), (<span class="num">2</span>,<span class="num">0.5</span>))
+<span class="num">1.75</span>   <span class="std">List</span>((<span class="num">1</span>,<span class="num">0.25</span>), (<span class="num">2</span>,<span class="num">0.75</span>))
+<span class="num">2.0</span>    <span class="std">List</span>((<span class="num">2</span>,<span class="num">1.0</span>))
+<span class="num">2.25</span>   <span class="std">List</span>((<span class="num">2</span>,<span class="num">1.0</span>))</pre></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"><p>number to be sos<sub>2</sub> binned</p></dd><dt class="param">min</dt><dd class="cmt"><p>minimum bin value</p></dd><dt class="param">max</dt><dd class="cmt"><p>minimum bin value</p></dd><dt class="param">delta</dt><dd class="cmt"><p>bin size</p></dd><dt>returns</dt><dd class="cmt"><p>sos<sub>2</sub> binned value
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Sos2.html" class="extype" name="com.eharmony.aloha.feature.Sos2">Sos2</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.Sos2#sos2U" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="sos2U(value:Option[Double],min:Long,max:Long,delta:Long,underflowKey:Option[String],unknown:Option[Iterable[(String,Double)]]):Iterable[(String,Double)]"></a>
+      <a id="sos2U(Option[Double],Long,Long,Long,Option[String],Option[Iterable[(String,Double)]]):Iterable[(String,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sos2U</span><span class="params">(<span name="value">value: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Double">Double</span>]</span>, <span name="min">min: <span class="extype" name="scala.Long">Long</span></span>, <span name="max">max: <span class="extype" name="scala.Long">Long</span></span>, <span name="delta">delta: <span class="extype" name="scala.Long">Long</span></span>, <span name="underflowKey">underflowKey: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="unknown">unknown: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]]</span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"><p>number to be sos<sub>2</sub> binned</p></dd><dt class="param">min</dt><dd class="cmt"><p>minimum bin value</p></dd><dt class="param">max</dt><dd class="cmt"><p>minimum bin value</p></dd><dt class="param">delta</dt><dd class="cmt"><p>bin size</p></dd><dt class="param">underflowKey</dt><dd class="cmt"><p>When value &lt; min, an underflow key-value pair is emitted.  This controls the key that is
+                    emitted.</p></dd><dt class="param">unknown</dt><dd class="cmt"><p>When value is missing (None), a separate key-value pair is emitted.  This controls the pair(s)
+                that is/are emitted.</p></dd><dt>returns</dt><dd class="cmt"><p>
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Sos2.html" class="extype" name="com.eharmony.aloha.feature.Sos2">Sos2</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.Sos2#sos2U" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="sos2U(value:Double,min:Long,max:Long,delta:Long):Iterable[(String,Double)]"></a>
+      <a id="sos2U(Double,Long,Long,Long):Iterable[(String,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sos2U</span><span class="params">(<span name="value">value: <span class="extype" name="scala.Double">Double</span></span>, <span name="min">min: <span class="extype" name="scala.Long">Long</span></span>, <span name="max">max: <span class="extype" name="scala.Long">Long</span></span>, <span name="delta">delta: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"><p></p><pre>scala&gt;  (<span class="num">0</span> to <span class="num">10</span>).map(_ / <span class="num">4.0</span> - <span class="num">0.25</span>).map(v <span class="kw">=&gt;</span> s<span class="lit">"$v\t${sos2U(v, 0, 2, 1)}"</span>).foreach(println)
+-<span class="num">0.25</span>  <span class="std">List</span>((=UNDERFLOW,<span class="num">1.0</span>))
+<span class="num">0.0</span>    <span class="std">List</span>((=<span class="num">0</span>,<span class="num">1.0</span>))
+<span class="num">0.25</span>   <span class="std">List</span>((=<span class="num">0</span>,<span class="num">0.75</span>), (=<span class="num">1</span>,<span class="num">0.25</span>))
+<span class="num">0.5</span>    <span class="std">List</span>((=<span class="num">0</span>,<span class="num">0.5</span>), (=<span class="num">1</span>,<span class="num">0.5</span>))
+<span class="num">0.75</span>   <span class="std">List</span>((=<span class="num">0</span>,<span class="num">0.25</span>), (=<span class="num">1</span>,<span class="num">0.75</span>))
+<span class="num">1.0</span>    <span class="std">List</span>((=<span class="num">1</span>,<span class="num">1.0</span>))
+<span class="num">1.25</span>   <span class="std">List</span>((=<span class="num">1</span>,<span class="num">0.75</span>), (=<span class="num">2</span>,<span class="num">0.25</span>))
+<span class="num">1.5</span>    <span class="std">List</span>((=<span class="num">1</span>,<span class="num">0.5</span>), (=<span class="num">2</span>,<span class="num">0.5</span>))
+<span class="num">1.75</span>   <span class="std">List</span>((=<span class="num">1</span>,<span class="num">0.25</span>), (=<span class="num">2</span>,<span class="num">0.75</span>))
+<span class="num">2.0</span>    <span class="std">List</span>((=<span class="num">2</span>,<span class="num">1.0</span>))
+<span class="num">2.25</span>   <span class="std">List</span>((=<span class="num">2</span>,<span class="num">1.0</span>))</pre></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"><p>number to be sos<sub>2</sub> binned</p></dd><dt class="param">min</dt><dd class="cmt"><p>minimum bin value</p></dd><dt class="param">max</dt><dd class="cmt"><p>minimum bin value</p></dd><dt class="param">delta</dt><dd class="cmt"><p>bin size</p></dd><dt>returns</dt><dd class="cmt"><p>sos<sub>2</sub> binned value
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Sos2.html" class="extype" name="com.eharmony.aloha.feature.Sos2">Sos2</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.Sos2#sos2U" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="sos2U(value:Option[Double],min:Long,max:Long,delta:Long):Iterable[(String,Double)]"></a>
+      <a id="sos2U(Option[Double],Long,Long,Long):Iterable[(String,Double)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sos2U</span><span class="params">(<span name="value">value: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Double">Double</span>]</span>, <span name="min">min: <span class="extype" name="scala.Long">Long</span></span>, <span name="max">max: <span class="extype" name="scala.Long">Long</span></span>, <span name="delta">delta: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Sos2.html" class="extype" name="com.eharmony.aloha.feature.Sos2">Sos2</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@inline</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
+      <a id="synchronized[T0](⇒T0):T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toString():String"></a>
+      <a id="toString():String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait():Unit"></a>
+      <a id="wait():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long,x$2:Int):Unit"></a>
+      <a id="wait(Long,Int):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long):Unit"></a>
+      <a id="wait(Long):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        <div class="parent" name="com.eharmony.aloha.feature.MapImplicitRegressionConversion">
+              <h3>Inherited from <a href="MapImplicitRegressionConversion.html" class="extype" name="com.eharmony.aloha.feature.MapImplicitRegressionConversion">MapImplicitRegressionConversion</a></h3>
+            </div><div class="parent" name="com.eharmony.aloha.feature.SkipGrams">
+              <h3>Inherited from <a href="SkipGrams.html" class="extype" name="com.eharmony.aloha.feature.SkipGrams">SkipGrams</a></h3>
+            </div><div class="parent" name="com.eharmony.aloha.models.tree.decision.DecisionTreeBoolToOptBoolConversions">
+              <h3>Inherited from <a href="../models/tree/decision/DecisionTreeBoolToOptBoolConversions.html" class="extype" name="com.eharmony.aloha.models.tree.decision.DecisionTreeBoolToOptBoolConversions">DecisionTreeBoolToOptBoolConversions</a></h3>
+            </div><div class="parent" name="com.eharmony.aloha.models.reg.RegressionModelValueToTupleConversions">
+              <h3>Inherited from <a href="../models/reg/RegressionModelValueToTupleConversions.html" class="extype" name="com.eharmony.aloha.models.reg.RegressionModelValueToTupleConversions">RegressionModelValueToTupleConversions</a></h3>
+            </div><div class="parent" name="com.eharmony.aloha.feature.SparsityTransforms">
+              <h3>Inherited from <a href="SparsityTransforms.html" class="extype" name="com.eharmony.aloha.feature.SparsityTransforms">SparsityTransforms</a></h3>
+            </div><div class="parent" name="com.eharmony.aloha.feature.TimeConstants">
+              <h3>Inherited from <a href="TimeConstants.html" class="extype" name="com.eharmony.aloha.feature.TimeConstants">TimeConstants</a></h3>
+            </div><div class="parent" name="com.eharmony.aloha.feature.Intercept">
+              <h3>Inherited from <a href="Intercept.html" class="extype" name="com.eharmony.aloha.feature.Intercept">Intercept</a></h3>
+            </div><div class="parent" name="com.eharmony.aloha.feature.Indicator">
+              <h3>Inherited from <a href="Indicator.html" class="extype" name="com.eharmony.aloha.feature.Indicator">Indicator</a></h3>
+            </div><div class="parent" name="com.eharmony.aloha.feature.CustomSos2">
+              <h3>Inherited from <a href="CustomSos2.html" class="extype" name="com.eharmony.aloha.feature.CustomSos2">CustomSos2</a></h3>
+            </div><div class="parent" name="com.eharmony.aloha.feature.Sos2">
+              <h3>Inherited from <a href="Sos2.html" class="extype" name="com.eharmony.aloha.feature.Sos2">Sos2</a></h3>
+            </div><div class="parent" name="com.eharmony.aloha.feature.Comparisons">
+              <h3>Inherited from <a href="Comparisons.html" class="extype" name="com.eharmony.aloha.feature.Comparisons">Comparisons</a></h3>
+            </div><div class="parent" name="com.eharmony.aloha.feature.BasicMath">
+              <h3>Inherited from <a href="BasicMath.html" class="extype" name="com.eharmony.aloha.feature.BasicMath">BasicMath</a></h3>
+            </div><div class="parent" name="com.eharmony.aloha.feature.DefaultPossessor">
+              <h3>Inherited from <a href="DefaultPossessor.html" class="extype" name="com.eharmony.aloha.feature.DefaultPossessor">DefaultPossessor</a></h3>
+            </div><div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+            </div>
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../../../lib/template.js"></script>
+    </body>
+      </html>
