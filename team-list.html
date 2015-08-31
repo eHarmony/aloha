@@ -8,7 +8,7 @@
 
 	<head>
 		<meta charset="UTF-8" />
-		<title>Aloha</title>
+		<title>Team list | aloha</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="description" content="" />
 		<meta http-equiv="content-language" content="en" />
@@ -33,7 +33,7 @@
 <link rel="stylesheet" href=".//css/highlight/github.css"/>
 	</head>
 
-	<body class="page-index project-aloha" data-spy="scroll" data-offset="60" data-target="#toc-scroll-target">
+	<body class="page-team-list project-aloha" data-spy="scroll" data-offset="60" data-target="#toc-scroll-target">
 
 		<div class="navbar navbar-fixed-top">
 			<div class="navbar-inner">
@@ -71,79 +71,96 @@
 	================================================== -->
 
 	<header>
+		<hr class="toc-separator" />
+		<div id="toc-bar" class="navbar" data-spy="affix" data-offset-top="40">
+			<div class="navbar-inner">
+				<div id="toc-scroll-target" class="container">
+					<a class="btn btn-navbar" data-toggle="collapse" data-target="#toc-nav-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</a>
+					<div class="nav-collapse collapse" id="toc-nav-collapse">
+						<ul id="toc" class="nav">
+						<li class="toplevel"><a href="#The_Team" title="The Team">The Team</a></li>
+						<li class="toplevel"><a href="#Members" title="Members">Members</a></li>
+						<li class="toplevel"><a href="#Contributors" title="Contributors">Contributors</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
 	</header>
 
 	<div class="main-body">
 	<div class="row">
 		<div class="span12">
 			<div class="body-content">
-				<div class="jumbotron"> 
- <div class="container"> 
-  <h1>Aloha</h1> 
-  <p>A scala-based feature generation and modeling framework</p> 
-  <a href="getting_started.html" class="btn btn-primary btn-large">Get Started &raquo;</a> 
+<div class="section"> 
+ <div class="page-header">
+  <h2 id="The_Team">The Team</h2>
+ </div> 
+ <a name="The_Team"></a> 
+ <p>A successful project requires many people to play many roles. Some members write code or documentation, while others are valuable as testers, submitting patches and suggestions.</p> 
+ <p>The team is comprised of Members and Contributors. Members have direct access to the source of a project and actively evolve the code-base. Contributors improve the project through submission of patches and suggestions to the Members. The number of Contributors to the project is unbounded. Get involved today. All contributions to the project are greatly appreciated.</p> 
+ <div class="section"> 
+  <h3 id="Members">Members</h3> 
+  <a name="Members"></a> 
+  <p>The following is a list of developers with commit privileges that have directly contributed to the project in one way or another.</p> 
+  <table border="0" class="bodyTable table table-striped table-hover"> 
+   <thead> 
+    <tr class="a"> 
+     <th>Image</th> 
+     <th>Id</th> 
+     <th>Name</th> 
+     <th>Email</th> 
+     <th>Organization</th> 
+     <th>Organization URL</th> 
+     <th>Roles</th> 
+     <th>Time Zone</th> 
+     <th>Actual Time (GMT)</th> 
+    </tr> 
+   </thead> 
+   <tbody> 
+    <tr class="b"> 
+     <td><img src="http://www.gravatar.com/avatar/f604ae47b6c3d9286e45e508931baa94?d=mm&amp;s=60" alt="" /></td> 
+     <td><a name="ryan"></a>ryan</td> 
+     <td>Ryan Deak</td> 
+     <td><a class="externalLink" href="mailto:RyanDeak@eharmony.com">RyanDeak@eharmony.com</a></td> 
+     <td>eHarmony</td> 
+     <td><a class="externalLink" href="http://www.eharmony.com">http://www.eharmony.com</a></td> 
+     <td>creator, developer</td> 
+     <td>-7</td> 
+     <td><span id="developer-0">-7</span></td> 
+    </tr> 
+   </tbody> 
+  </table> 
+ </div> 
+ <div class="section"> 
+  <h3 id="Contributors">Contributors</h3> 
+  <a name="Contributors"></a> 
+  <p>There are no contributors listed for this project. Please check back again later.</p> 
+  <script type="text/javascript">
+function offsetDate(id, offset) {
+    var now = new Date();
+    var nowTime = now.getTime();
+    var localOffset = now.getTimezoneOffset();
+    var developerTime = nowTime + ( offset * 60 * 60 * 1000 )+ ( localOffset * 60 * 1000 );
+    var developerDate = new Date(developerTime);
+
+    document.getElementById(id).innerHTML = developerDate;
+}
+
+function init(){
+    offsetDate('developer-0', '-7');
+}
+
+window.onLoad = init();
+</script> 
  </div> 
 </div>
 			</div>
 		</div>
-	</div>
-	<div class="row columns columns2">
-		<div class="span6">
-			<h2 id="Motivation">Motivation</h2>
-<p>Data science is filled with many mundane tasks that take up a majority of the data scientist’s time. Much of this revolves around formatting and transforming data to a form more amenable to learning or inference. Aloha attempts to alleviate this burden by providing a few things: </p>
-<ul> 
- <li>a DSL for feature specification based on familiar syntax</li> 
- <li>generic models that make use of this DSL</li> 
- <li>a pipeline for dataset generation using the same DSL</li> 
-</ul>
-<div class="section">     
-</div>
-		</div>
-		<div class="span6">
-			<h2 id="How_does_Aloha_help">How does Aloha help?</h2>
-<p>Oftentimes machine learning libraries and models employ linear-algebraic data structure as their input type. For instance:</p>
-<ul> 
- <li><a class="externalLink" href="http://www.cs.waikato.ac.nz/ml/weka/">Weka</a> ↣ <a class="externalLink" href="http://weka.sourceforge.net/doc.dev/weka/core/Instance.html">Instance</a></li> 
- <li><a class="externalLink" href="http://www.torch.ch/">Torch</a> ↣ <a class="externalLink" href="https://github.com/torch/torch7/blob/master/doc/tensor.md">Tensor</a></li> 
- <li><a class="externalLink" href="http://mahout.apache.org/">Mahout</a> ↣ <a class="externalLink" href="https://builds.apache.org/job/Mahout-Quality/javadoc/org/apache/mahout/cf/taste/model/DataModel.html">DataModel</a></li> 
- <li><b><i><span class="color-highlight">Aloha</span></i></b> ↣ [ <b><i>Your KV Store’s Type</i></b> ]</li> 
-</ul>
-<p>In Aloha, models are written generically, and different <a class="externalLink" href="http://en.wikipedia.org/wiki/Formal_semantics_of_programming_languages">semantics</a> implementations are provided to give meaning to the features extracted from the arbitrary input types on which the models operate.</p>
-<div class="section">     
-</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="span6">
-			<h2 id="Getting_Started">Getting Started</h2>
-<p>See the <a href="getting_started.html">Getting Started Guide</a>.</p>
-<p><a href="eg/dataset/index.html" class="btn btn-primary btn-large btn-block">Learn to Create a Dataset</a></p>
-<p><a href="model_formats.html" class="btn btn-primary btn-large btn-block">Learn to Create a Model</a></p>
-<div class="section">  
- <!-- <dependency>
-  <groupId>com.eharmony</groupId>
-  <artifactId>aloha-core</artifactId>
-  <version>2.0.0</version>
-</dependency> -->  
-</div>
-		</div>
-		<div class="span6">
-			<h2 id="Maven_Setup">Maven Setup</h2>
-<div class="source"> 
- <div class="source"> 
-  <div class="source"> 
-   <pre class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-title">dependency</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-title">groupId</span>&gt;</span>com.eharmony<span class="hljs-tag">&lt;/<span class="hljs-title">groupId</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-title">artifactId</span>&gt;</span>aloha-core<span class="hljs-tag">&lt;/<span class="hljs-title">artifactId</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-title">version</span>&gt;</span><span id="version"></span><span class="hljs-tag">&lt;/<span class="hljs-title">version</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-title">dependency</span>&gt;</span>
-</pre> 
-  </div> 
- </div> 
-</div>
-		</div>
-	</div>
-	<div class="row">
 	</div>
 	</div>
 
@@ -157,8 +174,8 @@
 				<div class="span3 bottom-nav">
 					<ul class="nav nav-list">
 						<li class="nav-header">Main</li>
-						<li class="active">
-							<a href="#" title="Home">Home</a>
+						<li >
+							<a href="./" title="Home">Home</a>
 						</li>
 						<li >
 							<a href="http://github.com/eharmony/aloha/" title="Code" class="externalLink">Code</a>
@@ -168,7 +185,36 @@
 						</li>
 						<li class="nav-header">Maven Documentation</li>
 						<li >
-							<a href="project-info.html" title="Project Information">Project Information <i class="icon-chevron-right"></i></a>
+							<a href="project-info.html" title="Project Information">Project Information <i class="icon-chevron-down"></i></a>
+							<ul class="nav nav-list">
+						<li >
+							<a href="project-summary.html" title="Project Summary">Project Summary</a>
+						</li>
+						<li >
+							<a href="license.html" title="Project License">Project License</a>
+						</li>
+						<li >
+							<a href="modules.html" title="Project Modules">Project Modules</a>
+						</li>
+						<li class="active">
+							<a href="#" title="Project Team">Project Team</a>
+						</li>
+						<li >
+							<a href="source-repository.html" title="Source Repository">Source Repository</a>
+						</li>
+						<li >
+							<a href="issue-tracking.html" title="Issue Tracking">Issue Tracking</a>
+						</li>
+						<li >
+							<a href="dependencies.html" title="Dependencies">Dependencies</a>
+						</li>
+						<li >
+							<a href="dependency-convergence.html" title="Dependency Convergence">Dependency Convergence</a>
+						</li>
+						<li >
+							<a href="plugins.html" title="Project Plugins">Project Plugins</a>
+						</li>
+							</ul>
 						</li>
 					</ul>
 				</div>
@@ -245,8 +291,7 @@
 	<script src=".//js/lightbox.min.js"></script>
 	<script src=".//js/reflow-scroll.js"></script>
 	
-<script src=".//js/aloha-release-version.js"></script>
-<script type="text/javascript">$(document).ready(function() {alohaReleaseVersion('#version');});</script>
+<script src=".//js/highlight/highlight.pack.js"></script>
 	<script src=".//js/reflow-skin.js"></script>
 
 	</body>
