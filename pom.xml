@@ -88,9 +88,6 @@
         <github.global.server>github</github.global.server>
         <site.deploy.id>gh-pages</site.deploy.id>
         <site.deploy.url />
-
-        <repositoryOwner>eharmony</repositoryOwner>
-        <repositoryName>aloha</repositoryName>
     </properties>
 
     <url>${site.url}</url>
@@ -430,6 +427,8 @@
                     <!-- this does the trick to place every module in the correct subfolder -->
                     <path>${project.distributionManagement.site.url}</path>
                     <merge>true</merge>
+                    <repositoryOwner>eharmony</repositoryOwner>
+                    <repositoryName>aloha</repositoryName>
                 </configuration>
                 <executions>
                     <execution>
