@@ -313,7 +313,6 @@
                     <configuration>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <useReleaseProfile>false</useReleaseProfile>
-                        <goals>deploy</goals>
                     </configuration>
                     <dependencies>
                         <dependency>
@@ -425,7 +424,7 @@
                 <!-- GitHub site plug-in for deployment to GitHub pages -->
                 <groupId>com.github.github</groupId>
                 <artifactId>site-maven-plugin</artifactId>
-                <version>0.9</version>
+                <version>0.12</version>
                 <configuration>
                     <message>Creating site for ${project.artifactId}, ${project.version}</message>
                     <!-- this does the trick to place every module in the correct subfolder -->
