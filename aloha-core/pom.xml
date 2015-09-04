@@ -93,7 +93,7 @@
 		<dependency>
 			<groupId>com.twitter</groupId>
 			<artifactId>util-core_${scala.major.version}</artifactId>
-			<version>6.22.1</version>
+			<version>6.27.0</version>
 		</dependency>
 
 		<!-- For cli to decode base64-encoded protos. -->
