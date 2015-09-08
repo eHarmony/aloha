@@ -1,4 +1,4 @@
-//scala -feature -deprecation 
+//scala -feature -deprecation \
 //  -cp $HOME/.m2/repository/com/google/protobuf/protobuf-java/2.4.1/protobuf-java-2.4.1.jar:\
 //$HOME/.m2/repository/commons-codec/commons-codec/1.3/commons-codec-1.3.jar:\
 //$PWD/aloha-core/target/test-classes/
