@@ -25,6 +25,19 @@
 #
 # =================================================================================================
 
+# From Stack Overflow: "Preserving quotes in bash function parameters"
+# Q: http://stackoverflow.com/questions/3260920/preserving-quotes-in-bash-function-parameters
+# A: http://stackoverflow.com/a/24179878
+function requote() {
+    local res=""
+    for x in "$@" ; do
+        # try to figure out if quoting was required for the $x:
+        grep -q "[[:space:]]" <<< "$x" && res="${res} '${x}'" || res="${res} ${x}"
+    done
+    # remove first space and print:
+    sed -e 's/^ //' <<< "${res}"
+}
+
 usage() {
 (cat <<EOM
 usage: aloha-cli -cp /path/to/some.jar:/path/to/other.jar:... [args to CLI] 
@@ -43,4 +56,9 @@ else
     usage; exit 3
 fi
 
-java -cp $CP com.eharmony.aloha.cli.Cli $@
+# echo java -cp $CP com.eharmony.aloha.cli.Cli $@
+
+# I hate eval but whatever.
+ARGS=$(requote "$@")
+COMMAND="java -cp $CP com.eharmony.aloha.cli.Cli $ARGS"
+eval $COMMAND
