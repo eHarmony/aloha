@@ -84,7 +84,7 @@ aloha-cli/bin/aloha-cli                                  \
   -cp $(find $PWD/aloha-cli -name "*.jar" | grep dep):\
 $(find $PWD/aloha-core -name "*.jar" | grep test)        \
   --dataset                                              \
-  -s $(find $PWD/aloha-core/src -name 'proto_spec2.js')  \
+  -s $(find $PWD/aloha-core/src -name 'proto_spec2.json')\
   -p com.eharmony.aloha.test.proto.Testing.UserProto     \
   -i $(find $PWD/aloha-core/src -name 'fizz_buzzs.proto')\
   --vw_labeled /tmp/dataset.vw
@@ -151,14 +151,18 @@ total feature number = 12
 To create an Aloha model, we need two things.  The first is the specification file used to create the dataset.  The 
 second is the binary VW model.  To build the model, we just use the CLI again.
 
+<span class="label">bash script</span>
+
 ```bash
 aloha-cli/bin/aloha-cli                                       \
   -cp $(find $PWD/aloha-cli -name "*.jar" | grep dep)         \
   --vw                                                        \
+  --vw-args "--quiet -t"                                      \
   --spec $(find $PWD/aloha-core/src -name 'proto_spec2.json') \
-  --model file://tmp/model.vw                                 \
+  --model /tmp/model.vw                                       \
   --name "test-model"                                         \
-  --id 101
+  --id 101                                                    \
+| tee /tmp/aloha-vw-model.json
 ```
 
 This prints to *STDOUT* JSON similar to the following.  The following has rearranged key-value pairs and added 
@@ -169,20 +173,79 @@ above command.
 
 ```json
 {
-  "modelType":"VwJNI",
-  "modelId": { "id": 101, "name": "test-model" },
-  "namespaces": {
-    "photos": [ "num_photos", "avg_photo_height" ] 
-  },
+  "modelType": "VwJNI",
+  "modelId": { "id": 101, "name":"test-model" },
   "features": {
-    "name":             { "spec": "ind(${name})",   "defVal": [ ["=UNK",1.0] ] },
-    "gender":           { "spec": "ind(${gender})", "defVal": [ ["=UNK",1.0] ] },
-    "bmi":              { "spec": "${bmi}",         "defVal": [ ["=UNK",1.0] ] },
-    "num_photos":       "${photos}.size",
-    "avg_photo_height": "(${photos.height}.flatten : Seq[Int]).sum / ${photos}.size"
+    "name":       { "spec": "ind(${name})",   "defVal": [["=UNK",1.0]] },
+    "gender":     { "spec": "ind(${gender})", "defVal": [["=UNK",1.0]] },
+    "bmi":        { "spec": "${bmi}",         "defVal": [["=UNK",1.0]] },
+    "num_photos": "${photos}.size",
+    "avg_photo_height": "{ val hs = ${photos.height};  hs.flatten.sum / hs.filter(_.nonEmpty).size }"
   },
-  "vw":{
-    "model": "BwAAADcuMTAuMABtAABIwgAASEIS [More base64-encoded data ...]"
+  "namespaces": {
+    "photos": [ "num_photos", "avg_photo_height" ]
+  },
+  "vw": {
+    "model":"[ base64-encoded data ]",
+    "params":"--quiet -t",
+    "creationDate":1441752810543
   }
 }
 ```
+
+## Aloha Model Prediction via CLI
+
+To preform predictions using the command line interface, one needs to use the `--modelrunner` flag.  There are
+many options for this.  The most import here are:
+ 
+* `-A` which adds the input after the predictions.  Since no separator was provided, *TAB* is used to separate 
+  the predictions and the input data.  It's easy to change the separator using the `--outsep` flag.  
+* `--output-type` is another import flag which determines the output type of the model.  This is important to get
+  right because types may be coerced and this could render weird results.  For instance, if using a model to predict
+  probabilities and the output type is an integral type, the values returned will likely all be 0.  This is because
+  coercion from real-valued to integrally valued numbers in done by dropping the decimal places.  If the value is in
+  the interval [0, 1), then it will be truncated to 0.
+* `--imports` adapts the DSL by importing JVM code.
+* `-p` flag says that base64-encoded protocol buffers will be used as the input format.
+
+<span class="label">bash script</span>
+
+```bash
+cat $(find $PWD/aloha-core/src -name 'fizz_buzzs.proto')               \
+| aloha-cli/bin/aloha-cli                                              \
+  -cp $(find $PWD/aloha-cli -name "*.jar" | grep dep):\
+$(find $PWD/aloha-core -name "*.jar" | grep test)                      \
+  --modelrunner                                                        \
+  --output-type Double                                                 \
+  -A                                                                   \
+  --imports "scala.math._,com.eharmony.aloha.feature.BasicFunctions._" \
+  -p com.eharmony.aloha.test.proto.Testing.UserProto                   \
+  /tmp/aloha-vw-model.json
+```
+
+<span class="label label-success">output</span>
+
+<pre>
+0.732928454875946	CAESBEFsYW4YASUAALhBKg0IARABGQAAAAAAAPA/Kg0IAhACGQAAAAAAAABA
+0.7543833255767822	CAESBEthdGUYAioNCAMQAxkAAAAAAAAIQA==
+</pre>
+
+If you don't want the input, just omit the `-A` flag or pipe and process the data elsewhere. 
+
+### Sanity checking the Aloha model
+
+Notice that the outputs here are:
+
+* 0.732928454875946
+* 0.7543833255767822
+
+We saw in the section [Verifying the Model](#Verifying_the_Model), the that predictions were:
+
+* 0.7329
+* 0.7544
+
+Which lines up.  *It appears our model is working!*
+
+## Programatic Aloha Model Prediction
+
+See the separate page [programatic Aloha model usage](prog_model_usage.html) for more details.
