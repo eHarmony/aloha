@@ -29,7 +29,7 @@ If you don't have Homebrew installed, follow the instructions at [http://brew.sh
 ### Optionally Install and Run Zinc
 
 While not necessary, [Zinc](https://www.typesafe.com/blog/zinc-and-incremental-compilation) with Maven 3 can provide 
-speed ups when building Aloha.  Zinc is an [Scala](http://scala-lang.org) incremental compiler produced by 
+speed ups when building Aloha.  Zinc is an incremental [Scala](http://scala-lang.org) compiler produced by 
 [Typesafe](https://www.typesafe.com), the company providing commercial support for Scala.  
 
 
