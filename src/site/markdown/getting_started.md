@@ -168,7 +168,7 @@ This prints to *STDOUT* JSON similar to the following.  The following has rearra
 whitespace.  Under the [JSON specification](http://json.org), this is equivalent to the JSON printed by the 
 above command.
 
-<span class="label label-success">output</span>
+<span class="label label-success">/tmp/aloha-vw-model.json</span>
 
 ```json
 {
