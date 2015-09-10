@@ -70,7 +70,7 @@ the two parameters:
 - weight: optional float
 
 and the function of these two parameters. Let's say that we could write scala functions to extract the height and width
-from out input type.  For simplicity, let's say we are working with a `Map[String, Any]`.  Then, our functions could 
+from the input type.  For simplicity, let's say we are working with a `Map[String, Any]`.  Then, our functions could 
 be written like the following: 
 
 ```scala
@@ -141,7 +141,7 @@ Aloha currently has one main type of Semantics, namely
 [CompiledSemantics](aloha-core/scaladocs/index.html#com.eharmony.aloha.semantics.compiled.CompiledSemantics). CompiledSemantics 
 is extremely powerful because it allows:
 
-1. the use of not only arbitrary scala code 
+1. the use of any arbitrary scala code 
 1. importing code defined inside *OR* outside the Aloha library
 
 The CompiledSemantics is responsible for transforming the feature specification to a function but it delegates 
@@ -200,8 +200,8 @@ Then the output of the feature would be *3* in this instance.  If we changed the
 - `com.fictitious.company.Ops.add`
 - `com.fictitious.company.Implicits.four`
 
-then the **same feature specification** would yield a value of *5*.  While this can be extremely useful, it is also
-extremely powerful.  It is imperative to understand the imports being imported into scope.
+then the **same feature specification** would yield a value of *5*.  While this can be extremely useful, it can also
+be extremely dangerous.  It is imperative to understand the imports being imported into scope.
 
 
 ### Protobuf Plugin 
