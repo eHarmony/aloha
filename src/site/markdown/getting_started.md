@@ -22,7 +22,7 @@ If you don't have Homebrew installed, follow the instructions at [http://brew.sh
 
 ### Installing Maven Manually
 
-[Download it here](http://maven.apache.org/download.cgi).  Aloha has be tested on *2.2.1* and *3.x.x*.
+[Download it here](http://maven.apache.org/download.cgi).  Aloha has been tested on Maven *2.2.1* and *3.x.x*.
 
 
 
@@ -73,7 +73,7 @@ mvn -Dcompile=incremental clean install
 ## Create a VW Dataset 
 
 *[eHarmony](http://www.eharmony.com)* uses [Vowpal Wabbit](https://github.com/JohnLangford/vowpal_wabbit/wiki) for many
-of its predictive tasks so Aloha provides support for VW from creating datasets, to creating native VW models on the 
+of its predictive tasks so Aloha provides support for VW including dataset creation and native VW model creation on the 
 [JVM](https://en.wikipedia.org/wiki/Java_virtual_machine).
 
 <span class="label">bash script</span>
@@ -102,19 +102,15 @@ Given our dataset in `/tmp/dataset.vw`, we can create a VW model with the normal
 a simple logistic regression model with all default parameters and one pass over the data, do: 
 
 ```bash
-cat /tmp/dataset.vw                          \
-| vw --link logistic                         \
-     --loss_function logistic                \
-     --readable_model /tmp/model_readable.vw \
-     -f /tmp/model.vw
+vw -d /tmp/dataset.vw --link logistic --loss_function logistic --readable_model /tmp/model_readable.vw -f /tmp/model.vw
 ```
 
-This creates binary model `/tmp/model.vw` and a human-readable model `/tmp/model_readable.vw`.
+This creates the binary model `/tmp/model.vw` and a human-readable model `/tmp/model_readable.vw`.
 
 ### Verifying the Model
 
 ```bash
-cat /tmp/dataset.vw | vw --loss_function logistic -i /tmp/model.vw -t 
+vw -d /tmp/dataset.vw --loss_function logistic -i /tmp/model.vw -t 
 ```
 
 <span class="label label-success">output</span>
@@ -194,12 +190,12 @@ above command.
 
 ## Aloha Model Prediction via CLI
 
-To preform predictions using the command line interface, one needs to use the `--modelrunner` flag.  There are
+To perform predictions using the command line interface, one needs to use the `--modelrunner` flag.  There are
 many options for this.  The most import here are:
  
 * `-A` which adds the input after the predictions.  Since no separator was provided, *TAB* is used to separate 
   the predictions and the input data.  It's easy to change the separator using the `--outsep` flag.  
-* `--output-type` is another import flag which determines the output type of the model.  This is important to get
+* `--output-type` is another important flag which determines the output type of the model.  This is important to get
   right because types may be coerced and this could render weird results.  For instance, if using a model to predict
   probabilities and the output type is an integral type, the values returned will likely all be 0.  This is because
   coercion from real-valued to integrally valued numbers in done by dropping the decimal places.  If the value is in
