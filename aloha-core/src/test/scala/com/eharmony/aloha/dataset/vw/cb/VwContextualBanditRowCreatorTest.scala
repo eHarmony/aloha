@@ -24,7 +24,7 @@ class VwContextualBanditRowCreatorTest {
             p = GenFunc.f0("prob", (_: Any) => vp)
             spec = VwContextualBanditRowCreator(fef, 0 to 0 toList, Nil, None, a, c, p)
             exp = (va, vc, vp) match {
-                case (Some(av), Some(cv), Some(pv)) => s"$av:${VwRowCreator.LabelDecimalFormatter.format(cv)}:${VwRowCreator.LabelDecimalFormatter.format(pv)}|"
+                case (Some(av), Some(cv), Some(pv)) => s"$av:${VwRowCreator.LabelDecimalFormatter.format(cv)}:${VwRowCreator.LabelDecimalFormatter.format(pv)} |"
                 case _ => ""
             }
         } assertEquals(exp, spec(())._2.toString)
