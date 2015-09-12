@@ -29,7 +29,7 @@ class VwContextualBanditRowCreatorProducerTest {
 
         // TODO: Work on removing trailing and leading spaces.  This is clearly not perfect.
         val expected = Seq(
-            "2:1:0|A name=Alex",
+            "2:1:0 |A name=Alex",
             "|A name=Bill",
             "|A name=Carl",
             "|A name=Dale"

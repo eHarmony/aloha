@@ -37,7 +37,7 @@ extends VwRowCreator[A](featuresFunction, defaultNamespace, namespaces, normaliz
                 append(a).append(":").
                 append(VwRowCreator.LabelDecimalFormatter.format(c)).append(":").
                 append(VwRowCreator.LabelDecimalFormatter.format(p)).
-                append(if (0 == iv.length()) " |" else iv)
+                append(if (0 == iv.length()) " |" else s" $iv")
 
 //                append("|").
 //                append(iv)
