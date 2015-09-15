@@ -212,7 +212,28 @@ in the `com.eharmony.aloha.semantics.compiled.plugin.proto` package in [aloha-co
 plugin allows for arbitrary kinds of [Protocol Buffer](https://developers.google.com/protocol-buffers/) instances 
 that extend [GeneratedMessage](https://developers.google.com/protocol-buffers/docs/reference/java/com/google/protobuf/GeneratedMessage).
 
-See [dependencies](aloha-core/dependencies.html) for the version of protocol buffers used in Aloha.
+See [dependencies](aloha-core/dependencies.html) for the version of protocol buffers used in Aloha.  At the time of 
+this writing, Aloha uses protocol buffers 2.4.1.
+
+```scala
+// Scala Code: Constructing a compiled semantics protocol buffer plugin is easy.
+import com.eharmony.aloha.semantics.compiled.plugin.proto.CompiledSemanticsProtoPlugin
+import some.proto.defs.MyProto
+val plugin = CompiledSemanticsProtoPlugin[MyProto]
+
+// pass to compiled semantics ... (more on this later)
+```
+
+#### Future structured input datatypes Aloha may support
+ 
+One of the niceties of Aloha is that it allows models to accept structured input in a typesafe way.  Currently, this 
+is limited to protocol buffers but we'd like to extend allow to integrate with other serialization protocols such as
+
+* [Avro](https://avro.apache.org)
+* [Thrift](https://thrift.apache.org)
+
+To accomplish this, we'll need to remove the current coupling with protocol buffers for the output score object.  If
+someone wants to help with this, *we'd love the help!*
 
 ### CSV Plugin 
 
@@ -314,3 +335,5 @@ val modelFile: java.io.File = ...
 val modelAttempt = typedFactory.fromFile(modelFile)
 val model = modelAttempt.get 
 ```
+
+For more information on creating semantics and factories, see the [Creating Semantics](creating_semantics.html) page.
