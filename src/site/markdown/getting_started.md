@@ -79,6 +79,9 @@ of its predictive tasks so Aloha provides support for VW from creating datasets,
 <span class="label">bash script</span>
 
 ```bash
+# Note that the first jar is to bring in the command line tools.  The second jar is for the 
+# protocol buffer generated classes.
+#
 aloha-cli/bin/aloha-cli                                  \
   -cp $(find $PWD/aloha-cli -name "*.jar" | grep dep):\
 $(find $PWD/aloha-core -name "*.jar" | grep test)        \
@@ -95,6 +98,74 @@ $(find $PWD/aloha-core -name "*.jar" | grep test)        \
 1 1| name=Alan gender=MALE bmi:23 |photos num_photos:2 avg_photo_height
 1 1| name=Kate gender=FEMALE bmi=UNK |photos num_photos avg_photo_height:3
 </pre>
+
+### Create a VW dataset programmatically
+
+```scala
+// Scala code
+
+import java.io.File
+import scala.util.Try
+import scala.concurrent.ExecutionContext.Implicits.global
+import com.google.protobuf.GeneratedMessage
+import com.eharmony.aloha.reflect.RefInfo
+import com.eharmony.aloha.dataset.{RowCreator, RowCreatorProducer, RowCreatorBuilder}
+import com.eharmony.aloha.dataset.vw.labeled.VwLabelRowCreator
+import com.eharmony.aloha.semantics.compiled.CompiledSemantics
+import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
+import com.eharmony.aloha.semantics.compiled.plugin.proto.CompiledSemanticsProtoPlugin
+
+def getRowCreator[T <: GeneratedMessage : RefInfo, S <: RowCreator[T]](
+    producers: List[RowCreatorProducer[T, S]], 
+    alohaJsonSpecFile: File,
+    alohaCacheDir: Option[File] = None): Try[S] = {
+  val plugin = CompiledSemanticsProtoPlugin[T]
+  val compiler = TwitterEvalCompiler(classCacheDir = alohaCacheDir)
+  val semantics = CompiledSemantics(compiler, plugin, Nil)
+  val specBuilder = RowCreatorBuilder(semantics, producers)
+  specBuilder.fromFile(alohaJsonSpecFile)
+}
+
+val myAlohaJsonSpecFile: File = ... 
+val alohaCacheDir: File = ... 
+
+val creatorTry: Try[VwLabelRowCreator[MyProto]] = 
+  getRowCreator[MyProto, VwLabelRowCreator[MyProto]](
+    List(new VwLabelRowCreator.Producer[MyProto]), 
+    myAlohaJsonSpecFile,
+    Option(alohaCacheDir))
+
+// Throws if the creator wasn't produced.
+val creator = creatorTry.get
+
+
+// Creating a row of a dataset with an instance of MyProto.
+val myProto: MyProto = ...
+
+// missingAndErrors: com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo(missingFeatures
+// output: CharSequence
+val (missingAndErrors, output) = creator(myProto)
+```
+
+
+
+### Dataset types
+
+Aloha currently supports creating the following types of datasets:
+
+vw, vw_labeled, vw_cb, libsvm, libsvm_labeled, csv
+1. Unlabeled [VW](https://github.com/JohnLangford/vowpal_wabbit/wiki/Input-format) datasets using the `--vw` flag
+1. Labeled [VW](https://github.com/JohnLangford/vowpal_wabbit/wiki/Input-format) datasets using the `--vw_labeled` flag
+1. Contextual Bandit [VW](https://github.com/JohnLangford/vowpal_wabbit/wiki/Input-format) datasets using the `--vw_cb` flag
+1. Unlabeled [LIBSVM](http://www.quora.com/What-is-this-data-format-in-LIBSVM-training-dataset) using the `--libsvm` flag
+1. Labeled [LIBSVM](http://www.quora.com/What-is-this-data-format-in-LIBSVM-training-dataset) using the `--libsvm_labeled` flag
+1. [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) datasets using the `--csv` flag
+
+One can generate compatible dataset types simultaneously for the same dataset by including the dataset *type* flag 
+along with the file to which the dataset should be output.  To output to standard out, use the filename `-`.  Note
+that only one dataset can be output to a given file.  Outputting two or more datasets to the same output file has 
+undefined behaviour.
+
 
 ## Create a VW Model
 
@@ -248,3 +319,14 @@ Which lines up.  *It appears our model is working!*
 ## Programatic Aloha Model Prediction
 
 See the separate page [programatic Aloha model usage](prog_model_usage.html) for more details.
+
+## Future plans
+
+In the near future, we will start on integrating Aloha with [H<sub>2</sub>O](http://h2o.ai).
+
+## Ways to extend to ML libraries not natively supported
+
+One can think of this as being analogous to hadoop streaming.  Aloha can be integrated with other platforms
+by using it for feature transformation and dataset production.  This is an easy path for the data scientist
+as it can alleviate the burden on extracting and transforming features, especially when extract values from
+Protocol buffers.

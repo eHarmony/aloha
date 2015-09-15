@@ -117,6 +117,13 @@
                 <model_formats>
                     <tocTopMax>3</tocTopMax>
                 </model_formats>
+                <creating_semantics>
+                    <sections>
+                        <body />
+                        <columns>2</columns>
+                        <body />
+                    </sections>
+                </creating_semantics>
             </pages>
         </reflowSkin>
     </custom>
