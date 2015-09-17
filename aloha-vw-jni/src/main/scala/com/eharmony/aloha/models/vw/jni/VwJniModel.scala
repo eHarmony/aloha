@@ -20,7 +20,7 @@ import com.eharmony.aloha.score.basic.ModelOutput
 import com.eharmony.aloha.score.conversions.ScoreConverter
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.semantics.func.GenAggFunc
-import com.eharmony.aloha.util.{EitherHelpers, Logging}
+import com.eharmony.aloha.util.{SimpleTypeSeq, EitherHelpers, Logging}
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.io.IOUtils
 import spray.json.{DeserializationException, JsValue, JsonReader, pimpAny, pimpString}
@@ -130,12 +130,14 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
 
     private[this] val initialRegressorPresent = """^(.*\s)?-i.*$"""
 
+    private[jni] val classLabelsKey = "classLabels"
+
     override def parser: ModelParser = Parser
 
     object Parser extends ModelParserWithSemantics with EitherHelpers { self =>
         val modelType = "VwJNI"
 
-        override def modelJsonReader[A, B: JsonReader: ScoreConverter](semantics: Semantics[A]): JsonReader[VwJniModel[A, B]] = new JsonReader[VwJniModel[A, B]] {
+        override def modelJsonReader[A, B](semantics: Semantics[A])(implicit jrB: JsonReader[B], scB: ScoreConverter[B]): JsonReader[VwJniModel[A, B]] = new JsonReader[VwJniModel[A, B]] {
             override def read(json: JsValue): VwJniModel[A, B] = {
                 val vw = json.convertTo[VwJNIAst]
 
@@ -144,13 +146,7 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
                     case Right(featureMap) =>
                         val (names, functions) = featureMap.toIndexedSeq.unzip
 
-                        // Conversion function.
-                        val cf = {
-                            implicit val riB = implicitly[ScoreConverter[B]].ri
-                            TypeCoercion[Double, B] getOrElse {
-                                throw new DeserializationException(s"Couldn't find conversion function to ${RefInfoOps.toString[B]}")
-                            }
-                        }
+                        val cf = vw.classLabels.fold(getConversionFunction[Double, B])(l => getConversionFunction(l.values)(l.refInfo, scB))
 
                         val indices = featureMap.unzip._1.view.zipWithIndex.toMap
                         val nssRaw = vw.namespaces.getOrElse(sci.ListMap.empty)
@@ -168,6 +164,7 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
                         VwJniModel(vw.modelId, vw.vw.modelSource, names, functions, defaultNs, nss, cf, vw.numMissingThreshold, vw.spline)
                 }
             }
+
         }
 
         // TODO: Copied from RegressionModel.  Refactor for reuse.
@@ -178,6 +175,21 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
                         left.map { Seq(s"Error processing spec '$spec'") ++ _ }. // Add the spec that errored.
                         right.map { f => (k, f) }
             }
+    }
+
+    private[jni] def getConversionFunction[C : RefInfo, B : ScoreConverter](implicit riC: RefInfo[C], scB: ScoreConverter[B]) = {
+      TypeCoercion[C, B](riC, scB.ri) getOrElse {
+        throw new DeserializationException(s"Couldn't find conversion function to ${RefInfoOps.toString(scB.ri)}")
+      }
+    }
+
+    private[jni] def getConversionFunction[C : RefInfo, B : ScoreConverter](labels: Vector[C]): Double => B = {
+        val cb = getConversionFunction[C, B]
+        (d: Double) => {
+          val i = d.toInt
+          if (i != d) throw new IllegalArgumentException(s"""VW score was not an integer ($d) but $classLabelsKey was provided.""")
+          cb(labels(i - 1))
+        }
     }
 
     private[jni] def readBinaryVwModelToB64String(in: InputStream, close: Boolean = true): String = {
@@ -215,7 +227,9 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
 
         val js = StringReadable.fromInputStream(spec.inputStream).parseJson
         val vw = js.convertTo[VwUnlabeledJson]
-        json(vw, model, id, vwArgs, externalModel, numMissingThreshold, notes, spline)
+        val classLabels = js.asJsObject.fields.get("classLabels").map(_.convertTo[SimpleTypeSeq])
+
+        json(vw, model, id, vwArgs, externalModel, numMissingThreshold, notes, spline, classLabels)
     }
 
     /**
@@ -237,7 +251,8 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
              externalModel: Boolean,
              numMissingThreshold: Option[Int],
              notes: Option[Seq[String]],
-             spline: Option[ConstantDeltaSpline]): JsValue = {
+             spline: Option[ConstantDeltaSpline],
+             classLabels: Option[SimpleTypeSeq]): JsValue = {
 
         def escape(s: String) = s.replaceAllLiterally("\\", "\\\\").replaceAllLiterally("\"", "\\\"")
 
@@ -262,6 +277,6 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
             Vw(Base64EncodedBinaryVwModelSource(b64Model, params, timeMs), vwParams)
         }
 
-        VwJNIAst(VwJniModel.parser.modelType, id, features, vwObj, ns, numMissingThreshold, notes, spline).toJson
+        VwJNIAst(VwJniModel.parser.modelType, id, features, vwObj, ns, numMissingThreshold, notes, spline, classLabels).toJson
     }
 }

@@ -6,6 +6,7 @@ import com.eharmony.aloha.id.ModelIdentityJson.modelIdentityJsonFormat
 import com.eharmony.aloha.io.fs.{FsInstance, FsType}
 import com.eharmony.aloha.models.reg.ConstantDeltaSpline
 import com.eharmony.aloha.models.reg.json.{Spec, SpecJson}
+import com.eharmony.aloha.util.SimpleTypeSeq
 import spray.json.DefaultJsonProtocol._
 import spray.json._
 
@@ -67,7 +68,8 @@ trait VwJniModelJson extends SpecJson {
         namespaces: Option[ListMap[String, Seq[String]]] = Some(ListMap.empty),
         numMissingThreshold: Option[Int] = None,
         notes: Option[Seq[String]] = None,
-        spline: Option[ConstantDeltaSpline] = None)
+        spline: Option[ConstantDeltaSpline] = None,
+        classLabels: Option[SimpleTypeSeq] = None)
 
     protected[this] implicit object VwFormat extends RootJsonFormat[Vw] {
         override def read(json: JsValue) = {
@@ -127,5 +129,5 @@ trait VwJniModelJson extends SpecJson {
     }
 
     protected[this] final implicit val splineJsonFormat = jsonFormat(ConstantDeltaSpline, "min", "max", "knots")
-    protected[this] final implicit val vwJNIAstFormat: RootJsonFormat[VwJNIAst] = jsonFormat8(VwJNIAst.apply)
+    protected[this] final implicit val vwJNIAstFormat: RootJsonFormat[VwJNIAst] = jsonFormat9(VwJNIAst.apply)
 }
