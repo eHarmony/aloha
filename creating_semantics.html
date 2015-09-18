@@ -8,7 +8,7 @@
 
 	<head>
 		<meta charset="UTF-8" />
-		<title>Issue Tracking | aloha</title>
+		<title>Creating Semantics | aloha</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta name="description" content="" />
 		<meta http-equiv="content-language" content="en" />
@@ -33,7 +33,7 @@
 <link rel="stylesheet" href=".//css/highlight/github.css"/>
 	</head>
 
-	<body class="page-issue-tracking project-aloha" data-spy="scroll" data-offset="60" data-target="#toc-scroll-target">
+	<body class="page-creating_semantics project-aloha" data-spy="scroll" data-offset="60" data-target="#toc-scroll-target">
 
 		<div class="navbar navbar-fixed-top">
 			<div class="navbar-inner">
@@ -71,27 +71,68 @@
 	================================================== -->
 
 	<header>
+		<hr class="toc-separator" />
+		<div id="toc-bar" class="navbar" data-spy="affix" data-offset-top="40">
+			<div class="navbar-inner">
+				<div id="toc-scroll-target" class="container">
+					<a class="btn btn-navbar" data-toggle="collapse" data-target="#toc-nav-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</a>
+					<div class="nav-collapse collapse" id="toc-nav-collapse">
+						<ul id="toc" class="nav">
+						<li class="toplevel"><a href="#creating_semantics" title="Creating Semantics">Creating Semantics</a></li>
+						<li class="toplevel"><a href="#Scala" title="Scala">Scala</a></li>
+						<li class="toplevel"><a href="#Java" title="Java">Java</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
 	</header>
 
 	<div class="main-body">
 	<div class="row">
 		<div class="span12">
 			<div class="body-content">
-<div class="section"> 
- <div class="page-header">
-  <h2 id="Overview">Overview</h2>
- </div> 
- <a name="Overview"></a> 
- <p>This project uses GitHub to manage its issues.</p> 
-</div> 
-<div class="section"> 
- <h2 id="Issue_Tracking">Issue Tracking</h2> 
- <a name="Issue_Tracking"></a> 
- <p>Issues, bugs, and feature requests should be submitted to the following issue tracking system for this project.</p> 
+				<div class="page-header">
+ <h1 id="creating_semantics">Creating Semantics</h1>
+</div>
+			</div>
+		</div>
+	</div>
+	<div class="row columns columns2">
+		<div class="span6">
+			<h2 id="Scala">Scala</h2>
+<div class="source"> 
  <div class="source"> 
-  <pre><a class="externalLink" href="http://github.com/eharmony/aloha/issues">http://github.com/eharmony/aloha/issues</a></pre> 
+  <pre>import scala.concurrent.ExecutionContext.Implicits.global
+import spray.json.DefaultJsonProtocol.DoubleJsonFormat
+import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.DoubleScoreConverter
+
+val semantics = CompiledSemantics(TwitterEvalCompiler(), 
+                                  CompiledSemanticsCsvPlugin(columnTypes), 
+                                  Seq(&quot;com.eharmony.aloha.feature.BasicFunctions._&quot;))
+val factory = ModelFactory(RegressionModel.parser).toTypedFactory[CsvLine, Double](semantics)
+</pre> 
  </div> 
 </div>
+<div class="section">    
+</div>
+		</div>
+		<div class="span6">
+			<h2 id="Java">Java</h2>
+<p>```java</p>
+<p>```</p>
+		</div>
+	</div>
+	<div class="row">
+	</div>
+	<div class="row">
+		<div class="span12">
+			<div class="body-content">
+				
 			</div>
 		</div>
 	</div>
@@ -118,36 +159,7 @@
 						</li>
 						<li class="nav-header">Maven Documentation</li>
 						<li >
-							<a href="project-info.html" title="Project Information">Project Information <i class="icon-chevron-down"></i></a>
-							<ul class="nav nav-list">
-						<li >
-							<a href="project-summary.html" title="Project Summary">Project Summary</a>
-						</li>
-						<li >
-							<a href="license.html" title="Project License">Project License</a>
-						</li>
-						<li >
-							<a href="modules.html" title="Project Modules">Project Modules</a>
-						</li>
-						<li >
-							<a href="team-list.html" title="Project Team">Project Team</a>
-						</li>
-						<li >
-							<a href="source-repository.html" title="Source Repository">Source Repository</a>
-						</li>
-						<li class="active">
-							<a href="#" title="Issue Tracking">Issue Tracking</a>
-						</li>
-						<li >
-							<a href="dependencies.html" title="Dependencies">Dependencies</a>
-						</li>
-						<li >
-							<a href="dependency-convergence.html" title="Dependency Convergence">Dependency Convergence</a>
-						</li>
-						<li >
-							<a href="plugins.html" title="Project Plugins">Project Plugins</a>
-						</li>
-							</ul>
+							<a href="project-info.html" title="Project Information">Project Information <i class="icon-chevron-right"></i></a>
 						</li>
 					</ul>
 				</div>
