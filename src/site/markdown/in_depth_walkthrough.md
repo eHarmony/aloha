@@ -70,7 +70,7 @@ the two parameters:
 - weight: optional float
 
 and the function of these two parameters. Let's say that we could write scala functions to extract the height and width
-from out input type.  For simplicity, let's say we are working with a `Map[String, Any]`.  Then, our functions could 
+from the input type.  For simplicity, let's say we are working with a `Map[String, Any]`.  Then, our functions could 
 be written like the following: 
 
 ```scala
@@ -141,7 +141,7 @@ Aloha currently has one main type of Semantics, namely
 [CompiledSemantics](aloha-core/scaladocs/index.html#com.eharmony.aloha.semantics.compiled.CompiledSemantics). CompiledSemantics 
 is extremely powerful because it allows:
 
-1. the use of not only arbitrary scala code 
+1. the use of any arbitrary scala code 
 1. importing code defined inside *OR* outside the Aloha library
 
 The CompiledSemantics is responsible for transforming the feature specification to a function but it delegates 
@@ -200,8 +200,8 @@ Then the output of the feature would be *3* in this instance.  If we changed the
 - `com.fictitious.company.Ops.add`
 - `com.fictitious.company.Implicits.four`
 
-then the **same feature specification** would yield a value of *5*.  While this can be extremely useful, it is also
-extremely powerful.  It is imperative to understand the imports being imported into scope.
+then the **same feature specification** would yield a value of *5*.  While this can be extremely useful, it can also
+be extremely dangerous.  It is imperative to understand the imports being imported into scope.
 
 
 ### Protobuf Plugin 
@@ -212,6 +212,28 @@ in the `com.eharmony.aloha.semantics.compiled.plugin.proto` package in [aloha-co
 plugin allows for arbitrary kinds of [Protocol Buffer](https://developers.google.com/protocol-buffers/) instances 
 that extend [GeneratedMessage](https://developers.google.com/protocol-buffers/docs/reference/java/com/google/protobuf/GeneratedMessage).
 
+See [dependencies](aloha-core/dependencies.html) for the version of protocol buffers used in Aloha.  At the time of 
+this writing, Aloha uses protocol buffers 2.4.1.
+
+```scala
+// Scala Code: Constructing a compiled semantics protocol buffer plugin is easy.
+import com.eharmony.aloha.semantics.compiled.plugin.proto.CompiledSemanticsProtoPlugin
+import some.proto.defs.MyProto
+val plugin = CompiledSemanticsProtoPlugin[MyProto]
+
+// pass to compiled semantics ... (more on this later)
+```
+
+#### Future structured input datatypes Aloha may support
+ 
+One of the niceties of Aloha is that it allows models to accept structured input in a typesafe way.  Currently, this 
+is limited to protocol buffers but we'd like to extend allow to integrate with other serialization protocols such as
+
+* [Avro](https://avro.apache.org)
+* [Thrift](https://thrift.apache.org)
+
+To accomplish this, we'll need to remove the current coupling with protocol buffers for the output score object.  If
+someone wants to help with this, *we'd love the help!*
 See [dependencies](aloha-core/dependencies.html) for the version of protocol buffers used in Aloha.
 
 ### CSV Plugin 
@@ -314,3 +336,5 @@ val modelFile: java.io.File = ...
 val modelAttempt = typedFactory.fromFile(modelFile)
 val model = modelAttempt.get 
 ```
+
+For more information on creating semantics and factories, see the [Creating Semantics](creating_semantics.html) page.
