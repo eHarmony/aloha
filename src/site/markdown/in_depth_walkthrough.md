@@ -234,6 +234,7 @@ is limited to protocol buffers but we'd like to extend allow to integrate with o
 
 To accomplish this, we'll need to remove the current coupling with protocol buffers for the output score object.  If
 someone wants to help with this, *we'd love the help!*
+See [dependencies](aloha-core/dependencies.html) for the version of protocol buffers used in Aloha.
 
 ### CSV Plugin 
 
