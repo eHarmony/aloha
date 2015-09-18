@@ -13,9 +13,9 @@ import spray.json.{DeserializationException, JsObject, pimpString}
 import vw.VW
 
 object CliTest extends IoCaptureCompanion {
-    @BeforeClass def createModel(): Unit = VwJniModelTest.createModel()
-    lazy val base64EncodedModelString = VwJniModel.readBinaryVwModelToB64String(new FileInputStream(VwJniModelTest.VwModelFile))
+  @BeforeClass def createModel(): Unit = VwJniModelTest.createModel()
 
+  lazy val base64EncodedModelString = VwJniModel.readBinaryVwModelToB64String(new FileInputStream(VwJniModelTest.VwModelFile))
 
   private[jni] lazy val cbVwModelPath = {
     val tf = File.createTempFile("vwcb_", ".model")
@@ -32,6 +32,7 @@ object CliTest extends IoCaptureCompanion {
     vw.close()
     p
   }
+}
 
 /**
  * These tests are now designed to pass if the VW model cannot be created in the BeforeClass method.
