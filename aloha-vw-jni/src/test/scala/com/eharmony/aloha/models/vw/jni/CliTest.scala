@@ -1,19 +1,37 @@
 package com.eharmony.aloha.models.vw.jni
 
-import java.io.FileInputStream
+import java.io.{File, FileInputStream}
 
 import com.eharmony.aloha
 import com.eharmony.matching.testhelp.io.{IoCaptureCompanion, TestWithIoCapture}
+import org.apache.commons.vfs2
 import org.junit.Assert._
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 import org.junit.{BeforeClass, Test}
-import spray.json.{JsObject, DeserializationException, pimpString}
-import org.apache.commons.vfs2
+import spray.json.{DeserializationException, JsObject, pimpString}
+import vw.VW
 
 object CliTest extends IoCaptureCompanion {
-    @BeforeClass def createModel(): Unit = VwJniModelTest.createModel()
-    lazy val base64EncodedModelString = VwJniModel.readBinaryVwModelToB64String(new FileInputStream(VwJniModelTest.VwModelFile))
+  @BeforeClass def createModel(): Unit = VwJniModelTest.createModel()
+
+  lazy val base64EncodedModelString = VwJniModel.readBinaryVwModelToB64String(new FileInputStream(VwJniModelTest.VwModelFile))
+
+  private[jni] lazy val cbVwModelPath = {
+    val tf = File.createTempFile("vwcb_", ".model")
+    tf.deleteOnExit()
+    val p = tf.getCanonicalPath
+
+    val vw = new VW(s"--cb 2 --quiet -f $p")
+    val input = Vector("1:2:0.5 | a c",
+      "2:1:0.5 | b c")
+    for {
+      i <- 1 to 100
+      example <- input
+    } vw.learn(example)
+    vw.close()
+    p
+  }
 }
 
 /**
@@ -244,5 +262,47 @@ class CliTest extends TestWithIoCapture(CliTest) {
             assertEquals(expected, actual)
         }
     }
+
+
+  /**
+   * Tests whether classLabels array in spec goes into the model JSON.
+   */
+  @Test def testHappyExternalCb(): Unit = {
+    val args = Array(
+      "-m", CliTest.cbVwModelPath,
+      "-s", "res:com/eharmony/aloha/models/vw/jni/good.cb.aloha.js",
+      "-i", "0",
+      "-n", "model name",
+      "--vw-args", "--quiet -t",
+      "--external"
+    )
+    Cli.main(args)
+
+    val url = vfs2.VFS.getManager.resolveFile(CliTest.cbVwModelPath)
+
+    val expected =
+      ("""
+         |{
+         |  "modelType": "VwJNI",
+         |  "modelId": { "id": 0, "name": "model name" },
+         |  "features": {
+         |    "b": "Seq((\"\", 1.0))",
+         |    "c": "Seq((\"\", 1.0))"
+         |  },
+         |  "namespaces": {},
+         |  "vw": {
+         |    "params": "--quiet -t",
+         |    "modelUrl": """".stripMargin.trim + url.getName.getPath + """",
+         |    "via": "vfs2"
+         |  },
+         |  "classLabels": [ "Career", "Family" ]
+         |}
+       """).stripMargin.parseJson
+
+    val fields = outContent.parseJson.asJsObject.fields
+    val actual = JsObject(fields + ("vw" -> JsObject(fields("vw").asJsObject.fields - "creationDate")))
+
+    assertEquals(expected, actual)
+  }
 }
 

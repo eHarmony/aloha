@@ -5,9 +5,10 @@ import com.eharmony.aloha.dataset.vw.VwCovariateProducer
 import com.eharmony.aloha.dataset.vw.cb.json.VwContextualBanditJson
 import com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator
 import com.eharmony.aloha.dataset.{CompilerFailureMessages, DvProducer, FeatureExtractorFunction, RowCreatorProducer, SparseCovariateProducer}
+import com.eharmony.aloha.reflect.RefInfo
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.func.GenAggFunc
-import com.eharmony.aloha.util.Logging
+import com.eharmony.aloha.util._
 import spray.json.JsValue
 
 import scala.util.Try
@@ -55,41 +56,52 @@ extends VwRowCreator[A](featuresFunction, defaultNamespace, namespaces, normaliz
 }
 
 final object VwContextualBanditRowCreator {
-    final class Producer[A]
-        extends RowCreatorProducer[A, VwContextualBanditRowCreator[A]]
-        with VwCovariateProducer[A]
-        with DvProducer
-        with SparseCovariateProducer
-        with CompilerFailureMessages {
+  final class Producer[A]
+    extends RowCreatorProducer[A, VwContextualBanditRowCreator[A]]
+       with VwCovariateProducer[A]
+       with DvProducer
+       with SparseCovariateProducer
+       with CompilerFailureMessages {
 
+    type JsonType = VwContextualBanditJson
 
-        type JsonType = VwContextualBanditJson
+    def name = getClass.getSimpleName
 
-        def name = getClass.getSimpleName
+    def parse(json: JsValue): Try[VwContextualBanditJson] = Try { json.convertTo[VwContextualBanditJson] }
 
-        def parse(json: JsValue): Try[VwContextualBanditJson] = Try { json.convertTo[VwContextualBanditJson] }
+    def getRowCreator(semantics: CompiledSemantics[A], jsonSpec: VwContextualBanditJson): Try[VwContextualBanditRowCreator[A]] = {
+      val (covariates, default, nss, normalizer) = getVwData(semantics, jsonSpec)
 
-        def getRowCreator(semantics: CompiledSemantics[A], jsonSpec: VwContextualBanditJson): Try[VwContextualBanditRowCreator[A]] = {
-            val (covariates, default, nss, normalizer) = getVwData(semantics, jsonSpec)
+      val spec = for {
+        cov <- covariates
+        action <- getAction(semantics, jsonSpec.cbAction, jsonSpec.classLabels)
+        cost <- getCost(semantics, jsonSpec.cbCost)
+        prob <- getProbability(semantics, jsonSpec.cbProbability)
+      } yield new VwContextualBanditRowCreator(cov, default, nss, normalizer, action, cost, prob)
 
-            val spec = for {
-                cov <- covariates
-                action <- getAction(semantics, jsonSpec.cbAction)
-                cost <- getCost(semantics, jsonSpec.cbCost)
-                prob <- getProbability(semantics, jsonSpec.cbProbability)
-            } yield new VwContextualBanditRowCreator(cov, default, nss, normalizer, action, cost, prob)
-
-            spec
-        }
-
-
-        protected[this] def getAction(semantics: CompiledSemantics[A], spec: String): Try[GenAggFunc[A, Option[Long]]] =
-            getDv[A, Option[Long]](semantics, "cbAction", Some(s"Option($spec)"), Some(None))
-
-        protected[this] def getCost(semantics: CompiledSemantics[A], spec: String): Try[GenAggFunc[A, Option[Double]]] =
-            getDv[A, Option[Double]](semantics, "cbCost", Some(s"Option($spec)"), Some(None))
-
-        protected[this] def getProbability(semantics: CompiledSemantics[A], spec: String): Try[GenAggFunc[A, Option[Double]]] =
-            getDv[A, Option[Double]](semantics, "cbProbability", Some(s"Option($spec)"), Some(None))
+      spec
     }
+
+    protected[this] def getAction(
+        semantics: CompiledSemantics[A],
+        spec: String,
+        classLabels: Option[SimpleTypeSeq]): Try[GenAggFunc[A, Option[Long]]] =
+      classLabels map {
+        l => getMappedAction(semantics, l.values, spec)(l.refInfo)
+      } getOrElse {
+        getDv[A, Option[Long]](semantics, "cbAction", Some(s"Option($spec)"), Some(None))
+      }
+
+    protected[this] def getMappedAction[B: RefInfo](semantics: CompiledSemantics[A], vs: Vector[B], spec: String) = {
+      val a = getDv[A, Option[B]](semantics, "cbAction", Some(s"Option($spec)"), Some(None))
+      val classIdMap = vs.zip(1 to vs.size).map(x => (x._1, x._2.toLong)).toMap
+      a.map(f => f.andThenGenAggFunc(_.flatMap(classIdMap.get)))
+    }
+
+    protected[this] def getCost(semantics: CompiledSemantics[A], spec: String): Try[GenAggFunc[A, Option[Double]]] =
+      getDv[A, Option[Double]](semantics, "cbCost", Some(s"Option($spec)"), Some(None))
+
+    protected[this] def getProbability(semantics: CompiledSemantics[A], spec: String): Try[GenAggFunc[A, Option[Double]]] =
+      getDv[A, Option[Double]](semantics, "cbProbability", Some(s"Option($spec)"), Some(None))
+  }
 }

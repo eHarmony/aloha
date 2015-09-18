@@ -117,7 +117,12 @@ case class ModelFactory(modelParsers: ModelParser*) extends JsValuePimpz {
       * @return
       */
     def getModelAndInfo[A: RefInfo, B: RefInfo: JsonReader: ScoreConverter](json: JsValue, semantics: Option[Semantics[A]] = None): Try[ModelInfo[Model[A, B]]] = {
-        val model: Try[Model[A, B]] = parseHelper[A, B](Success(json), Nil, semantics)
+        // The first element in the for is to be used as a catch all so no non-fatal errors are thrown
+        // but not trapped.
+        val model: Try[Model[A, B]] = for {
+                                        mTry <- Try { parseHelper[A, B](Success(json), Nil, semantics) }
+                                        m <- mTry
+                                      } yield m
 
         val fieldsInModel: Seq[String] = Nil
 
