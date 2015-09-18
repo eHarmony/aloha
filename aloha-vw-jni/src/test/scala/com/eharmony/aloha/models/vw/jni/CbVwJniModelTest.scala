@@ -21,6 +21,11 @@ import scala.util.Failure
 import spray.json.DefaultJsonProtocol._
 
 object CbVwJniModelTest {
+
+  /**
+   * The path to an existent VW contextual bandit model.  Given the semantics, and model features, the
+   * model should always return the class 2, which is the index one into the classLabels array if provided.
+   */
   private[jni] lazy val cbVwModelPath = {
     val tf = File.createTempFile("vwcb_", ".model")
     tf.deleteOnExit()
@@ -37,6 +42,9 @@ object CbVwJniModelTest {
     p
   }
 
+  /**
+   * Semantics where no features are pulled from the context.
+   */
   private[jni] lazy val factory = {
     val semantics = CompiledSemantics(TwitterEvalCompiler(classCacheDir = Option(FileLocations.testGeneratedClasses)),
                                       CompiledSemanticsCsvPlugin(),
@@ -82,6 +90,9 @@ class CbVwJniModelTest {
     assertEquals("2.0", pred)
   }
 
+  /**
+   * Test that repeated labels in classLabels array causes a ''scala.util.Failure'' at model creation time.
+   */
   @Test def testRepeatedLabels(): Unit = {
     factory.fromString(json(Seq(false, false))) match {
       case Failure(e: DeserializationException) if e.getMessage == "Couldn't produce SimpleTypeSeq for array: [false,false]" =>
@@ -89,6 +100,11 @@ class CbVwJniModelTest {
     }
   }
 
+  /**
+   * Create JSON model with no classLabels array.  Is input invariant and points to the binary VW model
+   * in the file ''CbVwJniModelTest.cbVwModelPath''.
+   * @return
+   */
   private[this] def json: String =
     s"""
        |{
@@ -96,7 +112,7 @@ class CbVwJniModelTest {
        |  "modelId": { "id": 0, "name": "" },
        |  "features": {
        |    "b": "Seq((\\"\\", 1.0))",
-       |    "d": "Seq((\\"\\", 1.0))"
+       |    "c": "Seq((\\"\\", 1.0))"
        |  },
        |  "vw": {
        |    "modelUrl": "$cbVwModelPath",
@@ -108,7 +124,14 @@ class CbVwJniModelTest {
        |}
      """.stripMargin.trim
 
-  private[this] def json[A](classLabels: Seq[A])(implicit jfA: JsonFormat[A]): String = {
+  /**
+   * Create JSON model with classLabels array.  Is input invariant and points to the binary VW model
+   * in the file ''CbVwJniModelTest.cbVwModelPath''.
+   * @param classLabels class Labels for prediction classes
+   * @tparam A type of labels.
+   * @return
+   */
+  private[this] def json[A: JsonFormat](classLabels: Seq[A]): String = {
     // Can't put --cb flag into vw params.
     val js = s"""
                 |{
@@ -116,7 +139,7 @@ class CbVwJniModelTest {
                 |  "modelId": { "id": 0, "name": "" },
                 |  "features": {
                 |    "b": "Seq((\\"\\", 1.0))",
-                |    "d": "Seq((\\"\\", 1.0))"
+                |    "c": "Seq((\\"\\", 1.0))"
                 |  },
                 |  "vw": {
                 |    "modelUrl": "$cbVwModelPath",

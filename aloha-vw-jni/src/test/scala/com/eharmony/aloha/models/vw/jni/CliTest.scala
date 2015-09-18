@@ -3,18 +3,13 @@ package com.eharmony.aloha.models.vw.jni
 import java.io.{File, FileInputStream}
 
 import com.eharmony.aloha
-import com.eharmony.aloha.FileLocations
-import com.eharmony.aloha.factory.ModelFactory
-import com.eharmony.aloha.semantics.compiled.CompiledSemantics
-import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
-import com.eharmony.aloha.semantics.compiled.plugin.csv.{CsvLines, CsvLine, CompiledSemanticsCsvPlugin}
 import com.eharmony.matching.testhelp.io.{IoCaptureCompanion, TestWithIoCapture}
+import org.apache.commons.vfs2
 import org.junit.Assert._
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 import org.junit.{BeforeClass, Test}
-import spray.json.{JsObject, DeserializationException, pimpString}
-import org.apache.commons.vfs2
+import spray.json.{DeserializationException, JsObject, pimpString}
 import vw.VW
 
 object CliTest extends IoCaptureCompanion {
@@ -37,17 +32,6 @@ object CliTest extends IoCaptureCompanion {
     vw.close()
     p
   }
-
-//  private[jni] lazy val factory = {
-//    val semantics = CompiledSemantics(TwitterEvalCompiler(classCacheDir = Option(FileLocations.testGeneratedClasses)),
-//      CompiledSemanticsCsvPlugin(),
-//      Seq("com.eharmony.aloha.feature.BasicFunctions._"))
-//
-//    ModelFactory.defaultFactory.toTypedFactory[CsvLine, String](semantics)
-//  }
-//
-//  private[jni] val emptyLine = CsvLines(Map.empty).apply("")
-}
 
 /**
  * These tests are now designed to pass if the VW model cannot be created in the BeforeClass method.
@@ -279,6 +263,9 @@ class CliTest extends TestWithIoCapture(CliTest) {
     }
 
 
+  /**
+   * Tests whether classLabels array in spec goes into the model JSON.
+   */
   @Test def testHappyExternalCb(): Unit = {
     val args = Array(
       "-m", CliTest.cbVwModelPath,
