@@ -301,15 +301,15 @@
               
         </dd></dl></div>
     </li><li name="com.eharmony.aloha.dataset.vw.cb.VwContextualBanditRowCreator.Producer#getAction" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getAction(semantics:com.eharmony.aloha.semantics.compiled.CompiledSemantics[A],spec:String):scala.util.Try[com.eharmony.aloha.semantics.func.GenAggFunc[A,Option[Long]]]"></a>
-      <a id="getAction(CompiledSemantics[A],String):Try[GenAggFunc[A,Option[Long]]]"></a>
+      <a id="getAction(semantics:com.eharmony.aloha.semantics.compiled.CompiledSemantics[A],spec:String,classLabels:Option[com.eharmony.aloha.util.SimpleTypeSeq]):scala.util.Try[com.eharmony.aloha.semantics.func.GenAggFunc[A,Option[Long]]]"></a>
+      <a id="getAction(CompiledSemantics[A],String,Option[SimpleTypeSeq]):Try[GenAggFunc[A,Option[Long]]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getAction</span><span class="params">(<span name="semantics">semantics: <a href="../../../semantics/compiled/CompiledSemantics.html" class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemantics">CompiledSemantics</a>[<span class="extype" name="com.eharmony.aloha.dataset.vw.cb.VwContextualBanditRowCreator.Producer.A">A</span>]</span>, <span name="spec">spec: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<a href="../../../semantics/func/GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.dataset.vw.cb.VwContextualBanditRowCreator.Producer.A">A</span>, <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]]]</span>
+        <span class="name">getAction</span><span class="params">(<span name="semantics">semantics: <a href="../../../semantics/compiled/CompiledSemantics.html" class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemantics">CompiledSemantics</a>[<span class="extype" name="com.eharmony.aloha.dataset.vw.cb.VwContextualBanditRowCreator.Producer.A">A</span>]</span>, <span name="spec">spec: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="classLabels">classLabels: <span class="extype" name="scala.Option">Option</span>[<a href="../../../util/SimpleTypeSeq.html" class="extype" name="com.eharmony.aloha.util.SimpleTypeSeq">SimpleTypeSeq</a>]</span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<a href="../../../semantics/func/GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.dataset.vw.cb.VwContextualBanditRowCreator.Producer.A">A</span>, <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]]]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd></dl></div>
@@ -365,6 +365,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../DvProducer.html" class="extype" name="com.eharmony.aloha.dataset.DvProducer">DvProducer</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.dataset.vw.cb.VwContextualBanditRowCreator.Producer#getMappedAction" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getMappedAction[B](semantics:com.eharmony.aloha.semantics.compiled.CompiledSemantics[A],vs:Vector[B],spec:String)(implicitevidence$1:com.eharmony.aloha.reflect.RefInfo[B]):scala.util.Try[com.eharmony.aloha.semantics.func.GenAggFunc[A,Option[Long]]]"></a>
+      <a id="getMappedAction[B](CompiledSemantics[A],Vector[B],String)(RefInfo[B]):Try[GenAggFunc[A,Option[Long]]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getMappedAction</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="semantics">semantics: <a href="../../../semantics/compiled/CompiledSemantics.html" class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemantics">CompiledSemantics</a>[<span class="extype" name="com.eharmony.aloha.dataset.vw.cb.VwContextualBanditRowCreator.Producer.A">A</span>]</span>, <span name="vs">vs: <a href="../../../../../../scala/package.html#Vector[+A]=scala.collection.immutable.Vector[A]" class="extmbr" name="scala.Vector">Vector</a>[<span class="extype" name="com.eharmony.aloha.dataset.vw.cb.VwContextualBanditRowCreator.Producer.getMappedAction.B">B</span>]</span>, <span name="spec">spec: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="../../../reflect/package.html#RefInfo[A]=Manifest[A]" class="extmbr" name="com.eharmony.aloha.reflect.RefInfo">RefInfo</a>[<span class="extype" name="com.eharmony.aloha.dataset.vw.cb.VwContextualBanditRowCreator.Producer.getMappedAction.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<a href="../../../semantics/func/GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.dataset.vw.cb.VwContextualBanditRowCreator.Producer.A">A</span>, <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Long">Long</span>]]]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd></dl></div>
     </li><li name="com.eharmony.aloha.dataset.vw.cb.VwContextualBanditRowCreator.Producer#getProbability" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getProbability(semantics:com.eharmony.aloha.semantics.compiled.CompiledSemantics[A],spec:String):scala.util.Try[com.eharmony.aloha.semantics.func.GenAggFunc[A,Option[Double]]]"></a>
       <a id="getProbability(CompiledSemantics[A],String):Try[GenAggFunc[A,Option[Double]]]"></a>
