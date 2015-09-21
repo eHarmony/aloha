@@ -177,13 +177,13 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
             }
     }
 
-    private[jni] def getConversionFunction[C : RefInfo, B : ScoreConverter](implicit riC: RefInfo[C], scB: ScoreConverter[B]) = {
+    def getConversionFunction[C : RefInfo, B : ScoreConverter](implicit riC: RefInfo[C], scB: ScoreConverter[B]) = {
       TypeCoercion[C, B](riC, scB.ri) getOrElse {
         throw new DeserializationException(s"Couldn't find conversion function to ${RefInfoOps.toString(scB.ri)}")
       }
     }
 
-    private[jni] def getConversionFunction[C : RefInfo, B : ScoreConverter](labels: Vector[C]): Double => B = {
+    def getConversionFunction[C : RefInfo, B : ScoreConverter](labels: Vector[C]): Double => B = {
         val cb = getConversionFunction[C, B]
         (d: Double) => {
           val i = d.toInt
