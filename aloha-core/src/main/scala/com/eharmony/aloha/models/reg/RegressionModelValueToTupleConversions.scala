@@ -19,6 +19,7 @@ import scala.language.implicitConversions
   *   "modelId": {"id": 0, "name": ""},
   *   "features": {
   *     "intercept": "1234L",
+  *     "some_option": "Option(5678L).toKv"
   *     ...
   *   },
   *   ...
@@ -26,60 +27,22 @@ import scala.language.implicitConversions
   * }}}
   *
   */
-// TODO, think about making this
 trait RegressionModelValueToTupleConversions {
 
-    // TODO: Because we are doing implicit conversions, we should definitely log the fact that this happens
+    /**
+     * Provides extension methods to ''Option''s via [[com.eharmony.aloha.models.reg.OptToKv]].
+     * @param a an optional value
+     * @tparam A the type of value
+     * @return an OptToKv instance
+     */
+    implicit def toKv[A](a: Option[A]): OptToKv[A] = new OptToKv(a)
 
-    implicit def byteToIterableTuple2EmptyStringDouble(x: Byte): Iterable[(String, Double)] = {
-        // TODO: Log
-        Iterable(("", x.toDouble))
-    }
-    implicit def shortToIterableTuple2EmptyStringDouble(x: Short): Iterable[(String, Double)] = {
-        // TODO: Log
-        Iterable(("", x.toDouble))
-    }
-    implicit def intToIterableTuple2EmptyStringDouble(x: Int): Iterable[(String, Double)] = {
-        // TODO: Log
-        Iterable(("", x.toDouble))
-    }
-    implicit def longToIterableTuple2EmptyStringDouble(x: Long): Iterable[(String, Double)] = {
-        // TODO: Log
-        Iterable(("", x.toDouble))
-    }
-    implicit def floatToIterableTuple2EmptyStringDouble(x: Float): Iterable[(String, Double)] = {
-        // TODO: Log
-        Iterable(("", x.toDouble))
-    }
-    implicit def doubleToIterableTuple2EmptyStringDouble(x: Double): Iterable[(String, Double)] = {
-        // TODO: Log
-        Iterable(("", x))
-    }
-
-//    implicit def byteOptionToIterableTuple2EmptyStringDouble(x: Option[Byte]): Iterable[(String, Double)] = {
-//        // TODO: Log
-//        x.map(v => Iterable(("", v.toDouble))) getOrElse Nil
-//    }
-//    implicit def shortOptionToIterableTuple2EmptyStringDouble(x: Option[Short]): Iterable[(String, Double)] = {
-//        // TODO: Log
-//        x.map(v => Iterable(("", v.toDouble))) getOrElse Nil
-//    }
-//    implicit def intOptionToIterableTuple2EmptyStringDouble(x: Option[Int]): Iterable[(String, Double)] = {
-//        // TODO: Log
-//        x.map(v => Iterable(("", v.toDouble))) getOrElse Nil
-//    }
-//    implicit def longOptionToIterableTuple2EmptyStringDouble(x: Option[Long]): Iterable[(String, Double)] = {
-//        // TODO: Log
-//        x.map(v => Iterable(("", v.toDouble))) getOrElse Nil
-//    }
-//    implicit def floatOptionToIterableTuple2EmptyStringDouble(x: Option[Float]): Iterable[(String, Double)] = {
-//        // TODO: Log
-//        x.map(v => Iterable(("", v.toDouble))) getOrElse Nil
-//    }
-//    implicit def doubleOptionToIterableTuple2EmptyStringDouble(x: Option[Double]): Iterable[(String, Double)] = {
-//        // TODO: Log
-//        x.map(v => Iterable(("", v))) getOrElse Nil
-//    }
+    implicit def byteToIterableTuple2EmptyStringDouble(x: Byte): Iterable[(String, Double)]     = Iterable(("", x.toDouble))
+    implicit def shortToIterableTuple2EmptyStringDouble(x: Short): Iterable[(String, Double)]   = Iterable(("", x.toDouble))
+    implicit def intToIterableTuple2EmptyStringDouble(x: Int): Iterable[(String, Double)]       = Iterable(("", x.toDouble))
+    implicit def longToIterableTuple2EmptyStringDouble(x: Long): Iterable[(String, Double)]     = Iterable(("", x.toDouble))
+    implicit def floatToIterableTuple2EmptyStringDouble(x: Float): Iterable[(String, Double)]   = Iterable(("", x.toDouble))
+    implicit def doubleToIterableTuple2EmptyStringDouble(x: Double): Iterable[(String, Double)] = Iterable(("", x))
 }
 
 object RegressionModelValueToTupleConversions extends RegressionModelValueToTupleConversions
