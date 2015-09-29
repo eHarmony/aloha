@@ -2,11 +2,17 @@ package com.eharmony.aloha.score.conversions.rich
 
 import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.aloha.score.Scores.Score.BaseScore.ScoreType
+import com.eharmony.aloha.score.Scores.Score.BaseScore.ScoreType.{BOOLEAN, DOUBLE, FLOAT, INT, LONG, STRING, NONE}
 import com.eharmony.aloha.score.Scores.Score.ScoreError
 import com.eharmony.aloha.score.conversions.{BasicTypeScoreConversions, RelaxedConversions, StrictConversions}
-import com.eharmony.aloha.score.order.Orderings._  // TODO: Remove this after renaming package to com.eharmony.aloha
+import com.eharmony.aloha.factory.JavaJsonFormats.javaListJsonFormat
+import spray.json._
+import spray.json.DefaultJsonProtocol.StringJsonFormat
 
+import scala.annotation.switch
+import scala.collection.{immutable => sci}
 import scala.language.higherKinds
+
 
 object RichScoreOps {
     def toRichScore(score: Score) = new RichScoreLike { protected[this] val s = score }
@@ -17,26 +23,57 @@ trait RichScoreLike {
 
     import collection.JavaConversions.asScalaBuffer
 
-    /** Get all errors, flattened into an IndexedSeq, sorted by Model ID.
+    /** Get all errors, in DFS preorder.
       * @return
       */
     def allErrors: Seq[ScoreError] = {
-        def f(s: List[Score], errors: List[ScoreError]): Seq[ScoreError] = s match {
-            case Nil => errors.toIndexedSeq.sorted
-            case h :: t => f(h.getSubScoresList.toList ::: t, if (h.hasError) h.getError :: errors else errors)
+        def f(s: List[Score], errors: Vector[ScoreError]): Seq[ScoreError] = s match {
+            case Nil => errors
+            case h :: t => f(h.getSubScoresList.toList ::: t, if (h.hasError) errors :+ h.getError else errors)
         }
-        f(List(s), Nil)
+        f(List(s), Vector.empty)
     }
 
-    /** Get all scores, flattened into an IndexedSeq, sorted by Model ID.
+    /** Get all scores in DFS preorder.
       * @return
       */
     def allScores: Seq[Score] = {
-        def f(s: List[Score], scores: List[Score]): Seq[Score] = s match {
-            case Nil => scores.toIndexedSeq.sorted
-            case h :: t => f(h.getSubScoresList.toList ::: t, h :: scores)
+        def f(s: List[Score], scores: Vector[Score]): Seq[Score] = s match {
+            case Nil => scores
+            case h :: t => f(h.getSubScoresList.toList ::: t, scores :+ h)
         }
-        f(List(s), Nil)
+        f(List(s), Vector.empty)
+    }
+
+    def scoreJson: JsValue = {
+        val scores = allScores.foldLeft(sci.ListMap.empty[String, JsValue]){(m, s) =>
+            if (s.hasScore) {
+                val v = s.getScore
+                (v.getType: @switch) match {
+                    case BOOLEAN => RelaxedConversions.asBoolean(s).fold(m)(x => m + (v.getModel.getId.toString -> JsBoolean(x)))
+                    case INT     => RelaxedConversions.asInt(s).fold(m)(x => m + (v.getModel.getId.toString -> JsNumber(x)))
+                    case LONG    => RelaxedConversions.asLong(s).fold(m)(x => m + (v.getModel.getId.toString -> JsNumber(x)))
+                    case FLOAT   => RelaxedConversions.asFloat(s).fold(m)(x => m + (v.getModel.getId.toString -> JsNumber(x)))
+                    case DOUBLE  => RelaxedConversions.asDouble(s).fold(m)(x => m + (v.getModel.getId.toString -> JsNumber(x)))
+                    case STRING  => RelaxedConversions.asString(s).fold(m)(x => m + (v.getModel.getId.toString -> JsString(x)))
+                    case NONE    => m
+                }
+            }
+            else m
+        }
+        JsObject(scores)
+    }
+
+    def errorJson: JsValue = {
+        val errors = allErrors.foldLeft(sci.ListMap.empty[String, JsValue]){(m, e) =>
+            val errObj = JsObject(sci.ListMap (
+                "errors" -> e.getMessagesList.toJson,
+                "missingFeatures" -> e.getMissingFeatures.getNamesList.toJson
+            ))
+
+            m + (e.getModel.getId.toString -> errObj)
+        }
+        JsObject(errors)
     }
 
     sealed trait ScoreConversions[C[_] <: Option[_]] {

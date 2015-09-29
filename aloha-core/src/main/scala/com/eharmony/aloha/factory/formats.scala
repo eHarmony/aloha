@@ -1,8 +1,11 @@
 package com.eharmony.aloha.factory
 
-import java.{lang => jl}
+import java.{lang => jl, util => ju}
+
+import spray.json.DefaultJsonProtocol.{BooleanJsonFormat, ByteJsonFormat, DoubleJsonFormat, FloatJsonFormat, IntJsonFormat, LongJsonFormat, ShortJsonFormat, seqFormat}
 import spray.json._
-import spray.json.DefaultJsonProtocol.{BooleanJsonFormat, ByteJsonFormat, ShortJsonFormat, IntJsonFormat, LongJsonFormat, FloatJsonFormat, DoubleJsonFormat}
+
+import scala.collection.JavaConversions
 import scala.collection.immutable.ListMap
 
 object Formats
@@ -45,6 +48,11 @@ trait JavaJsonFormats {
     implicit object JavaDoubleJsonFormat extends JsonFormat[jl.Double] {
         def write(i: jl.Double) = DoubleJsonFormat write i
         def read(json: JsValue) = DoubleJsonFormat read json
+    }
+
+    implicit def javaListJsonFormat[A : JsonFormat]: JsonFormat[ju.List[A]] = new JsonFormat[ju.List[A]] {
+        def write(l: ju.List[A]) = JsArray(JavaConversions.asScalaBuffer(l).view.map(_.toJson).toVector)
+        def read(json: JsValue) = JavaConversions.seqAsJavaList(json.convertTo[Seq[A]])
     }
 }
 
