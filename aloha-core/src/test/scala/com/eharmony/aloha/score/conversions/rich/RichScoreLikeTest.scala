@@ -1,5 +1,6 @@
 package com.eharmony.aloha.score.conversions.rich
 
+import scala.annotation.varargs
 import scala.language.implicitConversions
 
 import com.eharmony.aloha.id.ModelId
@@ -16,6 +17,7 @@ import org.junit.runners.BlockJUnit4ClassRunner
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class RichScoreLikeTest {
+  import RichScoreLikeTest._
 
   @Test def testJavaStyleCalling(): Unit = {
     val proto = score(valueToScore(ModelId(1, ""), 1))
@@ -160,6 +162,10 @@ class RichScoreLikeTest {
     assertEquals(expected.trim, score.errorJson.prettyPrint.trim)
   }
 
+
+}
+
+object RichScoreLikeTest {
   /**
    * Convert a sequence of ProtoScoreOrError to a Score by embedding each element in the chain in the
    * subscore list of the preceeding element.
@@ -167,22 +173,22 @@ class RichScoreLikeTest {
    * @param subscoreChain subscores appearing higher in the score chain appear earlier in subscoreChain.
    * @return
    */
-  private[this] def score(topScore: ProtoScoreOrError, subscoreChain: ProtoScoreOrError*): Score = {
+  @varargs private[conversions] def score(topScore: ProtoScoreOrError, subscoreChain: ProtoScoreOrError*): Score = {
     val bottomUp = (topScore +: subscoreChain).reverse.toList
     bottomUp.tail.foldLeft(builder(bottomUp.head).build)((s, b) => builder(b).addSubScores(s).build)
   }
 
-  private[this] def builder(p: ProtoScoreOrError) = p match {
+  private[conversions] def builder(p: ProtoScoreOrError) = p match {
     case ProtoScore(s) => Score.newBuilder.setScore(s)
     case ProtoError(e) => Score.newBuilder.setError(e)
   }
 
-  private[this] sealed trait ProtoScoreOrError
-  private[this] case class ProtoScore(score: BaseScore) extends ProtoScoreOrError
-  private[this] case class ProtoError(error: ScoreError) extends ProtoScoreOrError
-
-  private[this] implicit def error2ProtoError(error: ScoreError): ProtoError = ProtoError(error)
-  private[this] implicit def baseScore2ProtoScore(score: BaseScore): ProtoScore = ProtoScore(score)
-  private[this] implicit def modelId2ProtoModelId(mid: ModelId): MId =
+  private[conversions] implicit def error2ProtoError(error: ScoreError): ProtoError = ProtoError(error)
+  private[conversions] implicit def baseScore2ProtoScore(score: BaseScore): ProtoScore = ProtoScore(score)
+  private[conversions] implicit def modelId2ProtoModelId(mid: ModelId): MId =
     MId.newBuilder.setId(mid.id).setName(mid.name).build
 }
+
+private[conversions] sealed trait ProtoScoreOrError
+private[conversions] case class ProtoScore(score: BaseScore) extends ProtoScoreOrError
+private[conversions] case class ProtoError(error: ScoreError) extends ProtoScoreOrError
