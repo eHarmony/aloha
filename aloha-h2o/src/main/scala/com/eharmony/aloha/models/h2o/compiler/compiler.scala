@@ -1,4 +1,4 @@
-package com.eharmony.aloha.models.h2o
+package com.eharmony.aloha.models.h2o.compiler
 
 import java.io.File
 import java.net.URLClassLoader
@@ -8,7 +8,6 @@ import javax.tools.JavaCompiler.CompilationTask
 import javax.tools.{DiagnosticCollector, JavaFileObject, ToolProvider}
 
 import com.eharmony.aloha.io.{AlohaReadable, ReadableByString}
-import com.eharmony.aloha.models.h2o.compiler.{CompilationError, InMemoryJavaSource}
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import com.eharmony.aloha.util.Logging
 

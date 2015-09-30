@@ -1,4 +1,4 @@
-package com.eharmony.aloha.models.h2o
+package com.eharmony.aloha.models.h2o.compiler
 
 import hex.genmodel.GenModel
 import org.junit.Assert._
