@@ -3,7 +3,7 @@ package com.eharmony.aloha.io
 import scala.language.higherKinds
 import java.io.{FileInputStream, File}
 import java.net.URL
-import org.apache.commons.{vfs, vfs2}
+import org.apache.commons.{vfs => vfs1, vfs2}
 
 trait ContainerReadableCommon[C[_]] extends ContainerReadable[C] {
 
@@ -30,7 +30,7 @@ trait ContainerReadableCommon[C[_]] extends ContainerReadable[C] {
       * @param foVfs1 an Apache VFS v1 FileObject to read.  The FileObject's InputStream is automatically closed.
       * @return the result
       */
-    def fromVfs1[A](foVfs1: vfs.FileObject): C[A] = fromInputStream[A](foVfs1.getContent.getInputStream)
+    def fromVfs1[A](foVfs1: vfs1.FileObject): C[A] = fromInputStream[A](foVfs1.getContent.getInputStream)
 
     /** Read from an Apache VFS v1 FileObject.
       *

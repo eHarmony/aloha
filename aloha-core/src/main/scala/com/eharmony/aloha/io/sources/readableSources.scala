@@ -1,7 +1,8 @@
 package com.eharmony.aloha.io.sources
 
-import java.io.{Reader, InputStream, File}
+import java.io._
 import java.net.URL
+
 import org.apache.commons.{vfs, vfs2}
 
 /** An object from which we can read in bulk.

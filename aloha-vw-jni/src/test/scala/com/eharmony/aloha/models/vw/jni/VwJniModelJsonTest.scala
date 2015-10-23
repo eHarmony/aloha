@@ -3,13 +3,14 @@ package com.eharmony.aloha.models.vw.jni
 import java.io.FileInputStream
 
 import com.eharmony.aloha.id.ModelId
-import com.eharmony.aloha.io.fs.Vfs2FsInstance
+import com.eharmony.aloha.io.vfs.Vfs2
 import com.eharmony.aloha.models.reg.ConstantDeltaSpline
 import com.eharmony.matching.testhelp.io.IoCaptureCompanion
-import org.apache.commons.vfs2.VFS
+import org.apache.commons.vfs2
 import org.junit.Assert._
 import org.junit.{BeforeClass, Test}
 import spray.json.{JsObject, pimpString}
+
 
 /**
  * These tests are now designed to pass if the VW model cannot be created in the BeforeClass method.
@@ -22,9 +23,9 @@ import spray.json.{JsObject, pimpString}
 object VwJniModelJsonTest extends IoCaptureCompanion {
   @BeforeClass def createModel(): Unit = VwJniModelTest.createModel()
   lazy val base64EncodedModelString = VwJniModel.readBinaryVwModelToB64String(new FileInputStream(VwJniModelTest.VwModelFile))
-  val vfs = VFS.getManager
-  val vfsModel = Vfs2FsInstance(VwJniModelTest.VwModelPath)
-  val vfsSpec = Vfs2FsInstance("res:com/eharmony/aloha/models/vw/jni/good.logistic.aloha.js")
+  val vfs = vfs2.VFS.getManager
+  val vfsModel = Vfs2(vfs2.VFS.getManager.resolveFile(VwJniModelTest.VwModelPath))
+  val vfsSpec = Vfs2(vfs2.VFS.getManager.resolveFile("res:com/eharmony/aloha/models/vw/jni/good.logistic.aloha.js"))
   val cds = ConstantDeltaSpline(0, 1, IndexedSeq(0.25, 0.75))
 }
 

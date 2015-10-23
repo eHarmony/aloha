@@ -30,6 +30,9 @@
         </site>
     </distributionManagement>
 
+    <properties>
+        <h2o.version>3.2.0.5</h2o.version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -47,18 +50,25 @@
         <dependency>
             <groupId>ai.h2o</groupId>
             <artifactId>h2o-core</artifactId>
-            <version>3.0.1.4</version>
+            <version>${h2o.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>log4j</groupId>
                     <artifactId>log4j</artifactId>
+                </exclusion>
+
+                <!-- Use aloha's reflections:   org.reflections:reflections:0.9.9 -->
+                <!-- Hopefully this won't screw anything up, but internal forks are usually not frivolous. -->
+                <exclusion>
+                    <groupId>ai.h2o</groupId>
+                    <artifactId>reflections</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>ai.h2o</groupId>
             <artifactId>h2o-genmodel</artifactId>
-            <version>3.0.1.4</version>
+            <version>${h2o.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>log4j</groupId>

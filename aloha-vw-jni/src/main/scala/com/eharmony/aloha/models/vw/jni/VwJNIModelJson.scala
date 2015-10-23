@@ -3,7 +3,7 @@ package com.eharmony.aloha.models.vw.jni
 import com.eharmony.aloha.factory.ScalaJsonFormats.listMapFormat
 import com.eharmony.aloha.id.ModelIdentity
 import com.eharmony.aloha.id.ModelIdentityJson.modelIdentityJsonFormat
-import com.eharmony.aloha.io.fs.{FsInstance, FsType}
+import com.eharmony.aloha.io.sources.ModelSource
 import com.eharmony.aloha.models.reg.ConstantDeltaSpline
 import com.eharmony.aloha.models.reg.json.{Spec, SpecJson}
 import com.eharmony.aloha.util.SimpleTypeSeq
@@ -35,7 +35,7 @@ trait VwJniModelJson extends SpecJson {
      *               single string by imploding the list with a " " separator or it is one string.  If None,
      * @param modelSource A [[VwJniModelSource]]
      */
-    protected[this] case class Vw(modelSource: VwJniModelSource, params: Option[Either[Seq[String], String]] = Option(Right("")))
+    protected[this] case class Vw(modelSource: ModelSource, params: Option[Either[Seq[String], String]] = Option(Right("")))
 
     /**
      * Note that as is, this declaration will cause a compiler warning:
@@ -75,56 +75,20 @@ trait VwJniModelJson extends SpecJson {
         override def read(json: JsValue) = {
             val jso = json.asJsObject("Vw expected to be object")
 
-            val creationTime = jso.getFields("creationTime") match {
-                case Seq(JsNumber(t)) => t.toLongExact
-                case _                => System.currentTimeMillis()
-            }
-
-            val modelVal = jso.getFields("model") match {
-                case Seq(JsString(m)) => Some(m)
-                case _                => None
-            }
-
-            val modelUrlVal = jso.getFields("modelUrl") match {
-                case Seq(JsString(m)) => Some(m)
-                case _                => None
-            }
-
-            // Default to VFS2.
-            val fsType = jso.getFields("via") match {
-                case Seq(via) => jso.convertTo(FsType.JsonReader("via"))
-                case _        => FsType.vfs2
-            }
+            val modelSource = json.convertTo(ModelSource.jsonFormat)
 
             val params = jso.getFields("params") match {
                 case Seq(p) => Option(p.convertTo[Either[Seq[String], String]])
                 case Nil    => None
             }
 
-            val paramStr = params.map(_.fold(_.mkString(" "), identity)) getOrElse ""
-
-            val modelSource = (modelVal, modelUrlVal, fsType) match {
-                case (None, Some(u), t)    => ExternallyDefinedVwModelSource(FsInstance.fromFsType(t)(u), paramStr, creationTime)
-                case (Some(m), None, _)    => Base64EncodedBinaryVwModelSource(m, paramStr, creationTime)
-                case (Some(m), Some(u), _) => throw new DeserializationException("Exactly one of 'model' and 'modelUrl' should be supplied. Both supplied: " + json.compactPrint)
-                case (None, None, _)       => throw new DeserializationException("Exactly one of 'model' and 'modelUrl' should be supplied. Neither supplied: " + json.compactPrint)
-            }
-
             Vw(modelSource, params)
         }
 
         override def write(v: Vw) = {
-            val model = v.modelSource match {
-                case Base64EncodedBinaryVwModelSource(b64, _, time) => Seq("model" -> JsString(b64),
-                                                                           "creationDate" -> JsNumber(time))
-                case ExternallyDefinedVwModelSource(fs, _,  time)   => Seq("modelUrl" -> JsString(fs.descriptor),
-                                                                           "creationDate" -> JsNumber(time),
-                                                                           "via" -> JsString(fs.fsType.toString))
-            }
-
-            val params = v.params.map(p => "params" -> p.toJson)
-            val fields = model ++ params
-            JsObject(scala.collection.immutable.ListMap(fields:_*))
+            val model = ModelSource.jsonFormat.modelFields(v.modelSource)
+            val params = v.params.map(p => "params" -> p.toJson).toSeq
+            JsObject(model ++ scala.collection.immutable.ListMap(params:_*))
         }
     }
 

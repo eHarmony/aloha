@@ -250,7 +250,7 @@ class CliTest extends TestWithIoCapture(CliTest) {
                    |  },
                    |  "vw": {
                    |    "params": "--quiet -t",
-                   |    "modelUrl": """".stripMargin.trim + url.getName.getPath + """",
+                   |    "modelUrl": """".stripMargin.trim + url.getName.toString + """",
                    |    "via": "vfs2"
                    |  }
                    |}
@@ -292,7 +292,7 @@ class CliTest extends TestWithIoCapture(CliTest) {
          |  "namespaces": {},
          |  "vw": {
          |    "params": "--quiet -t",
-         |    "modelUrl": """".stripMargin.trim + url.getName.getPath + """",
+         |    "modelUrl": """".stripMargin.trim + url.getName.toString + """",
          |    "via": "vfs2"
          |  },
          |  "classLabels": [ "Career", "Family" ]
