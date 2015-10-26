@@ -68,6 +68,11 @@ case class ModelDecisionTree[-A, +B: ScoreConverter](
 
         o
     }
+
+    /**
+     * Recursively close the submodels.
+     */
+    override def close(): Unit = root.dfs() foreach { node => node._1.value.close() }
 }
 
 
