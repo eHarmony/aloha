@@ -1,16 +1,22 @@
 package com.eharmony.aloha.models.tree.decision
 
-import org.junit.runners.BlockJUnit4ClassRunner
-import org.junit.runner.RunWith
-import org.junit.Test
-import org.junit.Assert._
+import java.util.concurrent.atomic.AtomicBoolean
 
-import com.eharmony.aloha.models.{Model, ConstantModel}
-import com.eharmony.aloha.semantics.Semantics
+import com.eharmony.aloha.factory.{BasicModelParser, ModelFactory, ModelParser, ParserProviderCompanion}
+import com.eharmony.aloha.id.ModelId
+import com.eharmony.aloha.models.{BaseModel, ConstantModel, Model}
 import com.eharmony.aloha.reflect.RefInfo
-import com.eharmony.aloha.semantics.func.{GenFunc, GeneratedAccessor, GenAggFunc}
-import com.eharmony.aloha.factory.ModelFactory
+import com.eharmony.aloha.score.conversions.ScoreConverter
 import com.eharmony.aloha.score.conversions.rich.RichScore
+import com.eharmony.aloha.semantics.Semantics
+import com.eharmony.aloha.semantics.func.{GenAggFunc, GenFunc, GeneratedAccessor}
+import org.junit.Assert._
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.BlockJUnit4ClassRunner
+import spray.json._
+import spray.json.DefaultJsonProtocol._
+
 import scala.collection.JavaConversions.asScalaBuffer
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
@@ -156,6 +162,17 @@ class ModelDecisionTreeTest {
 
     @Test def test_pp() { models.foreach(m => success(m, pp, noneMissing, noErrorMessages, scoreIndicatesSecondInnerModelLeaf) ) }
 
+    /**
+     * Get a DecisionTreeModel with a full 3-layer binary tree with 7 (2^3^ - 1) nodes.  Call close on the
+     * DecisionTreeModel but not the submodels.  Then check that the submodels were closed.
+     */
+    @Test def testClosingSubmodels(): Unit = {
+        val (modelDecisionTree, submodels) = treeAndCheckerModels()
+        assertEquals(7, submodels.size)
+        modelDecisionTree.close()
+        assertTrue(submodels.forall(_.closed))
+    }
+
     def success(m: ModelContainer[Map[String, Double], Int], x: Map[String, Double], missing: Seq[String], errors: Seq[String], exp: Int) {
         val s = m.model.score(x)
 
@@ -227,6 +244,68 @@ class ModelDecisionTreeTest {
 
 object ModelDecisionTreeTest {
 
+    case class CloseCheckerModel(modelId: ModelId) extends BaseModel[Any, Nothing] {
+        private[this] val c = new AtomicBoolean(false)
+        private[this] val Seq(w, wo) = Seq(true, false) map { audit => failure(Seq(getClass.getSimpleName + " always errors"))(audit) }
+        private[aloha] def getScore(a: Any)(implicit audit: Boolean) = if (audit) w else wo
+        override def close(): Unit = c.set(true)
+        def closed = c.get  // always false until close is called, then always true.
+    }
+
+    object CloseCheckerModel extends ParserProviderCompanion {
+        object Parser extends BasicModelParser {
+            val modelType = "CloseChecker"
+            def modelJsonReader[A, B: JsonReader : ScoreConverter]: JsonReader[CloseCheckerModel] = new JsonReader[CloseCheckerModel] {
+                def read(json: JsValue) = json.convertTo(jsonFormat(CloseCheckerModel(_), "modelId"))
+            }
+        }
+        def parser: ModelParser = Parser
+    }
+
+    private[ModelDecisionTreeTest] def treeAndCheckerModels() = {
+        import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.IntScoreConverter
+        import spray.json.DefaultJsonProtocol.IntJsonFormat
+
+        // Don't need semantics since no features.  Just reuse any semantics. Only need these 2 parsers.
+        val factory = ModelFactory(ModelDecisionTree.parser, CloseCheckerModel.parser).
+                        toTypedFactory[Map[String, Double], Int](semantics)
+
+        val json = s"""
+                      |{
+                      |  "modelType": "ModelDecisionTree",
+                      |  "modelId": { "id": 100, "name": "tree" },
+                      |  "returnBest": true,
+                      |  "missingDataOk": false,
+                      |  "nodes": [
+                      |    {
+                      |      "id": 0,
+                      |      "value": { "modelType": "CloseChecker", "modelId": { "id": 0, "name": "checker" } },
+                      |      "selector": { "selectorType": "linear", "children": [1, 4], "predicates": ["true", "false"] }
+                      |    },
+                      |    {
+                      |      "id": 1,
+                      |      "value": { "modelType": "CloseChecker", "modelId": { "id": 1, "name": "checker" } },
+                      |      "selector": { "selectorType": "linear", "children": [2, 3], "predicates": ["true", "false"] }
+                      |    },
+                      |    { "id": 2, "value": { "modelType": "CloseChecker", "modelId": { "id": 2, "name": "checker" } } },
+                      |    { "id": 3, "value": { "modelType": "CloseChecker", "modelId": { "id": 3, "name": "checker" } } },
+                      |    {
+                      |      "id": 4,
+                      |      "value": { "modelType": "CloseChecker", "modelId": { "id": 4, "name": "checker" } },
+                      |      "selector": { "selectorType": "linear", "children": [5, 6], "predicates": ["true", "false"] }
+                      |    },
+                      |    { "id": 5, "value": { "modelType": "CloseChecker", "modelId": { "id": 5, "name": "checker" } } },
+                      |    { "id": 6, "value": { "modelType": "CloseChecker", "modelId": { "id": 6, "name": "checker" } } }
+                      |  ]
+                      |}
+                    """.stripMargin.trim
+
+        val attempt = factory.fromString(json)
+        val t = attempt.get.asInstanceOf[ModelDecisionTree[Map[String, Double], Int]]
+        val cs = t.root.dfs().map{ _._1.value }.collect{ case c: CloseCheckerModel => c }.toVector
+        (t, cs)
+    }
+
     case class ModelContainer[A, B](model: Model[A, B], missing1: Boolean, best1: Boolean, missing2: Boolean, best2: Boolean)
 
     /** This semantics operates on Map[String, Double].  Produces functions that return true when the key exists in
@@ -247,8 +326,8 @@ object ModelDecisionTreeTest {
     }
 
     private[this] def model(missing1: Boolean, best1: Boolean, missing2: Boolean, best2: Boolean) = {
-        import spray.json.DefaultJsonProtocol.IntJsonFormat
         import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.IntScoreConverter
+        import spray.json.DefaultJsonProtocol.IntJsonFormat
 
         val f = ModelFactory(ConstantModel.parser, BasicDecisionTree.parser, ModelDecisionTree.parser)
         val factory = f.toTypedFactory[Map[String, Double], Int](semantics)
