@@ -103,7 +103,8 @@ final case class Base64StringSource(b64EncodedData: String, vfsType: VfsType = V
   private[this] def getTmpFileName = for {
     sha1    <- Try { MessageDigest.getInstance("SHA-1") }
     digest  <- Try { sha1.digest(b64EncodedData.getBytes) }
-    encoded <- Try { URLEncoder.encode(new String(digest), "UTF-8") }
+    b64     <- Try { new String(Base64.encodeBase64(digest)) }
+    encoded <- Try { URLEncoder.encode(b64, "UTF-8") }
   } yield "tmp://" + encoded
 }
 

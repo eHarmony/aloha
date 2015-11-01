@@ -4,21 +4,21 @@ import java.io.File
 
 import com.eharmony.aloha.FileLocations
 import com.eharmony.aloha.factory.ModelFactory
+import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.StringScoreConverter
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
-import com.eharmony.aloha.semantics.compiled.plugin.csv.{CsvLines, CsvLine, CompiledSemanticsCsvPlugin}
+import com.eharmony.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine, CsvLines}
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
+import spray.json.DefaultJsonProtocol.{StringJsonFormat, _}
 import spray.json.{DeserializationException, JsonFormat}
-import vw.VW
-import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.StringScoreConverter
-import spray.json.DefaultJsonProtocol.StringJsonFormat
+import vw.learner.{VWIntLearner, VWLearners}
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.implicitConversions
 import scala.util.Failure
-import spray.json.DefaultJsonProtocol._
 
 object CbVwJniModelTest {
 
@@ -31,7 +31,7 @@ object CbVwJniModelTest {
     tf.deleteOnExit()
     val p = tf.getCanonicalPath
 
-    val vw = new VW(s"--cb 2 --quiet -f $p")
+    val vw: VWIntLearner = VWLearners.create(s"--cb 2 --quiet -f $p")
     val input = Vector("1:2:0.5 | a c",
                        "2:1:0.5 | b c")
     for {
@@ -87,7 +87,7 @@ class CbVwJniModelTest {
   @Test def testWithoutLabels(): Unit = {
     val model = factory.fromString(json).get
     val pred = model(emptyLine).get
-    assertEquals("2.0", pred)
+    assertEquals("2", pred)
   }
 
   /**
