@@ -1,6 +1,7 @@
 package com.eharmony.aloha.reflect
 
 import scala.language.higherKinds
+import scala.util.matching.Regex
 import scalaz.{ Validation, ValidationNel }
 import scalaz.syntax.validation.ToValidationV // scalaz.syntax.validation.ToValidationOps for latest scalaz
 
@@ -167,7 +168,16 @@ object RefInfoOps extends RefInfoOps[RefInfo] with EitherHelpers {
   @SuppressWarnings(Array("deprecation"))
   def isSubType[Sub, Super](implicit sub: RefInfo[Sub], sup: RefInfo[Super]): Boolean = sub <:< sup
 
+  def isJavaInterface[A](implicit a: RefInfo[A]) = a.erasure.isInterface
 
+  def classRegex[A](implicit a: RefInfo[A]): Regex = {
+    val erasure = a.erasure
+    val pkg = erasure.getPackage.getName
+    val simpleName = erasure.getSimpleName
+    val canonicalName = erasure.getCanonicalName
+    val name = canonicalName.drop(pkg.length)
+    Seq(canonicalName, name, simpleName).distinct.mkString("(", "|", ")").replace(".", "\\.").r
+  }
 
   /**
    * Get reflection info from a simple Class.  Will throw an exception if we find that the type is parametrized.

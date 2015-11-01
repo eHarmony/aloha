@@ -8,6 +8,7 @@ import com.eharmony.aloha.FileLocations
 import com.eharmony.aloha.factory.JavaJsonFormats._
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
+import com.eharmony.aloha.io.sources.Base64StringSource
 import com.eharmony.aloha.models.TypeCoercion
 import com.eharmony.aloha.reflect.RefInfo
 import com.eharmony.aloha.score.conversions.ScoreConverter
@@ -26,7 +27,7 @@ import org.junit.runners.BlockJUnit4ClassRunner
 import org.junit.{BeforeClass, Ignore, Test}
 import spray.json.DefaultJsonProtocol._
 import spray.json._
-import vw.VW
+import vw.learner.{VWFloatLearner, VWLearner, VWLearners}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.Try
@@ -38,6 +39,8 @@ import scala.util.Try
  * the purported os the VW JNI library doesn't know which system dependent version of the lib
  * to load and these tests will consequently fail.
  */
+// TODO: In upcoming version of VW JNI, the command is saved and a getter is provided.  Update tests accordingly.
+// This allows us to test the "-i" parameter so we don't need to call the 'getParam' function.
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class VwJniModelTest extends Logging {
     import VwJniModelTest._
@@ -62,10 +65,9 @@ class VwJniModelTest extends Logging {
 
             assertEquals(m.getClass.getCanonicalName, m1.getClass.getCanonicalName)
 
-
             val ignoreIndices = Seq (
-                3, // featureFunctions
-                6  // finalizer
+                4, // featureFunctions
+                7  // finalizer
             )
 
             m.productIterator.zip(m1.productIterator).zipWithIndex.
@@ -76,32 +78,6 @@ class VwJniModelTest extends Logging {
             assertEquals(m(missingHeight), m1(missingHeight))
         }
         else debug(s"$hostName matches BlacklistedHosts: ($BlacklistedHosts).  Ignoring test VwJniModelTest.testSerialization")
-    }
-
-
-    @Test def testFailureWhenVwIsCreatedWithLinkParamAndInitialRegressorHasSameLink(): Unit = {
-        try {
-            val src = Base64EncodedBinaryVwModelSource(logisticModelB64Encoded, LogisticModelParams)
-            src.vwModel(1).close()
-            fail("VW should throw a java.lang.Exception with message: \"option '--link' cannot be specified more than once\"");
-        }
-        catch {
-            // Can't rely on msg because different versions of boost (a dep of VW) return different messages
-            // case e: IllegalArgumentException if e.getClass.getSimpleName == "IllegalArgumentException" && e.getMessage == "option '--link' cannot be specified more than once" =>
-            case e: IllegalArgumentException if e.getClass.getSimpleName == "IllegalArgumentException" =>
-            case t: Throwable => throw t
-        }
-    }
-
-    @Test def testAllocatedModelEqualsOriginalModel(): Unit = {
-        val modelBytes = readFile(VwModelFile)
-        val out = new String(Base64.encodeBase64(modelBytes))
-        val src = Base64EncodedBinaryVwModelSource(out)
-        val tmpFile = src.localFile(1)
-        src.copyContentToLocalIfNecessary(tmpFile)
-        val tmpBytes = readFile(tmpFile)
-        println(out)
-        assertArrayEquals(modelBytes, tmpBytes)
     }
 
     @Test def testByteOutputType(): Unit = testOutputType[Byte]()
@@ -131,6 +107,16 @@ class VwJniModelTest extends Logging {
         assertEquals(List("height_cm"), m.featureFunctions.head.accessorOutputMissing(missingHeight))
     }
 
+  @Test def testAllocatedModelEqualsOriginalModel(): Unit = {
+    val modelBytes = readFile(VwModelFile)
+    val out = new String(Base64.encodeBase64(modelBytes))
+    val src = Base64StringSource(out)
+    val tmpFile = src.localVfs.replicatedToLocal().fileObj
+    val tmpBytes = readFile(tmpFile)
+    println(out)
+    assertArrayEquals(modelBytes, tmpBytes)
+  }
+
     /**
      * This should succeed.  It just logs when non-existent features are listed in the namespace.
      */
@@ -156,13 +142,13 @@ class VwJniModelTest extends Logging {
         try {
             VwJniModel(
                 ModelId.empty,
-                Base64EncodedBinaryVwModelSource(VwB64Model, "--quiet"),
+                "--quiet",
+                Base64StringSource(VwB64Model),
                 Vector("height_mm"),
                 Vector(h),
                 Nil,
                 Nil,
-                (f: Double) => f,
-                None,
+                (_: VWLearner).asInstanceOf[VWFloatLearner].predict,
                 None
             )
             fail("should throw IllegalArgumentException")
@@ -180,13 +166,13 @@ class VwJniModelTest extends Logging {
         try {
             VwJniModel(
                 ModelId.empty,
-                Base64EncodedBinaryVwModelSource(VwB64Model, "--quiet"),
+                "--quiet",
+                Base64StringSource(VwB64Model),
                 Vector(),
                 Vector(h),
                 Nil,
                 Nil,
-                (f: Double) => f,
-                None,
+                (_: VWLearner).asInstanceOf[VWFloatLearner].predict,
                 None
             )
             fail("should throw IllegalArgumentException")
@@ -204,13 +190,13 @@ class VwJniModelTest extends Logging {
         try {
             VwJniModel(
                 ModelId.empty,
-                Base64EncodedBinaryVwModelSource(VwB64Model, "--quiet"),
+                "--quiet",
+                Base64StringSource(VwB64Model),
                 Vector("height_mm"),
                 Vector(),
                 Nil,
                 Nil,
-                (f: Double) => f,
-                None,
+                (_: VWLearner).asInstanceOf[VWFloatLearner].predict,
                 None
             )
             fail("should throw IllegalArgumentException")
@@ -230,28 +216,28 @@ class VwJniModelTest extends Logging {
         println(s"attempting to instantiate corrupted VW model: $badModel")
 
         // This try won't do anything because this is currently a SEG FAULT so the world will just blow up.
-        Try { new VW(s"--quiet -i $badModel") }
+        Try { VWLearners.create[VWLearner](s"--quiet -i $badModel") }
     }
 
-
+    def getParams(m: VwJniModel[_, _]) = VwJniModel.updatedVwModelParams(VwJniModel.localModelFile(m.modelSource), m.vwParams, m.modelId)
 
     @Test def testResUrlDoesntCopyToLocal(): Unit = {
         val resUrl = url("res:" + VwModelBaseName)
         val res = model[Float](extJson(resUrl.toString))
-        val params = res.vwJniModelSource.updatedVwModelParams(res.modelId.getId())
+        val params = getParams(res)
         assertFalse("'res' URLs should copy VW model to temp directory.", params.contains(TmpDir))
     }
 
     @Test def testFileUrlDoesntCopyToLocal(): Unit = {
         val fileUrl = url(VwModelPath).toString
         val file = model[Float](extJson(fileUrl))
-        val params = file.vwJniModelSource.updatedVwModelParams(file.modelId.getId())
+        val params = getParams(file)
         assertFalse("'file' URLs should not copy VW model to temp directory.", params.contains(TmpDir))
     }
 
     @Test def testNakedUrlDoesntCopyToLocal(): Unit = {
         val naked = model[Float](extJson(VwModelPath))
-        val params = naked.vwJniModelSource.updatedVwModelParams(naked.modelId.getId())
+        val params = getParams(naked)
         assertFalse("URLs with no protocol should not copy VW model to temp directory.", params.contains(TmpDir))
     }
 
@@ -260,13 +246,18 @@ class VwJniModelTest extends Logging {
         val tmpUrlPath = tmpUrl.getName.getPath
         vfs2.FileUtil.copyContent(url(VwModelPath), tmpUrl)
         val tmp = model[Float](extJson(tmpUrl.toString))
-        val file = """^.*\s+-i\s*([^\s]*\.model).*$""".r
-        val params = tmp.vwJniModelSource.updatedVwModelParams(tmp.modelId.getId())
+        val file = """^(.*\s+)?-i\s+([^\s]*)(\s.*)?$""".r
+        val params = getParams(tmp)
+
+        assertFalse(tmp.modelSource.shouldDelete)
+
         params match {
-            case file(tmpFile) =>
-                assertFalse(s"Temp file ($tmpFile) should already be deleted.", new File(tmpFile).exists())
+            // This won't necessarily be deleted because we're not calling the same localModelFile invocation called
+            // by VwJniModel.vwModel.  Since localModelFile is side effecting and not idempotent, it won't necessary
+            // copy the file to the same place every time.
+            case file(_, tmpFile, _) if new File(tmpFile).delete() =>
                 assertTrue("'tmp' URLs should copy VW model to temp directory.", params.contains(TmpDir))
-                assertFalse("'tmp' URLs should copy VW model to temp directory.", params.contains(tmpUrlPath))
+                assertTrue("'tmp' URLs should copy VW model to temp directory.", params.contains(tmpUrlPath))
             case _ => fail("Should have a temp file location")
         }
     }
@@ -277,19 +268,26 @@ class VwJniModelTest extends Logging {
         vfs2.FileUtil.copyContent(url(VwModelPath), ramUrl)
         val ram = model[Float](extJson(ramUrl.toString))
 
-        val file = """^.*\s+-i\s*([^\s]*\.model).*$""".r
-        val params = ram.vwJniModelSource.updatedVwModelParams(ram.modelId.getId())
+        val file = """^(.*\s+)?-i\s+([^\s]*)(\s.*)?$""".r
+        val params = getParams(ram)
 
         params match {
-            case file(tmpFile) =>
-                assertFalse(s"Temp file ($tmpFile) should already be deleted.", new File(tmpFile).exists())
+            // This won't necessarily be deleted because we're not calling the same localModelFile invocation called
+            // by VwJniModel.vwModel.  Since localModelFile is side effecting and not idempotent, it won't necessary
+            // copy the file to the same place every time.
+            case file(_, tmpFile, _) if new File(tmpFile).delete() =>
+
+                // assertFalse(s"Temp file ($tmpFile) should already be deleted.", new File(tmpFile).exists())
                 assertTrue("'ram' URLs should copy VW model to temp directory.", params.contains(TmpDir))
                 assertFalse("'ram' URLs should copy VW model to temp directory.", params.contains(ramUrlPath))
             case _ => fail("Should have a temp file location")
         }
     }
 
-    @Test def testGzFileUrlCopiesToLocal(): Unit = {
+  /**
+   * Reading from gz VFS URLs is no Longer Supported.
+   */
+  @Ignore @Test def testGzFileUrlCopiesToLocal(): Unit = {
         val localUrl = url(VwModelPath)
         val gzUrl = url("gz://" + VwModelPath + ".gz")
         vfs2.FileUtil.copyContent(localUrl, gzUrl)
@@ -300,20 +298,31 @@ class VwJniModelTest extends Logging {
                     Base64.encodeBase64(vfs2.FileUtil.getContent(url(VwModelPath + ".gz"))))
 
         // Show that we can take gzipped URLs and that they are copied to a local temp file.
-        val gz = model[Float](extJson(gzUrl.toString))
+        assertBadFormat(model[Float](extJson(gzUrl.toString)))
+    }
 
-        val file = """^.*\s+-i\s*([^\s]*\.model).*$""".r
-        val params = gz.vwJniModelSource.updatedVwModelParams(gz.modelId.getId())
-
-        params match {
-            case file(tmpFile) =>
-                assertFalse(s"Temp file ($tmpFile) should already be deleted.", new File(tmpFile).exists())
-                assertTrue("'gz' URLs should copy VW model to temp directory.", params.contains(TmpDir))
-            case _ => fail("Should have a temp file location")
+    /**
+     * Replicating the file to local disk doesn't automatically decompress the file.  Therefore, VW
+     * won't understand the file because it's still zipped.  Therefore it will throw.
+     */
+    def assertBadFormat[A](a: => A): Unit = {
+        try {
+            a
+            fail()
+        }
+        catch {
+            case e: Throwable if "bad model format!" == e.getMessage =>
+                val w = new StringWriter()
+                e.printStackTrace(new PrintWriter(w))
+                assertTrue(w.toString contains "vw.VW.initialize(Native Method)")
+            case e: Throwable => throw e
         }
     }
 
-    @Test def testBzip2FileUrlCopiesToLocal(): Unit = {
+  /**
+   * Reading from bzip2 VFS URLs is no Longer Supported.
+   */
+    @Ignore @Test def testBzip2FileUrlCopiesToLocal(): Unit = {
         val localUrl = url(VwModelPath)
         val bz2Url = url("bz2://" + VwModelPath + ".bz2")
         vfs2.FileUtil.copyContent(localUrl, bz2Url)
@@ -323,18 +332,7 @@ class VwJniModelTest extends Logging {
             Base64.encodeBase64(vfs2.FileUtil.getContent(localUrl)) ==
                 Base64.encodeBase64(vfs2.FileUtil.getContent(url(VwModelPath + ".bz2"))))
 
-        // Show that we can take zipped URLs and that they are copied to a local temp file.
-        val bz2 = model[Float](extJson(bz2Url.toString))
-
-        val file = """^.*\s+-i\s*([^\s]*\.model).*$""".r
-        val params = bz2.vwJniModelSource.updatedVwModelParams(bz2.modelId.getId())
-
-        params match {
-            case file(tmpFile) =>
-                assertFalse(s"Temp file ($tmpFile) should already be deleted.", new File(tmpFile).exists())
-                assertTrue("'zip' URLs should copy VW model to temp directory.", params.contains(TmpDir))
-            case _ => fail("Should have a temp file location")
-        }
+        assertBadFormat(model[Float](extJson(bz2Url.toString)))
     }
 
     @Test def testExternalModel(): Unit = {
@@ -623,7 +621,7 @@ object VwJniModelTest extends Logging {
     // echo "" | vw -t --quiet -i log_0.5.model -p pred; cat pred; rm -f ./pred ./log_0.5.model
     // 0.504197
     private[this] def allocateModel() = {
-        val m = new VW(s"--quiet --loss_function logistic --link logistic -f $VwModelPath")
+        val m: VWFloatLearner = VWLearners.create(s"--quiet --loss_function logistic --link logistic -f $VwModelPath")
         1 to 100 foreach { _ =>
             m.learn("-1 | ")
             m.learn( "1 | ")
@@ -651,7 +649,7 @@ object VwJniModelTest extends Logging {
 
     private val LogisticModelParams = "--quiet --link logistic --loss_function logistic"
 
-    private def readFile(f: File, maxFileSize: Int = 1024): Array[Byte] =
+    private def readFile(f: java.io.File, maxFileSize: Int = 1024): Array[Byte] =
         readInputStream(new FileInputStream(f), maxFileSize)
 
     private def readInputStream(is: InputStream, maxFileSize: Int = 1024): Array[Byte] = {

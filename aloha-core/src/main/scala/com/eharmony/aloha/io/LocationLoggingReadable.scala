@@ -1,9 +1,10 @@
 package com.eharmony.aloha.io
 
-import java.io.{ FileInputStream, File }
+import java.io.File
 import java.net.URL
-import org.apache.commons.{ vfs2, vfs }
+
 import com.eharmony.aloha.util.Logging
+import org.apache.commons.{vfs => vfs1, vfs2}
 
 /**
  * Logs the locations of identifiable resources from which the objects are read.
@@ -43,7 +44,7 @@ trait LocationLoggingReadable[A] extends FileReadableByInputStream[A] { self: Lo
    * @param foVfs1 an Apache VFS v1 FileObject to read.  The FileObject's InputStream is automatically closed.
    * @return the result
    */
-  abstract override def fromVfs1(foVfs1: vfs.FileObject): A = {
+  abstract override def fromVfs1(foVfs1: vfs1.FileObject): A = {
     info(s"Reading object from Apache VFS 1 file object: ${foVfs1.getName.getFriendlyURI}")
     val v = super.fromVfs1(foVfs1)
     debug(s"object read from Apache VFS 1 file object (${foVfs1.getName.getFriendlyURI}): $v")

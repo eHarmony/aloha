@@ -2,7 +2,7 @@ package com.eharmony.aloha.io
 
 import java.io.File
 import java.net.URL
-import org.apache.commons.{vfs2, vfs}
+import org.apache.commons.{vfs => vfs1, vfs2}
 
 trait FileReadable[A] {
 
@@ -25,7 +25,7 @@ trait FileReadable[A] {
       * @param foVfs1 an Apache v1 VFS FileObject to read.  The FileObject's InputStream is automatically closed.
       * @return the result
       */
-    def fromVfs1(foVfs1: vfs.FileObject): A
+    def fromVfs1(foVfs1: vfs1.FileObject): A
 
     /** Read from an Apache FileObject.
       *

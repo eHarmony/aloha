@@ -3,7 +3,7 @@ package com.eharmony.aloha.io
 import scala.language.higherKinds
 import java.io.File
 import java.net.URL
-import org.apache.commons.{ vfs2, vfs }
+import org.apache.commons.{ vfs => vfs1, vfs2 }
 import com.eharmony.aloha.util.Logging
 
 /**
@@ -44,7 +44,7 @@ trait LocationLoggingContainerReadable[C[_]] extends ContainerReadable[C] { self
    * @param foVfs1 an Apache VFS v1 FileObject to read.  The FileObject's InputStream is automatically closed.
    * @return the result
    */
-  abstract override def fromVfs1[A](foVfs1: vfs.FileObject): C[A] = {
+  abstract override def fromVfs1[A](foVfs1: vfs1.FileObject): C[A] = {
     info(s"Reading object from Apache VFS 1 file object: ${foVfs1.getName.getFriendlyURI}")
     val v = super.fromVfs1[A](foVfs1)
     debug(s"object read from Apache VFS 1 file object (${foVfs1.getName.getFriendlyURI}): $v")

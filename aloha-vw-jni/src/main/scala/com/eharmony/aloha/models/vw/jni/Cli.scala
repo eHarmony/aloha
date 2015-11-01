@@ -3,8 +3,8 @@ package com.eharmony.aloha.models.vw.jni
 import com.eharmony.aloha
 import com.eharmony.aloha.annotate.CLI
 import com.eharmony.aloha.id.ModelId
-import com.eharmony.aloha.io.fs.FsType.FsType
-import com.eharmony.aloha.io.fs.{FsInstance, FsType}
+import com.eharmony.aloha.io.vfs.VfsType.VfsType
+import com.eharmony.aloha.io.vfs.{Vfs, VfsType}
 import com.eharmony.aloha.models.reg.ConstantDeltaSpline
 
 /**
@@ -32,15 +32,15 @@ object Cli {
         splineMin: Option[Double] = None,
         splineMax: Option[Double] = None,
         splineKnots: Option[Vector[Double]] = None,
-        fsType: FsType = FsType.vfs2)
+        vfsType: VfsType = VfsType.vfs2)
 
     def main(args: Array[String]) {
         cliParser.parse(args, Config()) match {
-            case Some(Config(spec, model, id, name, vwArgs, externalModel, numMissingThresh, notesList, min, max, knots, fsType)) =>
+            case Some(Config(spec, model, id, name, vwArgs, externalModel, numMissingThresh, notesList, min, max, knots, vfsType)) =>
                 val spline = for (n <- min; x <- max; k <- knots) yield ConstantDeltaSpline(n, x, k)
                 val notes = Option(notesList) filter {_.nonEmpty}
-                val s = FsInstance.fromFsType(fsType)(spec)
-                val m = FsInstance.fromFsType(fsType)(model)
+                val s = Vfs.fromVfsType(vfsType)(spec)
+                val m = Vfs.fromVfsType(vfsType)(model)
                 val jsonAst = VwJniModel.json(s, m, ModelId(id, name), vwArgs, externalModel, numMissingThresh, notes, spline)
                 println(jsonAst.compactPrint)
             case None => // Will be taken care of by scopt.
@@ -57,7 +57,7 @@ object Cli {
                 c.copy(model = x)
             } text "model is an Apache VFS URL to a VW binary model." required()
             opt[String]("fs-type") action { (x, c) =>
-                c.copy(fsType = FsType.withName(x))
+                c.copy(vfsType = VfsType.withName(x))
             } text "file system type: vfs1, vfs2, file. default = vfs2." optional()
             opt[String]('n', "name") action { (x, c) =>
                 c.copy(name = x)
@@ -89,9 +89,6 @@ object Cli {
                 if (2 <= knots.size) Right(()) else Left("spline-knots must contain at least 2 knots.")
             } text "max value for spline domain. (must additional provide spline-min, spline-delta, and spline-knots)." optional() maxOccurs(1)
             checkConfig { c =>
-                FsInstance.fromFsType(c.fsType)(c.spec)
-                FsInstance.fromFsType(c.fsType)(c.model)
-
                 val splineProps = Seq(c.splineMin, c.splineMax, c.splineKnots).map(_.isDefined)
                 if (!Seq(0, splineProps.size).contains(splineProps.count(identity)))
                     failure("All or no spline props should be supplied: spline-min, spline-max, spline-knots.")
