@@ -89,9 +89,6 @@ object Cli {
                 if (2 <= knots.size) Right(()) else Left("spline-knots must contain at least 2 knots.")
             } text "max value for spline domain. (must additional provide spline-min, spline-delta, and spline-knots)." optional() maxOccurs(1)
             checkConfig { c =>
-//                Vfs.fromVfsType(c.vfsType)(c.spec)
-//                Vfs.fromVfsType(c.vfsType)(c.model)
-
                 val splineProps = Seq(c.splineMin, c.splineMax, c.splineKnots).map(_.isDefined)
                 if (!Seq(0, splineProps.size).contains(splineProps.count(identity)))
                     failure("All or no spline props should be supplied: spline-min, spline-max, spline-knots.")

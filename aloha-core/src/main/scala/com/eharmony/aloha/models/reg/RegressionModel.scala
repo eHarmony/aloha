@@ -1,14 +1,12 @@
 package com.eharmony.aloha.models.reg
 
-import java.{lang => jl}
-
-import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.aloha.factory.pimpz.JsValuePimpz
 import com.eharmony.aloha.factory.{ModelParser, ModelParserWithSemantics, ParserProviderCompanion}
 import com.eharmony.aloha.id.ModelIdentity
 import com.eharmony.aloha.models.reg.json.{RegressionModelJson, Spec}
 import com.eharmony.aloha.models.{BaseModel, TypeCoercion}
 import com.eharmony.aloha.reflect.RefInfoOps
+import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.aloha.score.basic.ModelOutput
 import com.eharmony.aloha.score.conversions.ScoreConverter
 import com.eharmony.aloha.semantics.Semantics
@@ -120,7 +118,9 @@ extends BaseModel[A, B]
 object RegressionModel extends ParserProviderCompanion with JsValuePimpz with RegressionModelJson {
   import spray.json._
 
-  object Parser extends ModelParserWithSemantics with EitherHelpers {
+  object Parser extends ModelParserWithSemantics
+                   with EitherHelpers
+                   with RegFeatureCompiler {
     val modelType = "Regression"
 
     /**
@@ -158,24 +158,6 @@ object RegressionModel extends ParserProviderCompanion with JsValuePimpz with Re
         m
       }
     }
-
-    /**
-     * Translate the feature specification into features.  This is done in a short circuiting way so that it
-     * stops when the any feature cannot be produced.
-     *
-     * @param featureMap a map of feature name to feature specification
-     * @param semantics a semantics with which feature specifications should be interpretted.
-     * @tparam A model input type
-     * @return a mapping from feature name to feature function.  Note that the indices matter and that's why we
-     *         don't want to use a map.
-     */
-    private[this] def features[A](featureMap: Seq[(String, Spec)], semantics: Semantics[A]) =
-      mapSeq(featureMap) {
-        case (k, Spec(spec, default)) =>
-          semantics.createFunction[Iterable[(String, Double)]](spec, default).
-            left.map { Seq(s"Error processing spec '$spec'") ++ _ }. // Add the spec that errored.
-            right.map { f => (k, f) }
-      }
 
     /**
      * Translate the specification of higher order features to something a

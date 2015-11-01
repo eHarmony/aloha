@@ -100,6 +100,13 @@ final case class Base64StringSource(b64EncodedData: String, vfsType: VfsType = V
 
   private[this] def getTmpVfs(tmpName: String) = Vfs.fromVfsType(vfsType)(tmpName)
 
+  /**
+   * This is based on a URL-encoded URL of the base64 encoding of a hash of the data.  The reason this is
+   * necessary is that we want a short, safe URL description of the content.
+   *
+   * NOTE: It's possible that hash collisions could occur.  This must be dealt with by the calling code.
+   * @return
+   */
   private[this] def getTmpFileName = for {
     sha1    <- Try { MessageDigest.getInstance("SHA-1") }
     digest  <- Try { sha1.digest(b64EncodedData.getBytes) }
