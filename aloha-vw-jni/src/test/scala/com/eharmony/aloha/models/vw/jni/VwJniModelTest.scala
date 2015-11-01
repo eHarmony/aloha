@@ -107,7 +107,7 @@ class VwJniModelTest extends Logging {
         assertEquals(List("height_cm"), m.featureFunctions.head.accessorOutputMissing(missingHeight))
     }
 
-  @Ignore @Test def testAllocatedModelEqualsOriginalModel(): Unit = {
+  @Test def testAllocatedModelEqualsOriginalModel(): Unit = {
     val modelBytes = readFile(VwModelFile)
     val out = new String(Base64.encodeBase64(modelBytes))
     val src = Base64StringSource(out)

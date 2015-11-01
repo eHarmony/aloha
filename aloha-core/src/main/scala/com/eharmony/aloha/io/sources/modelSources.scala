@@ -85,7 +85,7 @@ final case class Base64StringSource(b64EncodedData: String, vfsType: VfsType = V
    */
   def localVfs = {
     val localVfs = for {
-      tmpName <- getTmpFileName
+      tmpName <- tmpFileName
       v = getTmpVfs(tmpName)
       _ <- copyToTmpFile(v)
       local <- Try { v.replicatedToLocal() }
@@ -107,12 +107,12 @@ final case class Base64StringSource(b64EncodedData: String, vfsType: VfsType = V
    * NOTE: It's possible that hash collisions could occur.  This must be dealt with by the calling code.
    * @return
    */
-  private[this] def getTmpFileName = for {
-    sha1    <- Try { MessageDigest.getInstance("SHA-1") }
-    digest  <- Try { sha1.digest(b64EncodedData.getBytes) }
-    b64     <- Try { new String(Base64.encodeBase64(digest)) }
-    encoded <- Try { URLEncoder.encode(b64, "UTF-8") }
-  } yield "tmp://" + encoded
+  @transient private[this] lazy val tmpFileName = for {
+      sha1    <- Try { MessageDigest.getInstance("SHA-1") }
+      digest  <- Try { sha1.digest(b64EncodedData.getBytes) }
+      b64     <- Try { new String(Base64.encodeBase64(digest)) }
+      encoded <- Try { URLEncoder.encode(b64, "UTF-8") }
+    } yield "tmp://" + encoded
 }
 
 
