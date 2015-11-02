@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>sources - aloha-core 2.0.1-SNAPSHOT API - com.eharmony.aloha.io.sources</title>
-          <meta name="description" content="sources - aloha - core 2.0.1 - SNAPSHOT API - com.eharmony.aloha.io.sources" />
-          <meta name="keywords" content="sources aloha core 2.0.1 SNAPSHOT API com.eharmony.aloha.io.sources" />
+          <title>sources - aloha-core 3.0.0 API - com.eharmony.aloha.io.sources</title>
+          <meta name="description" content="sources - aloha - core 3.0.0 API - com.eharmony.aloha.io.sources" />
+          <meta name="keywords" content="sources aloha core 3.0.0 API com.eharmony.aloha.io.sources" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -81,7 +81,20 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="com.eharmony.aloha.io.sources.ClasspathResourceReadableSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="com.eharmony.aloha.io.sources.Base64StringSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Base64StringSourceextendsModelSourcewithProductwithSerializable"></a>
+      <a id="Base64StringSource:Base64StringSource"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Base64StringSource.html"><span class="name">Base64StringSource</span></a><span class="params">(<span name="b64EncodedData">b64EncodedData: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="vfsType">vfsType: <a href="../vfs/VfsType$.html#VfsType=com.eharmony.aloha.io.vfs.VfsType.Value" class="extmbr" name="com.eharmony.aloha.io.vfs.VfsType.VfsType">VfsType</a> = <span class="defval" name="com.eharmony.aloha.io.vfs.VfsType.vfs2">...</span></span>)</span><span class="result"> extends <a href="ModelSource.html" class="extype" name="com.eharmony.aloha.io.sources.ModelSource">ModelSource</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.eharmony.aloha.io.sources.ClasspathResourceReadableSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ClasspathResourceReadableSourceextendsFileReadableLikeSourcewithProductwithSerializable"></a>
       <a id="ClasspathResourceReadableSource:ClasspathResourceReadableSource"></a>
       <h4 class="signature">
@@ -91,6 +104,19 @@
       </span>
       <span class="symbol">
         <a href="ClasspathResourceReadableSource.html"><span class="name">ClasspathResourceReadableSource</span></a><span class="params">(<span name="resource">resource: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="FileReadableLikeSource.html" class="extype" name="com.eharmony.aloha.io.sources.FileReadableLikeSource">FileReadableLikeSource</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.eharmony.aloha.io.sources.ExternalSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ExternalSourceextendsModelSourcewithProductwithSerializable"></a>
+      <a id="ExternalSource:ExternalSource"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ExternalSource.html"><span class="name">ExternalSource</span></a><span class="params">(<span name="vfs">vfs: <a href="../vfs/Vfs.html" class="extype" name="com.eharmony.aloha.io.vfs.Vfs">Vfs</a></span>)</span><span class="result"> extends <a href="ModelSource.html" class="extype" name="com.eharmony.aloha.io.sources.ModelSource">ModelSource</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -130,6 +156,19 @@
       </span>
       <span class="symbol">
         <a href="InputStreamReadableSource.html"><span class="name">InputStreamReadableSource</span></a><span class="params">(<span name="inputStream">inputStream: <span class="extype" name="java.io.InputStream">InputStream</span></span>)</span><span class="result"> extends <a href="NonFileReadableLikeSource.html" class="extype" name="com.eharmony.aloha.io.sources.NonFileReadableLikeSource">NonFileReadableLikeSource</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="com.eharmony.aloha.io.sources.ModelSource" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ModelSourceextendsAnyRef"></a>
+      <a id="ModelSource:ModelSource"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="ModelSource.html"><span class="name">ModelSource</span></a><span class="result"> extends <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
       
@@ -263,7 +302,20 @@
 
         <div id="values" class="values members">
               <h3>Value Members</h3>
-              <ol><li name="com.eharmony.aloha.io.sources.ReadableSourceConverters" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="com.eharmony.aloha.io.sources.ModelSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ModelSource"></a>
+      <a id="ModelSource:ModelSource"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ModelSource$.html"><span class="name">ModelSource</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="com.eharmony.aloha.io.sources.ReadableSourceConverters" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ReadableSourceConverters"></a>
       <a id="ReadableSourceConverters:ReadableSourceConverters"></a>
       <h4 class="signature">

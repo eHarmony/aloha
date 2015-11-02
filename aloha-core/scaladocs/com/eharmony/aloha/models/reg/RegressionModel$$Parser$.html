@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>Parser - aloha-core 2.0.1-SNAPSHOT API - com.eharmony.aloha.models.reg.RegressionModel.Parser</title>
-          <meta name="description" content="Parser - aloha - core 2.0.1 - SNAPSHOT API - com.eharmony.aloha.models.reg.RegressionModel.Parser" />
-          <meta name="keywords" content="Parser aloha core 2.0.1 SNAPSHOT API com.eharmony.aloha.models.reg.RegressionModel.Parser" />
+          <title>Parser - aloha-core 3.0.0 API - com.eharmony.aloha.models.reg.RegressionModel.Parser</title>
+          <meta name="description" content="Parser - aloha - core 3.0.0 API - com.eharmony.aloha.models.reg.RegressionModel.Parser" />
+          <meta name="keywords" content="Parser aloha core 3.0.0 API com.eharmony.aloha.models.reg.RegressionModel.Parser" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -35,13 +35,13 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">Parser</span><span class="result"> extends <a href="../../factory/ModelParserWithSemantics.html" class="extype" name="com.eharmony.aloha.factory.ModelParserWithSemantics">ModelParserWithSemantics</a> with <a href="../../util/EitherHelpers.html" class="extype" name="com.eharmony.aloha.util.EitherHelpers">EitherHelpers</a></span>
+        <span class="name">Parser</span><span class="result"> extends <a href="../../factory/ModelParserWithSemantics.html" class="extype" name="com.eharmony.aloha.factory.ModelParserWithSemantics">ModelParserWithSemantics</a> with <a href="../../util/EitherHelpers.html" class="extype" name="com.eharmony.aloha.util.EitherHelpers">EitherHelpers</a> with <a href="RegFeatureCompiler.html" class="extype" name="com.eharmony.aloha.models.reg.RegFeatureCompiler">RegFeatureCompiler</a></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="../../util/EitherHelpers.html" class="extype" name="com.eharmony.aloha.util.EitherHelpers">EitherHelpers</a>, <a href="../../factory/ModelParserWithSemantics.html" class="extype" name="com.eharmony.aloha.factory.ModelParserWithSemantics">ModelParserWithSemantics</a>, <a href="../../factory/ModelParser.html" class="extype" name="com.eharmony.aloha.factory.ModelParser">ModelParser</a>, <a href="../../factory/pimpz/package$$JsValuePimpz.html" class="extype" name="com.eharmony.aloha.factory.pimpz.JsValuePimpz">JsValuePimpz</a>, <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="RegFeatureCompiler.html" class="extype" name="com.eharmony.aloha.models.reg.RegFeatureCompiler">RegFeatureCompiler</a>, <a href="../../util/EitherHelpers.html" class="extype" name="com.eharmony.aloha.util.EitherHelpers">EitherHelpers</a>, <a href="../../factory/ModelParserWithSemantics.html" class="extype" name="com.eharmony.aloha.factory.ModelParserWithSemantics">ModelParserWithSemantics</a>, <a href="../../factory/ModelParser.html" class="extype" name="com.eharmony.aloha.factory.ModelParser">ModelParser</a>, <a href="../../factory/pimpz/package$$JsValuePimpz.html" class="extype" name="com.eharmony.aloha.factory.pimpz.JsValuePimpz">JsValuePimpz</a>, <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -59,7 +59,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.eharmony.aloha.models.reg.RegressionModel.Parser"><span>Parser</span></li><li class="in" name="com.eharmony.aloha.util.EitherHelpers"><span>EitherHelpers</span></li><li class="in" name="com.eharmony.aloha.factory.ModelParserWithSemantics"><span>ModelParserWithSemantics</span></li><li class="in" name="com.eharmony.aloha.factory.ModelParser"><span>ModelParser</span></li><li class="in" name="com.eharmony.aloha.factory.pimpz.JsValuePimpz"><span>JsValuePimpz</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.eharmony.aloha.models.reg.RegressionModel.Parser"><span>Parser</span></li><li class="in" name="com.eharmony.aloha.models.reg.RegFeatureCompiler"><span>RegFeatureCompiler</span></li><li class="in" name="com.eharmony.aloha.util.EitherHelpers"><span>EitherHelpers</span></li><li class="in" name="com.eharmony.aloha.factory.ModelParserWithSemantics"><span>ModelParserWithSemantics</span></li><li class="in" name="com.eharmony.aloha.factory.ModelParser"><span>ModelParser</span></li><li class="in" name="com.eharmony.aloha.factory.pimpz.JsValuePimpz"><span>JsValuePimpz</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -237,6 +237,23 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.reg.RegFeatureCompiler#features" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="features[A](featureMap:Seq[(String,com.eharmony.aloha.models.reg.json.Spec)],semantics:com.eharmony.aloha.semantics.Semantics[A]):RegFeatureCompiler.this.ENS[Seq[(String,com.eharmony.aloha.semantics.func.GenAggFunc[A,Iterable[(String,Double)]])]]"></a>
+      <a id="features[A](Seq[(String,Spec)],Semantics[A]):ENS[Seq[(String,GenAggFunc[A,Iterable[(String,Double)]])]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">features</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="featureMap">featureMap: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[(<span class="extype" name="scala.Predef.String">String</span>, <a href="json/Spec.html" class="extype" name="com.eharmony.aloha.models.reg.json.Spec">Spec</a>)]</span>, <span name="semantics">semantics: <a href="../../semantics/Semantics.html" class="extype" name="com.eharmony.aloha.semantics.Semantics">Semantics</a>[<span class="extype" name="com.eharmony.aloha.models.reg.RegFeatureCompiler.features.A">A</span>]</span>)</span><span class="result">: <a href="#ENS[+A]=Either[Seq[String],A]" class="extmbr" name="com.eharmony.aloha.models.reg.RegressionModel.Parser.ENS">ENS</a>[<a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[(<span class="extype" name="scala.Predef.String">String</span>, <a href="../../semantics/func/GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.models.reg.RegFeatureCompiler.features.A">A</span>, <a href="../../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]])]]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Translate the feature specification into features.</p><div class="fullcomment"><div class="comment cmt"><p>Translate the feature specification into features.  This is done in a short circuiting way so that it
+stops when the any feature cannot be produced.
+</p></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>model input type</p></dd><dt class="param">featureMap</dt><dd class="cmt"><p>a map of feature name to feature specification</p></dd><dt class="param">semantics</dt><dd class="cmt"><p>a semantics with which feature specifications should be interpretted.</p></dd><dt>returns</dt><dd class="cmt"><p>a mapping from feature name to feature function.  Note that the indices matter and that's why we
+        don't want to use a map.
+</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="RegFeatureCompiler.html" class="extype" name="com.eharmony.aloha.models.reg.RegFeatureCompiler">RegFeatureCompiler</a></dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -557,7 +574,9 @@ res1: ENS[<span class="std">Seq</span>[<span class="std">Int</span>]] = Right(<s
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="com.eharmony.aloha.util.EitherHelpers">
+        <div class="parent" name="com.eharmony.aloha.models.reg.RegFeatureCompiler">
+              <h3>Inherited from <a href="RegFeatureCompiler.html" class="extype" name="com.eharmony.aloha.models.reg.RegFeatureCompiler">RegFeatureCompiler</a></h3>
+            </div><div class="parent" name="com.eharmony.aloha.util.EitherHelpers">
               <h3>Inherited from <a href="../../util/EitherHelpers.html" class="extype" name="com.eharmony.aloha.util.EitherHelpers">EitherHelpers</a></h3>
             </div><div class="parent" name="com.eharmony.aloha.factory.ModelParserWithSemantics">
               <h3>Inherited from <a href="../../factory/ModelParserWithSemantics.html" class="extype" name="com.eharmony.aloha.factory.ModelParserWithSemantics">ModelParserWithSemantics</a></h3>

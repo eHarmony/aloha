@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>aloha-core 2.0.1-SNAPSHOT API</title>
-          <meta name="description" content="aloha - core 2.0.1 - SNAPSHOT API" />
-          <meta name="keywords" content="aloha core 2.0.1 SNAPSHOT API" />
+          <title>aloha-core 3.0.0 API</title>
+          <meta name="description" content="aloha - core 3.0.0 API" />
+          <meta name="keywords" content="aloha core 3.0.0 API" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../lib/ref-index.css" media="screen" type="text/css" rel="stylesheet" />
@@ -74,6 +74,9 @@
     </div><div class="entry">
       <div class="name">RegData</div>
       <div class="occurrences"><a href="../com/eharmony/aloha/models/reg/json/RegressionModelJson.html" class="extype" name="com.eharmony.aloha.models.reg.json.RegressionModelJson">RegressionModelJson</a> </div>
+    </div><div class="entry">
+      <div class="name">RegFeatureCompiler</div>
+      <div class="occurrences"><a href="../com/eharmony/aloha/models/reg/package.html" class="extype" name="com.eharmony.aloha.models.reg">reg</a> </div>
     </div><div class="entry">
       <div class="name">RegexMissingFunction</div>
       <div class="occurrences"><a href="../com/eharmony/aloha/semantics/compiled/plugin/csv/package.html" class="extype" name="com.eharmony.aloha.semantics.compiled.plugin.csv">csv</a> </div>
@@ -154,7 +157,7 @@
       <div class="occurrences"><a href="../com/eharmony/aloha/util/package.html" class="extype" name="com.eharmony.aloha.util">util</a> </div>
     </div><div class="entry">
       <div class="name">read</div>
-      <div class="occurrences"><a href="../com/eharmony/aloha/factory/JavaJsonFormats$JavaBooleanJsonFormat$.html" class="extype" name="com.eharmony.aloha.factory.JavaJsonFormats.JavaBooleanJsonFormat">JavaBooleanJsonFormat</a> <a href="../com/eharmony/aloha/factory/JavaJsonFormats$JavaByteJsonFormat$.html" class="extype" name="com.eharmony.aloha.factory.JavaJsonFormats.JavaByteJsonFormat">JavaByteJsonFormat</a> <a href="../com/eharmony/aloha/factory/JavaJsonFormats$JavaDoubleJsonFormat$.html" class="extype" name="com.eharmony.aloha.factory.JavaJsonFormats.JavaDoubleJsonFormat">JavaDoubleJsonFormat</a> <a href="../com/eharmony/aloha/factory/JavaJsonFormats$JavaFloatJsonFormat$.html" class="extype" name="com.eharmony.aloha.factory.JavaJsonFormats.JavaFloatJsonFormat">JavaFloatJsonFormat</a> <a href="../com/eharmony/aloha/factory/JavaJsonFormats$JavaIntJsonFormat$.html" class="extype" name="com.eharmony.aloha.factory.JavaJsonFormats.JavaIntJsonFormat">JavaIntJsonFormat</a> <a href="../com/eharmony/aloha/factory/JavaJsonFormats$JavaLongJsonFormat$.html" class="extype" name="com.eharmony.aloha.factory.JavaJsonFormats.JavaLongJsonFormat">JavaLongJsonFormat</a> <a href="../com/eharmony/aloha/factory/JavaJsonFormats$JavaShortJsonFormat$.html" class="extype" name="com.eharmony.aloha.factory.JavaJsonFormats.JavaShortJsonFormat">JavaShortJsonFormat</a> <a href="../com/eharmony/aloha/io/fs/package$$FsInstance$$JsonReader.html" class="extype" name="com.eharmony.aloha.io.fs.FsInstance.JsonReader">JsonReader</a> <a href="../com/eharmony/aloha/io/fs/package$$FsType$$JsonReader.html" class="extype" name="com.eharmony.aloha.io.fs.FsType.JsonReader">JsonReader</a> <a href="../com/eharmony/aloha/models/reg/json/SpecJson$FeatureSpecFormat$.html" class="extype" name="com.eharmony.aloha.models.reg.json.SpecJson.FeatureSpecFormat">FeatureSpecFormat</a> <a href="../com/eharmony/aloha/util/SimpleTypeSeq$$SimpleTypeSeqFormat$.html" class="extype" name="com.eharmony.aloha.util.SimpleTypeSeq.SimpleTypeSeqFormat">SimpleTypeSeqFormat</a> </div>
+      <div class="occurrences"><a href="../com/eharmony/aloha/factory/JavaJsonFormats$JavaBooleanJsonFormat$.html" class="extype" name="com.eharmony.aloha.factory.JavaJsonFormats.JavaBooleanJsonFormat">JavaBooleanJsonFormat</a> <a href="../com/eharmony/aloha/factory/JavaJsonFormats$JavaByteJsonFormat$.html" class="extype" name="com.eharmony.aloha.factory.JavaJsonFormats.JavaByteJsonFormat">JavaByteJsonFormat</a> <a href="../com/eharmony/aloha/factory/JavaJsonFormats$JavaDoubleJsonFormat$.html" class="extype" name="com.eharmony.aloha.factory.JavaJsonFormats.JavaDoubleJsonFormat">JavaDoubleJsonFormat</a> <a href="../com/eharmony/aloha/factory/JavaJsonFormats$JavaFloatJsonFormat$.html" class="extype" name="com.eharmony.aloha.factory.JavaJsonFormats.JavaFloatJsonFormat">JavaFloatJsonFormat</a> <a href="../com/eharmony/aloha/factory/JavaJsonFormats$JavaIntJsonFormat$.html" class="extype" name="com.eharmony.aloha.factory.JavaJsonFormats.JavaIntJsonFormat">JavaIntJsonFormat</a> <a href="../com/eharmony/aloha/factory/JavaJsonFormats$JavaLongJsonFormat$.html" class="extype" name="com.eharmony.aloha.factory.JavaJsonFormats.JavaLongJsonFormat">JavaLongJsonFormat</a> <a href="../com/eharmony/aloha/factory/JavaJsonFormats$JavaShortJsonFormat$.html" class="extype" name="com.eharmony.aloha.factory.JavaJsonFormats.JavaShortJsonFormat">JavaShortJsonFormat</a> <a href="../com/eharmony/aloha/io/fs/package$$FsInstance$$JsonReader.html" class="extype" name="com.eharmony.aloha.io.fs.FsInstance.JsonReader">JsonReader</a> <a href="../com/eharmony/aloha/io/fs/package$$FsType$$JsonReader.html" class="extype" name="com.eharmony.aloha.io.fs.FsType.JsonReader">JsonReader</a> <a href="../com/eharmony/aloha/io/sources/ModelSource$$jsonFormat$.html" class="extype" name="com.eharmony.aloha.io.sources.ModelSource.jsonFormat">jsonFormat</a> <a href="../com/eharmony/aloha/io/vfs/Vfs$$JsonReader.html" class="extype" name="com.eharmony.aloha.io.vfs.Vfs.JsonReader">JsonReader</a> <a href="../com/eharmony/aloha/io/vfs/VfsType$$JsonReader.html" class="extype" name="com.eharmony.aloha.io.vfs.VfsType.JsonReader">JsonReader</a> <a href="../com/eharmony/aloha/models/reg/json/SpecJson$FeatureSpecFormat$.html" class="extype" name="com.eharmony.aloha.models.reg.json.SpecJson.FeatureSpecFormat">FeatureSpecFormat</a> <a href="../com/eharmony/aloha/util/SimpleTypeSeq$$SimpleTypeSeqFormat$.html" class="extype" name="com.eharmony.aloha.util.SimpleTypeSeq.SimpleTypeSeqFormat">SimpleTypeSeqFormat</a> </div>
     </div><div class="entry">
       <div class="name">reader</div>
       <div class="occurrences"><a href="../com/eharmony/aloha/io/sources/ReaderReadableSource.html" class="extype" name="com.eharmony.aloha.io.sources.ReaderReadableSource">ReaderReadableSource</a> </div>
@@ -200,6 +203,9 @@
     </div><div class="entry">
       <div class="name">rem</div>
       <div class="occurrences"><a href="../com/eharmony/aloha/feature/OptionMath$OptMathOps$.html" class="extype" name="com.eharmony.aloha.feature.OptionMath.OptMathOps">OptMathOps</a> </div>
+    </div><div class="entry">
+      <div class="name">replicatedToLocal</div>
+      <div class="occurrences"><a href="../com/eharmony/aloha/io/vfs/File.html" class="extype" name="com.eharmony.aloha.io.vfs.File">File</a> <a href="../com/eharmony/aloha/io/vfs/Vfs.html" class="extype" name="com.eharmony.aloha.io.vfs.Vfs">Vfs</a> <a href="../com/eharmony/aloha/io/vfs/Vfs1.html" class="extype" name="com.eharmony.aloha.io.vfs.Vfs1">Vfs1</a> <a href="../com/eharmony/aloha/io/vfs/Vfs2.html" class="extype" name="com.eharmony.aloha.io.vfs.Vfs2">Vfs2</a> </div>
     </div><div class="entry">
       <div class="name">reportDuplicates</div>
       <div class="occurrences"><a href="../com/eharmony/aloha/dataset/json/validation/ValidationBase.html" class="extype" name="com.eharmony.aloha.dataset.json.validation.ValidationBase">ValidationBase</a> </div>

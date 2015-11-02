@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>RegressionModelValueToTupleConversions - aloha-core 2.0.1-SNAPSHOT API - com.eharmony.aloha.models.reg.RegressionModelValueToTupleConversions</title>
-          <meta name="description" content="RegressionModelValueToTupleConversions - aloha - core 2.0.1 - SNAPSHOT API - com.eharmony.aloha.models.reg.RegressionModelValueToTupleConversions" />
-          <meta name="keywords" content="RegressionModelValueToTupleConversions aloha core 2.0.1 SNAPSHOT API com.eharmony.aloha.models.reg.RegressionModelValueToTupleConversions" />
+          <title>RegressionModelValueToTupleConversions - aloha-core 3.0.0 API - com.eharmony.aloha.models.reg.RegressionModelValueToTupleConversions</title>
+          <meta name="description" content="RegressionModelValueToTupleConversions - aloha - core 3.0.0 API - com.eharmony.aloha.models.reg.RegressionModelValueToTupleConversions" />
+          <meta name="keywords" content="RegressionModelValueToTupleConversions aloha core 3.0.0 API com.eharmony.aloha.models.reg.RegressionModelValueToTupleConversions" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -51,6 +51,7 @@ when prefixed will yield Iterable((&quot;intercept&quot;, 1234.0))</p><pre>* {
 <span class="lit">"modelId"</span>: {<span class="lit">"id"</span>: <span class="num">0</span>, <span class="lit">"name"</span>: <span class="lit">""</span>},
 <span class="lit">"features"</span>: {
   <span class="lit">"intercept"</span>: <span class="lit">"1234L"</span>,
+  <span class="lit">"some_option"</span>: <span class="lit">"Option(5678L).toKv"</span>
   ...
 },
 ...
@@ -414,6 +415,20 @@ when prefixed will yield Iterable((&quot;intercept&quot;, 1234.0))</p><pre>* {
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.reg.RegressionModelValueToTupleConversions#toKv" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toKv[A](a:Option[A]):com.eharmony.aloha.models.reg.OptToKv[A]"></a>
+      <a id="toKv[A](Option[A]):OptToKv[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toKv</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="a">a: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.eharmony.aloha.models.reg.RegressionModelValueToTupleConversions.toKv.A">A</span>]</span>)</span><span class="result">: <a href="package$$OptToKv.html" class="extype" name="com.eharmony.aloha.models.reg.OptToKv">OptToKv</a>[<span class="extype" name="com.eharmony.aloha.models.reg.RegressionModelValueToTupleConversions.toKv.A">A</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Provides extension methods to <i>Option</i>s via <a href="package$$OptToKv.html" class="extype" name="com.eharmony.aloha.models.reg.OptToKv">com.eharmony.aloha.models.reg.OptToKv</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Provides extension methods to <i>Option</i>s via <a href="package$$OptToKv.html" class="extype" name="com.eharmony.aloha.models.reg.OptToKv">com.eharmony.aloha.models.reg.OptToKv</a>.</p></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>the type of value</p></dd><dt class="param">a</dt><dd class="cmt"><p>an optional value</p></dd><dt>returns</dt><dd class="cmt"><p>an OptToKv instance
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
