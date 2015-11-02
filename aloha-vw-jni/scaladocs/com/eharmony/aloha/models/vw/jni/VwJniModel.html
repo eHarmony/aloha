@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>VwJniModel - aloha-vw-jni 2.0.1-SNAPSHOT API - com.eharmony.aloha.models.vw.jni.VwJniModel</title>
-          <meta name="description" content="VwJniModel - aloha - vw - jni 2.0.1 - SNAPSHOT API - com.eharmony.aloha.models.vw.jni.VwJniModel" />
-          <meta name="keywords" content="VwJniModel aloha vw jni 2.0.1 SNAPSHOT API com.eharmony.aloha.models.vw.jni.VwJniModel" />
+          <title>VwJniModel - aloha-vw-jni 3.0.0 API - com.eharmony.aloha.models.vw.jni.VwJniModel</title>
+          <meta name="description" content="VwJniModel - aloha - vw - jni 3.0.0 API - com.eharmony.aloha.models.vw.jni.VwJniModel" />
+          <meta name="keywords" content="VwJniModel aloha vw jni 3.0.0 API com.eharmony.aloha.models.vw.jni.VwJniModel" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -35,15 +35,16 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">VwJniModel</span><span class="tparams">[<span name="A">-A</span>, <span name="B">+B</span>]</span><span class="params">(<span name="modelId">modelId: <span class="extype" name="com.eharmony.aloha.id.ModelIdentity">ModelIdentity</span></span>, <span name="vwJniModelSource">vwJniModelSource: <a href="VwJniModelSource.html" class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModelSource">VwJniModelSource</a></span>, <span name="featureNames">featureNames: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="featureFunctions">featureFunctions: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.A">A</span>, <span class="extype" name="scala.Iterable">Iterable</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]]]</span>, <span name="defaultNs">defaultNs: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="namespaces">namespaces: <span class="extype" name="scala.List">List</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Int">Int</span>])]</span>, <span name="finalizer">finalizer: (<span class="extype" name="scala.Double">Double</span>) ⇒ <span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.B">B</span></span>, <span name="numMissingThreshold">numMissingThreshold: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>] = <span class="symbol">scala.None</span></span>, <span name="spline">spline: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.eharmony.aloha.models.reg.Spline">Spline</span>] = <span class="symbol">scala.None</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="scb">scb: <span class="extype" name="com.eharmony.aloha.score.conversions.ScoreConverter">ScoreConverter</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.B">B</span>]</span>)</span><span class="result"> extends <span class="extype" name="com.eharmony.aloha.models.BaseModel">BaseModel</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.A">A</span>, <span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.B">B</span>] with <span class="extype" name="com.eharmony.aloha.models.reg.RegressionFeatures">RegressionFeatures</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.A">A</span>] with <span class="extype" name="com.eharmony.aloha.util.Logging">Logging</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">VwJniModel</span><span class="tparams">[<span name="A">-A</span>, <span name="B">+B</span>]</span><span class="params">(<span name="modelId">modelId: <span class="extype" name="com.eharmony.aloha.id.ModelIdentity">ModelIdentity</span></span>, <span name="vwParams">vwParams: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="modelSource">modelSource: <span class="extype" name="com.eharmony.aloha.io.sources.ModelSource">ModelSource</span></span>, <span name="featureNames">featureNames: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="featureFunctions">featureFunctions: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.A">A</span>, <span class="extype" name="scala.Iterable">Iterable</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]]]</span>, <span name="defaultNs">defaultNs: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="namespaces">namespaces: <span class="extype" name="scala.List">List</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Int">Int</span>])]</span>, <span name="learnerCreator">learnerCreator: (<span class="extype" name="vw.learner.VWLearner">VWLearner</span>) ⇒ (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.B">B</span></span>, <span name="numMissingThreshold">numMissingThreshold: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>] = <span class="symbol">scala.None</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="scb">scb: <span class="extype" name="com.eharmony.aloha.score.conversions.ScoreConverter">ScoreConverter</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.B">B</span>]</span>)</span><span class="result"> extends <span class="extype" name="com.eharmony.aloha.models.BaseModel">BaseModel</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.A">A</span>, <span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.B">B</span>] with <span class="extype" name="com.eharmony.aloha.models.reg.RegressionFeatures">RegressionFeatures</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.A">A</span>] with <span class="extype" name="com.eharmony.aloha.util.Logging">Logging</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Model that delegates to a VW JNI model.</p></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>model input type</p></dd><dt class="tparam">B</dt><dd class="cmt"><p>model output type</p></dd><dt class="param">vwJniModelSource</dt><dd class="cmt"><p>either the FsInstance pointing to the VW model or the Base64 encoded VW model.</p></dd><dt class="param">featureNames</dt><dd class="cmt"><p>names of features (parallel to featureFunctions)</p></dd><dt class="param">featureFunctions</dt><dd class="cmt"><p>functions to extract values from the input value</p></dd><dt class="param">defaultNs</dt><dd class="cmt"><p>indices of features that will be placed in the default VW namespace</p></dd><dt class="param">namespaces</dt><dd class="cmt"><p>mapping from namespace name to indices of features that will be placed in the namespace</p></dd><dt class="param">finalizer</dt><dd class="cmt"><p>a function that transforms the native VW output type (Float) to B</p></dd><dt class="param">numMissingThreshold</dt><dd class="cmt"><p>A threshold dictating how many missing features to allow before making the
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Model that delegates to a VW JNI model.</p></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>model input type</p></dd><dt class="tparam">B</dt><dd class="cmt"><p>model output type</p></dd><dt class="param">modelId</dt><dd class="cmt"><p>ModelIdentity</p></dd><dt class="param">vwParams</dt><dd class="cmt"><p>the &quot;command&quot; used to instantiate VW.</p></dd><dt class="param">modelSource</dt><dd class="cmt"><p>either the FsInstance pointing to the VW model or the Base64 encoded VW model.</p></dd><dt class="param">featureNames</dt><dd class="cmt"><p>names of features (parallel to featureFunctions)</p></dd><dt class="param">featureFunctions</dt><dd class="cmt"><p>functions to extract values from the input value</p></dd><dt class="param">defaultNs</dt><dd class="cmt"><p>indices of features that will be placed in the default VW namespace</p></dd><dt class="param">namespaces</dt><dd class="cmt"><p>mapping from namespace name to indices of features that will be placed in the namespace</p></dd><dt class="param">learnerCreator</dt><dd class="cmt"><p>A function that when given a VWLearner creates a function that can make a prediction, given
+                      string-based input.</p></dd><dt class="param">numMissingThreshold</dt><dd class="cmt"><p>A threshold dictating how many missing features to allow before making the
                            prediction fail.  See <i>com.eharmony.aloha.models.reg.RegressionFeatures.numMissingThreshold</i>
                            in aloha-core.</p></dd><dt class="param">scb</dt><dd class="cmt"><p>a score converter</p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="com.eharmony.aloha.util.Logging">Logging</span>, <span class="extype" name="com.eharmony.aloha.models.reg.RegressionFeatures">RegressionFeatures</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.A">A</span>], <span class="extype" name="com.eharmony.aloha.models.BaseModel">BaseModel</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.A">A</span>, <span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.B">B</span>], <span class="extype" name="com.eharmony.aloha.score.conversions.ScoreConversion">ScoreConversion</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.B">B</span>], <span class="extype" name="com.eharmony.aloha.models.Model">Model</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.A">A</span>, <span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.B">B</span>], <span class="extype" name="java.io.Closeable">Closeable</span>, <span class="extype" name="java.lang.AutoCloseable">AutoCloseable</span>, <span class="extype" name="com.eharmony.aloha.id.Identifiable">Identifiable</span>[<span class="extype" name="com.eharmony.aloha.id.ModelIdentity">ModelIdentity</span>], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="com.eharmony.aloha.util.Logging">Logging</span>, <span class="extype" name="com.eharmony.aloha.models.reg.RegressionFeatures">RegressionFeatures</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.A">A</span>], <span class="extype" name="com.eharmony.aloha.models.BaseModel">BaseModel</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.A">A</span>, <span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.B">B</span>], <span class="extype" name="com.eharmony.aloha.score.conversions.ScoreConversion">ScoreConversion</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.B">B</span>], <span class="extype" name="com.eharmony.aloha.models.Model">Model</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.A">A</span>, <span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.B">B</span>], <span class="extype" name="java.io.Closeable">Closeable</span>, <span class="extype" name="com.eharmony.aloha.id.Identifiable">Identifiable</span>[<span class="extype" name="com.eharmony.aloha.id.ModelIdentity">ModelIdentity</span>], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -61,7 +62,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.eharmony.aloha.models.vw.jni.VwJniModel"><span>VwJniModel</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="com.eharmony.aloha.util.Logging"><span>Logging</span></li><li class="in" name="com.eharmony.aloha.models.reg.RegressionFeatures"><span>RegressionFeatures</span></li><li class="in" name="com.eharmony.aloha.models.BaseModel"><span>BaseModel</span></li><li class="in" name="com.eharmony.aloha.score.conversions.ScoreConversion"><span>ScoreConversion</span></li><li class="in" name="com.eharmony.aloha.models.Model"><span>Model</span></li><li class="in" name="java.io.Closeable"><span>Closeable</span></li><li class="in" name="java.lang.AutoCloseable"><span>AutoCloseable</span></li><li class="in" name="com.eharmony.aloha.id.Identifiable"><span>Identifiable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.eharmony.aloha.models.vw.jni.VwJniModel"><span>VwJniModel</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="com.eharmony.aloha.util.Logging"><span>Logging</span></li><li class="in" name="com.eharmony.aloha.models.reg.RegressionFeatures"><span>RegressionFeatures</span></li><li class="in" name="com.eharmony.aloha.models.BaseModel"><span>BaseModel</span></li><li class="in" name="com.eharmony.aloha.score.conversions.ScoreConversion"><span>ScoreConversion</span></li><li class="in" name="com.eharmony.aloha.models.Model"><span>Model</span></li><li class="in" name="java.io.Closeable"><span>Closeable</span></li><li class="in" name="com.eharmony.aloha.id.Identifiable"><span>Identifiable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -82,7 +83,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.eharmony.aloha.models.vw.jni.VwJniModel#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(modelId:com.eharmony.aloha.id.ModelIdentity,vwJniModelSource:com.eharmony.aloha.models.vw.jni.VwJniModelSource,featureNames:scala.collection.immutable.IndexedSeq[String],featureFunctions:scala.collection.immutable.IndexedSeq[com.eharmony.aloha.semantics.func.GenAggFunc[A,Iterable[(String,Double)]]],defaultNs:List[Int],namespaces:List[(String,List[Int])],finalizer:Double=&gt;B,numMissingThreshold:Option[Int],spline:Option[com.eharmony.aloha.models.reg.Spline])(implicitscb:com.eharmony.aloha.score.conversions.ScoreConverter[B]):com.eharmony.aloha.models.vw.jni.VwJniModel[A,B]"></a>
+      <a id="&lt;init&gt;(modelId:com.eharmony.aloha.id.ModelIdentity,vwParams:String,modelSource:com.eharmony.aloha.io.sources.ModelSource,featureNames:scala.collection.immutable.IndexedSeq[String],featureFunctions:scala.collection.immutable.IndexedSeq[com.eharmony.aloha.semantics.func.GenAggFunc[A,Iterable[(String,Double)]]],defaultNs:List[Int],namespaces:List[(String,List[Int])],learnerCreator:vw.learner.VWLearner=&gt;(String=&gt;B),numMissingThreshold:Option[Int])(implicitscb:com.eharmony.aloha.score.conversions.ScoreConverter[B]):com.eharmony.aloha.models.vw.jni.VwJniModel[A,B]"></a>
       <a id="&lt;init&gt;:VwJniModel[A,B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -90,10 +91,11 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">VwJniModel</span><span class="params">(<span name="modelId">modelId: <span class="extype" name="com.eharmony.aloha.id.ModelIdentity">ModelIdentity</span></span>, <span name="vwJniModelSource">vwJniModelSource: <a href="VwJniModelSource.html" class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModelSource">VwJniModelSource</a></span>, <span name="featureNames">featureNames: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="featureFunctions">featureFunctions: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.A">A</span>, <span class="extype" name="scala.Iterable">Iterable</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]]]</span>, <span name="defaultNs">defaultNs: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="namespaces">namespaces: <span class="extype" name="scala.List">List</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Int">Int</span>])]</span>, <span name="finalizer">finalizer: (<span class="extype" name="scala.Double">Double</span>) ⇒ <span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.B">B</span></span>, <span name="numMissingThreshold">numMissingThreshold: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>] = <span class="symbol">scala.None</span></span>, <span name="spline">spline: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.eharmony.aloha.models.reg.Spline">Spline</span>] = <span class="symbol">scala.None</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="scb">scb: <span class="extype" name="com.eharmony.aloha.score.conversions.ScoreConverter">ScoreConverter</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.B">B</span>]</span>)</span>
+        <span class="name">VwJniModel</span><span class="params">(<span name="modelId">modelId: <span class="extype" name="com.eharmony.aloha.id.ModelIdentity">ModelIdentity</span></span>, <span name="vwParams">vwParams: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="modelSource">modelSource: <span class="extype" name="com.eharmony.aloha.io.sources.ModelSource">ModelSource</span></span>, <span name="featureNames">featureNames: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="featureFunctions">featureFunctions: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.A">A</span>, <span class="extype" name="scala.Iterable">Iterable</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]]]</span>, <span name="defaultNs">defaultNs: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="namespaces">namespaces: <span class="extype" name="scala.List">List</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Int">Int</span>])]</span>, <span name="learnerCreator">learnerCreator: (<span class="extype" name="vw.learner.VWLearner">VWLearner</span>) ⇒ (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.B">B</span></span>, <span name="numMissingThreshold">numMissingThreshold: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>] = <span class="symbol">scala.None</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="scb">scb: <span class="extype" name="com.eharmony.aloha.score.conversions.ScoreConverter">ScoreConverter</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.B">B</span>]</span>)</span>
       </span>
       </h4>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">vwJniModelSource</dt><dd class="cmt"><p>either the FsInstance pointing to the VW model or the Base64 encoded VW model.</p></dd><dt class="param">featureNames</dt><dd class="cmt"><p>names of features (parallel to featureFunctions)</p></dd><dt class="param">featureFunctions</dt><dd class="cmt"><p>functions to extract values from the input value</p></dd><dt class="param">defaultNs</dt><dd class="cmt"><p>indices of features that will be placed in the default VW namespace</p></dd><dt class="param">namespaces</dt><dd class="cmt"><p>mapping from namespace name to indices of features that will be placed in the namespace</p></dd><dt class="param">finalizer</dt><dd class="cmt"><p>a function that transforms the native VW output type (Float) to B</p></dd><dt class="param">numMissingThreshold</dt><dd class="cmt"><p>A threshold dictating how many missing features to allow before making the
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">modelId</dt><dd class="cmt"><p>ModelIdentity</p></dd><dt class="param">vwParams</dt><dd class="cmt"><p>the &quot;command&quot; used to instantiate VW.</p></dd><dt class="param">modelSource</dt><dd class="cmt"><p>either the FsInstance pointing to the VW model or the Base64 encoded VW model.</p></dd><dt class="param">featureNames</dt><dd class="cmt"><p>names of features (parallel to featureFunctions)</p></dd><dt class="param">featureFunctions</dt><dd class="cmt"><p>functions to extract values from the input value</p></dd><dt class="param">defaultNs</dt><dd class="cmt"><p>indices of features that will be placed in the default VW namespace</p></dd><dt class="param">namespaces</dt><dd class="cmt"><p>mapping from namespace name to indices of features that will be placed in the namespace</p></dd><dt class="param">learnerCreator</dt><dd class="cmt"><p>A function that when given a VWLearner creates a function that can make a prediction, given
+                      string-based input.</p></dd><dt class="param">numMissingThreshold</dt><dd class="cmt"><p>A threshold dictating how many missing features to allow before making the
                            prediction fail.  See <i>com.eharmony.aloha.models.reg.RegressionFeatures.numMissingThreshold</i>
                            in aloha-core.</p></dd><dt class="param">scb</dt><dd class="cmt"><p>a score converter</p></dd></dl></div>
     </li></ol>
@@ -247,7 +249,7 @@
       </span>
       </h4>
       <p class="shortcomment cmt">Close the underlying VW model.</p><div class="fullcomment"><div class="comment cmt"><p>Close the underlying VW model.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel">VwJniModel</a> → BaseModel → Closeable → AutoCloseable</dd></dl></div>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel">VwJniModel</a> → BaseModel → Closeable</dd></dl></div>
     </li><li name="com.eharmony.aloha.models.reg.RegressionFeatures#constructFeatures" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="constructFeatures(a:A):RegressionFeatures.this.Features[IndexedSeq[Iterable[(String,Double)]]]"></a>
       <a id="constructFeatures(A):Features[IndexedSeq[Iterable[(String,Double)]]]"></a>
@@ -397,19 +399,6 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="com.eharmony.aloha.models.vw.jni.VwJniModel#finalizer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="finalizer:Double=&gt;B"></a>
-      <a id="finalizer:(Double)⇒B"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">finalizer</span><span class="result">: (<span class="extype" name="scala.Double">Double</span>) ⇒ <span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.B">B</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">a function that transforms the native VW output type (Float) to B</p>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -423,19 +412,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="com.eharmony.aloha.models.vw.jni.VwJniModel#getMissingVariables" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="getMissingVariables(missing:scala.collection.mutable.Map[String,Seq[String]]):Seq[String]"></a>
-      <a id="getMissingVariables(Map[String,Seq[String]]):Seq[String]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">getMissingVariables</span><span class="params">(<span name="missing">missing: <span class="extype" name="scala.collection.mutable.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>)</span><span class="result">: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
-      </span>
-      </h4>
-      
     </li><li name="com.eharmony.aloha.util.Logging#info" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="info(msg:=&gt;Any,t:=&gt;Throwable):Unit"></a>
       <a id="info(⇒Any,⇒Throwable):Unit"></a>
@@ -540,6 +516,20 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.VwJniModel#learnerCreator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="learnerCreator:vw.learner.VWLearner=&gt;(String=&gt;B)"></a>
+      <a id="learnerCreator:(VWLearner)⇒(String)⇒B"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">learnerCreator</span><span class="result">: (<span class="extype" name="vw.learner.VWLearner">VWLearner</span>) ⇒ (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.B">B</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">A function that when given a VWLearner creates a function that can make a prediction, given
+                      string-based input.</p>
     </li><li name="com.eharmony.aloha.util.Logging#logger" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="logger:com.eharmony.aloha.util.Logger"></a>
       <a id="logger:Logger"></a>
@@ -578,7 +568,20 @@
         <span class="name">modelId</span><span class="result">: <span class="extype" name="com.eharmony.aloha.id.ModelIdentity">ModelIdentity</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel">VwJniModel</a> → Identifiable</dd></dl></div>
+      <p class="shortcomment cmt">ModelIdentity</p><div class="fullcomment"><div class="comment cmt"><p>ModelIdentity</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel">VwJniModel</a> → Identifiable</dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.VwJniModel#modelSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="modelSource:com.eharmony.aloha.io.sources.ModelSource"></a>
+      <a id="modelSource:ModelSource"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">modelSource</span><span class="result">: <span class="extype" name="com.eharmony.aloha.io.sources.ModelSource">ModelSource</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">either the FsInstance pointing to the VW model or the Base64 encoded VW model.</p>
     </li><li name="com.eharmony.aloha.models.vw.jni.VwJniModel#namespaces" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="namespaces:List[(String,List[Int])]"></a>
       <a id="namespaces:List[(String,List[Int])]"></a>
@@ -695,19 +698,6 @@
                 <span class="name">@inline</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="com.eharmony.aloha.models.vw.jni.VwJniModel#spline" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="spline:Option[com.eharmony.aloha.models.reg.Spline]"></a>
-      <a id="spline:Option[Spline]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">spline</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.eharmony.aloha.models.reg.Spline">Spline</span>]</span>
-      </span>
-      </h4>
-      
     </li><li name="com.eharmony.aloha.score.conversions.ScoreConversion#success" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="success(score:A,missing:=&gt;Iterable[String],subScores:=&gt;Iterable[com.eharmony.aloha.score.Scores.Score])(implicitaudit:Boolean,implicitc:com.eharmony.aloha.score.conversions.ScoreConverter[A]):(com.eharmony.aloha.score.basic.ModelOutput[A],Option[com.eharmony.aloha.score.Scores.Score])"></a>
       <a id="success(B,⇒Iterable[String],⇒Iterable[Score])(Boolean,ScoreConverter[B]):(ModelOutput[B],Option[Score])"></a>
@@ -760,19 +750,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
-    </li><li name="com.eharmony.aloha.models.vw.jni.VwJniModel#vwJniModelSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="vwJniModelSource:com.eharmony.aloha.models.vw.jni.VwJniModelSource"></a>
-      <a id="vwJniModelSource:VwJniModelSource"></a>
+    </li><li name="com.eharmony.aloha.models.vw.jni.VwJniModel#vwParams" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="vwParams:String"></a>
+      <a id="vwParams:String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">vwJniModelSource</span><span class="result">: <a href="VwJniModelSource.html" class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModelSource">VwJniModelSource</a></span>
+        <span class="name">vwParams</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">either the FsInstance pointing to the VW model or the Base64 encoded VW model.</p>
+      <p class="shortcomment cmt">the &quot;command&quot; used to instantiate VW.</p>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -885,8 +875,6 @@
               <h3>Inherited from <span class="extype" name="com.eharmony.aloha.models.Model">Model</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.A">A</span>, <span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.B">B</span>]</h3>
             </div><div class="parent" name="java.io.Closeable">
               <h3>Inherited from <span class="extype" name="java.io.Closeable">Closeable</span></h3>
-            </div><div class="parent" name="java.lang.AutoCloseable">
-              <h3>Inherited from <span class="extype" name="java.lang.AutoCloseable">AutoCloseable</span></h3>
             </div><div class="parent" name="com.eharmony.aloha.id.Identifiable">
               <h3>Inherited from <span class="extype" name="com.eharmony.aloha.id.Identifiable">Identifiable</span>[<span class="extype" name="com.eharmony.aloha.id.ModelIdentity">ModelIdentity</span>]</h3>
             </div><div class="parent" name="scala.AnyRef">

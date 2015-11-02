@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>jni - aloha-vw-jni 2.0.1-SNAPSHOT API - com.eharmony.aloha.models.vw.jni</title>
-          <meta name="description" content="jni - aloha - vw - jni 2.0.1 - SNAPSHOT API - com.eharmony.aloha.models.vw.jni" />
-          <meta name="keywords" content="jni aloha vw jni 2.0.1 SNAPSHOT API com.eharmony.aloha.models.vw.jni" />
+          <title>jni - aloha-vw-jni 3.0.0 API - com.eharmony.aloha.models.vw.jni</title>
+          <meta name="description" content="jni - aloha - vw - jni 3.0.0 API - com.eharmony.aloha.models.vw.jni" />
+          <meta name="keywords" content="jni aloha vw jni 3.0.0 API com.eharmony.aloha.models.vw.jni" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -58,33 +58,7 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="com.eharmony.aloha.models.vw.jni.Base64EncodedBinaryVwModelSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="Base64EncodedBinaryVwModelSourceextendsVwJniModelSourcewithProductwithSerializable"></a>
-      <a id="Base64EncodedBinaryVwModelSource:Base64EncodedBinaryVwModelSource"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="Base64EncodedBinaryVwModelSource.html"><span class="name">Base64EncodedBinaryVwModelSource</span></a><span class="params">(<span name="b64EncodedBinaryVwModel">b64EncodedBinaryVwModel: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="params">params: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="timeMillis">timeMillis: <span class="extype" name="scala.Long">Long</span> = <span class="defval" name="java.this.lang.System.currentTimeMillis()">...</span></span>)</span><span class="result"> extends <a href="VwJniModelSource.html" class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModelSource">VwJniModelSource</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      <p class="comment cmt">A model source used when the VW binary model is encoded as a base64-encoded string.</p>
-    </li><li name="com.eharmony.aloha.models.vw.jni.ExternallyDefinedVwModelSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ExternallyDefinedVwModelSourceextendsVwJniModelSourcewithProductwithSerializable"></a>
-      <a id="ExternallyDefinedVwModelSource:ExternallyDefinedVwModelSource"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="ExternallyDefinedVwModelSource.html"><span class="name">ExternallyDefinedVwModelSource</span></a><span class="params">(<span name="fsInstance">fsInstance: <span class="extype" name="com.eharmony.aloha.io.fs.FsInstance">FsInstance</span></span>, <span name="params">params: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="timeMillis">timeMillis: <span class="extype" name="scala.Long">Long</span> = <span class="defval" name="java.this.lang.System.currentTimeMillis()">...</span></span>)</span><span class="result"> extends <a href="VwJniModelSource.html" class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModelSource">VwJniModelSource</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      <p class="comment cmt">A model source used when the <i>location</i> of the VW binary model provided.</p>
-    </li><li name="com.eharmony.aloha.models.vw.jni.VwJniModel" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="com.eharmony.aloha.models.vw.jni.VwJniModel" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="VwJniModel[-A,+B]extendsBaseModel[A,B]withRegressionFeatures[A]withLoggingwithProductwithSerializable"></a>
       <a id="VwJniModel[-A,+B]:VwJniModel[A,B]"></a>
       <h4 class="signature">
@@ -93,7 +67,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="VwJniModel.html"><span class="name">VwJniModel</span></a><span class="tparams">[<span name="A">-A</span>, <span name="B">+B</span>]</span><span class="params">(<span name="modelId">modelId: <span class="extype" name="com.eharmony.aloha.id.ModelIdentity">ModelIdentity</span></span>, <span name="vwJniModelSource">vwJniModelSource: <a href="VwJniModelSource.html" class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModelSource">VwJniModelSource</a></span>, <span name="featureNames">featureNames: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="featureFunctions">featureFunctions: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.A">A</span>, <span class="extype" name="scala.Iterable">Iterable</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]]]</span>, <span name="defaultNs">defaultNs: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="namespaces">namespaces: <span class="extype" name="scala.List">List</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Int">Int</span>])]</span>, <span name="finalizer">finalizer: (<span class="extype" name="scala.Double">Double</span>) ⇒ <span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.B">B</span></span>, <span name="numMissingThreshold">numMissingThreshold: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>] = <span class="symbol">scala.None</span></span>, <span name="spline">spline: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.eharmony.aloha.models.reg.Spline">Spline</span>] = <span class="symbol">scala.None</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="scb">scb: <span class="extype" name="com.eharmony.aloha.score.conversions.ScoreConverter">ScoreConverter</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.B">B</span>]</span>)</span><span class="result"> extends <span class="extype" name="com.eharmony.aloha.models.BaseModel">BaseModel</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.A">A</span>, <span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.B">B</span>] with <span class="extype" name="com.eharmony.aloha.models.reg.RegressionFeatures">RegressionFeatures</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.A">A</span>] with <span class="extype" name="com.eharmony.aloha.util.Logging">Logging</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="VwJniModel.html"><span class="name">VwJniModel</span></a><span class="tparams">[<span name="A">-A</span>, <span name="B">+B</span>]</span><span class="params">(<span name="modelId">modelId: <span class="extype" name="com.eharmony.aloha.id.ModelIdentity">ModelIdentity</span></span>, <span name="vwParams">vwParams: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="modelSource">modelSource: <span class="extype" name="com.eharmony.aloha.io.sources.ModelSource">ModelSource</span></span>, <span name="featureNames">featureNames: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="featureFunctions">featureFunctions: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.A">A</span>, <span class="extype" name="scala.Iterable">Iterable</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Double">Double</span>)]]]</span>, <span name="defaultNs">defaultNs: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="namespaces">namespaces: <span class="extype" name="scala.List">List</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Int">Int</span>])]</span>, <span name="learnerCreator">learnerCreator: (<span class="extype" name="vw.learner.VWLearner">VWLearner</span>) ⇒ (<span class="extype" name="scala.Predef.String">String</span>) ⇒ <span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.B">B</span></span>, <span name="numMissingThreshold">numMissingThreshold: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>] = <span class="symbol">scala.None</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="scb">scb: <span class="extype" name="com.eharmony.aloha.score.conversions.ScoreConverter">ScoreConverter</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.B">B</span>]</span>)</span><span class="result"> extends <span class="extype" name="com.eharmony.aloha.models.BaseModel">BaseModel</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.A">A</span>, <span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.B">B</span>] with <span class="extype" name="com.eharmony.aloha.models.reg.RegressionFeatures">RegressionFeatures</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel.A">A</span>] with <span class="extype" name="com.eharmony.aloha.util.Logging">Logging</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       <p class="comment cmt">Model that delegates to a VW JNI model.</p>
@@ -110,20 +84,6 @@
       </span>
       </h4>
       <p class="comment cmt">Components of the JSON protocol for VwJniModel
-</p>
-    </li><li name="com.eharmony.aloha.models.vw.jni.VwJniModelSource" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="VwJniModelSourceextendsSerializable"></a>
-      <a id="VwJniModelSource:VwJniModelSource"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">sealed </span>
-        <span class="kind">trait</span>
-      </span>
-      <span class="symbol">
-        <a href="VwJniModelSource.html"><span class="name">VwJniModelSource</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      <p class="comment cmt"><b>NOTE</b>: <i>Must be Serializable.</i>
 </p>
     </li></ol>
             </div>
@@ -155,19 +115,6 @@
       </span>
       <span class="symbol">
         <a href="VwJniModel$.html"><span class="name">VwJniModel</span></a><span class="result"> extends <span class="extype" name="com.eharmony.aloha.factory.ParserProviderCompanion">ParserProviderCompanion</span> with <a href="VwJniModelJson.html" class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModelJson">VwJniModelJson</a> with <span class="extype" name="com.eharmony.aloha.util.Logging">Logging</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="com.eharmony.aloha.models.vw.jni.VwJniModelSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="VwJniModelSource"></a>
-      <a id="VwJniModelSource:VwJniModelSource"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="VwJniModelSource$.html"><span class="name">VwJniModelSource</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
