@@ -475,6 +475,40 @@
                     </reportSet>
                 </reportSets>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-changes-plugin</artifactId>
+                <version>2.11</version>
+                <configuration>
+                    <githubAPIScheme>https</githubAPIScheme>
+                    <githubAPIPort>443</githubAPIPort>
+                    <includeOpenIssues>false</includeOpenIssues>
+                    <!--
+                    TODO: Address onlyCurrentVersion when no closed issues were found.
+
+                    There seems to be an issue if there are no issues closed.  This shouldn't be a problem
+                    in reality because if no issues were closed, there probably shouldn't be a release.
+                    Commenting out in the meantime.
+                    -->
+                    <!--<onlyCurrentVersion>true</onlyCurrentVersion>-->
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-changelog-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <!--<displayFileDetailUrl>https://github.com/eHarmony/aloha/tree/master/%FILE%</displayFileDetailUrl>-->
+
+                    <!-- TODO: Figure out how to generate version ranges. -->
+                    <!--<type>tag</type>-->
+                    <!--<tags>-->
+                        <!--<tag implementation="java.lang.String"></tag>-->
+                        <!--<tag implementation="java.lang.String"></tag>-->
+                    <!--</tags>-->
+                </configuration>
+            </plugin>
         </plugins>
     </reporting>
 
