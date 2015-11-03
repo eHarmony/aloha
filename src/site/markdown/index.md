@@ -40,7 +40,7 @@ Getting Started
 
 See the [Getting Started Guide](getting_started.html).
 
-<a href="eg/dataset/index.html" class="btn btn-primary btn-large btn-block">Learn to Create a Dataset</a>
+<a href="dataset.html" class="btn btn-primary btn-large btn-block">Learn to Create a Dataset</a>
 
 <a href="model_formats.html" class="btn btn-primary btn-large btn-block">Learn to Create a Model</a>
 

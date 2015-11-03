@@ -50,12 +50,12 @@
             <toc offsetTop="40">top</toc>
             <tocTopMax>6</tocTopMax>
 
-            <topNav>Code|Model Formats|Dataset Examples</topNav>
+            <topNav>Track Development|Code on GitHub|Documentation</topNav>
 
             <bottomNav maxSpan="9" >
                 <column>Main|reports</column>
-                <column>API Docs|Contribute</column>
-                <column>Dataset Examples</column>
+                <column>API Docs</column>
+                <column>Contribute</column>
             </bottomNav>
             <bottomDescription>
                 <![CDATA[
@@ -82,16 +82,16 @@
                         </script>
                     </endContent>
                 </index>
-                <eg-dataset>
+                <dataset>
                     <sections>
                         <body />
                         <columns>2</columns>
                         <body />
                     </sections>
-                </eg-dataset>
-                <contribute>
-                    <breadcrumbs>false</breadcrumbs>
-                </contribute>
+                </dataset>
+                <!--<contribute>-->
+                    <!--<breadcrumbs>false</breadcrumbs>-->
+                <!--</contribute>-->
                 <!-- Disable source highlighting for Maven reports -->
                 <source-repository>
                     <highlightJs>false</highlightJs>
@@ -135,14 +135,20 @@
         </head>
 
         <links>
-            <item name="Code" href="http://github.com/eharmony/aloha/"/>
-            <item name="Model Formats" href="model_formats.html" />
+            <item name="Code on GitHub" href="http://github.com/eharmony/aloha/" />
+            <item name="Track Development" href="https://waffle.io/eHarmony/aloha" />
         </links>
 
         <menu name="Main" inherit="top">
             <item name="Home" href="./" />
-            <item name="Code" href="http://github.com/eharmony/aloha/" />
-            <item name="Release notes" href="release-notes.html" />
+            <!--<item name="Release notes" href="release-notes.html" />-->
+        </menu>
+
+        <menu name="Documentation">
+            <item name="Getting Started" href="getting_started.html" />
+            <item name="Creating Datasets" href="dataset.html" />
+            <item name="JSON Model Formats" href="model_formats.html" />
+            <item name="In Depth Walkthrough" href="in_depth_walkthrough.html" />
         </menu>
 
         <menu name="API Docs">
@@ -151,19 +157,9 @@
             <item name="aloha-cli" href="aloha-cli/scaladocs/index.html" />
         </menu>
 
-        <menu name="Dataset Examples" inherit="top" >
-            <item name="CSV" href="eg/dataset/csv.html" />
-            <item name="VW Unlabeled" href="eg/dataset/vw.html" />
-            <item name="VW Labeled" href="eg/dataset/labeled_vw.html" />
-            <item name="VW Bandit" href="eg/dataset/cb_vw.html" />
-            <item name="LIBSVM Unlabeled" href="eg/dataset/libsvm.html" />
-            <item name="LIBSVM Labeled" href="eg/dataset/labeled_libsvm.html" />
-        </menu>
-
         <menu name="Contribute" inherit="top">
-            <item name="Issues" href="http://github.com/eharmony/aloha/issues/" />
             <item name="Fork on GitHub" href="http://github.com/eharmony/aloha/" />
-            <item name="Contribute" href="contribute.html" />
+            <item name="Issues" href="http://github.com/eharmony/aloha/issues/" />
         </menu>
 
         <menu name="Maven Documentation" ref="reports" inherit="top"/>
