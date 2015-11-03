@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>Semantics - aloha-core 3.0.0 API - com.eharmony.aloha.semantics.Semantics</title>
-          <meta name="description" content="Semantics - aloha - core 3.0.0 API - com.eharmony.aloha.semantics.Semantics" />
-          <meta name="keywords" content="Semantics aloha core 3.0.0 API com.eharmony.aloha.semantics.Semantics" />
+          <title>Semantics - aloha-core 3.0.1-SNAPSHOT API - com.eharmony.aloha.semantics.Semantics</title>
+          <meta name="description" content="Semantics - aloha - core 3.0.1 - SNAPSHOT API - com.eharmony.aloha.semantics.Semantics" />
+          <meta name="keywords" content="Semantics aloha core 3.0.1 SNAPSHOT API com.eharmony.aloha.semantics.Semantics" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -47,7 +47,7 @@
               
         </dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="java.io.Closeable">Closeable</span>, <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="java.io.Closeable">Closeable</span>, <span class="extype" name="java.lang.AutoCloseable">AutoCloseable</span>, <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
           <div class="subClasses hiddenContent"><a href="compiled/CompiledSemantics.html" class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemantics">CompiledSemantics</a>, <a href="compiled/CompiledSemanticsLike.html" class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemanticsLike">CompiledSemanticsLike</a>, <a href="ErrorEnrichingSemantics.html" class="extype" name="com.eharmony.aloha.semantics.ErrorEnrichingSemantics">ErrorEnrichingSemantics</a></div>
@@ -68,7 +68,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.eharmony.aloha.semantics.Semantics"><span>Semantics</span></li><li class="in" name="java.io.Closeable"><span>Closeable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.eharmony.aloha.semantics.Semantics"><span>Semantics</span></li><li class="in" name="java.io.Closeable"><span>Closeable</span></li><li class="in" name="java.lang.AutoCloseable"><span>AutoCloseable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -120,7 +120,7 @@ object.</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>
         <span class="name">close</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Closeable</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Closeable → AutoCloseable</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.io.IOException]</span>
@@ -474,6 +474,8 @@ object.</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>
         <div id="inheritedMembers">
         <div class="parent" name="java.io.Closeable">
               <h3>Inherited from <span class="extype" name="java.io.Closeable">Closeable</span></h3>
+            </div><div class="parent" name="java.lang.AutoCloseable">
+              <h3>Inherited from <span class="extype" name="java.lang.AutoCloseable">AutoCloseable</span></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
