@@ -44,6 +44,7 @@
         <module>aloha-core</module>
         <module>aloha-vw-jni</module>
         <module>aloha-cli</module>
+        <module>aloha-h2o</module>
     </modules>
 
     <developers>
