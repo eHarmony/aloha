@@ -70,13 +70,58 @@ final case class H2oModel[-A, +B](
         predict(f)
       } catch {
         // We know about this specifically from the H2o documentation.
-        case e: PredictUnknownCategoricalLevelException => handleBadCategorical(e, f)
+        case e: PredictUnknownCategoricalLevelException                => handleBadCategorical(e, f)
+        case e: IllegalArgumentException if isCategoricalMissing(e, f) => handleMissingCategorical(e, f)
       }
   }
 
   protected[this] def predict(f: Features[RowData])(implicit audit: Boolean) =
     h2oPredictor(f.features).fold(ill => failure(Seq(ill.errorMsg), getMissingVariables(f.missing)),
                                   s   => success(s))
+
+  /**
+    */
+
+  /**
+    * ''Attempt'' to determine if a categorical was missing in the h2o model.
+    *
+    * Currently (3.6.0.3), h2o generated model says: "" when a categorical value is not supplied.
+    * This is determined from inspecting the generated H2o model code so it's likely brittle and subject
+    * to change but its better than throwing an IllegalArgumentException with no diagnostics information
+    * when there is missing data in a categorical variable.
+    * @param e exception thrown by h2o
+    * @param f the data passed in.
+    * @return whether to attempt to recover.  Don't attempt to recover unless a string-based feature appears to
+    *         be missing.  This is so that we can diagnose when the model will fail every time.
+    */
+  protected[this] def isCategoricalMissing(e: IllegalArgumentException, f: Features[RowData]): Boolean =
+    if (e.getClass == classOf[IllegalArgumentException] && e.getMessage.toLowerCase.contains("categorical")) {
+       val foundSomeMissingString = featureFunctions.view.zipWithIndex.exists {
+         case (StringFeatureFunction(sff), i) if f.missing contains sff.specification => true
+         case _ => false
+       }
+      foundSomeMissingString
+    }
+    else false
+
+  /**
+    * Report a problem presumably resulting from a missing categorical variable.
+    * @param t the error to be reported.
+    * @param f the feature values
+    * @param audit whether to audit the score
+    * @return
+    */
+  protected[this] def handleMissingCategorical(t: IllegalArgumentException, f: Features[RowData])(implicit audit: Boolean) = {
+    val missing = featureFunctions.view.zipWithIndex.collect {
+      case (StringFeatureFunction(sff), i) if f.missing.contains(sff.specification) => featureNames(i)
+    }
+
+    val prefix = "H2o model may have encountered a missing categorical variable.  Likely features: " + missing.mkString(", ")
+    val stackError = t.getStackTrace.headOption.fold(List.empty[String])(s =>
+      List("See: " + s.getClassName + "." + s.getMethodName + "(" + s.getFileName + ":" + s.getLineNumber + ")"))
+
+    failure(prefix :: stackError, f.missing.keys)
+  }
 
   protected[this] def handleBadCategorical(e: PredictUnknownCategoricalLevelException, f: Features[RowData])(implicit audit: Boolean) =
     failure(Seq(s"unknown categorical value ${e.getUnknownLevel} for variable: ${e.getColumnName}"), getMissingVariables(f.missing))

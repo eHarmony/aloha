@@ -7,6 +7,7 @@ import hex.ModelCategory
 import hex.ModelCategory._
 import hex.genmodel.easy.{EasyPredictModelWrapper, RowData}
 import scala.Double.{NaN, NegativeInfinity, PositiveInfinity}
+import java.{lang => jl}
 
 sealed trait PredictionFuncRetrievalError
 
@@ -31,8 +32,8 @@ sealed trait H2oModelCategory[C] {
 }
 
 object H2oModelCategory {
-  private[categories]def wellConditioned(d: Double) = NaN              != d &&
-                                                      PositiveInfinity != d &&
+  private[categories]def wellConditioned(d: Double) = jl.Double.compare(NaN, d) != 0 &&
+                                                      PositiveInfinity != d          &&
                                                       NegativeInfinity != d
 
   private[categories] def filterWellConditionedScalar(d: Double) =

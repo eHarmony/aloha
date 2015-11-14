@@ -5,7 +5,7 @@ import com.eharmony.aloha.reflect.RefInfo
 import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits._
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.semantics.func.{GenAggFunc, GenFunc}
-import org.junit.Test
+import org.junit.{Ignore, Test}
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 import spray.json.DefaultJsonProtocol._
@@ -53,11 +53,112 @@ class H2oModelTest {
       out.fold(fail(s"for $sex expected a result"))(assertEquals(s"for $sex", exp, _, 1.0e-6))
     }
   }
+
+  @Test def testMissingNonCategorical(): Unit = {
+
+    val json = """
+                 |{
+                 |  "modelType": "H2o",
+                 |  "modelId": { "id": 0, "name": "" },
+                 |  "features": {
+                 |    "Sex":            { "type": "string", "spec": "0" },
+                 |    "Length":         "1",
+                 |    "Diameter":       "2",
+                 |    "Height":         "3",
+                 |    "Whole weight":   "4",
+                 |    "Shucked weight": "5",
+                 |    "Viscera weight": "6"
+                 |  },
+                 |  "modelUrl": "res:com/eharmony/aloha/models/h2o/glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.java"
+                 |}
+               """.stripMargin.trim
+
+    val model = factory.fromString(json).get
+
+    val padding: Seq[Option[H2oColumn]] = IndexedSeq(0, 0, 0, 0, 0, 0)
+
+    val out = model.score(string2col("M") +: padding)
+
+    val expected =
+      """
+        |error {
+        |  model {
+        |    id: 0
+        |    name: ""
+        |  }
+        |  messages: "Ill-conditioned scalar prediction: NaN."
+        |}
+      """.stripMargin.trim
+
+    assertEquals(expected, out.toString.trim)
+  }
+
+
+  @Test def testNoFeatures(): Unit = {
+
+    val json = """
+                 |{
+                 |  "modelType": "H2o",
+                 |  "modelId": { "id": 0, "name": "no features h2o" },
+                 |  "features": {},
+                 |  "modelUrl": "res:com/eharmony/aloha/models/h2o/glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.java"
+                 |}
+               """.stripMargin.trim
+
+    val model = factory.fromString(json).get
+
+    try {
+      model(Seq.empty)
+    }
+    catch {
+      case e: IllegalArgumentException if e.getMessage.toLowerCase == MissingCategoricalMsg =>
+      case e: Throwable => throw e
+    }
+  }
+
+  @Test def testCategoricalMissing(): Unit = {
+
+    val json = """
+                 |{
+                 |  "modelType": "H2o",
+                 |  "modelId": { "id": 0, "name": "no features h2o" },
+                 |  "features": {
+                 |    "Sex": { "type": "string", "spec": "0" }
+                 |  },
+                 |  "modelUrl": "res:com/eharmony/aloha/models/h2o/glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.java"
+                 |}
+               """.stripMargin.trim
+
+    val model = factory.fromString(json).get
+    val padding: Seq[Option[H2oColumn]] = IndexedSeq(0, 0, 0, 0, 0, 0, 0)
+    val out = model.score(Option(H2oMissingStringColumn) +: padding)
+
+    val expected =
+      """
+        |error {
+        |  model {
+        |    id: 0
+        |    name: "no features h2o"
+        |  }
+        |  missing_features {
+        |    names: "0"
+        |  }
+        |  messages: "H2o model may have encountered a missing categorical variable.  Likely features: Sex"
+        |  messages: "See: glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.score0(glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.java:59)"
+        |}
+        |
+      """.stripMargin.trim
+
+    assertEquals(expected, out.toString.trim)
+  }
 }
 
 object H2oModelTest {
+  val MissingCategoricalMsg = "categorical value out of range"
+
   sealed trait H2oColumn
   case class H2oStringColumn(value: String) extends H2oColumn
+  case object H2oMissingStringColumn extends H2oColumn
   case class H2oDoubleColumn(value: Double) extends H2oColumn
   lazy val semantics = new Semantics[Seq[Option[H2oColumn]]] {
     override def refInfoA = RefInfo[Seq[Option[H2oColumn]]]
@@ -69,6 +170,7 @@ object H2oModelTest {
       val f = (s: Seq[Option[H2oColumn]]) => Try {s(i)}.toOption.flatten match {
         case Some(H2oDoubleColumn(v)) => Some(v).asInstanceOf[B]
         case Some(H2oStringColumn(v)) => Some(v).asInstanceOf[B]
+        case Some(H2oMissingStringColumn) => None.asInstanceOf[B]
         case d                        => d.asInstanceOf[B]
       }
 
