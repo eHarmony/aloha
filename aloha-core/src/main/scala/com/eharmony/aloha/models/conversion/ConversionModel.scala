@@ -27,4 +27,6 @@ trait ConversionModel[-A, B, C] extends BaseModel[A, C] {
         })
         o
     }
+
+    override def close() = submodel.close()
 }

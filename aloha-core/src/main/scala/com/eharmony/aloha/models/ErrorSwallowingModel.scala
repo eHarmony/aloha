@@ -105,6 +105,8 @@ case class ErrorSwallowingModel[-A, +B](submodel: Model[A, B], recordErrorStackT
 
     private[models] def getMessageFrom(ex: Throwable) =
         Try { ex.getMessage }.recover { case e => ErrorSwallowingModel.ExMsgThrewMsg }.get
+
+    override def close() = submodel.close()
 }
 
 object ErrorSwallowingModel extends ParserProviderCompanion {

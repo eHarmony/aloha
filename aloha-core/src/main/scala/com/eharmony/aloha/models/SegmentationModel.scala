@@ -48,6 +48,8 @@ case class SegmentationModel[A, B, C](
 
         s
     }
+
+    override def close() = subModel.close()
 }
 
 object SegmentationModel extends ParserProviderCompanion {
