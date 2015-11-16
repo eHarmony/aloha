@@ -1,23 +1,31 @@
 package com.eharmony.aloha.models
 
+import com.eharmony.aloha.id.{ModelId, ModelIdentity}
+import com.eharmony.aloha.score.conversions.ScoreConverter
 import org.junit.runners.BlockJUnit4ClassRunner
 import org.junit.runner.RunWith
 import org.junit.Test
 import org.junit.Assert._
 
-import spray.json.DefaultJsonProtocol.StringJsonFormat
+import spray.json.DefaultJsonProtocol.{StringJsonFormat, IntJsonFormat}
 import spray.json.{DeserializationException, pimpString}
 
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.reflect.{RefInfoOps, RefInfo}
 import com.eharmony.aloha.score.conversions.rich.RichScore
-import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.StringScoreConverter
+import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.{IntScoreConverter, StringScoreConverter}
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class SegmentationModelTest {
     private[this] val PossibleLabels = Seq.range(0, 100).map("index " + _)
     private[this] val Reader = SegmentationModel.Parser.modelJsonReader[Any, String](ModelFactory(ConstantModel.parser), Option(AnySemanticsWithoutFunctionCreation))
+
+    @Test def testSubmodelClosed(): Unit = {
+        val sub = new CloserTesterModel[Int]()
+        SegmentationModel(ModelId.empty, sub, Vector(1, 2), Vector(1, 2, 3)).close()
+        assertTrue(sub.isClosed)
+    }
 
     private[this] object AnySemanticsWithoutFunctionCreation extends Semantics[Any] {
         def refInfoA = RefInfo[Any]

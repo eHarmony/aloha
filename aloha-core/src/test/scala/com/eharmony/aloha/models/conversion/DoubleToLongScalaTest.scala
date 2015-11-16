@@ -1,5 +1,8 @@
 package com.eharmony.aloha.models.conversion
 
+import com.eharmony.aloha.id.{ModelId, ModelIdentity}
+import com.eharmony.aloha.util.Logging
+
 import scala.language.implicitConversions
 
 import org.junit.runners.BlockJUnit4ClassRunner
@@ -13,7 +16,7 @@ import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.LongScoreCo
 import com.eharmony.aloha.score.conversions.rich.RichScore
 
 import spray.json.DefaultJsonProtocol.LongJsonFormat
-import com.eharmony.aloha.models.ConstantModel
+import com.eharmony.aloha.models.{Model, SegmentationModel, CloserTesterModel, ConstantModel}
 import com.eharmony.aloha.interop.LongFactoryInfo
 import scala.util.Try
 import spray.json.DeserializationException
@@ -21,6 +24,16 @@ import spray.json.DeserializationException
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class DoubleToLongScalaTest {
     import DoubleToLongScalaTest._
+
+    @Test def testSubmodelClosed(): Unit = {
+        val sub = new CloserTesterModel[Double]()
+        DoubleToLongModel(ModelId.empty, sub).close()
+        assertTrue(sub.isClosed)
+
+        val sub1 = new CloserTesterModel[Double]()
+        DoubleToJavaLongModel(ModelId.empty, sub1).close()
+        assertTrue(sub1.isClosed)
+    }
 
     @Test def test_value_1_5() {
         Try {
