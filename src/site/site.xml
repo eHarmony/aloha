@@ -78,7 +78,7 @@
                     <endContent>
                         <script src="$resourcePath/js/aloha-release-version.js"></script>
                         <script type="text/javascript">
-                            $(document).ready(function() {alohaReleaseVersion('\#version');});
+                            $(document).ready(function() {alohaReleaseVersion();});
                         </script>
                     </endContent>
                 </index>
