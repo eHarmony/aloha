@@ -1,5 +1,11 @@
 package com.eharmony.aloha.models
 
+import java.io.Closeable
+import java.util.concurrent.atomic.AtomicBoolean
+
+import com.eharmony.aloha.id.{ModelId, ModelIdentity}
+import com.eharmony.aloha.score.Scores.Score
+import com.eharmony.aloha.score.basic.ModelOutput
 import org.junit.runners.BlockJUnit4ClassRunner
 import org.junit.runner.RunWith
 import org.junit.Test
@@ -15,6 +21,18 @@ import com.eharmony.aloha.ex.SchrodingerException
   */
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class ErrorSwallowingModelTest {
+    @Test def testNoExOnClose(): Unit = {
+        val sub = new CloserTesterModel[Int](true)
+        val m = new ErrorSwallowingModel(sub)
+        try {
+            m.close()
+        }
+        catch {
+            case e: Throwable => fail(s"Should not throw a Throwable in the close method. Threw $e")
+        }
+        assertTrue(sub.isClosed)
+    }
+
     @Test def testExThrownInGetMessage() {
         val json =
             """
