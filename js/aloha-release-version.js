@@ -3,34 +3,19 @@
  * scraping the version.
  *
  * To use: <script type="text/javascript">
- *           $(document).ready(function(){ alohaReleaseVersion('#version'); });
+ *           $(document).ready(function(){ alohaReleaseVersion(); });
  *         </script>
  *
  * @param selectors jquery selectors where the version will be appended.
  * @return void
  */
-function alohaReleaseVersion(selectors) {
-  defVersion = '[ Aloha Version Here ]';
-  releaseNumber = /\d+(\.\d+)+/;
-  baseUrl = "http://repo1.maven.org/maven2/com/eharmony/aloha/";
-  $.ajax({
-    url: baseUrl,
-    type: "get",
-    dataType: "",
-    success: function(data) {
-      var links = $(data).find('a')
-                         .filter(function(idx, item) {
-                           return releaseNumber.test($(item).text());
-                         }).map(function(idx, item) { 
-                           return $(item).text().replace('/', '');
-                         });
-            
-      // Insert into selected content
-      var version = 0 <= links.length ? links[links.length - 1] : defVersion;
-      $(selectors).append(version);
-    },
-    error: function(status) {
-      $(selectors).append(defVersion);
-    }
-  });
+
+function alohaReleaseVersion() {
+  var re   = /^Version\s*:\s*(\d+(\.\d+)(\.\d+)?(\-SNAPSHOT)?).*$/;
+  var txt  = $('.projectVersion').text();
+  var grps = re.exec(txt);
+
+  if (2 <= grps.length)
+    $('#version').text(grps[1]);
+  else $('#version').text("[Latest Version Here]");
 }
