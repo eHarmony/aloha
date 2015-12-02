@@ -11,14 +11,6 @@
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
     <description>Provides an Aloha model for H2o For more info, see http://h2o.ai</description>
-    <inceptionYear>2013</inceptionYear>
-    <licenses>
-        <license>
-            <name>MIT License</name>
-            <url>http://opensource.org/licenses/MIT</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
 
     <url>${site.url}/${project.artifactId}</url>
 
