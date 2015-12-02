@@ -3,7 +3,7 @@ package com.eharmony.aloha.models.h2o.json
 
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.io.sources.ModelSource
-import com.eharmony.aloha.models.h2o.{StringFeatureFunction, DoubleFeatureFunction, FeatureFunction}
+import com.eharmony.aloha.models.h2o.{H2oModel, StringFeatureFunction, DoubleFeatureFunction, FeatureFunction}
 import com.eharmony.aloha.reflect.{RefInfoOps, RefInfo}
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.semantics.func.GenAggFunc
@@ -28,20 +28,21 @@ sealed trait H2oSpec {
 }
 
 object H2oSpec {
-  implicit val h2oSpecJsonFormat = lift(new RootJsonReader[H2oSpec] {
+  // Used in CLI.
+  private[h2o] implicit val h2oSpecJsonFormat = lift(new RootJsonReader[H2oSpec] {
     override def read(json: JsValue): H2oSpec = {
       val jso = json.asJsObject
       jso.fields.get("type") match {
+        case None                     => jso.convertTo(jsonFormat3(DoubleH2oSpec)) // Default is double type.
         case Some(JsString("double")) => jso.convertTo(jsonFormat3(DoubleH2oSpec))
         case Some(JsString("string")) => jso.convertTo(jsonFormat3(StringH2oSpec))
-        case Some(JsString(d))        => throw new DeserializationException(s"unsupported H2oSpec type: $d. Should be 'double' or 'string'.")
-        case Some(d)                  => throw new DeserializationException(s"H2oSpec type expected string, got: $d")
-        case _                        => throw new DeserializationException(s"No 'type' field present.")
+        case Some(JsString(t))        => throw new DeserializationException(s"unsupported H2oSpec type: $t. Should be 'double' or 'string'.")
+        case Some(t)                  => throw new DeserializationException(s"H2oSpec type expected string, got: $t")
       }
     }
   })
 
-  implicit val h2oFeaturesJsonFormat = lift(new RootJsonReader[sci.ListMap[String, H2oSpec]] with DefaultJsonProtocol {
+  private[h2o] implicit val h2oFeaturesJsonFormat = new RootJsonFormat[sci.ListMap[String, H2oSpec]] with DefaultJsonProtocol {
     override def read(json: JsValue): sci.ListMap[String, H2oSpec] = {
       val m = json.convertTo[sci.ListMap[String, JsValue]]
       m.map {
@@ -56,8 +57,22 @@ object H2oSpec {
         case (k, v) => throw new DeserializationException(s"key '$k' needs to be a JSON string or object. found $v.")
       }
     }
+
+    override def write(features: sci.ListMap[String, H2oSpec]): JsValue = {
+      def dd(s: DoubleH2oSpec) = s.defVal.map(d => Map("defVal" -> JsNumber(d))).getOrElse(Map.empty)
+      def ds(s: StringH2oSpec) = s.defVal.map(d => Map("defVal" -> JsString(d))).getOrElse(Map.empty)
+
+      val fs = features.map {
+        case (k, DoubleH2oSpec(name, spec, None)) => (k, JsString(spec))
+        case (k, s: DoubleH2oSpec) => (k, JsObject(sci.ListMap[String, JsValue]("spec" -> JsString(s.spec)) ++ dd(s)))
+        case (k, s: StringH2oSpec) => (k, JsObject(sci.ListMap[String, JsValue]("spec" -> JsString(s.spec)) ++ ds(s)))
+      }
+
+      JsObject(fs)
+    }
+
     def spec(o: JsObject) = o.fields.get("spec").map(_.convertTo[String]).getOrElse(throw new DeserializationException("no string called 'spec'."))
-  })
+  }
 }
 
 case class DoubleH2oSpec(name: String, spec: String, defVal: Option[Double]) extends H2oSpec {
@@ -78,12 +93,8 @@ case class H2oAst(modelType: String,
                   features: sci.ListMap[String, H2oSpec],
                   numMissingThreshold: Option[Int] = None)
 
-/**
- * Created by deak on 10/22/15.
- */
-private[h2o] trait H2oModelJson {
-
-  implicit val h2oAstJsonFormat = new RootJsonReader[H2oAst] {
+private[h2o] object H2oAst {
+  implicit val h2oAstJsonFormat = new RootJsonFormat[H2oAst] with DefaultJsonProtocol {
     override def read(json: JsValue): H2oAst = {
       val jso = json.asJsObject
       val modelSource = json.convertTo[ModelSource]
@@ -98,6 +109,11 @@ private[h2o] trait H2oModelJson {
       }
 
       H2oAst(modelType, modelId, modelSource, features, numMissingThreshold)
+    }
+
+    override def write(h2oAst: H2oAst): JsValue = {
+      import H2oSpec.h2oFeaturesJsonFormat
+      h2oAst.toJson(jsonFormat5(H2oAst.apply))
     }
   }
 }

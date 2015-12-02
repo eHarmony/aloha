@@ -8,7 +8,7 @@ import com.eharmony.aloha.models.BaseModel
 import com.eharmony.aloha.models.h2o.H2oModel.Features
 import com.eharmony.aloha.models.h2o.categories._
 import com.eharmony.aloha.models.h2o.compiler.Compiler
-import com.eharmony.aloha.models.h2o.json.{H2oSpec, H2oAst, H2oModelJson}
+import com.eharmony.aloha.models.h2o.json.{H2oSpec, H2oAst}
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.aloha.score.basic.ModelOutput
@@ -209,7 +209,6 @@ final case class H2oModel[-A, +B](
 
 
 object H2oModel extends ParserProviderCompanion
-                   with H2oModelJson
                    with Logging {
 
   protected[h2o] case class Features[F](features: F,
