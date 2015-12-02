@@ -21,6 +21,7 @@ class ModelTypesTest {
             "DoubleToLong",
             "Error",
             "ErrorSwallowingModel",
+            "H2o",
             "ModelDecisionTree",
             "Regression",
             "Segmentation",

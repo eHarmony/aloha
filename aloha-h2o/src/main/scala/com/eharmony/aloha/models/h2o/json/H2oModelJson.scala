@@ -64,8 +64,8 @@ object H2oSpec {
 
       val fs = features.map {
         case (k, DoubleH2oSpec(name, spec, None)) => (k, JsString(spec))
-        case (k, s: DoubleH2oSpec) => (k, JsObject(sci.ListMap[String, JsValue]("spec" -> JsString(s.spec)) ++ dd(s)))
-        case (k, s: StringH2oSpec) => (k, JsObject(sci.ListMap[String, JsValue]("spec" -> JsString(s.spec)) ++ ds(s)))
+        case (k, s: DoubleH2oSpec) => (k, JsObject(sci.ListMap[String, JsValue]("spec" -> JsString(s.spec)) ++ dd(s) ++ Seq("type" -> JsString("double"))))
+        case (k, s: StringH2oSpec) => (k, JsObject(sci.ListMap[String, JsValue]("spec" -> JsString(s.spec)) ++ ds(s) ++ Seq("type" -> JsString("string"))))
       }
 
       JsObject(fs)
@@ -112,11 +112,12 @@ private[h2o] object H2oAst {
     }
 
     override def write(h2oAst: H2oAst): JsValue = {
-      // TODO: BUG HERE...
-      // Need to make the modelSource output it's fields to the base object.
-
-      import H2oSpec.h2oFeaturesJsonFormat
-      h2oAst.toJson(jsonFormat5(H2oAst.apply))
+      val fields = Seq("modelType" -> h2oAst.modelType.toJson) ++
+                   Seq("modelId" -> h2oAst.modelId.toJson) ++
+                   h2oAst.numMissingThreshold.map(t => "numMissingThreshold" -> t.toJson).toSeq ++
+                   Seq("features" -> h2oAst.features.toJson(H2oSpec.h2oFeaturesJsonFormat)) ++
+                   h2oAst.modelSource.toJson.asJsObject.fields.toSeq
+      JsObject(ListMap(fields:_*))
     }
   }
 }
