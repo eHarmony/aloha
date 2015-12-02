@@ -1,12 +1,18 @@
 package com.eharmony.aloha.models.h2o
 
 import com.eharmony.aloha
+import com.eharmony.aloha.factory.ModelFactory
+import com.eharmony.aloha.semantics.compiled.CompiledSemantics
+import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
+import com.eharmony.aloha.semantics.compiled.plugin.csv.{CsvLines, CsvLine, CsvTypes, CompiledSemanticsCsvPlugin}
 import com.eharmony.matching.testhelp.io.{TestWithIoCapture, IoCaptureCompanion}
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 import spray.json._, DefaultJsonProtocol._
+import scala.concurrent.ExecutionContext.Implicits.global
+import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits._
 
 object CliTest extends IoCaptureCompanion
 
@@ -99,6 +105,36 @@ class CliTest extends TestWithIoCapture(CliTest) {
 
     assertEquals(expected.trim, lastLine(outContent))
   }
+
+  @Test def testCompile(): Unit = {
+    Cli.main(Array(
+      "-s", "res:com/eharmony/aloha/models/h2o/test_spec.json",
+      "-m", "res:com/eharmony/aloha/models/h2o/glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.java",
+      "-n", "test-model",
+      "-i", "2"
+    ))
+
+    val modelJson = lastLine(outContent)
+
+    val csvPlugin = CompiledSemanticsCsvPlugin(
+      "0" -> CsvTypes.StringOptionType,
+      "1" -> CsvTypes.DoubleOptionType,
+      "2" -> CsvTypes.DoubleOptionType,
+      "3" -> CsvTypes.DoubleOptionType,
+      "4" -> CsvTypes.DoubleOptionType,
+      "5" -> CsvTypes.DoubleOptionType,
+      "6" -> CsvTypes.DoubleOptionType,
+      "7" -> CsvTypes.DoubleOptionType
+    )
+
+    val semantics = CompiledSemantics(TwitterEvalCompiler(), csvPlugin, Seq("com.eharmony.aloha.feature.BasicFunctions._"))
+    val factory = ModelFactory.defaultFactory.toTypedFactory[CsvLine, Double](semantics)
+    val model = factory.fromString(modelJson).get
+    val csvLines = CsvLines(0 to 7 map (i => (i.toString, i)) toMap)
+    val lines = csvLines(",,,,,,,", "M,,,,,,,")
+    val out = model(lines.head)
+  }
+
 
   private[this] def lastLine(s: String) = s.trim.split("\n").last.trim
 }
