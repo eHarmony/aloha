@@ -112,6 +112,9 @@ private[h2o] object H2oAst {
     }
 
     override def write(h2oAst: H2oAst): JsValue = {
+      // TODO: BUG HERE...
+      // Need to make the modelSource output it's fields to the base object.
+
       import H2oSpec.h2oFeaturesJsonFormat
       h2oAst.toJson(jsonFormat5(H2oAst.apply))
     }
