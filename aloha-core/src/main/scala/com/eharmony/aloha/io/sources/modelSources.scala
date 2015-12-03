@@ -67,7 +67,7 @@ object ModelSource {
 
     def modelFields(modelSource: ModelSource) = {
       val ms = modelSource match {
-        case Base64StringSource(b64, t) => Seq("model" -> JsString(b64))
+        case Base64StringSource(b64, t) => Seq("model" -> JsString(b64), "via" -> JsString(t.toString))
         case ExternalSource(fs)         => Seq("modelUrl" -> JsString(fs.descriptor), "via" -> JsString(fs.vfsType.toString))
       }
       scala.collection.immutable.ListMap(ms:_*)
@@ -77,7 +77,7 @@ object ModelSource {
   }
 }
 
-final case class Base64StringSource(b64EncodedData: String, vfsType: VfsType = VfsType.vfs2) extends ModelSource {
+final case class Base64StringSource(b64EncodedData: String, vfsType: VfsType) extends ModelSource {
 
   /**
    * Get a Vfs instance pointing to a local file containing the base64-decoded b64EncodedData.

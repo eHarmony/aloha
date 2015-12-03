@@ -1753,14 +1753,14 @@ needs to be trained on the same VW version that is included in the `aloha-vw-jni
     <td>N / A</td>
   </tr>
   <tr>
-    <td><a href="#aS_features">features</a></td>
+    <td><a href="#aVW_features">features</a></td>
     <td>Object</td>
     <td>N / A</td>
     <td>true</td>
     <td>N / A</td>
   </tr>
   <tr>
-    <td><a href="#aS_vw">vw</a></td>
+    <td><a href="#aVW_vw">vw</a></td>
     <td>Object</td>
     <td>N / A</td>
     <td>true</td>

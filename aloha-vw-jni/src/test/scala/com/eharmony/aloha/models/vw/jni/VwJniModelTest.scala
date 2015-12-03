@@ -9,6 +9,7 @@ import com.eharmony.aloha.factory.JavaJsonFormats._
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.io.sources.Base64StringSource
+import com.eharmony.aloha.io.vfs.VfsType
 import com.eharmony.aloha.models.TypeCoercion
 import com.eharmony.aloha.reflect.RefInfo
 import com.eharmony.aloha.score.conversions.ScoreConverter
@@ -100,6 +101,18 @@ class VwJniModelTest extends Logging {
         assertTrue(y.isDefined)
     }
 
+    @Test def loadingViaVfs1(): Unit = {
+      val m = model[Float](vfs1)
+      val y = m(missingHeight)
+      assertTrue(y.isDefined)
+    }
+
+    @Test def loadingViaVfsFile(): Unit = {
+      val m = model[Float](vfsFile)
+      val y = m(missingHeight)
+      assertTrue(y.isDefined)
+    }
+
     @Test def testExceededThresh(): Unit = {
         val m = model[Float](threshJson)
         val y = m(missingHeight)
@@ -110,7 +123,7 @@ class VwJniModelTest extends Logging {
   @Test def testAllocatedModelEqualsOriginalModel(): Unit = {
     val modelBytes = readFile(VwModelFile)
     val out = new String(Base64.encodeBase64(modelBytes))
-    val src = Base64StringSource(out)
+    val src = Base64StringSource(out, VfsType.vfs2)
     val tmpFile = src.localVfs.replicatedToLocal().fileObj
     val tmpBytes = readFile(tmpFile)
     println(out)
@@ -143,7 +156,7 @@ class VwJniModelTest extends Logging {
             VwJniModel(
                 ModelId.empty,
                 "--quiet",
-                Base64StringSource(VwB64Model),
+                Base64StringSource(VwB64Model, VfsType.vfs2),
                 Vector("height_mm"),
                 Vector(h),
                 Nil,
@@ -167,7 +180,7 @@ class VwJniModelTest extends Logging {
             VwJniModel(
                 ModelId.empty,
                 "--quiet",
-                Base64StringSource(VwB64Model),
+                Base64StringSource(VwB64Model, VfsType.vfs2),
                 Vector(),
                 Vector(h),
                 Nil,
@@ -191,7 +204,7 @@ class VwJniModelTest extends Logging {
             VwJniModel(
                 ModelId.empty,
                 "--quiet",
-                Base64StringSource(VwB64Model),
+                Base64StringSource(VwB64Model, VfsType.vfs2),
                 Vector("height_mm"),
                 Vector(),
                 Nil,
@@ -506,6 +519,50 @@ object VwJniModelTest extends Logging {
           |  }
           |}
         """.stripMargin).trim.parseJson
+
+    lazy val vfs1 =
+      ("""
+         |{
+         |  "modelType": "VwJNI",
+         |  "modelId": { "id": 0, "name": "" },
+         |  "features": {
+         |    "height": "ind(${height_cm} * 10)"
+         |  },
+         |  "namespaces": {
+         |    "personal_features": [ "height" ]
+         |  },
+         |  "vw": {
+         |    "via": "vfs1",
+         |    "params": [
+         |      "--quiet",
+         |      "-t"
+         |    ],
+         |    "model": """".stripMargin + VwB64Model + """"
+         |  }
+         |}
+       """.stripMargin).trim.parseJson
+
+    lazy val vfsFile =
+      ("""
+       |{
+       |  "modelType": "VwJNI",
+       |  "modelId": { "id": 0, "name": "" },
+       |  "features": {
+       |    "height": "ind(${height_cm} * 10)"
+       |  },
+       |  "namespaces": {
+       |    "personal_features": [ "height" ]
+       |  },
+       |  "vw": {
+       |    "via": "file",
+       |    "params": [
+       |      "--quiet",
+       |      "-t"
+       |    ],
+       |    "model": """".stripMargin + VwB64Model + """"
+       |  }
+       |}
+     """.stripMargin).trim.parseJson
 
     lazy val threshJson =
        ("""

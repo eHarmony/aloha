@@ -341,9 +341,11 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
       Vw(ExternalSource(model), vwParams)
     else {
       val b64Model = VwJniModel.readBinaryVwModelToB64String(model.inputStream)
-      Vw(Base64StringSource(b64Model, VfsType.vfs2), vwParams)
+      Vw(Base64StringSource(b64Model, model.vfsType), vwParams)
     }
 
-    VwJNIAst(VwJniModel.parser.modelType, id, features, vwObj, ns, numMissingThreshold, notes, spline, classLabels).toJson
+    val x = VwJNIAst(VwJniModel.parser.modelType, id, features, vwObj, ns, numMissingThreshold, notes, spline, classLabels)
+    val y = x.toJson
+    y
   }
 }
