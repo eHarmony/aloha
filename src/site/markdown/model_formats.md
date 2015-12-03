@@ -1896,6 +1896,10 @@ because VFS provides a common interface to different file systems.  Since VFS pr
 different plugins might be available to different versions of VFS.  For instance, the HDFS plugin eHarmony uses 
 (at the time of this writing) is a VFS 1 plugin.
 
+`via` is only to be used in conjunction with the `modelUrl` field.  When supplied with the `model` field,
+the value associated with the `via` field is ignored.  File operations used to copy to the local disk
+the contents associated with the `model` field are `java.io.File` based and don't make use of Apache VFS.
+
 ##### (VW) vw params
 
 `params` is not required.  It can either be specified as a string or an Array of strings (which are joined with a 
