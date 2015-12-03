@@ -100,6 +100,19 @@ class VwJniModelTest extends Logging {
         assertTrue(y.isDefined)
     }
 
+    // TODO: Determine if this is necessary.
+    @Test def loadingViaVfs1(): Unit = {
+      val m = model[Float](vfs1)
+      val y = m(missingHeight)
+      assertTrue(y.isDefined)
+    }
+
+    @Test def loadingViaVfsFile(): Unit = {
+      val m = model[Float](vfsFile)
+      val y = m(missingHeight)
+      assertTrue(y.isDefined)
+    }
+
     @Test def testExceededThresh(): Unit = {
         val m = model[Float](threshJson)
         val y = m(missingHeight)
@@ -390,7 +403,7 @@ class VwJniModelTest extends Logging {
 
     /**
      * Tests that the output equals the expected output value.  This ensures that the
-     * @tparam A
+     * @tparam A The output type.
      */
     private[this] def testOutputType[A : RefInfo : ScoreConverter : JsonReader](): Unit = {
         val tc = TypeCoercion[Double, Option[A]].get
@@ -506,6 +519,50 @@ object VwJniModelTest extends Logging {
           |  }
           |}
         """.stripMargin).trim.parseJson
+
+    lazy val vfs1 =
+      ("""
+         |{
+         |  "modelType": "VwJNI",
+         |  "modelId": { "id": 0, "name": "" },
+         |  "features": {
+         |    "height": "ind(${height_cm} * 10)"
+         |  },
+         |  "namespaces": {
+         |    "personal_features": [ "height" ]
+         |  },
+         |  "vw": {
+         |    "via": "vfs1",
+         |    "params": [
+         |      "--quiet",
+         |      "-t"
+         |    ],
+         |    "model": """".stripMargin + VwB64Model + """"
+         |  }
+         |}
+       """.stripMargin).trim.parseJson
+
+    lazy val vfsFile =
+      ("""
+       |{
+       |  "modelType": "VwJNI",
+       |  "modelId": { "id": 0, "name": "" },
+       |  "features": {
+       |    "height": "ind(${height_cm} * 10)"
+       |  },
+       |  "namespaces": {
+       |    "personal_features": [ "height" ]
+       |  },
+       |  "vw": {
+       |    "via": "file",
+       |    "params": [
+       |      "--quiet",
+       |      "-t"
+       |    ],
+       |    "model": """".stripMargin + VwB64Model + """"
+       |  }
+       |}
+     """.stripMargin).trim.parseJson
 
     lazy val threshJson =
        ("""

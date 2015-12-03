@@ -1753,14 +1753,14 @@ needs to be trained on the same VW version that is included in the `aloha-vw-jni
     <td>N / A</td>
   </tr>
   <tr>
-    <td><a href="#aS_features">features</a></td>
+    <td><a href="#aVW_features">features</a></td>
     <td>Object</td>
     <td>N / A</td>
     <td>true</td>
     <td>N / A</td>
   </tr>
   <tr>
-    <td><a href="#aS_vw">vw</a></td>
+    <td><a href="#aVW_vw">vw</a></td>
     <td>Object</td>
     <td>N / A</td>
     <td>true</td>
@@ -1895,6 +1895,10 @@ users to use different versions of [Apache VFS](https://commons.apache.org/prope
 because VFS provides a common interface to different file systems.  Since VFS provides a plugin architecture, 
 different plugins might be available to different versions of VFS.  For instance, the HDFS plugin eHarmony uses 
 (at the time of this writing) is a VFS 1 plugin.
+
+`via` is only to be used in conjunction with the `modelUrl` field.  When supplied with the `model` field,
+the value associated with the `via` field is ignored.  File operations used to copy to the local disk
+the contents associated with the `model` field are `java.io.File` based and don't make use of Apache VFS.
 
 ##### (VW) vw params
 
