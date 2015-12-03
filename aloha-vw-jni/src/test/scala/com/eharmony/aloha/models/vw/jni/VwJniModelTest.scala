@@ -9,7 +9,6 @@ import com.eharmony.aloha.factory.JavaJsonFormats._
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.io.sources.Base64StringSource
-import com.eharmony.aloha.io.vfs.VfsType
 import com.eharmony.aloha.models.TypeCoercion
 import com.eharmony.aloha.reflect.RefInfo
 import com.eharmony.aloha.score.conversions.ScoreConverter
@@ -101,6 +100,7 @@ class VwJniModelTest extends Logging {
         assertTrue(y.isDefined)
     }
 
+    // TODO: Determine if this is necessary.
     @Test def loadingViaVfs1(): Unit = {
       val m = model[Float](vfs1)
       val y = m(missingHeight)
@@ -123,7 +123,7 @@ class VwJniModelTest extends Logging {
   @Test def testAllocatedModelEqualsOriginalModel(): Unit = {
     val modelBytes = readFile(VwModelFile)
     val out = new String(Base64.encodeBase64(modelBytes))
-    val src = Base64StringSource(out, VfsType.vfs2)
+    val src = Base64StringSource(out)
     val tmpFile = src.localVfs.replicatedToLocal().fileObj
     val tmpBytes = readFile(tmpFile)
     println(out)
@@ -156,7 +156,7 @@ class VwJniModelTest extends Logging {
             VwJniModel(
                 ModelId.empty,
                 "--quiet",
-                Base64StringSource(VwB64Model, VfsType.vfs2),
+                Base64StringSource(VwB64Model),
                 Vector("height_mm"),
                 Vector(h),
                 Nil,
@@ -180,7 +180,7 @@ class VwJniModelTest extends Logging {
             VwJniModel(
                 ModelId.empty,
                 "--quiet",
-                Base64StringSource(VwB64Model, VfsType.vfs2),
+                Base64StringSource(VwB64Model),
                 Vector(),
                 Vector(h),
                 Nil,
@@ -204,7 +204,7 @@ class VwJniModelTest extends Logging {
             VwJniModel(
                 ModelId.empty,
                 "--quiet",
-                Base64StringSource(VwB64Model, VfsType.vfs2),
+                Base64StringSource(VwB64Model),
                 Vector("height_mm"),
                 Vector(),
                 Nil,
@@ -403,7 +403,7 @@ class VwJniModelTest extends Logging {
 
     /**
      * Tests that the output equals the expected output value.  This ensures that the
-     * @tparam A
+     * @tparam A The output type.
      */
     private[this] def testOutputType[A : RefInfo : ScoreConverter : JsonReader](): Unit = {
         val tc = TypeCoercion[Double, Option[A]].get

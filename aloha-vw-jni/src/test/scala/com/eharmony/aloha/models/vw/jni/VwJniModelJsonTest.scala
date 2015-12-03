@@ -45,7 +45,6 @@ class VwJniModelJsonTest {
              |    "personal_features": [ "height_mm" ]
              |  },
              |  "vw": {
-             |    "via": "vfs2",
              |    "params": "--quiet -t",
              |    "model": """".stripMargin.trim +  base64EncodedModelString + """"
              |  }
@@ -71,12 +70,11 @@ class VwJniModelJsonTest {
          |    "personal_features": [ "height_mm" ]
          |  },
          |  "vw": {
-         |    "via": "vfs1",
          |    "params": "--quiet -t",
          |    "model": """".stripMargin.trim +  base64EncodedModelString + """"
-                                                                             |  }
-                                                                             |}
-                                                                           """).stripMargin.parseJson
+         |  }
+         |}
+       """).stripMargin.parseJson
 
     val vfs1Model = Vfs1(vfs1.VFS.getManager.resolveFile(VwJniModelTest.VwModelPath))
     val actual = VwJniModel.json(vfsSpec, vfs1Model, ModelId(0, "model name"), Some("--quiet -t"))
@@ -99,12 +97,11 @@ class VwJniModelJsonTest {
          |    "personal_features": [ "height_mm" ]
          |  },
          |  "vw": {
-         |    "via": "file",
          |    "params": "--quiet -t",
          |    "model": """".stripMargin.trim +  base64EncodedModelString + """"
-                                                                             |  }
-                                                                             |}
-                                                                           """).stripMargin.parseJson
+         |  }
+         |}
+       """).stripMargin.parseJson
     val vfsFile = File(new java.io.File(VwJniModelTest.VwModelPath))
     val actual = VwJniModel.json(vfsSpec, vfsFile, ModelId(0, "model name"), Some("--quiet -t"))
 
@@ -129,7 +126,6 @@ class VwJniModelJsonTest {
              |    "personal_features": [ "height_mm" ]
              |  },
              |  "vw": {
-             |    "via": "vfs2",
              |    "params": "--quiet -t",
              |    "model": """".stripMargin.trim + base64EncodedModelString + """"
              |  }
@@ -161,7 +157,6 @@ class VwJniModelJsonTest {
              |    "personal_features": [ "height_mm" ]
              |  },
              |  "vw": {
-             |    "via": "vfs2",
              |    "params": "--quiet -t",
              |    "model": """".stripMargin.trim + base64EncodedModelString + """"
              |  }
@@ -196,7 +191,6 @@ class VwJniModelJsonTest {
              |    "personal_features": [ "height_mm" ]
              |  },
              |  "vw": {
-             |    "via": "vfs2",
              |    "params": "--quiet -t",
              |    "model": """".stripMargin.trim + base64EncodedModelString + """"
              |  }
