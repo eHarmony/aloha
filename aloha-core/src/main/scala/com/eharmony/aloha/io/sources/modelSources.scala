@@ -85,7 +85,7 @@ final case class Base64StringSource(b64EncodedData: String, vfsType: VfsType) ex
    */
   def localVfs = {
     val localVfs = for {
-      tmpName <- tmpFileName
+      tmpName <- getTmpFileName()
       v = getTmpVfs(tmpName)
       _ <- copyToTmpFile(v)
       local <- Try { v.replicatedToLocal() }
@@ -100,6 +100,11 @@ final case class Base64StringSource(b64EncodedData: String, vfsType: VfsType) ex
 
   private[this] def getTmpVfs(tmpName: String) = Vfs.fromVfsType(vfsType)(tmpName)
 
+  private[this] def getTmpFileName() = {
+    if (vfsType == VfsType.file) Try(java.io.File.createTempFile("aloha-base-model", ".aloha").getCanonicalPath())
+    else tmpVfsFileName
+  }
+
   /**
    * This is based on a URL-encoded URL of the base64 encoding of a hash of the data.  The reason this is
    * necessary is that we want a short, safe URL description of the content.
@@ -107,7 +112,7 @@ final case class Base64StringSource(b64EncodedData: String, vfsType: VfsType) ex
    * NOTE: It's possible that hash collisions could occur.  This must be dealt with by the calling code.
    * @return
    */
-  @transient private[this] lazy val tmpFileName = for {
+  @transient private[this] lazy val tmpVfsFileName = for {
       sha1    <- Try { MessageDigest.getInstance("SHA-1") }
       digest  <- Try { sha1.digest(b64EncodedData.getBytes) }
       b64     <- Try { new String(Base64.encodeBase64(digest)) }
