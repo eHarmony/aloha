@@ -25,3 +25,4 @@ scala:
 before_install:
     - source travis-install-protobuf.sh
     - bash travis-install-aloha-proto.sh
+    - cat $HOME/.m2/settings.xml
