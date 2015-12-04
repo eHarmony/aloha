@@ -20,8 +20,7 @@ addons:
         - libboost-program-options-dev
 
 scala:
-    - 2.10.4
-
+    - 2.10.5
 
 before_install:
     - source travis-install-protobuf.sh
