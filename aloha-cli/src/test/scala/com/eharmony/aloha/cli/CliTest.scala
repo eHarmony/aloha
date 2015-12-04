@@ -18,12 +18,12 @@ class CliTest extends TestWithIoCapture(CliTest) {
 
     @Test def testNoArgs(): Unit = {
         Cli.main(Array.empty)
-        assertEquals("No arguments supplied. Supply one of: '--dataset', '--modelrunner', '--vw'.", errContent.trim)
+        assertEquals("No arguments supplied. Supply one of: '--dataset', '--h2o', '--modelrunner', '--vw'.", errContent.trim)
     }
 
     @Test def testBadFlag(): Unit = {
         Cli.main(Array("-BADFLAG"))
-        assertEquals("'-BADFLAG' supplied. Supply one of: '--dataset', '--modelrunner', '--vw'.", errContent.trim)
+        assertEquals("'-BADFLAG' supplied. Supply one of: '--dataset', '--h2o', '--modelrunner', '--vw'.", errContent.trim)
     }
 
     @Test def testVw(): Unit = {

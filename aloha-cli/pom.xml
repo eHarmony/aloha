@@ -44,6 +44,17 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.eharmony</groupId>
+            <artifactId>aloha-h2o</artifactId>
+            <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
         </dependency>

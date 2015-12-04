@@ -1,0 +1,13 @@
+{
+  "imports":[],
+  "features": [
+    { "name": "Sex",            "spec": "${0}", "type": "string" },
+    { "name": "Length",         "spec": "${1}" },
+    { "name": "Diameter",       "spec": "${2}" },
+    { "name": "Height",         "spec": "${3}" },
+    { "name": "Whole weight",   "spec": "${4}" },
+    { "name": "Shucked weight", "spec": "${5}" },
+    { "name": "Viscera weight", "spec": "${6}" },
+    { "name": "Shell weight",   "spec": "${7}" }
+  ]
+}

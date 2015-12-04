@@ -19,7 +19,8 @@ object BasicFunctions
   with RegressionModelValueToTupleConversions
   with DecisionTreeBoolToOptBoolConversions
   with SkipGrams
-  with MapImplicitRegressionConversion {
+  with MapImplicitRegressionConversion
+  with OptionLifting {
 
   final protected[feature] val DefaultForMissingDataInReg = Seq(("=UNK", 1.0))
 }

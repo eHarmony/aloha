@@ -43,6 +43,7 @@
     <modules>
         <module>aloha-core</module>
         <module>aloha-vw-jni</module>
+        <module>aloha-h2o</module>
         <module>aloha-cli</module>
     </modules>
 
