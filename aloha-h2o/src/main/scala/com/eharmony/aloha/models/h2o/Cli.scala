@@ -4,12 +4,11 @@ import com.eharmony.aloha
 import com.eharmony.aloha.annotate.CLI
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.io.sources.{Base64StringSource, ExternalSource, ModelSource}
-import com.eharmony.aloha.io.vfs.{Vfs, VfsType}
 import com.eharmony.aloha.io.vfs.VfsType.VfsType
-import com.eharmony.aloha.models.h2o.json.{H2oSpec, H2oAst}
-import spray.json._, DefaultJsonProtocol._
-import org.apache.commons.codec.binary.{Base64, Base64InputStream}
-
+import com.eharmony.aloha.io.vfs.{Vfs, VfsType}
+import com.eharmony.aloha.models.h2o.json.{H2oAst, H2oSpec}
+import org.apache.commons.codec.binary.Base64
+import spray.json._
 
 import scala.collection.immutable.ListMap
 
@@ -25,6 +24,12 @@ object Cli {
     * '''NOTE''' null default values is only OK because both parameters are required
     * @param spec
     * @param model
+    * @param id
+    * @param name
+    * @param externalModel
+    * @param numMissingThreshold
+    * @param notes
+    * @param vfsType
     */
   case class Config(spec: String = null,
                     model: String = null,
@@ -62,7 +67,7 @@ object Cli {
       ExternalSource(f)
     else {
       val b64 = new String(Base64.encodeBase64(f.asByteArray()))
-      Base64StringSource(b64, vfsType)
+      Base64StringSource(b64)
     }
   }
 
