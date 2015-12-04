@@ -69,6 +69,7 @@
           <url>https://repository.apache.org/releases/</url>
         </repository>
 
+<!-- 
         <repository>
           <id>apache-snapshots</id>
           <name>ASF repo (snapshots)</name>
@@ -84,6 +85,7 @@
           </snapshots>
           <url>https://repository.apache.org/snapshots/</url>
         </repository>
+ -->
 <!-- 
 
         <repository>
