@@ -25,4 +25,3 @@ scala:
 before_install:
     - source travis-install-protobuf.sh
     - bash travis-install-aloha-proto.sh
-    - mvn install -X --no-snapshot-updates -DskipTests=true -Dmaven.javadoc.skip=true -B -V
