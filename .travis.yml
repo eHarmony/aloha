@@ -22,7 +22,9 @@ addons:
 scala:
     - 2.10.4
 
+#    - cat $HOME/.m2/settings.xml
 before_install:
     - source travis-install-protobuf.sh
     - bash travis-install-aloha-proto.sh
-    - cat $HOME/.m2/settings.xml
+    - cp -f travis.m2.settings.xml $HOME/.m2/
+
