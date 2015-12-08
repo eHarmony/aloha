@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>FactoryInfo - aloha-core 3.1.0 API - com.eharmony.aloha.interop.FactoryInfo</title>
-          <meta name="description" content="FactoryInfo - aloha - core 3.1.0 API - com.eharmony.aloha.interop.FactoryInfo" />
-          <meta name="keywords" content="FactoryInfo aloha core 3.1.0 API com.eharmony.aloha.interop.FactoryInfo" />
+          <title>OptionLifting - aloha-core 3.1.0 API - com.eharmony.aloha.feature.OptionLifting</title>
+          <meta name="description" content="OptionLifting - aloha - core 3.1.0 API - com.eharmony.aloha.feature.OptionLifting" />
+          <meta name="keywords" content="OptionLifting aloha core 3.1.0 API com.eharmony.aloha.feature.OptionLifting" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
-            var hash = 'com.eharmony.aloha.interop.FactoryInfo';
+            var hash = 'com.eharmony.aloha.feature.OptionLifting';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -25,8 +25,8 @@
         <body class="type">
       <div id="definition">
         <img src="../../../../lib/trait_big.png" />
-        <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.eharmony">eharmony</a>.<a href="../package.html" class="extype" name="com.eharmony.aloha">aloha</a>.<a href="package.html" class="extype" name="com.eharmony.aloha.interop">interop</a></p>
-        <h1>FactoryInfo</h1>
+        <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.eharmony">eharmony</a>.<a href="../package.html" class="extype" name="com.eharmony.aloha">aloha</a>.<a href="package.html" class="extype" name="com.eharmony.aloha.feature">feature</a></p>
+        <h1>OptionLifting</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,22 +35,21 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">FactoryInfo</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+        <span class="name">OptionLifting</span><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>These are the variables that need to be passed to the ModelFactory to create the models.  This is typically done
-via an implicit argument list but for interoperability with Java, this is problematic.  The strategy instead is to
-pass an instance of FactoryInfo to either create a factory or to get back a model from a ModelFactory.  This second
-use case seems less likely because Java doesn't seem to have the same understanding of the type information
-related to the higher kinds that are passed to constructor of ModelFactory.  So, we provide a way around this by
-simplifying the interface that will typically be called from the Java world.</p><p>The way to do this is to create a NoImplModelFactory given a list of</p></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>input type of models to be created</p></dd><dt class="tparam">B</dt><dd class="cmt"><p>output type of models to be created
-</p></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>These can be useful for models requiring implicit feature conversion a &quot;<i>primitive</i>&quot; type
+to an option of that type.  This is most useful for when we need to be able to supply a
+default feature value without knowing anything about the type.  If the type is in a context
+then the zero element for the context can be used without additional information about the
+inner type.</p><p>This definition allows the feature author to be sloppy about types so there is no blanket
+method:</p><pre><span class="kw">implicit</span> <span class="kw">def</span> liftToOption[A](a: A): <span class="std">Option</span>[A] = <span class="std">Option</span>(a)</pre></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a href="BooleanFactoryInfo.html" class="extype" name="com.eharmony.aloha.interop.BooleanFactoryInfo">BooleanFactoryInfo</a>, <a href="ByteFactoryInfo.html" class="extype" name="com.eharmony.aloha.interop.ByteFactoryInfo">ByteFactoryInfo</a>, <a href="DoubleFactoryInfo.html" class="extype" name="com.eharmony.aloha.interop.DoubleFactoryInfo">DoubleFactoryInfo</a>, <a href="FloatFactoryInfo.html" class="extype" name="com.eharmony.aloha.interop.FloatFactoryInfo">FloatFactoryInfo</a>, <a href="IntegerFactoryInfo.html" class="extype" name="com.eharmony.aloha.interop.IntegerFactoryInfo">IntegerFactoryInfo</a>, <a href="LongFactoryInfo.html" class="extype" name="com.eharmony.aloha.interop.LongFactoryInfo">LongFactoryInfo</a>, <a href="StringFactoryInfo.html" class="extype" name="com.eharmony.aloha.interop.StringFactoryInfo">StringFactoryInfo</a></div>
+          <div class="subClasses hiddenContent"><a href="BasicFunctions$.html" class="extype" name="com.eharmony.aloha.feature.BasicFunctions">BasicFunctions</a></div>
         </div></div>
         
 
@@ -68,7 +67,7 @@ simplifying the interface that will typically be called from the Java world.</p>
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.eharmony.aloha.interop.FactoryInfo"><span>FactoryInfo</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.eharmony.aloha.feature.OptionLifting"><span>OptionLifting</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -90,65 +89,10 @@ simplifying the interface that will typically be called from the Java world.</p>
 
         
 
-        <div id="values" class="values members">
-              <h3>Abstract Value Members</h3>
-              <ol><li name="com.eharmony.aloha.interop.FactoryInfo#inRefInfo" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="inRefInfo:com.eharmony.aloha.reflect.RefInfo[A]"></a>
-      <a id="inRefInfo:RefInfo[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">inRefInfo</span><span class="result">: <a href="../reflect/package.html#RefInfo[A]=Manifest[A]" class="extmbr" name="com.eharmony.aloha.reflect.RefInfo">RefInfo</a>[<span class="extype" name="com.eharmony.aloha.interop.FactoryInfo.A">A</span>]</span>
-      </span>
-      </h4>
-      
-    </li><li name="com.eharmony.aloha.interop.FactoryInfo#jsonReader" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="jsonReader:spray.json.JsonReader[B]"></a>
-      <a id="jsonReader:JsonReader[B]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">jsonReader</span><span class="result">: <span class="extype" name="spray.json.JsonReader">JsonReader</span>[<span class="extype" name="com.eharmony.aloha.interop.FactoryInfo.B">B</span>]</span>
-      </span>
-      </h4>
-      
-    </li><li name="com.eharmony.aloha.interop.FactoryInfo#outRefInfo" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="outRefInfo:com.eharmony.aloha.reflect.RefInfo[B]"></a>
-      <a id="outRefInfo:RefInfo[B]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">outRefInfo</span><span class="result">: <a href="../reflect/package.html#RefInfo[A]=Manifest[A]" class="extmbr" name="com.eharmony.aloha.reflect.RefInfo">RefInfo</a>[<span class="extype" name="com.eharmony.aloha.interop.FactoryInfo.B">B</span>]</span>
-      </span>
-      </h4>
-      
-    </li><li name="com.eharmony.aloha.interop.FactoryInfo#scoreConverter" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="scoreConverter:com.eharmony.aloha.score.conversions.ScoreConverter[B]"></a>
-      <a id="scoreConverter:ScoreConverter[B]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">scoreConverter</span><span class="result">: <a href="../score/conversions/ScoreConverter.html" class="extype" name="com.eharmony.aloha.score.conversions.ScoreConverter">ScoreConverter</a>[<span class="extype" name="com.eharmony.aloha.interop.FactoryInfo.B">B</span>]</span>
-      </span>
-      </h4>
-      
-    </li></ol>
-            </div>
+        
 
         <div id="values" class="values members">
-              <h3>Concrete Value Members</h3>
+              <h3>Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:AnyRef):Boolean"></a>
       <a id="!=(AnyRef):Boolean"></a>
@@ -246,6 +190,19 @@ simplifying the interface that will typically be called from the Java world.</p>
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.OptionLifting#double2Option" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="double2Option(a:Double):Option[Double]"></a>
+      <a id="double2Option(Double):Option[Double]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">double2Option</span><span class="params">(<span name="a">a: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Double">Double</span>]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -369,6 +326,19 @@ simplifying the interface that will typically be called from the Java world.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.eharmony.aloha.feature.OptionLifting#string2Option" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="string2Option(a:String):Option[String]"></a>
+      <a id="string2Option(String):Option[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">string2Option</span><span class="params">(<span name="a">a: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>

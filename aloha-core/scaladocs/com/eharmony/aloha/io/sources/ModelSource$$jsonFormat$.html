@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>jsonFormat - aloha-core 3.0.1 API - com.eharmony.aloha.io.sources.ModelSource.jsonFormat</title>
-          <meta name="description" content="jsonFormat - aloha - core 3.0.1 API - com.eharmony.aloha.io.sources.ModelSource.jsonFormat" />
-          <meta name="keywords" content="jsonFormat aloha core 3.0.1 API com.eharmony.aloha.io.sources.ModelSource.jsonFormat" />
+          <title>jsonFormat - aloha-core 3.1.0 API - com.eharmony.aloha.io.sources.ModelSource.jsonFormat</title>
+          <meta name="description" content="jsonFormat - aloha - core 3.1.0 API - com.eharmony.aloha.io.sources.ModelSource.jsonFormat" />
+          <meta name="keywords" content="jsonFormat aloha core 3.1.0 API com.eharmony.aloha.io.sources.ModelSource.jsonFormat" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -1339,7 +1339,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>CollectionFormats</dd></dl></div>
-    </li><li name="com.eharmony.aloha.io.sources.ModelSource.jsonFormat#modelFields" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="com.eharmony.aloha.io.sources.ModelSource.jsonFormat#modelFields" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="modelFields(modelSource:com.eharmony.aloha.io.sources.ModelSource):scala.collection.immutable.ListMap[String,spray.json.JsString]"></a>
       <a id="modelFields(ModelSource):ListMap[String,JsString]"></a>
       <h4 class="signature">
@@ -1351,7 +1351,10 @@
         <span class="name">modelFields</span><span class="params">(<span name="modelSource">modelSource: <a href="ModelSource.html" class="extype" name="com.eharmony.aloha.io.sources.ModelSource">ModelSource</a></span>)</span><span class="result">: <span class="extype" name="scala.collection.immutable.ListMap">ListMap</span>[<span class="extype" name="java.lang.String">String</span>, <span class="extype" name="spray.json.JsString">JsString</span>]</span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">If the model source is a base64-encoded string, then it is copied to a local for use.</p><div class="fullcomment"><div class="comment cmt"><p>If the model source is a base64-encoded string, then it is copied to a local for use. Therefore,
+the VFS type can be <i>file</i>.  This is OK because it selects neither VFS 1 nor VFS 2 so it
+shouldn't have an effect on when someone is already using VFS 2 <i>OR</i> VFS 1.</p></div><dl class="paramcmts block"><dt class="param">modelSource</dt><dd class="cmt"><p>a model source.</p></dd><dt>returns</dt><dd class="cmt"><p>
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
