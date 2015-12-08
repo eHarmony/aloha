@@ -1,26 +1,32 @@
 package com.eharmony.aloha.models
 
-import java.io.Closeable
-import java.util.concurrent.atomic.AtomicBoolean
-
-import com.eharmony.aloha.id.{ModelId, ModelIdentity}
-import com.eharmony.aloha.score.Scores.Score
-import com.eharmony.aloha.score.basic.ModelOutput
-import org.junit.runners.BlockJUnit4ClassRunner
-import org.junit.runner.RunWith
-import org.junit.Test
-import org.junit.Assert._
-import com.eharmony.aloha.semantics.{SemanticsUdfException, FunctionWithErrorProducingSemantics}
-import com.eharmony.aloha.factory.ModelFactory
-import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.DoubleScoreConverter
-import spray.json.DefaultJsonProtocol.DoubleJsonFormat
-import scala.util.Try
+import com.eharmony.aloha.ModelSerializationTestHelper
 import com.eharmony.aloha.ex.SchrodingerException
+import com.eharmony.aloha.factory.ModelFactory
+import com.eharmony.aloha.id.ModelId
+import com.eharmony.aloha.models.conversion.DoubleToJavaLongModel
+import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.DoubleScoreConverter
+import com.eharmony.aloha.semantics.{FunctionWithErrorProducingSemantics, SemanticsUdfException}
+import org.junit.Assert._
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.BlockJUnit4ClassRunner
+import spray.json.DefaultJsonProtocol.DoubleJsonFormat
+
+import scala.util.Try
 
 /** Test that the ErrorSwallowingModel is very tolerant against failure.
   */
 @RunWith(classOf[BlockJUnit4ClassRunner])
-class ErrorSwallowingModelTest {
+class ErrorSwallowingModelTest extends ModelSerializationTestHelper {
+
+    @Test def testSerialization(): Unit = {
+        val sub = ErrorModel(ModelId(2, "abc"), Seq("def", "ghi"))
+        val m = ErrorSwallowingModel(sub)
+        val m1 = serializeDeserializeRoundTrip(m)
+        assertEquals(m, m1)
+    }
+
     @Test def testNoExOnClose(): Unit = {
         val sub = new CloserTesterModel[Int](true)
         val m = new ErrorSwallowingModel(sub)

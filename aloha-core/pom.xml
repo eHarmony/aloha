@@ -396,6 +396,8 @@
 								<include>**/aloha/test/proto/*</include>
 								<include>**/FileLocations*</include>
 								<include>**/JensenShannonDivergence*</include>
+								<include>**/ModelSerializabilityTestBase*</include>
+								<include>**/ModelSerializationTestHelper*</include>
 								<include>**/testhelp/**</include>
                                 <include>**/README.md</include>
                             </includes>

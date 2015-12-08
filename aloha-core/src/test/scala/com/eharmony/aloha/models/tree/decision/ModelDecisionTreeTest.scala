@@ -2,11 +2,13 @@ package com.eharmony.aloha.models.tree.decision
 
 import java.util.concurrent.atomic.AtomicBoolean
 
+import com.eharmony.aloha.ModelSerializationTestHelper
 import com.eharmony.aloha.factory.{BasicModelParser, ModelFactory, ModelParser, ParserProviderCompanion}
 import com.eharmony.aloha.id.ModelId
-import com.eharmony.aloha.models.{BaseModel, ConstantModel, Model}
+import com.eharmony.aloha.models.{ErrorModel, BaseModel, ConstantModel, Model}
 import com.eharmony.aloha.reflect.RefInfo
 import com.eharmony.aloha.score.conversions.ScoreConverter
+import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.NothingScoreConverter
 import com.eharmony.aloha.score.conversions.rich.RichScore
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.semantics.func.{GenAggFunc, GenFunc, GeneratedAccessor}
@@ -20,7 +22,7 @@ import spray.json.DefaultJsonProtocol._
 import scala.collection.JavaConversions.asScalaBuffer
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
-class ModelDecisionTreeTest {
+class ModelDecisionTreeTest extends ModelSerializationTestHelper {
     import ModelDecisionTreeTest._
 
     @Test def test_tttt_ee() { success(tttt, ee, missingBothFeatures, noErrorMessages, scoreIndicatesFirstInnerModelInterior) }
@@ -161,6 +163,13 @@ class ModelDecisionTreeTest {
     @Test def test_ffff_pn() { failure(ffff, pn, noneMissing, errorIndicatesNoPredicateSatisfiedInInnerModel) }
 
     @Test def test_pp() { models.foreach(m => success(m, pp, noneMissing, noErrorMessages, scoreIndicatesSecondInnerModelLeaf) ) }
+
+    @Test def testSerialization(): Unit = {
+        val sub = ErrorModel(ModelId(2, "abc"), Seq("def", "ghi"))
+        val m = ModelDecisionTree(ModelId(2, "abc"), root = Leaf(sub), returnBest = true)
+        val m1 = serializeDeserializeRoundTrip(m)
+        assertEquals(m, m1)
+    }
 
     /**
      * Get a DecisionTreeModel with a full 3-layer binary tree with 7 (2^3^ - 1) nodes.  Call close on the
