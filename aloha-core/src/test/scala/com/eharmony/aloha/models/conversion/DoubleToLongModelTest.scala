@@ -1,5 +1,6 @@
 package com.eharmony.aloha.models.conversion
 
+import com.eharmony.aloha.ModelSerializationTestHelper
 import com.eharmony.aloha.id.{ModelId, ModelIdentity}
 import com.eharmony.aloha.util.Logging
 
@@ -16,14 +17,21 @@ import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.LongScoreCo
 import com.eharmony.aloha.score.conversions.rich.RichScore
 
 import spray.json.DefaultJsonProtocol.LongJsonFormat
-import com.eharmony.aloha.models.{Model, SegmentationModel, CloserTesterModel, ConstantModel}
+import com.eharmony.aloha.models._
 import com.eharmony.aloha.interop.LongFactoryInfo
 import scala.util.Try
 import spray.json.DeserializationException
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
-class DoubleToLongScalaTest {
-    import DoubleToLongScalaTest._
+class DoubleToLongModelTest extends ModelSerializationTestHelper {
+    import DoubleToLongModelTest._
+
+    @Test def testSerialization(): Unit = {
+        val sub = ErrorModel(ModelId(2, "abc"), Seq("def", "ghi"))
+        val m = DoubleToJavaLongModel(ModelId(3, "jkl"), sub, 2.3, 3.4, 1, 4, round = true)
+        val m1 = serializeDeserializeRoundTrip(m)
+        assertEquals(m, m1)
+    }
 
     @Test def testSubmodelClosed(): Unit = {
         val sub = new CloserTesterModel[Double]()
@@ -106,7 +114,7 @@ class DoubleToLongScalaTest {
     }
 }
 
-object DoubleToLongScalaTest {
+object DoubleToLongModelTest {
     private val semantics = EmptySemantics[Any]
     private val scalaFactory = ModelFactory(DoubleToLongModel.parser, ConstantModel.parser).toTypedFactory[Any, Long](semantics)
     private val javaFactory = ModelFactory(DoubleToLongModel.parser, ConstantModel.parser).toTypedFactory(semantics, new LongFactoryInfo[Any](classOf[Any]))

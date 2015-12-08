@@ -1,6 +1,8 @@
 package com.eharmony.aloha.models
 
+import com.eharmony.aloha.ModelSerializationTestHelper
 import com.eharmony.aloha.id.{ModelId, ModelIdentity}
+import com.eharmony.aloha.models.conversion.DoubleToJavaLongModel
 import com.eharmony.aloha.score.conversions.ScoreConverter
 import org.junit.runners.BlockJUnit4ClassRunner
 import org.junit.runner.RunWith
@@ -17,9 +19,16 @@ import com.eharmony.aloha.score.conversions.rich.RichScore
 import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.{IntScoreConverter, StringScoreConverter}
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
-class SegmentationModelTest {
+class SegmentationModelTest extends ModelSerializationTestHelper {
     private[this] val PossibleLabels = Seq.range(0, 100).map("index " + _)
     private[this] val Reader = SegmentationModel.Parser.modelJsonReader[Any, String](ModelFactory(ConstantModel.parser), Option(AnySemanticsWithoutFunctionCreation))
+
+    @Test def testSerialization(): Unit = {
+        val sub = ErrorModel(ModelId(2, "abc"), Seq("def", "ghi"))
+        val m = SegmentationModel(ModelId(3, "jkl"), sub, Vector(1, 2), Vector("1", "2", "3"))
+        val m1 = serializeDeserializeRoundTrip(m)
+        assertEquals(m, m1)
+    }
 
     @Test def testSubmodelClosed(): Unit = {
         val sub = new CloserTesterModel[Int]()

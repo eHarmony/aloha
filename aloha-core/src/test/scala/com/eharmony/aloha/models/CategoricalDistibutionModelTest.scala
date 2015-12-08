@@ -1,6 +1,11 @@
 package com.eharmony.aloha.models
 
+import com.eharmony.aloha.ModelSerializationTestHelper
+import com.eharmony.aloha.id.ModelId
+import com.eharmony.aloha.util.rand.HashedCategoricalDistribution
+
 import scala.collection.JavaConversions.asScalaBuffer
+import scala.collection.{immutable => sci}
 
 import org.junit.runners.BlockJUnit4ClassRunner
 import org.junit.runner.RunWith
@@ -17,7 +22,7 @@ import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.StringScore
 import com.eharmony.aloha.score.conversions.rich.RichScore
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
-class CategoricalDistibutionModelTest {
+class CategoricalDistibutionModelTest extends ModelSerializationTestHelper {
     import CategoricalDistibutionModelTest._
 
     /** A factory that produces models that:
@@ -64,9 +69,25 @@ class CategoricalDistibutionModelTest {
         assertEquals("Should have missing features.", Seq("key_one"), s.getError.getMissingFeatures.getNamesList.toSeq)
         assertEquals("Wrong number of error messages.", 0, s.getError.getMessagesCount)
     }
+
+    @Test def testSerialization(): Unit = {
+        val m = CategoricalDistibutionModel[Any, String](
+                  modelId = ModelId(2, "abc"),
+                  features = Seq(GenFunc.f0("", Identity())),
+                  distribution = HashedCategoricalDistribution(1,2,3,4),
+                  labels = sci.IndexedSeq("a", "b", "c", "d"),
+                  missingOk = true)
+
+        val m1 = serializeDeserializeRoundTrip(m)
+        assertEquals(m, m1)
+    }
 }
 
 object CategoricalDistibutionModelTest {
+
+    case class Identity[A]() extends (A => A) {
+        def apply(a: A) = a
+    }
 
     class MapSemantics[K: RefInfo, V: RefInfo](f: String => K) extends Semantics[Map[K, V]] {
         def refInfoA = RefInfoOps.wrap[K, V].in[Map]

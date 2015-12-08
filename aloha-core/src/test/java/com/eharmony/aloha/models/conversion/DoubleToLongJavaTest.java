@@ -9,10 +9,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import scala.util.Try;
 
-import static com.eharmony.aloha.models.conversion.DoubleToLongScalaTest.getJavaLongFactory;
-import static com.eharmony.aloha.models.conversion.DoubleToLongScalaTest.goodJson;
-import static com.eharmony.aloha.models.conversion.DoubleToLongScalaTest.stringInnerModelType;
-import static com.eharmony.aloha.models.conversion.DoubleToLongScalaTest.booleanInnerModelType;
+import static com.eharmony.aloha.models.conversion.DoubleToLongModelTest.getJavaLongFactory;
+import static com.eharmony.aloha.models.conversion.DoubleToLongModelTest.goodJson;
+import static com.eharmony.aloha.models.conversion.DoubleToLongModelTest.stringInnerModelType;
+import static com.eharmony.aloha.models.conversion.DoubleToLongModelTest.booleanInnerModelType;
 
 import com.eharmony.aloha.score.conversions.RelaxedConversions;
 import spray.json.DeserializationException;

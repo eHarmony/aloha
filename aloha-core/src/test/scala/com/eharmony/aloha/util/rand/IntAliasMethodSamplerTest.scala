@@ -32,7 +32,7 @@ class IntAliasMethodSamplerTest {
         )
 
         distributions.foreach(d => {
-            val s = new IntAliasMethodSampler(d)
+            val s = new IntAliasMethodSampler(d.toVector)
             val pr = new Array[Double](s.numClasses)
             var i = 0
             while (i < numSamples) {
@@ -65,7 +65,7 @@ class IntAliasMethodSamplerTest {
                 // then the 0 class will be returned when the probability of the zero class is increased.
                 for {
                     dist <- subsequentDists
-                    iams = new IntAliasMethodSampler(dist)
+                    iams = new IntAliasMethodSampler(dist.toVector)
                     sample <- samples
                 } {
                     val Sample(d, r, result) = sample
@@ -123,8 +123,8 @@ class IntAliasMethodSamplerTest {
         val suff2 = normalize(suff1.tail, complSumPrefix - jpr)        // Scaled tail
 //      val suff2 = randomSeq(n - j - 1, complSumPrefix - jpr)(rand)   // Random
         val dist2 = prefix ++ Seq(jpr) ++ suff2
-        val s1 = new IntAliasMethodSampler(dist1)
-        val s2 = new IntAliasMethodSampler(dist2)
+        val s1 = new IntAliasMethodSampler(dist1.toVector)
+        val s2 = new IntAliasMethodSampler(dist2.toVector)
         val v1 = s1.sample(j, x)
         val v2 = s2.sample(j, x)
 
@@ -140,8 +140,8 @@ class IntAliasMethodSamplerTest {
         val prefix = randomSeq(jSize, sumPrefix)(rand)
         val dist1 = prefix ++ randomSeq(n - jSize, 1 - sumPrefix)(rand)
         val dist2 = prefix ++ randomSeq(n - jSize, 1 - sumPrefix)(rand)
-        val s1 = new IntAliasMethodSampler(dist1)
-        val s2 = new IntAliasMethodSampler(dist2)
+        val s1 = new IntAliasMethodSampler(dist1.toVector)
+        val s2 = new IntAliasMethodSampler(dist2.toVector)
         val v1 = s1.sample(j, x)
         val v2 = s2.sample(j, x)
 
@@ -169,7 +169,7 @@ class IntAliasMethodSamplerTest {
     private[this] def dist2(pr: Double) = Seq(pr, 1 - pr)
 
     private[this] def getSamples(rand: Random, n: Int, filter: Int => Boolean, pr: Seq[Double]): Seq[Sample] = {
-        val sampler = new IntAliasMethodSampler(pr)
+        val sampler = new IntAliasMethodSampler(pr.toVector)
         val d = pr.size
         var samples = List.empty[Sample]
         while(samples.size < n) {

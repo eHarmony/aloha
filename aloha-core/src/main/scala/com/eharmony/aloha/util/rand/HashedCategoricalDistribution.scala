@@ -9,7 +9,7 @@ object HashedCategoricalDistribution {
         new HashedCategoricalDistribution(new IntAliasMethodSampler(probabilities))
 }
 
-class HashedCategoricalDistribution(sampler: IntAliasMethodSampler) extends (TraversableOnce[Any] => Int) {
+case class HashedCategoricalDistribution(sampler: IntAliasMethodSampler) extends (TraversableOnce[Any] => Int) {
     import HashedCategoricalDistribution.MaxVal
 
     /** The number of different classes in the distribution.
