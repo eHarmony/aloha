@@ -2,19 +2,17 @@ package com.eharmony.aloha
 
 import java.io.{ObjectInputStream, ByteArrayInputStream, ByteArrayOutputStream, ObjectOutputStream}
 
-import com.eharmony.aloha.models.Model
-
 /**
   * Created by rdeak on 12/7/15.
   */
 trait ModelSerializationTestHelper {
-  def serializeDeserializeRoundTrip[M <: Model[_, _]](m: M): M = {
+  def serializeDeserializeRoundTrip[A <: java.io.Serializable](a: A): A = {
     val baos = new ByteArrayOutputStream()
     val oos = new ObjectOutputStream(baos)
-    oos.writeObject(m)
+    oos.writeObject(a)
     val bais = new ByteArrayInputStream(baos.toByteArray)
     val ois = new ObjectInputStream(bais)
     val out = ois.readObject()
-    out.asInstanceOf[M]
+    out.asInstanceOf[A]
   }
 }

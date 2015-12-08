@@ -1,10 +1,9 @@
 package com.eharmony.aloha.models.vw.jni
 
 import java.io._
-import java.net.InetAddress.getLocalHost
 import java.{lang => jl}
 
-import com.eharmony.aloha.FileLocations
+import com.eharmony.aloha.{ModelSerializationTestHelper, FileLocations}
 import com.eharmony.aloha.factory.JavaJsonFormats._
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
@@ -42,42 +41,29 @@ import scala.util.Try
 // TODO: In upcoming version of VW JNI, the command is saved and a getter is provided.  Update tests accordingly.
 // This allows us to test the "-i" parameter so we don't need to call the 'getParam' function.
 @RunWith(classOf[BlockJUnit4ClassRunner])
-class VwJniModelTest extends Logging {
+class VwJniModelTest extends ModelSerializationTestHelper with Logging {
     import VwJniModelTest._
 
-
-    /**
-     * This test works locally but fails on jenkins.  So, have a list of blacklisted hosts
-     */
     @Test def testSerialization(): Unit = {
-        val hostName = getLocalHost.getHostName
-        if (BlacklistedHosts.findFirstMatchIn(hostName).isEmpty) {
-            val m = model[Double](typeTestJson)
+      // Ignore the following features in the comparison: featureFunctions, learnerCreator.
+      val ignoreFeatureIndices = Seq(4, 7)
 
-            val baos = new ByteArrayOutputStream()
-            val oos = new ObjectOutputStream(baos)
-            oos.writeObject(m)
-            oos.close()
+      val m = model[Double](typeTestJson)
+      val m1 = serializeDeserializeRoundTrip(m)
 
-            val ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray))
-            val m1 = ois.readObject().asInstanceOf[VwJniModel[CsvLine, Double]]
-            ois.close()
+      // Check that they at least refer to the same class.
+      assertEquals(m.getClass.getCanonicalName, m1.getClass.getCanonicalName)
 
-            assertEquals(m.getClass.getCanonicalName, m1.getClass.getCanonicalName)
+      // Check each item, except the ignored features, are equivalent.
+      m.productIterator.zip(m1.productIterator).zipWithIndex.
+        filterNot(ignoreFeatureIndices contains _._2).
+        foreach { case ((mProp, m1Prop), i) => assertEquals(s"For prop $i:", mProp, m1Prop) }
 
-            val ignoreIndices = Seq (
-                4, // featureFunctions
-                7  // finalizer
-            )
+      // Check the toString values match.
+      assertEquals(m.toString, m1.toString)
 
-            m.productIterator.zip(m1.productIterator).zipWithIndex.
-              filterNot(ignoreIndices contains _._2).foreach { case ((mProp, m1Prop), i) =>
-                assertEquals(s"For prop $i:", mProp, m1Prop)
-              }
-            assertEquals(m.toString, m1.toString)
-            assertEquals(m(missingHeight), m1(missingHeight))
-        }
-        else debug(s"$hostName matches BlacklistedHosts: ($BlacklistedHosts).  Ignoring test VwJniModelTest.testSerialization")
+      // Check the model output against one example are the same.
+      assertEquals(m(missingHeight), m1(missingHeight))
     }
 
     @Test def testByteOutputType(): Unit = testOutputType[Byte]()
@@ -133,9 +119,8 @@ class VwJniModelTest extends Logging {
     /**
      * This should succeed.  It just logs when non-existent features are listed in the namespace.
      */
-    @Test def testNsWithUndeclaredFeatureNames(): Unit = {
-        val m = model[Float](nsWithUndeclFeatureJson)
-    }
+    @Test def testNsWithUndeclaredFeatureNames(): Unit =
+      model[Float](nsWithUndeclFeatureJson)
 
     /**
      * It's ok to have namespaces not cover all features.  The remainder goes into the default ns.
@@ -197,9 +182,6 @@ class VwJniModelTest extends Logging {
     }
 
     @Test def testFeaturesSizeLtNamesSize(): Unit = {
-        val accessor = GeneratedAccessor("height_cm", (_:CsvLine).ol("height_cm"))
-        val h = GenFunc.f1(accessor)("ind(height_cm * 10)", _.map(h => Seq(("height_mm=" + (h * 10), 1.0))).getOrElse(Nil))
-
         try {
             VwJniModel(
                 ModelId.empty,
@@ -378,7 +360,7 @@ class VwJniModelTest extends Logging {
     // TODO: Figure out how to test this.
     @Test def testBadVwArgsThrowsEx(): Unit = {
         try {
-            val m = model[Float](badVwArgsJson)
+            model[Float](badVwArgsJson)
             fail("Should throw exception.")
         }
         catch {
@@ -414,8 +396,6 @@ class VwJniModelTest extends Logging {
 }
 
 object VwJniModelTest extends Logging {
-    private[jni] val BlacklistedHosts = """^.*\.prod\.dc1\.eharmony\.com$""".r
-
     private[jni] val VwModelBaseName = "VwJniModelTest-vw.model"
     private[jni] val VwModelFile = new File(FileLocations.testClassesDirectory, VwModelBaseName)
     private[jni] val VwModelPath = VwModelFile.getCanonicalPath
@@ -686,25 +666,7 @@ object VwJniModelTest extends Logging {
         m.close()
     }
 
-    private[this] def logisticModelJson(includeModel: Boolean): JsValue = {
-        s"""
-          |{
-          |  "modelType": "VwJNI",
-          |  "modelId": { "id": 0, "name": "" },
-          |  "features": {
-          |    "height": "Seq((\\"\\", 180.0))"
-          |  },
-          |  "vw": {
-          |    "params": "--quiet --loss_function logistic --link logistic${if (includeModel) " -i " + VwModelPath else ""}",
-          |    "model": "$logisticModelB64Encoded"
-          |  }
-          |}
-        """.stripMargin.trim.parseJson
-    }
-
     def logisticModelB64Encoded = new String(Base64.encodeBase64(readFile(VwModelFile)))
-
-    private val LogisticModelParams = "--quiet --link logistic --loss_function logistic"
 
     private def readFile(f: java.io.File, maxFileSize: Int = 1024): Array[Byte] =
         readInputStream(new FileInputStream(f), maxFileSize)
