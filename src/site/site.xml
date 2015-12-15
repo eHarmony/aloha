@@ -154,6 +154,7 @@
         <menu name="API Docs">
             <item name="aloha-core" href="aloha-core/scaladocs/index.html" />
             <item name="aloha-vw-jni" href="aloha-vw-jni/scaladocs/index.html" />
+            <item name="aloha-h2o" href="aloha-h2o/scaladocs/index.html" />
             <item name="aloha-cli" href="aloha-cli/scaladocs/index.html" />
         </menu>
 
