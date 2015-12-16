@@ -2,6 +2,7 @@ package com.eharmony.aloha.models.h2o
 
 import com.eharmony.aloha.FileLocations
 import com.eharmony.aloha.factory.ModelFactory
+import com.eharmony.aloha.models.Model
 import com.eharmony.aloha.reflect.RefInfo
 import com.eharmony.aloha.score.conversions.ScoreConverter
 import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits._
@@ -51,17 +52,31 @@ class H2oModelTest extends Logging {
         |    "Whole weight":   "${weight.whole} * ${height} / ${height}",
         |    "Shucked weight": "pow(${weight.shucked}, 1)",
         |    "Viscera weight": "${weight.viscera} * (pow(sin(${diameter}), 2) + pow(cos(${diameter}), 2))",
-        |    "Shell weight":   "${weight.shell} + log((${length} + ${height}) / (${height} + ${length}))"
+        |    "Shell weight":   "${weight.shell} + log((${length} + ${height}) / (${height} + ${length}))",
+        |
+        |    "Circumference (unused)":  "Pi * ${diameter}"
         |  },
         |  "modelUrl": "res:com/eharmony/aloha/models/h2o/glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.java"
         |}
       """.stripMargin.trim
 
-    val model = ProtoFactory[Float].fromString(json).get
+    val model: Model[Abalone, Float] = ProtoFactory[Float].fromString(json).get
 
-    ExpectedAbaloneModelResults.zip(AbaloneData).zipWithIndex foreach { case ((exp, x), i) =>
-      val act = model(x).get
-      assertEquals(s"in test $i", exp, act, 0.00001)
+    // For expository purposes:
+    val input:    Abalone       = AbaloneData.toStream.head
+    val expected: Double        = ExpectedAbaloneModelResults.toStream.head
+    val actual:   Option[Float] = model(input)
+    assertEquals(expected, actual.get, Epsilon)
+
+
+    // Test predictions are correct.
+    // To test in parallel, do something like  // val data = Vector.fill(1000)(AbaloneData.toVector).flatten.par
+    val data = ExpectedAbaloneModelResults.zip(AbaloneData).zipWithIndex
+    data foreach { case ((exp, abalone), i) =>
+
+      // The prediction loop:  predict, given a native input type of the caller's choosing.
+      val act: Option[Float] = model(abalone)
+      assertEquals(s"in test $i", exp, act.get, Epsilon)
     }
   }
 
@@ -200,6 +215,8 @@ class H2oModelTest extends Logging {
 object H2oModelTest {
   val MissingCategoricalMsg = "categorical value out of range"
 
+  val Epsilon = 0.00001
+
   lazy val protoSemantics = {
     val plugin = CompiledSemanticsProtoPlugin[Abalone]
     val compiler = TwitterEvalCompiler(classCacheDir = Option(FileLocations.testGeneratedClasses))
@@ -208,7 +225,8 @@ object H2oModelTest {
     semantics
   }
 
-  def ProtoFactory[B: RefInfo: JsonReader: ScoreConverter] = ModelFactory.defaultFactory.toTypedFactory[Abalone, B](protoSemantics)
+  def ProtoFactory[B: RefInfo: JsonReader: ScoreConverter] =
+    ModelFactory.defaultFactory.toTypedFactory[Abalone, B](protoSemantics)
 
   /**
     * Recreate the h2o model results
