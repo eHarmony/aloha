@@ -2160,3 +2160,24 @@ default is provided and that default is returned, it is not counted as a missing
 
 ### (H) JSON Examples
 
+```json
+{
+  "modelType": "H2o",
+  "modelId": { "id": 0, "name": "proto model" },
+  "notes": [
+    "The features are all calculated in different varieties of an identity function to show off some of the power of Aloha"
+  ],
+  "features": {
+    "Sex":            { "type": "string", "spec": "${sex}.name.substring(0,1)" },
+    "Length":         "1d + ${length} - 1L",
+    "Diameter":       "${diameter} * 1f",
+    "Height":         "identity(${height})",
+    "Whole weight":   "${weight.whole} * ${height} / ${height}",
+    "Shucked weight": "pow(${weight.shucked}, 1)",
+    "Viscera weight": "${weight.viscera} * (pow(sin(${diameter}), 2) + pow(cos(${diameter}), 2))",
+    "Shell weight":   "${weight.shell} + log((${length} + ${height}) / (${height} + ${length}))",
+    "Circumference (unused)":  "Pi * ${diameter}"
+  },
+  "modelUrl": "res:com/eharmony/aloha/models/h2o/glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.java"
+}
+```
