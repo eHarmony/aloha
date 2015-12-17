@@ -44,8 +44,8 @@ This is just a suggestion but it will pay huge dividends in terms of cleaner dat
   model based on linear search in an [interval](https://en.wikipedia.org/wiki/Interval_\(mathematics\)) space
 * [Vowpal Wabbit model](#Vowpal_Wabbit_model): a model exposing [VW](https://github.com/JohnLangford/vowpal_wabbit/wiki) 
   through its [JNI](https://github.com/JohnLangford/vowpal_wabbit/tree/master/java) wrapper
+* [H<sub>2</sub>O model](#H2O_model): a model exposing the suite of [H<sub>2</sub>O](https://h2o.ai) models
 
-   
 
 ## Categorical distribution model
 
@@ -1711,7 +1711,7 @@ maven dependency:
   <groupId>com.eharmony</groupId>
   <artifactId>aloha-vw-jni</artifactId>
   <version>...</version>
-<dependency> 
+</dependency>
 ```
  
 VW does not need to be installed on the computer where the Aloha VW model is used.  The VW JNI library contains
@@ -1725,7 +1725,7 @@ needs to be trained on the same VW version that is included in the `aloha-vw-jni
  <groupId>com.github.johnlangford</groupId>
  <artifactId>vw-jni</artifactId>
  <version>[THIS VERSION NEEDS TO MATCH THE VW USED TO TRAIN THE MODEL]</version>
-<dependency>
+</dependency>
 ```
 
 ### (VW) JSON Fields
@@ -2001,3 +2001,162 @@ See [Regression model spline](#aR_spline) for details.
   }
 }
 ```
+
+## H<sub>2</sub>O model
+
+[H<sub>2</sub>O](http://h2o.ai) model is a wrapper around the [H<sub>2</sub>O](http://h2o.ai) library that provides
+feature extraction and delegates to [H<sub>2</sub>O](http://h2o.ai) for predictions.  [H<sub>2</sub>O](http://h2o.ai)
+provides many types of models.  Users will most likely find the biggest benefit in using the non-linear model
+offerings.
+
+**NOTE**: This model is in module **aloha-h2o**, not **aloha-core**.  To use, be sure to include the proper
+maven dependency:
+
+```xml
+<dependency>
+  <groupId>com.eharmony</groupId>
+  <artifactId>aloha-h2o</artifactId>
+  <version>...</version>
+</dependency>
+```
+
+[H<sub>2</sub>O](http://h2o.ai) does not need to be installed on the computer where the Aloha
+[H<sub>2</sub>O](http://h2o.ai) model is used.  Since [H<sub>2</sub>O](http://h2o.ai) is a java library and the model
+is embedded in an Aloha model and is compiled on the fly, ensure that you are producing a model with an
+[H<sub>2</sub>O](http://h2o.ai) version compatible with the one found in the
+[aloha-h2o/pom.xml](https://github.com/eHarmony/aloha/blob/master/aloha-h2o/pom.xml).  Search for `h2o.version` in
+the pom.
+
+
+### (H) JSON Fields
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aH_modelType">modelType</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td>modelId</td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aH_features">features</a></td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aH_numMissingThreshold">numMissingThreshold</a></td>
+    <td>Number</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>&infin;</td>
+  </tr>
+  <tr>
+    <td><a href="#aH_model">model</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aH_modelUrl">modelUrl</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aH_via">via</a></td>
+    <td>String with one of: "<em>file</em>", "<em>vfs1</em>", "<em>vfs2</em>"</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>"<em>vfs2</em>"</td>
+  </tr>
+</table>
+
+### (H) JSON Field Descriptions
+
+#### (H) modelType
+
+`modelType` field must be `H2o`.
+
+#### (H) features
+
+`features` is similar to [features](#aR_features) found in the Regression model. Like in the Regression
+model, the `features` JSON object represents a map from feature name to a extraction function.  There are however
+differences between the two.  Since the variable types in [H<sub>2</sub>O](http://h2o.ai) can be either `Double`
+or `String`, the JSON has to allow for this. So the JSON for a feature can take on one of two forms.  It can
+either be a JSON string or an object.
+
+1. If the feature is encoded as a string, it is assumed that the feature is a Double-based feature and that
+no default will be supplied to the [H<sub>2</sub>O](http://h2o.ai) if any of the data used to compute the
+feature is missing.
+1. If the feature is encoded as an object, it must supply a `type` field with a value of either `string` or
+`double`.  It must also have a `spec` field whose value is the feature specification.  Additionally, an
+optional `defVal` field may be provided that determines the feature's return value in the case that data
+required in the feature computation is missing.  The default must be the same type as the one indicated in
+the `type` field.  For instance, in the following `features` map, `weight_1` and `weight_2` have an
+equivalent meaning.
+
+```json
+{
+  "weight_1": "${u.wt}",
+  "weight_2": { "type": "double",
+                "spec": "${u.wt}" },
+  "wt_w_def": { "type": "double",
+                "spec": "${u.wt}",
+                "defVal": 0 },
+  "height":   { "type": "string",
+                "spec": "if (${u.ht} < 84) \"UNDER_7\" else \"OVER_7\"" },
+  "ht_w_def": { "type": "string",
+                "spec": "if (${u.ht} < 84) \"UNDER_7\" else \"OVER_7\"",
+                "defVal": "UNDER_7" }
+}
+```
+
+#### (H) model
+
+Exactly one of `model` or `modelUrl` is required.  When `model` is provided, it should be a string
+with the base64-encoded content a generated [H<sub>2</sub>O](http://h2o.ai) model.
+
+#### (H) modelUrl
+
+Exactly one of `model` or `modelUrl` is required.  When `modelUrl` is provided, it should be a string contain an
+[Apache VFS](https://commons.apache.org/proper/commons-vfs/filesystems.html) URL.  This is the location from which the
+content will be copied to the local disk.
+
+#### (H) via
+
+`via` is optional.  It is a string and can be one of: `file`, `vfs1`, `vfs2`.  It provides a way for Aloha
+users to use different versions of [Apache VFS](https://commons.apache.org/proper/commons-vfs/).  This is useful
+because VFS provides a common interface to different file systems.  Since VFS provides a plugin architecture,
+different plugins might be available to different versions of VFS.  For instance, the HDFS plugin eHarmony uses
+(at the time of this writing) is a VFS 1 plugin.
+
+`via` is only to be used in conjunction with the `modelUrl` field.  When supplied with the `model` field,
+the value associated with the `via` field is ignored.  File operations used to copy to the local disk
+the contents associated with the `model` field are `java.io.File` based and don't make use of Apache VFS.
+
+#### (H) numMissingThreshold
+
+numMissingThreshold is an optional integral value. When supplied, if the number of features no value
+exceeds numMissingThreshold, then an error rather than a score will be returned.  Note that when a feature
+default is provided and that default is returned, it is not counted as a missing feature.
+
+### (H) JSON Examples
+

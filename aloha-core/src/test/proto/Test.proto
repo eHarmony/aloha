@@ -63,3 +63,25 @@ message TestProto {
     repeated Class1Proto rep_c1 = 6;
     required string req_str_1 = 7;
 }
+
+message Abalone {
+  enum Gender {
+    MALE   = 1;
+    FEMALE = 2;
+    INFANT = 3;
+  }
+
+  message Weights {
+    optional float whole = 1;
+    optional float shucked = 2;
+    optional double viscera = 3;
+    optional double shell = 4;
+  }
+
+  optional Gender sex = 1;
+  optional float length = 2;
+  optional float diameter = 3;
+  optional float height = 4;
+  optional Weights weight = 5;
+  optional int32 rings = 6;
+}
