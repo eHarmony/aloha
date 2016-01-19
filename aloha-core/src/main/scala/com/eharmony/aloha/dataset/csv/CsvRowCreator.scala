@@ -3,7 +3,7 @@ package com.eharmony.aloha.dataset.csv
 import com.eharmony.aloha.dataset.csv.encoding.Encoding
 import com.eharmony.aloha.dataset.csv.finalizer.{BasicFinalizer, EncodingBasedFinalizer}
 import com.eharmony.aloha.dataset.csv.json.{CsvColumn, CsvJson}
-import com.eharmony.aloha.dataset.{CompilerFailureMessages, FeatureExtractorFunction, RowCreator, RowCreatorProducer, StringFeatureExtractorFunction}
+import com.eharmony.aloha.dataset._
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.func.GenAggFunc
 import spray.json.JsValue
@@ -45,10 +45,10 @@ final object CsvRowCreator {
 
     final case class Producer[A]()
         extends RowCreatorProducer[A, CsvRowCreator[A]]
+        with RowCreatorProducerName
         with CompilerFailureMessages {
 
         type JsonType = CsvJson
-        def name = getClass.getSimpleName
         def parse(json: JsValue): Try[CsvJson] = Try { json.convertTo[CsvJson] }
         def getRowCreator(semantics: CompiledSemantics[A], jsonSpec: CsvJson): Try[CsvRowCreator[A]] = {
             val nullString = jsonSpec.nullValue.getOrElse(NullString)

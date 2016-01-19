@@ -3,7 +3,7 @@ package com.eharmony.aloha.dataset.libsvm.labeled
 import com.eharmony.aloha.dataset.density.Sparse
 import com.eharmony.aloha.dataset.libsvm.labeled.json.LibSvmLabeledJson
 import com.eharmony.aloha.dataset.libsvm.unlabeled.LibSvmRowCreator
-import com.eharmony.aloha.dataset.{CompilerFailureMessages, DvProducer, FeatureExtractorFunction, LabelRowCreator, RowCreatorProducer, SparseCovariateProducer}
+import com.eharmony.aloha.dataset._
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.func.GenAggFunc
 import com.eharmony.aloha.util.Logging
@@ -33,13 +33,13 @@ extends LibSvmRowCreator[A](covariates, hash, numBits)
 final object LibSvmLabelRowCreator {
     final case class Producer[A]()
         extends RowCreatorProducer[A, LibSvmLabelRowCreator[A]]
+        with RowCreatorProducerName
         with SparseCovariateProducer
         with DvProducer
         with CompilerFailureMessages
         with Logging {
 
         type JsonType = LibSvmLabeledJson
-        def name = getClass.getSimpleName
         def parse(json: JsValue): Try[LibSvmLabeledJson] = Try { json.convertTo[LibSvmLabeledJson] }
         def getRowCreator(semantics: CompiledSemantics[A], jsonSpec: LibSvmLabeledJson): Try[LibSvmLabelRowCreator[A]] = {
             val hash: HashFunction = jsonSpec.salt match {
