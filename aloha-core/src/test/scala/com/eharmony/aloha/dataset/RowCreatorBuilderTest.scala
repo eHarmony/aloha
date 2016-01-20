@@ -32,9 +32,11 @@ class RowCreatorBuilderTest {
             case Success(s) =>  // continue as planned.
         }
 
+        val expected = "1)	LibSvmRowCreator.Producer: duplicate feature names detected: Vector(sameName)."
+
         sb.fromString(getRepeatedJson(2)) match {
             case Success(s) => fail("Should fail due to validation error.")
-            case Failure(e) => assertEquals(s"No applicable producer found.  Given ${p.getClass.getSimpleName}", e.getMessage)
+            case Failure(e) => assertEquals(expected, e.getMessage.trim)
         }
     }
 

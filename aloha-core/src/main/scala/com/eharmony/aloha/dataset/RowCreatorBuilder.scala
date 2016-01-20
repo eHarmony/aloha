@@ -94,11 +94,13 @@ extends AlohaReadable[Try[B]]
 
     private[this] def fail(failures: List[Failure[B]]): Failure[B] = {
       val s = if (failures.size == 1) "" else "s" // Pluralization
-      val msgs = producers.zip(failures).zipWithIndex.map{ case ((p, e), i) => s"$i)\t${p.name}: ${e.failed.get.getMessage}\n\t\t${e.failed.get.getStackTraceString.replaceAll("\n", "\n\t\t")}"}
-      val msg = msgs.mkString(s"${failures.size} failure$s occurred while attempting to produce spec:\n\t", "\n\t", "")
-      info(msg)
-      val finalMsg = s"No applicable producer found.  Given ${producers.map(_.name).mkString(", ")}.\nError Msgs: $msg"
-      Failure { new NoSuchElementException(finalMsg) }
+      info {
+        val stackMsgs = producers.zip(failures).zipWithIndex.map{ case ((p, e), i) => s"${i+1})\t${p.name}: ${e.failed.get.getMessage}\n\t\t${e.failed.get.getStackTraceString.replaceAll("\n", "\n\t\t")}"}
+        stackMsgs.mkString(s"${failures.size} failure$s occurred while attempting to produce spec:\n\t", "\n\t", "")
+      }
+
+      val errs = producers.zip(failures).zipWithIndex.map{ case ((p, e), i) => s"${i+1})\t${p.name}: ${e.failed.get.getMessage}"}
+      Failure { new NoSuchElementException(errs.mkString("\n\t", "\n\t", "")) }
     }
 }
 

@@ -63,10 +63,10 @@ class VwParsingAndChainOfRespTest {
     }
 
     private[this] def verifySpecType[A, S <: RowCreator[A]: ClassTag, P <: RowCreatorProducer[A, S]: ClassTag](producers: Seq[RowCreatorProducer[A, VwRowCreator[A]]], spec: VwRowCreator[A]) {
-        val unlabeled = producers.indexWhere(_.name == classOf[VwRowCreator.Producer[A]].getSimpleName)
+        val unlabeled = producers.indexWhere(_.name == classOf[VwRowCreator[A]].getSimpleName + "." + classOf[VwRowCreator.Producer[A]].getSimpleName)
         assertTrue(classOf[VwRowCreator.Producer[A]].getSimpleName + " not found in producers", unlabeled != -1)
 
-        val pName = classTag[P].runtimeClass.getSimpleName
+        val pName = classTag[P].runtimeClass.getEnclosingClass.getSimpleName + ".Producer"
         val p = producers.indexWhere(_.name == pName)
         assertTrue(pName + " not found in producers", p != -1)
 
