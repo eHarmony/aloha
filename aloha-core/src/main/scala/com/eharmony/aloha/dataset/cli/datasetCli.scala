@@ -179,7 +179,7 @@ object DatasetCli extends Logging {
                 } flatMap {
                     case (dsType, Success(success)) => Option(success)
                     case (dsType, Failure(failure)) =>
-                        System.err.println(s"Couldn't create writer for dataset type $dsType. Error: ${failure.getMessage}")
+                        System.err.println(s"Couldn't $dsType dataset. Error(s): ${failure.getMessage}")
                         None
                 }
             case ProtoInputType(protoClass) =>
@@ -192,7 +192,7 @@ object DatasetCli extends Logging {
                 } flatMap {
                     case (dsType, Success(success)) => Option(success)
                     case (dsType, Failure(failure)) =>
-                        System.err.println(s"Couldn't create writer for dataset type $dsType. Error: ${failure.getMessage}")
+                        System.err.println(s"Couldn't $dsType dataset. Error(s): ${failure.getMessage}")
                         None
                 }
         }
