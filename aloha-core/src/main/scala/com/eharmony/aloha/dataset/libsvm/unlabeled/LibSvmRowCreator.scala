@@ -2,7 +2,7 @@ package com.eharmony.aloha.dataset.libsvm.unlabeled
 
 import com.eharmony.aloha.dataset.density.Sparse
 import com.eharmony.aloha.dataset.libsvm.unlabeled.json.LibSvmUnlabeledJson
-import com.eharmony.aloha.dataset._
+import com.eharmony.aloha.dataset.{CompilerFailureMessages, FeatureExtractorFunction, MissingAndErroneousFeatureInfo, RowCreator, RowCreatorProducer, SparseCovariateProducer}
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.util.Logging
 import com.eharmony.aloha.util.hashing.HashFunction
@@ -49,12 +49,12 @@ final object LibSvmRowCreator {
 
     final case class Producer[A]()
         extends RowCreatorProducer[A, LibSvmRowCreator[A]]
-        with RowCreatorProducerName
         with SparseCovariateProducer
         with CompilerFailureMessages
         with Logging {
 
         type JsonType = LibSvmUnlabeledJson
+        def name = getClass.getSimpleName
         def parse(json: JsValue): Try[LibSvmUnlabeledJson] = Try { json.convertTo[LibSvmUnlabeledJson] }
         def getRowCreator(semantics: CompiledSemantics[A], jsonSpec: LibSvmUnlabeledJson): Try[LibSvmRowCreator[A]] = {
             val covariates: Try[FeatureExtractorFunction[A, Sparse]] = getCovariates(semantics, jsonSpec)
