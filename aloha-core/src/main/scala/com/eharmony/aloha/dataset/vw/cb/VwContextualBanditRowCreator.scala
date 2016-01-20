@@ -4,7 +4,7 @@ import com.eharmony.aloha.dataset.density.Sparse
 import com.eharmony.aloha.dataset.vw.VwCovariateProducer
 import com.eharmony.aloha.dataset.vw.cb.json.VwContextualBanditJson
 import com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator
-import com.eharmony.aloha.dataset.{CompilerFailureMessages, DvProducer, FeatureExtractorFunction, RowCreatorProducer, SparseCovariateProducer}
+import com.eharmony.aloha.dataset._
 import com.eharmony.aloha.reflect.RefInfo
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.func.GenAggFunc
@@ -58,14 +58,13 @@ extends VwRowCreator[A](featuresFunction, defaultNamespace, namespaces, normaliz
 final object VwContextualBanditRowCreator {
   final class Producer[A]
     extends RowCreatorProducer[A, VwContextualBanditRowCreator[A]]
+       with RowCreatorProducerName
        with VwCovariateProducer[A]
        with DvProducer
        with SparseCovariateProducer
        with CompilerFailureMessages {
 
     type JsonType = VwContextualBanditJson
-
-    def name = getClass.getSimpleName
 
     def parse(json: JsValue): Try[VwContextualBanditJson] = Try { json.convertTo[VwContextualBanditJson] }
 
