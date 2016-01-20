@@ -4,7 +4,7 @@ import com.eharmony.aloha.dataset.density.Sparse
 import com.eharmony.aloha.dataset.vw.VwCovariateProducer
 import com.eharmony.aloha.dataset.vw.labeled.json.VwLabeledJson
 import com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator
-import com.eharmony.aloha.dataset._
+import com.eharmony.aloha.dataset.{CompilerFailureMessages, DvProducer, FeatureExtractorFunction, LabelRowCreator, RowCreatorProducer, SparseCovariateProducer}
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.func.{GenAggFunc, GenFunc0}
 import com.eharmony.aloha.util.Logging
@@ -63,13 +63,14 @@ extends VwRowCreator[A](featuresFunction, defaultNamespace, namespaces, normaliz
 final object VwLabelRowCreator {
     final class Producer[A]
         extends RowCreatorProducer[A, VwLabelRowCreator[A]]
-        with RowCreatorProducerName
         with VwCovariateProducer[A]
         with DvProducer
         with SparseCovariateProducer
         with CompilerFailureMessages {
 
         type JsonType = VwLabeledJson
+
+        def name = getClass.getSimpleName
 
         def parse(json: JsValue): Try[VwLabeledJson] = Try { json.convertTo[VwLabeledJson] }
 
