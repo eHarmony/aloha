@@ -9,6 +9,8 @@ import java.util.Collection;
 import java.util.Arrays;
 
 import com.eharmony.aloha.models.conversion.DoubleToLongModel;
+import com.eharmony.aloha.models.exploration.BootstrapModel;
+import com.eharmony.aloha.models.exploration.EpsilonGreedyModel;
 import scala.collection.JavaConversions;
 import scala.collection.immutable.List;
 import scala.util.Try;
@@ -78,7 +80,9 @@ public class JavaDefaultModelFactoryTest {
                 RegressionModel.parser().modelType(),
                 SegmentationModel.parser().modelType(),
                 DoubleToLongModel.parser().modelType(),
-                ErrorSwallowingModel.parser().modelType()
+                ErrorSwallowingModel.parser().modelType(),
+                EpsilonGreedyModel.parser().modelType(),
+                BootstrapModel.parser().modelType()
         };
 
         Arrays.sort(names);
