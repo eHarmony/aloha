@@ -27,7 +27,10 @@ case class BootstrapModel[A, B](
   salt: Long,
   classLabels: sci.IndexedSeq[B])(implicit scB: ScoreConverter[B]) extends BaseModel[A, B] {
 
-  val explorer = new BootstrapExplorer[sci.IndexedSeq[Int]](models.indices.map(i => NumberedPolicy(i): Policy[sci.IndexedSeq[Int]]), classLabels.size)
+  @transient lazy val explorer = new BootstrapExplorer[sci.IndexedSeq[Int]](
+    models.indices.map(i => NumberedPolicy(i): Policy[sci.IndexedSeq[Int]]),
+    classLabels.size
+  )
 
   /** Produce a score.
     * @param a an input to the model representing covariate data.

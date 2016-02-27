@@ -15,10 +15,12 @@ import org.junit.runners.BlockJUnit4ClassRunner
 class ModelTypesTest {
     @Test def testKnownModels(): Unit = {
         val expected = Seq(
+            "BootstrapExploration",
             "CategoricalDistribution",
             "Constant",
             "DecisionTree",
             "DoubleToLong",
+            "EpsilonGreedyExploration",
             "Error",
             "ErrorSwallowingModel",
             "H2o",

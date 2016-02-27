@@ -27,7 +27,7 @@ case class EpsilonGreedyModel[A, B](
   salt: Long,
   classLabels: sci.IndexedSeq[B])(implicit scB: ScoreConverter[B]) extends BaseModel[A, B] {
 
-  val explorer = new EpsilonGreedyExplorer(ModelPolicy, epsilon, classLabels.size)
+  @transient lazy val explorer = new EpsilonGreedyExplorer(ModelPolicy, epsilon, classLabels.size)
 
   /** Produce a score.
     * @param a an input to the model representing covariate data.
