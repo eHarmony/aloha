@@ -83,7 +83,7 @@ trait ScoreConversion[+A] { self: Identifiable[ModelIdentity] =>
       * @param c a ScoreConverter object that converts score to a BaseScore object.
       * @return a 2-tuple containing a model output and an optional score (score will exist if audit is true).
       */
-    protected[this] final def success(score: A, missing: => Iterable[String] = Iterable.empty, subScores: => Iterable[Score] = Iterable.empty)(implicit audit: Boolean, c: ScoreConverter[A]): (ModelOutput[A], Option[Score]) = {
+    protected[this] final def success(score: A, missing: => Iterable[String] = Iterable.empty, subScores: => Iterable[Score] = Iterable.empty, probability: Option[Float] = None)(implicit audit: Boolean, c: ScoreConverter[A]): (ModelOutput[A], Option[Score]) = {
         val s: Option[Score] =
             if (!audit) None
             else {
@@ -95,7 +95,8 @@ trait ScoreConversion[+A] { self: Identifiable[ModelIdentity] =>
                     b.setError(ScoreError.newBuilder.
                         setMissingFeatures(MissingRequiredFields.newBuilder.addAllNames(mm)).
                         setModel(m))
-                b.setScore(c.boxScore(score).setModel(m))
+                val baseScore = c.boxScore(score).setModel(m)
+                b.setScore(probability.fold(baseScore)(baseScore.setProbability))
                 Option(b.build)
             }
 
