@@ -47,21 +47,21 @@ class BootstrapModelTest extends ModelSerializationTestHelper {
 
   @Test def saltZero() {
     val m = makeModel(Seq(1, 2, 3), 0)
-    val s = m.getScore()
+    val s = m.getScore(null)
     assertEquals(s._2.get.getScore.getProbability, 1f / 3, delta)
     assertEquals(s._1.right.get, "a")
   }
 
   @Test def saltOne() {
     val m = makeModel(Seq(1, 2, 3), 1)
-    val s = m.getScore()
+    val s = m.getScore(null)
     assertEquals(s._2.get.getScore.getProbability, 1f / 3, delta)
     assertEquals(s._1.right.get, "b")
   }
 
   @Test def saltTwo() {
     val m = makeModel(Seq(1, 2, 3), 2)
-    val s = m.getScore()
+    val s = m.getScore(null)
     assertEquals(s._2.get.getScore.getProbability, 1f / 3, delta)
     assertEquals(s._1.right.get, "c")
   }

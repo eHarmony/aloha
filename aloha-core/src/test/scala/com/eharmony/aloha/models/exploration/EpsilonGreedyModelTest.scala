@@ -41,7 +41,7 @@ class EpsilonGreedyModelTest extends ModelSerializationTestHelper {
   @Test def random() {
     val epsilon = 0.9f
     val m = makeModel(1, epsilon, 1)
-    val s = m.getScore()
+    val s = m.getScore(null)
     assertEquals(s._2.get.getScore.getProbability, epsilon / 3, delta)
     assertEquals(s._1.right.get, "b")
   }
@@ -49,7 +49,7 @@ class EpsilonGreedyModelTest extends ModelSerializationTestHelper {
   @Test def policy() {
     val epsilon = 0.1f
     val m = makeModel(1, epsilon, 0)
-    val s = m.getScore()
+    val s = m.getScore(null)
     assertEquals(s._2.get.getScore.getProbability, 1 - epsilon + epsilon / 3, delta)
     assertEquals(s._1.right.get, "a")
   }
