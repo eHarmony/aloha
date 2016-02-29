@@ -8,6 +8,7 @@ import com.eharmony.aloha.score.basic.ModelOutput
 import com.eharmony.aloha.score.conversions.ScoreConverter
 import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.IntScoreConverter
 import com.eharmony.aloha.semantics.Semantics
+import com.eharmony.aloha.semantics.func.GenAggFunc
 import com.mwt.explorers.EpsilonGreedyExplorer
 import com.mwt.policies.Policy
 
@@ -24,7 +25,7 @@ case class EpsilonGreedyModel[A, B](
   modelId: ModelIdentity,
   defaultPolicy: Model[A, Int],
   epsilon: Float,
-  salt: Long,
+  salt: GenAggFunc[A, Long],
   classLabels: sci.IndexedSeq[B])(implicit scB: ScoreConverter[B]) extends BaseModel[A, B] {
 
   @transient lazy val explorer = new EpsilonGreedyExplorer(ModelPolicy, epsilon, classLabels.size)
@@ -38,7 +39,7 @@ case class EpsilonGreedyModel[A, B](
     */
   override private[aloha] def getScore(a: A)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = {
     val (mo, os) = defaultPolicy.getScore(a)
-    val decision = mo.right.map(explorer.chooseAction(salt, _))
+    val decision = mo.right.map(explorer.chooseAction(salt(a), _))
 
     val s = decision.fold(
       {case (e, m) => failure(e, m, os)},
@@ -61,10 +62,11 @@ object EpsilonGreedyModel extends ParserProviderCompanion {
 
     import spray.json._, DefaultJsonProtocol._
 
-    protected[this] case class Ast[B: JsonReader: ScoreConverter](defaultPolicy: JsValue, epsilon: Float, salt: Long, classLabels: sci.IndexedSeq[B]) {
+    protected[this] case class Ast[B: JsonReader: ScoreConverter](defaultPolicy: JsValue, epsilon: Float, salt: String, classLabels: sci.IndexedSeq[B]) {
       def createModel[A, B](factory: ModelFactory, semantics: Semantics[A], modelId: ModelIdentity) = {
         val m = factory.getModel(defaultPolicy, Option(semantics))(semantics.refInfoA, IntScoreConverter.ri, IntJsonFormat, IntScoreConverter).get
-        EpsilonGreedyModel(modelId, m, epsilon, salt, classLabels)
+        val saltFunc = semantics.createFunction[Long](salt).fold(l => throw new DeserializationException(l.mkString("\n")), identity)
+        EpsilonGreedyModel(modelId, m, epsilon, saltFunc, classLabels)
       }
     }
 

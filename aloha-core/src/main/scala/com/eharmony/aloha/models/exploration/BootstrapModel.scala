@@ -8,6 +8,7 @@ import com.eharmony.aloha.score.basic.ModelOutput
 import com.eharmony.aloha.score.conversions.ScoreConverter
 import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.IntScoreConverter
 import com.eharmony.aloha.semantics.Semantics
+import com.eharmony.aloha.semantics.func.GenAggFunc
 import com.mwt.explorers.BootstrapExplorer
 import com.mwt.policies.Policy
 
@@ -24,7 +25,7 @@ case class NumberedPolicy(index: Int) extends Policy[sci.IndexedSeq[Int]] {
 case class BootstrapModel[A, B](
   modelId: ModelIdentity,
   models: sci.IndexedSeq[Model[A, Int]],
-  salt: Long,
+  salt: GenAggFunc[A, Long],
   classLabels: sci.IndexedSeq[B])(implicit scB: ScoreConverter[B]) extends BaseModel[A, B] {
 
   @transient lazy val explorer = new BootstrapExplorer[sci.IndexedSeq[Int]](
@@ -40,23 +41,21 @@ case class BootstrapModel[A, B](
     *         sub-model scores.
     */
   override private[aloha] def getScore(a: A)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = {
-    val mos = models.map(_.getScore(a))
-
-    // The basic idea here is that the type of mos is inverted, so the Either comes first and the results are all on
-    // the right.  If there is any failure then the Left will be evaluated, else all the successes will be combined into
-    // one IndexedSeq on the right.
-    val sequence = mos.foldLeft(Right(sci.IndexedSeq()):
-      Either[(ModelOutput[B], Option[Score]), sci.IndexedSeq[(Int, Option[Score])]]){ (a, b) =>
-      b match {
+    // The basic idea here is that we want a failure or a list of successes, so the Either comes first and the results
+    // are all on the right.  If there is any failure then the Left will be evaluated, else all the successes will be
+    // combined into one IndexedSeq on the right.
+    val mos = models.foldLeft(Right(sci.IndexedSeq()):
+      Either[(ModelOutput[B], Option[Score]), sci.IndexedSeq[(Int, Option[Score])]]) { (x, y) =>
+      y.getScore(a) match {
         case (Left(error), os) => Left(failure(error._1, error._2, os))
-        case (Right(success), os) => a.right.map(_ :+ ((success, os)))
+        case (Right(success), os) => x.right.map(_ :+ ((success, os)))
       }
     }
 
-    sequence match {
+    mos match {
       case Left(error) => error
       case Right(scores) =>
-        val decision = explorer.chooseAction(salt, scores.map(_._1))
+        val decision = explorer.chooseAction(salt(a), scores.map(_._1))
         val s = success(
           score = classLabels(decision.getAction - 1),
           subScores = scores.flatMap(_._2),
@@ -76,10 +75,11 @@ object BootstrapModel extends ParserProviderCompanion {
 
     import spray.json._, DefaultJsonProtocol._
 
-    protected[this] case class Ast[B: JsonReader: ScoreConverter](policies: sci.IndexedSeq[JsValue], salt: Long, classLabels: sci.IndexedSeq[B]) {
+    protected[this] case class Ast[B: JsonReader: ScoreConverter](policies: sci.IndexedSeq[JsValue], salt: String, classLabels: sci.IndexedSeq[B]) {
       def createModel[A, B](factory: ModelFactory, semantics: Semantics[A], modelId: ModelIdentity) = {
         val models = policies.map(factory.getModel(_, Option(semantics))(semantics.refInfoA, IntScoreConverter.ri, IntJsonFormat, IntScoreConverter).get)
-        BootstrapModel(modelId, models, salt, classLabels)
+        val saltFunc = semantics.createFunction[Long](salt).fold(l => throw new DeserializationException(l.mkString("\n")), identity)
+        BootstrapModel(modelId, models, saltFunc, classLabels)
       }
     }
 
