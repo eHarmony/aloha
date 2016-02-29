@@ -47,6 +47,12 @@ trait ModelParser extends JsValuePimpz {
     final def getParser[A: RefInfo, B: RefInfo: JsonReader: ScoreConverter](factory: ModelFactory, semantics: Option[Semantics[A]]) = new Parser[JsValue, Model[A, B]] {
         def parse(json: JsValue): Model[A, B] = json.convertTo(modelJsonReader[A, B](factory, semantics))
     }
+
+    // This is a very slightly modified copy of the lift from Additional formats that removes the type bound.
+    protected[this] def lift[A](reader: JsonReader[A]) = new JsonFormat[A] {
+        def write(a: A): JsValue = throw new UnsupportedOperationException("No JsonWriter[" + a.getClass + "] available")
+        def read(value: JsValue) = reader.read(value)
+    }
 }
 
 trait BasicModelParser extends ModelParser {

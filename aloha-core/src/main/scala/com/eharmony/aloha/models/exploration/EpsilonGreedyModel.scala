@@ -70,12 +70,6 @@ object EpsilonGreedyModel extends ParserProviderCompanion {
 
     protected[this] def astJsonFormat[B: JsonFormat: ScoreConverter] = jsonFormat(Ast.apply[B], "defaultPolicy", "epsilon", "salt", "classLabels")
 
-    // This is a very slightly modified copy of the lift from Additional formats that removes the type bound.
-    protected[this] def lift[A](reader: JsonReader[A]) = new JsonFormat[A] {
-      def write(a: A): JsValue = throw new UnsupportedOperationException("No JsonWriter[" + a.getClass + "] available")
-      def read(value: JsValue) = reader.read(value)
-    }
-
     /**
       * @param factory ModelFactory[Model[_, _] ]
       * @tparam A model input type

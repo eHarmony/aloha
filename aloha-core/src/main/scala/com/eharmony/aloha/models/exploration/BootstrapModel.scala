@@ -4,7 +4,7 @@ import com.eharmony.aloha.factory.{ModelFactory, ModelParser, ParserProviderComp
 import com.eharmony.aloha.id.ModelIdentity
 import com.eharmony.aloha.models.{Model, BaseModel}
 import com.eharmony.aloha.score.Scores.Score
-import com.eharmony.aloha.score.basic.{ModelFailure, ModelOutput}
+import com.eharmony.aloha.score.basic.ModelOutput
 import com.eharmony.aloha.score.conversions.ScoreConverter
 import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.IntScoreConverter
 import com.eharmony.aloha.semantics.Semantics
@@ -42,25 +42,27 @@ case class BootstrapModel[A, B](
   override private[aloha] def getScore(a: A)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = {
     val mos = models.map(_.getScore(a))
 
-    // TODO This can be done better using ApplicativeFunctors and sequence from scalaz.
-    val scores = for {
-      m <- mos
-      result <- m._1.right.toOption
-    } yield result
+    // The basic idea here is that the type of mos is inverted, so the Either comes first and the results are all on
+    // the right.  If there is any failure then the Left will be evaluated, else all the successes will be combined into
+    // one IndexedSeq on the right.
+    val sequence = mos.foldLeft(Right(sci.IndexedSeq()):
+      Either[(ModelOutput[B], Option[Score]), sci.IndexedSeq[(Int, Option[Score])]]){ (a, b) =>
+      b match {
+        case (Left(error), os) => Left(failure(error._1, error._2, os))
+        case (Right(success), os) => a.right.map(_ :+ ((success, os)))
+      }
+    }
 
-    // Since we know we have at least 1 failure calling get on the option here is guaranteed to succeed.
-    // I know this is bad, the above to do should fix it.
-    if (scores.size != mos.size)
-      mos.collectFirst{ case (Left(error), os) => failure(error._1, error._2, os) }.get
-    else {
-      val decision = explorer.chooseAction(salt, scores)
-
-      val s = success(
-        score = classLabels(decision.getAction - 1),
-        subScores = mos.flatMap(_._2),
-        probability = Option(decision.getProbability)
-      )
-      s
+    sequence match {
+      case Left(error) => error
+      case Right(scores) =>
+        val decision = explorer.chooseAction(salt, scores.map(_._1))
+        val s = success(
+          score = classLabels(decision.getAction - 1),
+          subScores = scores.flatMap(_._2),
+          probability = Option(decision.getProbability)
+        )
+        s
     }
   }
 
@@ -82,12 +84,6 @@ object BootstrapModel extends ParserProviderCompanion {
     }
 
     protected[this] def astJsonFormat[B: JsonFormat: ScoreConverter] = jsonFormat(Ast.apply[B], "policies", "salt", "classLabels")
-
-    // This is a very slightly modified copy of the lift from Additional formats that removes the type bound.
-    protected[this] def lift[A](reader: JsonReader[A]) = new JsonFormat[A] {
-      def write(a: A): JsValue = throw new UnsupportedOperationException("No JsonWriter[" + a.getClass + "] available")
-      def read(value: JsValue) = reader.read(value)
-    }
 
     /**
       * @param factory ModelFactory[Model[_, _] ]
