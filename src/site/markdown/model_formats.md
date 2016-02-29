@@ -2386,8 +2386,8 @@ is used as a lookup into the `classLabels`.
     },
     {
       "import": "file:///x/y/a.json"
-    },
-  ]
+    }
+  ],
   "classLabels": [1, 2, 3]
 }
 ```
