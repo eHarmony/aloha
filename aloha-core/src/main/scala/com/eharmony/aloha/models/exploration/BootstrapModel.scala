@@ -73,7 +73,7 @@ case class BootstrapModel[A, B](
     a: A,
     models: sci.IndexedSeq[Model[A, Int]],
     subScores: Seq[Score] = Seq.empty,
-    successes: sci.IndexedSeq[Int] = sci.IndexedSeq.empty): (ModelOutput[B], Option[Score]) = {
+    successes: sci.IndexedSeq[Int] = sci.IndexedSeq.empty)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = {
     if (models.isEmpty) {
       val decision = explorer.chooseAction(salt(a), successes)
       success(
