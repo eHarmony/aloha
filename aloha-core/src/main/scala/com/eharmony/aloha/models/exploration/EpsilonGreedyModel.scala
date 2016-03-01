@@ -2,7 +2,7 @@ package com.eharmony.aloha.models.exploration
 
 import com.eharmony.aloha.factory.{ModelFactory, ModelParser, ParserProviderCompanion}
 import com.eharmony.aloha.id.ModelIdentity
-import com.eharmony.aloha.models.{Model, BaseModel}
+import com.eharmony.aloha.models.{BaseModel, Model}
 import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.aloha.score.basic.ModelOutput
 import com.eharmony.aloha.score.conversions.ScoreConverter
@@ -77,7 +77,8 @@ object EpsilonGreedyModel extends ParserProviderCompanion {
   object Parser extends ModelParser {
     val modelType = "EpsilonGreedyExploration"
 
-    import spray.json._, DefaultJsonProtocol._
+    import spray.json._
+    import DefaultJsonProtocol._
 
     protected[this] case class Ast[B: JsonReader: ScoreConverter](defaultPolicy: JsValue, epsilon: Float, salt: String, classLabels: sci.IndexedSeq[B]) {
       def createModel[A, B](factory: ModelFactory, semantics: Semantics[A], modelId: ModelIdentity) = {

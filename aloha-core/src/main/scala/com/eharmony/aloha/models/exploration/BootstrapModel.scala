@@ -2,14 +2,13 @@ package com.eharmony.aloha.models.exploration
 
 import com.eharmony.aloha.factory.{ModelFactory, ModelParser, ParserProviderCompanion}
 import com.eharmony.aloha.id.ModelIdentity
-import com.eharmony.aloha.models.{Model, BaseModel}
+import com.eharmony.aloha.models.{BaseModel, Model}
 import com.eharmony.aloha.score.Scores.Score
-import com.eharmony.aloha.score.basic.{ModelSuccess, ModelFailure, ModelOutput}
+import com.eharmony.aloha.score.basic.ModelOutput
 import com.eharmony.aloha.score.conversions.ScoreConverter
 import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.IntScoreConverter
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.semantics.func.GenAggFunc
-import com.eharmony.aloha.util.EitherHelpers
 import com.mwt.explorers.BootstrapExplorer
 import com.mwt.policies.Policy
 
@@ -45,7 +44,7 @@ case class BootstrapModel[A, B](
   modelId: ModelIdentity,
   models: sci.IndexedSeq[Model[A, Int]],
   salt: GenAggFunc[A, Long],
-  classLabels: sci.IndexedSeq[B])(implicit scB: ScoreConverter[B]) extends BaseModel[A, B] with EitherHelpers {
+  classLabels: sci.IndexedSeq[B])(implicit scB: ScoreConverter[B]) extends BaseModel[A, B] {
 
   @transient private[this] lazy val explorer = new BootstrapExplorer[sci.IndexedSeq[Int]](
     models.indices.map(i => NumberedPolicy(i): Policy[sci.IndexedSeq[Int]]),
@@ -101,7 +100,8 @@ object BootstrapModel extends ParserProviderCompanion {
   object Parser extends ModelParser {
     val modelType = "BootstrapExploration"
 
-    import spray.json._, DefaultJsonProtocol._
+    import spray.json._
+    import DefaultJsonProtocol._
 
     protected[this] case class Ast[B: JsonReader: ScoreConverter](policies: sci.IndexedSeq[JsValue], salt: String, classLabels: sci.IndexedSeq[B]) {
       def createModel[A, B](factory: ModelFactory, semantics: Semantics[A], modelId: ModelIdentity) = {
