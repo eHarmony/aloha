@@ -51,6 +51,12 @@ trait JavaJsonFormats {
 object ScalaJsonFormats extends ScalaJsonFormats
 
 trait ScalaJsonFormats {
+    // This is a very slightly modified copy of the lift from Additional formats that removes the type bound.
+    implicit def lift[A](implicit reader: JsonReader[A]): JsonFormat[A] = new JsonFormat[A] {
+        def write(a: A): JsValue = throw new UnsupportedOperationException("No JsonWriter[" + a.getClass + "] available")
+        def read(value: JsValue): A = reader.read(value)
+    }
+
     implicit def listMapFormat[K :JsonFormat, V :JsonFormat] = new RootJsonFormat[ListMap[K, V]] {
         def write(m: ListMap[K, V]) = JsObject {
             m.map { field =>

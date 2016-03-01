@@ -4,31 +4,50 @@ import com.eharmony.aloha.factory.{ModelFactory, ModelParser, ParserProviderComp
 import com.eharmony.aloha.id.ModelIdentity
 import com.eharmony.aloha.models.{Model, BaseModel}
 import com.eharmony.aloha.score.Scores.Score
-import com.eharmony.aloha.score.basic.ModelOutput
+import com.eharmony.aloha.score.basic.{ModelSuccess, ModelFailure, ModelOutput}
 import com.eharmony.aloha.score.conversions.ScoreConverter
 import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.IntScoreConverter
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.semantics.func.GenAggFunc
+import com.eharmony.aloha.util.EitherHelpers
 import com.mwt.explorers.BootstrapExplorer
 import com.mwt.policies.Policy
 
+import scala.annotation.tailrec
 import scala.collection.JavaConversions.seqAsJavaList
 import scala.collection.{immutable => sci}
 
-case class NumberedPolicy(index: Int) extends Policy[sci.IndexedSeq[Int]] {
+/**
+  * Since explore-java has chosen to force the Policy to evaluate we can't just evaluate the model inside of the policy.
+  * We have to invert the control and evaluate the models first, and only upon all models successfully evaluating
+  * can we then do the policy evaluation.  Because of this IOC the policy becomes a simple lookup into the model map.
+  * @param index the model to get the action for
+  */
+private[this] case class NumberedPolicy(index: Int) extends Policy[sci.IndexedSeq[Int]] {
   override def chooseAction(actions: sci.IndexedSeq[Int]): Int = actions(index)
 }
 
 /**
-  * Created by jmorra on 2/26/16.
+  * A model for performing bootstrap style exploration.  This makes use of a number of policies.  The algorithm chooses
+  * one policy and then uses the other to calculate the appropriate probability of choosing that action.
+  * @param modelId a model identifier
+  * @param models a set of models that generate Int's.  These models MUST be deterministic for the probability to be correct.
+  * @param salt a function that generates a salt for the randomization layer.  This salt allows the random choice of which policy
+  *             to follow to be repeatable.
+  * @param classLabels a list of class labels to output for the final type.  Also note that the size of this controls the
+  *                    number of actions.  If the submodel returns a score < 1 or > classLabels.size (note the 1 offset)
+  *                    then a RuntimeException will be thrown.
+  * @param scB a score context for B
+  * @tparam A model input type
+  * @tparam B model output type
   */
 case class BootstrapModel[A, B](
   modelId: ModelIdentity,
   models: sci.IndexedSeq[Model[A, Int]],
   salt: GenAggFunc[A, Long],
-  classLabels: sci.IndexedSeq[B])(implicit scB: ScoreConverter[B]) extends BaseModel[A, B] {
+  classLabels: sci.IndexedSeq[B])(implicit scB: ScoreConverter[B]) extends BaseModel[A, B] with EitherHelpers {
 
-  @transient lazy val explorer = new BootstrapExplorer[sci.IndexedSeq[Int]](
+  @transient private[this] lazy val explorer = new BootstrapExplorer[sci.IndexedSeq[Int]](
     models.indices.map(i => NumberedPolicy(i): Policy[sci.IndexedSeq[Int]]),
     classLabels.size
   )
@@ -40,28 +59,37 @@ case class BootstrapModel[A, B](
     *         a Some instance if audit is true) is a more involved reporting of the score including errors and all
     *         sub-model scores.
     */
-  override private[aloha] def getScore(a: A)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = {
-    // The basic idea here is that we want a failure or a list of successes, so the Either comes first and the results
-    // are all on the right.  If there is any failure then the Left will be evaluated, else all the successes will be
-    // combined into one IndexedSeq on the right.
-    val mos = models.foldLeft(Right(sci.IndexedSeq()):
-      Either[(ModelOutput[B], Option[Score]), sci.IndexedSeq[(Int, Option[Score])]]) { (x, y) =>
-      y.getScore(a) match {
-        case (Left(error), os) => Left(failure(error._1, error._2, os))
-        case (Right(success), os) => x.right.map(_ :+ ((success, os)))
-      }
-    }
+  override private[aloha] def getScore(a: A)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = combineScores(a, models)
 
-    mos match {
-      case Left(error) => error
-      case Right(scores) =>
-        val decision = explorer.chooseAction(salt(a), scores.map(_._1))
-        val s = success(
-          score = classLabels(decision.getAction - 1),
-          subScores = scores.flatMap(_._2),
-          probability = Option(decision.getProbability)
-        )
-        s
+  /**
+    * We want to get either one failure or aggregate all the successes.  This will do that and then return the correct
+    * type.
+    * @param a the item to score
+    * @param models the list of policies to evaluate a for
+    * @param subScores all the scores generated so far
+    * @param successes all the successes generated so far
+    * @return a final success if all the models evaluated properly or else a failure as soon as one fails
+    */
+  @tailrec private[this] def combineScores(
+    a: A,
+    models: sci.IndexedSeq[Model[A, Int]],
+    subScores: Seq[Score] = Seq.empty,
+    successes: sci.IndexedSeq[Int] = sci.IndexedSeq.empty): (ModelOutput[B], Option[Score]) = {
+    if (models.isEmpty) {
+      val decision = explorer.chooseAction(salt(a), successes)
+      success(
+        score = classLabels(decision.getAction - 1),
+        subScores = subScores,
+        probability = Option(decision.getProbability)
+      )
+    }
+    else {
+      val (mo, os) = models.head.getScore(a)
+      val newScores = os.fold(subScores)(subScores :+ _)
+      mo match {
+        case Left((e, m)) => failure(e, m, newScores)
+        case Right(s)     => combineScores(a, models.tail, newScores, successes :+ s)
+      }
     }
   }
 
@@ -83,7 +111,7 @@ object BootstrapModel extends ParserProviderCompanion {
       }
     }
 
-    protected[this] def astJsonFormat[B: JsonFormat: ScoreConverter] = jsonFormat(Ast.apply[B], "policies", "salt", "classLabels")
+    protected[this] implicit def astJsonFormat[B: JsonFormat: ScoreConverter] = jsonFormat(Ast.apply[B], "policies", "salt", "classLabels")
 
     /**
       * @param factory ModelFactory[Model[_, _] ]
@@ -94,8 +122,10 @@ object BootstrapModel extends ParserProviderCompanion {
     def modelJsonReader[A, B](factory: ModelFactory, semantics: Option[Semantics[A]])
       (implicit jr: JsonReader[B], sc: ScoreConverter[B]) = new JsonReader[BootstrapModel[A, B]] {
       def read(json: JsValue): BootstrapModel[A, B] = {
+        import com.eharmony.aloha.factory.ScalaJsonFormats.lift
+
         val mId = getModelId(json).get
-        val ast = json.convertTo(astJsonFormat(lift(jr), sc))
+        val ast = json.convertTo[Ast[B]]
 
         val model = ast.createModel[A, B](factory, semantics.get, mId)
 

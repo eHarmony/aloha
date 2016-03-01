@@ -14,12 +14,29 @@ import com.mwt.policies.Policy
 
 import scala.collection.{immutable => sci}
 
-case object ModelPolicy extends Policy[Int] {
+/**
+  * Since explore-java has chosen to force the Policy to evaluate we can't just evaluate the model inside of the policy.
+  * Instead the Policy acts as a pass through for the model which is evaluated externally.  This inversion of control
+  * allows the model to fail before evaluating the Policy.
+  */
+private[this] case object ModelPolicy extends Policy[Int] {
   override def chooseAction(action: Int): Int = action
 }
 
 /**
-  * Created by jmorra on 2/26/16.
+  * A model which does epsilon greedy style exploration.  This will choose a random action with probability epsilon
+  * or an action from the defaultPolicy with probability 1 - epsilon.
+  * @param modelId a model identifier
+  * @param defaultPolicy the model to use for exploitation.  This MUST be deterministic for the probability to be correct.
+  * @param epsilon the exploration/exploitation tradeoff parameter
+  * @param salt a function that generates a salt for the randomization layer.  This salt allows the random choice of which policy
+  *             to follow to be repeatable.
+  * @param classLabels a list of class labels to output for the final type.  Also note that the size of this controls the
+  *                    number of actions.  If the submodel returns a score < 1 or > classLabels.size (note the 1 offset)
+  *                    then a RuntimeException will be thrown.
+  * @param scB a score context for B
+  * @tparam A model input type
+  * @tparam B model output type
   */
 case class EpsilonGreedyModel[A, B](
   modelId: ModelIdentity,
@@ -70,7 +87,7 @@ object EpsilonGreedyModel extends ParserProviderCompanion {
       }
     }
 
-    protected[this] def astJsonFormat[B: JsonFormat: ScoreConverter] = jsonFormat(Ast.apply[B], "defaultPolicy", "epsilon", "salt", "classLabels")
+    protected[this] implicit def astJsonFormat[B: JsonFormat: ScoreConverter] = jsonFormat(Ast.apply[B], "defaultPolicy", "epsilon", "salt", "classLabels")
 
     /**
       * @param factory ModelFactory[Model[_, _] ]
@@ -81,8 +98,10 @@ object EpsilonGreedyModel extends ParserProviderCompanion {
     def modelJsonReader[A, B](factory: ModelFactory, semantics: Option[Semantics[A]])
       (implicit jr: JsonReader[B], sc: ScoreConverter[B]) = new JsonReader[EpsilonGreedyModel[A, B]] {
       def read(json: JsValue): EpsilonGreedyModel[A, B] = {
+        import com.eharmony.aloha.factory.ScalaJsonFormats.lift
+
         val mId = getModelId(json).get
-        val ast = json.convertTo(astJsonFormat(lift(jr), sc))
+        val ast = json.convertTo[Ast[B]]
 
         val model = ast.createModel[A, B](factory, semantics.get, mId)
 

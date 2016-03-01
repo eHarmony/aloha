@@ -67,7 +67,7 @@ object SegmentationModel extends ParserProviderCompanion {
             }
         }
 
-        protected[this] def astJsonFormat[B: JsonFormat: ScoreConverter] = jsonFormat(Ast.apply[B], "subModel", "subModelOutputType", "thresholds", "labels")
+        protected[this] implicit def astJsonFormat[B: JsonFormat: ScoreConverter] = jsonFormat(Ast.apply[B], "subModel", "subModelOutputType", "thresholds", "labels")
 
         /**
          * @param factory ModelFactory[Model[_, _] ]
@@ -77,9 +77,11 @@ object SegmentationModel extends ParserProviderCompanion {
          */
         def modelJsonReader[A, B](factory: ModelFactory, semantics: Option[Semantics[A]])(implicit jr: JsonReader[B], sc: ScoreConverter[B]) =  new JsonReader[SegmentationModel[A, _, B]] {
             def read(json: JsValue): SegmentationModel[A, _, B] = {
+                import com.eharmony.aloha.factory.ScalaJsonFormats.lift
+
                 // TODO: Make this way better and way more generalized so that it can be used in the ensemble code.
                 val mId = getModelId(json).get
-                val ast = json.convertTo(astJsonFormat(lift(jr), sc))
+                val ast = json.convertTo[Ast[B]]
 
                 import ScoreConverter.Implicits._
 
