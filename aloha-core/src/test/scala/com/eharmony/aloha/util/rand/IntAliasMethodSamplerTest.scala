@@ -18,7 +18,7 @@ class IntAliasMethodSamplerTest {
     /** Distributions that gave previous alias method sampling implementation problems.
       */
     @Test def testAccuracyHardDistributions() {
-        val numSamples = 500000
+        val numSamples = 100000
 
         val distributions = Seq(
             normalize(List.fill(1)(1)),
@@ -48,7 +48,7 @@ class IntAliasMethodSamplerTest {
       * after it's probability is increased.
       */
     @Test def test2ClassDistribution() {
-        val numRandomSamples = 1000
+        val numRandomSamples = 500
         val prGranularity: Int = 97 // Sum prime
         val rand = new scala.util.Random(1)
 
@@ -77,7 +77,7 @@ class IntAliasMethodSamplerTest {
 
     @Test def testRandom2ClassDistribution() {
         val rand = new scala.util.Random(2)
-        (1 to 500000).foreach(_ => test(2, 2, rand))
+        (1 to 100000).foreach(_ => test(2, 2, rand))
     }
 
     /** Sadly, this doesn't work.  We'd like to be able to guarantee this but it'll require an algorithm change that
