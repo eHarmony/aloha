@@ -132,7 +132,7 @@
 		<dependency>
 			<groupId>com.github.multiworldtesting</groupId>
 			<artifactId>explore-java</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>1.0.0</version>
 		</dependency>
 
 		<!-- ============================================================================= -->
