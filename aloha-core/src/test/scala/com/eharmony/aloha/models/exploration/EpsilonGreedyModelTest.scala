@@ -6,6 +6,7 @@ import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.models.{AnySemanticsWithoutFunctionCreation, CloserTesterModel, ConstantModel}
 import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits._
 import com.eharmony.aloha.semantics.func.GenFunc0
+import com.mwt.utilities.PRG
 import org.junit.Assert._
 import org.junit.Test
 import spray.json._
@@ -39,19 +40,29 @@ class EpsilonGreedyModelTest extends ModelSerializationTestHelper {
   }
 
   @Test def random() {
-    val epsilon = 0.9f
-    val m = makeModel(1, epsilon, 1)
+    val seed = 1L
+
+    val epsilon = 1f
+    val m = makeModel(1, epsilon, seed)
+
+    // This is because we want to mimic the process inside MWT's epsilon greedy explorer
+    // so that if something changes, we can become aware.
+    val random = new PRG(seed)
+    random.uniformUnitInterval()
+    val action = random.uniformInt(1, m.classLabels.size)
+
     val s = m.getScore(null)
-    assertEquals(s._2.get.getScore.getProbability, epsilon / 3, delta)
-    assertEquals(s._1.right.get, "b")
+    assertEquals(epsilon / m.classLabels.size, s._2.get.getScore.getProbability, delta)
+    assertEquals(m.classLabels(action - 1), s._1.right.get)
+    assertEquals("b", s._1.right.get)
   }
 
   @Test def policy() {
-    val epsilon = 0.1f
+    val epsilon = 0f
     val m = makeModel(1, epsilon, 0)
     val s = m.getScore(null)
-    assertEquals(s._2.get.getScore.getProbability, 1 - epsilon + epsilon / 3, delta)
-    assertEquals(s._1.right.get, "a")
+    assertEquals(1 - epsilon + epsilon / m.classLabels.size, s._2.get.getScore.getProbability, delta)
+    assertEquals("a", s._1.right.get)
   }
 
   def makeModel(policyValue: Int, epsilon: Float, salt: Long): EpsilonGreedyModel[Any, String] = {
