@@ -31,6 +31,7 @@ private[this] case class NumberedPolicy(index: Int) extends Policy[sci.IndexedSe
   * one policy and then uses the other to calculate the appropriate probability of choosing that action.
   * @param modelId a model identifier
   * @param models a set of models that generate Int's.  These models MUST be deterministic for the probability to be correct.
+  *               Each model must return a value in the range 1 to `classLabels.size` (inclusive).
   * @param salt a function that generates a salt for the randomization layer.  This salt allows the random choice of which policy
   *             to follow to be repeatable.
   * @param classLabels a list of class labels to output for the final type.  Also note that the size of this controls the

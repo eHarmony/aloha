@@ -28,6 +28,7 @@ private[this] case object ModelPolicy extends Policy[Int] {
   * or an action from the defaultPolicy with probability 1 - epsilon.
   * @param modelId a model identifier
   * @param defaultPolicy the model to use for exploitation.  This MUST be deterministic for the probability to be correct.
+  *                      The model must return a value in the range 1 to `classLabels.size` (inclusive).
   * @param epsilon the exploration/exploitation tradeoff parameter
   * @param salt a function that generates a salt for the randomization layer.  This salt allows the random choice of which policy
   *             to follow to be repeatable.
