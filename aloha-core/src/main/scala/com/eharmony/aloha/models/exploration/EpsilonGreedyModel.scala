@@ -25,7 +25,8 @@ private[this] case object ModelPolicy extends Policy[Int] {
 
 /**
   * A model which does epsilon greedy style exploration.  This will choose a random action with probability epsilon
-  * or an action from the defaultPolicy with probability 1 - epsilon.
+  * or an action from the defaultPolicy with probability 1 - epsilon.  Note that the
+  * default policy MUST return a value between 1 and the number of actions, and if not an exception will be thrown.
   * @param modelId a model identifier
   * @param defaultPolicy the model to use for exploitation.  This MUST be deterministic for the probability to be correct.
   *                      The model must return a value in the range 1 to `classLabels.size` (inclusive).

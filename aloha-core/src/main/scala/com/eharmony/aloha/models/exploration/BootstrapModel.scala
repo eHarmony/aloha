@@ -28,7 +28,8 @@ private[this] case class NumberedPolicy(index: Int) extends Policy[sci.IndexedSe
 
 /**
   * A model for performing bootstrap style exploration.  This makes use of a number of policies.  The algorithm chooses
-  * one policy and then uses the other to calculate the appropriate probability of choosing that action.
+  * one policy and then uses the other to calculate the appropriate probability of choosing that action.  Note that the
+  * models MUST return a value between 1 and the number of actions, and if not an exception will be thrown.
   * @param modelId a model identifier
   * @param models a set of models that generate Int's.  These models MUST be deterministic for the probability to be correct.
   *               Each model must return a value in the range 1 to `classLabels.size` (inclusive).
