@@ -66,7 +66,7 @@
 		<dependency>
 			<groupId>com.eharmony</groupId>
 			<artifactId>aloha-proto</artifactId>
-			<version>2.0.0</version>
+			<version>2.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -127,6 +127,12 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.multiworldtesting</groupId>
+			<artifactId>explore-java</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 
 		<!-- ============================================================================= -->

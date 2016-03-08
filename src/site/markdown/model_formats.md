@@ -45,6 +45,10 @@ This is just a suggestion but it will pay huge dividends in terms of cleaner dat
 * [Vowpal Wabbit model](#Vowpal_Wabbit_model): a model exposing [VW](https://github.com/JohnLangford/vowpal_wabbit/wiki) 
   through its [JNI](https://github.com/JohnLangford/vowpal_wabbit/tree/master/java) wrapper
 * [H<sub>2</sub>O model](#H2O_model): a model exposing the suite of [H<sub>2</sub>O](https://h2o.ai) models
+* [Epsilon greedy exploration model](#Epsilon_greedy_exploration_model): a model for doing 
+  [epsilon greedy](https://en.wikipedia.org/wiki/Multi-armed_bandit) style exploration.
+* [Bootstrap exploration model](#Bootstrap_exploration_model): a model for doing
+  exploration over a number of policies.
 
 
 ## Categorical distribution model
@@ -2179,5 +2183,211 @@ default is provided and that default is returned, it is not counted as a missing
     "Circumference (unused)":  "Pi * ${diameter}"
   },
   "modelUrl": "res:com/eharmony/aloha/models/h2o/glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.java"
+}
+```
+
+## Epsilon greedy exploration model
+
+An epsilon greedy exploration model is a model used for exploring over a set of actions in 
+[bandit](https://en.wikipedia.org/wiki/Multi-armed_bandit) and
+[reinforcement learning](https://en.wikipedia.org/wiki/Reinforcement_learning) style problems.  Epsilon greedy makes
+use of a parameter called epsilon and a default policy.  The model will choose a random action with probability `epsilon`
+and an action from the default policy with probability `1 - epsilon`.
+
+### (EG) JSON Fields
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aEG_modelType">modelType</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td>modelId</td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aEG_salt">salt</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aEG_epsilon">epsilon</a></td>
+    <td>Number</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aEG_default_policy">defaultPolicy</a></td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aEG_class_labels">classLabels</a></td>
+    <td>Array</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+</table>
+
+### (EG) JSON Field Descriptions
+
+#### (EG) modelType
+
+`modelType` field must be `EpsilonGreedyExploration`.
+
+#### (EG) salt
+
+`salt` is an Aloha specification that will produce a `Long` that will be used as the salt for the randomization.  This 
+allows the randomization to be repeatable.
+
+#### (EG) epsilon
+
+`epsilon` is a floating point number which signifies the tradeoff between exploration and exploitation.  Actions are
+chosen at random with probability `epsilon` and from the default policy with probability `1 - epsilon`.
+
+#### (EG) default policy
+
+`defaultPolicy` is the model to be used to return the learned action.  This model must evaluate to an `Int` as it is 
+used within the
+[MWT Epsilon Greedy Explorer](https://github.com/multiworldtesting/explore-java/blob/master/src/main/java/com/mwt/explorers/EpsilonGreedyExplorer.java).
+
+#### (EG) class labels
+
+`classLabels` is an array of the output type of the model.  The result from either the default policy or the random action
+is used as a lookup into the `classLabels`.
+
+### (EG) JSON Examples
+
+```json
+{
+  "modelType": "EpsilonGreedyExploration",
+  "modelId": {
+    "id": 1,
+    "name": "Epsilon Greedy Model"
+  },
+  "epsilon": 0.1,
+  "salt": "${profile.user_id}",
+  "defaultPolicy": {
+    "import": "file:///x/y/z.json"
+  },
+  "classLabels": [1, 2, 3]
+}
+```
+
+## Bootstrap exploration model
+
+A bootstrap exploration model is a model used for exploring over a set of actions in 
+[bandit](https://en.wikipedia.org/wiki/Multi-armed_bandit) and
+[reinforcement learning](https://en.wikipedia.org/wiki/Reinforcement_learning) style problems.  Bootstrap works over a
+set of policies.  The algorithm chooses one policy at random and uses that policy's action as the chosen action.
+
+### (B) JSON Fields
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aB_modelType">modelType</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td>modelId</td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aB_salt">salt</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aB_default_policy">policies</a></td>
+    <td>Array</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aB_class_labels">classLabels</a></td>
+    <td>Array</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+</table>
+
+### (B) JSON Field Descriptions
+
+#### (B) modelType
+
+`modelType` field must be `BootstrapExploration`.
+
+#### (B) salt
+
+`salt` is an Aloha specification that will produce a `Long` that will be used as the salt for the randomization.  This 
+allows the randomization to be repeatable.
+
+
+#### (B) policies
+
+`policies` are the models to be used to return the action.  All the models must evaluate to an `Int` as it is 
+used within the
+[MWT Bootstrap Explorer](https://github.com/multiworldtesting/explore-java/blob/master/src/main/java/com/mwt/explorers/BootstrapExplorer.java).
+
+#### (B) class labels
+
+`classLabels` is an array of the output type of the model.  The result from either the default policy or the random action
+is used as a lookup into the `classLabels`.
+
+### (B) JSON Examples
+
+```json
+{
+  "modelType": "BootstrapExploration",
+  "modelId": {
+    "id": 1,
+    "name": "Bootstrap Exploration Model"
+  },
+  "salt": "${profile.user_id}",
+  "policies": [
+    {
+      "import": "file:///x/y/z.json"
+    },
+    {
+      "import": "file:///x/y/a.json"
+    }
+  ],
+  "classLabels": [1, 2, 3]
 }
 ```
