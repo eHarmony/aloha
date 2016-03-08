@@ -33,7 +33,7 @@ trait VwJniModelJson extends SpecJson {
      * warning.
      * @param params VW initialization parameters.  This is either a sequence of parameters that will be made into a
      *               single string by imploding the list with a " " separator or it is one string.  If None,
-     * @param modelSource A [[ModelSource]]
+     * @param modelSource A ModelSource
      */
     protected[this] case class Vw(modelSource: ModelSource, params: Option[Either[Seq[String], String]] = Option(Right("")))
 
