@@ -23,7 +23,7 @@
     </distributionManagement>
 
     <properties>
-        <h2o.version>3.6.0.3</h2o.version>
+        <h2o.version>3.6.0.8</h2o.version>
     </properties>
 
     <dependencies>
