@@ -45,25 +45,48 @@ class BootstrapModelTest extends ModelSerializationTestHelper {
     subs.foreach(s => assertTrue(s.isClosed))
   }
 
+  // Using salts 0, 5, 6 because they illicit all three actions in this particular case.
+
+  val subPolicies = Seq(1, 2, 3, 3)
+
+  /**
+    * This test will create a Bootstrap model with 4 constant policies.  Those policies will return (in order) action
+    * 1, 2, 3, and 3.  By setting the salt to 0 we ensure that the explorer chooses EITHER policy 3 or 4.  Because both
+    * of those policies return the same action the probability should be 2/4.  We also make sure that the sub scores
+    * are recorded for ONLY those policies that had the same action as the one returned by the explorer.
+    */
   @Test def saltZero() {
-    val m = makeModel(Seq(1, 2, 3), 0)
+    val m = makeModel(subPolicies, 0)
     val s = m.getScore(null)
-    assertEquals(s._2.get.getScore.getProbability, 1f / 3, delta)
-    assertEquals(s._1.right.get, "a")
+    val score = s._2.get
+    val subScores = score.getSubScoresList
+    assertEquals(0.5f, score.getScore.getProbability, delta)
+    assertEquals("c", s._1.right.get)
+    assertEquals(2, subScores.size)
+    assertEquals("model: 3", subScores.get(0).getScore.getModel.getName)
+    assertEquals("model: 4", subScores.get(1).getScore.getModel.getName)
   }
 
-  @Test def saltOne() {
-    val m = makeModel(Seq(1, 2, 3), 1)
+  @Test def saltSix() {
+    val m = makeModel(subPolicies, 6)
     val s = m.getScore(null)
-    assertEquals(s._2.get.getScore.getProbability, 1f / 3, delta)
-    assertEquals(s._1.right.get, "b")
+    val score = s._2.get
+    val subScores = score.getSubScoresList
+    assertEquals(0.25f, score.getScore.getProbability, delta)
+    assertEquals("a", s._1.right.get)
+    assertEquals(1, subScores.size)
+    assertEquals("model: 1", subScores.get(0).getScore.getModel.getName)
   }
 
-  @Test def saltTwo() {
-    val m = makeModel(Seq(1, 2, 3), 2)
+  @Test def saltFive() {
+    val m = makeModel(subPolicies, 5)
     val s = m.getScore(null)
-    assertEquals(s._2.get.getScore.getProbability, 1f / 3, delta)
-    assertEquals(s._1.right.get, "c")
+    val score = s._2.get
+    val subScores = score.getSubScoresList
+    assertEquals(0.25f, score.getScore.getProbability, delta)
+    assertEquals("b", s._1.right.get)
+    assertEquals(1, subScores.size)
+    assertEquals("model: 2", subScores.get(0).getScore.getModel.getName)
   }
 
   def makeModel(policies: Iterable[Int], salt: Long): BootstrapModel[Any, String] = {
@@ -71,8 +94,8 @@ class BootstrapModelTest extends ModelSerializationTestHelper {
       s"""
         | {
         |   "modelType": "Constant",
-        |   "modelId": {"id": ${p._1 + 1}, "name": ""},
-        |   "value": ${p._2 + 1}
+        |   "modelId": {"id": ${p._2 + 1}, "name": "model: ${p._2 + 1}"},
+        |   "value": ${p._1}
         | }
       """.stripMargin
     }.mkString(",")
