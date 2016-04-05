@@ -60,15 +60,17 @@ case class EpsilonGreedyModel[A, B](
     */
   override private[aloha] def getScore(a: A)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = {
     val (mo, os) = defaultPolicy.getScore(a)
-    val decision = mo.right.map(explorer.chooseAction(salt(a), _))
 
-    val s = decision.fold(
+    val s = mo.fold(
       {case (e, m) => failure(e, m, os)},
-      sc => success(
-        score = classLabels(sc.getAction - 1),
-        subScores = os,
-        probability = Option(sc.getProbability)
-      )
+      o => {
+        val decision = explorer.chooseAction(salt(a), o)
+        success(
+          score = classLabels(decision.getAction - 1),
+          subScores = if (decision.getAction == o) os else None,
+          probability = Option(decision.getProbability)
+        )
+      }
     )
     s
   }

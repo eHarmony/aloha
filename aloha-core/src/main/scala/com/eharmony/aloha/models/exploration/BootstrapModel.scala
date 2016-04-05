@@ -4,6 +4,7 @@ import com.eharmony.aloha.factory.{ModelFactory, ModelParser, ParserProviderComp
 import com.eharmony.aloha.id.ModelIdentity
 import com.eharmony.aloha.models.{BaseModel, Model}
 import com.eharmony.aloha.score.Scores.Score
+import com.eharmony.aloha.score.Scores.Score.IntScore
 import com.eharmony.aloha.score.basic.ModelOutput
 import com.eharmony.aloha.score.conversions.ScoreConverter
 import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.IntScoreConverter
@@ -80,7 +81,7 @@ case class BootstrapModel[A, B](
       val decision = explorer.chooseAction(salt(a), successes)
       success(
         score = classLabels(decision.getAction - 1),
-        subScores = subScores,
+        subScores = subScores.filter(_.getScore.getExtension(IntScore.impl) == classLabels(decision.getAction - 1)),
         probability = Option(decision.getProbability)
       )
     }
