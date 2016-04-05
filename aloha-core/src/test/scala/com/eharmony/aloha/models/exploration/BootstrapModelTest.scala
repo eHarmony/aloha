@@ -45,36 +45,46 @@ class BootstrapModelTest extends ModelSerializationTestHelper {
     subs.foreach(s => assertTrue(s.isClosed))
   }
 
+  // Using salts 0, 5, 6 because they illicit all three actions in this particular case.
+
+  val subPolicies = Seq(1, 2, 3, 3)
+
+  /**
+    * This test will create a Bootstrap model with 4 constant policies.  Those policies will return (in order) action
+    * 1, 2, 3, and 3.  By setting the salt to 0 we ensure that the explorer chooses EITHER policy 3 or 4.  Because both
+    * of those policies return the same action the probability should be 2/4.  We also make sure that the sub scores
+    * are recorded for ONLY those policies that had the same action as the one returned by the explorer.
+    */
   @Test def saltZero() {
-    val m = makeModel(Seq(1, 2, 3, 3), 0)
+    val m = makeModel(subPolicies, 0)
     val s = m.getScore(null)
     val score = s._2.get
     val subScores = score.getSubScoresList
-    assertEquals(score.getScore.getProbability, 0.5f, delta)
-    assertEquals(s._1.right.get, "c")
+    assertEquals(0.5f, score.getScore.getProbability, delta)
+    assertEquals("c", s._1.right.get)
     assertEquals(2, subScores.size)
     assertEquals("model: 3", subScores.get(0).getScore.getModel.getName)
     assertEquals("model: 4", subScores.get(1).getScore.getModel.getName)
   }
 
   @Test def saltSix() {
-    val m = makeModel(Seq(1, 2, 3, 3), 6)
+    val m = makeModel(subPolicies, 6)
     val s = m.getScore(null)
     val score = s._2.get
     val subScores = score.getSubScoresList
-    assertEquals(score.getScore.getProbability, 0.25f, delta)
-    assertEquals(s._1.right.get, "a")
+    assertEquals(0.25f, score.getScore.getProbability, delta)
+    assertEquals("a", s._1.right.get)
     assertEquals(1, subScores.size)
     assertEquals("model: 1", subScores.get(0).getScore.getModel.getName)
   }
 
   @Test def saltFive() {
-    val m = makeModel(Seq(1, 2, 3, 3), 5)
+    val m = makeModel(subPolicies, 5)
     val s = m.getScore(null)
     val score = s._2.get
     val subScores = score.getSubScoresList
-    assertEquals(score.getScore.getProbability, 0.25f, delta)
-    assertEquals(s._1.right.get, "b")
+    assertEquals(0.25f, score.getScore.getProbability, delta)
+    assertEquals("b", s._1.right.get)
     assertEquals(1, subScores.size)
     assertEquals("model: 2", subScores.get(0).getScore.getModel.getName)
   }

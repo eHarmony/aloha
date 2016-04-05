@@ -56,6 +56,8 @@ class EpsilonGreedyModelTest extends ModelSerializationTestHelper {
     assertEquals(epsilon / m.classLabels.size, score.getScore.getProbability, delta)
     assertEquals(m.classLabels(action - 1), s._1.right.get)
     assertEquals("b", s._1.right.get)
+
+    // The lack of subscores indicates that the default policy was NOT recorded when doing exploration.
     assertTrue(score.getSubScoresList.isEmpty)
   }
 

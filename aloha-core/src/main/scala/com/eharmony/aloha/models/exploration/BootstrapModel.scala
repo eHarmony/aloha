@@ -5,7 +5,6 @@ import com.eharmony.aloha.id.ModelIdentity
 import com.eharmony.aloha.models.{BaseModel, Model}
 import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.aloha.score.basic.ModelOutput
-import com.eharmony.aloha.score.conversions.RelaxedConversions._
 import com.eharmony.aloha.score.conversions.ScoreConverter
 import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.IntScoreConverter
 import com.eharmony.aloha.semantics.Semantics
@@ -77,12 +76,18 @@ case class BootstrapModel[A, B](
     models: sci.IndexedSeq[Model[A, Int]],
     subScores: Seq[Score] = Seq.empty,
     successes: sci.IndexedSeq[Int] = sci.IndexedSeq.empty)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = {
+
+    // If models is empty then all models returned success.
     if (models.isEmpty) {
       val decision = explorer.chooseAction(salt(a), successes)
       val action = decision.getAction
+
+      // We want to return only those subscores that contributed to the chosen action.  Hence
+      // we're going to filter out those successes (in this case actions) that are not the same
+      // as the action chosen by the explorer.
       success(
         score = classLabels(action - 1),
-        subScores = subScores.filter(x => asInt(x).map(_ == action).exists(identity)),
+        subScores = subScores.zip(successes).collect{ case (ss, s) if s == action => ss },
         probability = Option(decision.getProbability)
       )
     }

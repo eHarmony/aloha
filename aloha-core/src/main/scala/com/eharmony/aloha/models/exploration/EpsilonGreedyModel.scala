@@ -66,9 +66,13 @@ case class EpsilonGreedyModel[A, B](
       o => {
         val decision = explorer.chooseAction(salt(a), o)
         val action = decision.getAction
+
+        // We only want to add the subscore of the default policy if that policy returns the
+        // same action as the one chosen by the explorer.  This allows the differentiation of the explore
+        // and exploit groups using the subscores.
         success(
           score = classLabels(action - 1),
-          subScores = if (o == action) os else None,
+          subScores = os.filter(_ => o == action),
           probability = Option(decision.getProbability)
         )
       }
