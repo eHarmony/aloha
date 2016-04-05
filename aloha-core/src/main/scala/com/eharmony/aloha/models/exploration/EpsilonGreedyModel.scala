@@ -65,9 +65,10 @@ case class EpsilonGreedyModel[A, B](
       {case (e, m) => failure(e, m, os)},
       o => {
         val decision = explorer.chooseAction(salt(a), o)
+        val action = decision.getAction
         success(
-          score = classLabels(decision.getAction - 1),
-          subScores = if (decision.getAction == o) os else None,
+          score = classLabels(action - 1),
+          subScores = if (o == action) os else None,
           probability = Option(decision.getProbability)
         )
       }

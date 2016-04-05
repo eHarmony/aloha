@@ -4,8 +4,8 @@ import com.eharmony.aloha.factory.{ModelFactory, ModelParser, ParserProviderComp
 import com.eharmony.aloha.id.ModelIdentity
 import com.eharmony.aloha.models.{BaseModel, Model}
 import com.eharmony.aloha.score.Scores.Score
-import com.eharmony.aloha.score.Scores.Score.IntScore
 import com.eharmony.aloha.score.basic.ModelOutput
+import com.eharmony.aloha.score.conversions.RelaxedConversions._
 import com.eharmony.aloha.score.conversions.ScoreConverter
 import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.IntScoreConverter
 import com.eharmony.aloha.semantics.Semantics
@@ -79,10 +79,10 @@ case class BootstrapModel[A, B](
     successes: sci.IndexedSeq[Int] = sci.IndexedSeq.empty)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = {
     if (models.isEmpty) {
       val decision = explorer.chooseAction(salt(a), successes)
-      val usedSubScores = subScores.filter(_.getScore.getExtension(IntScore.impl).getScore == decision.getAction)
+      val action = decision.getAction
       success(
-        score = classLabels(decision.getAction - 1),
-        subScores = usedSubScores,
+        score = classLabels(action - 1),
+        subScores = subScores.filter(x => asInt(x).map(_ == action).exists(identity)),
         probability = Option(decision.getProbability)
       )
     }
