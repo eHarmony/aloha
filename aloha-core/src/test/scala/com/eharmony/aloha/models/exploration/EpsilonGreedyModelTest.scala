@@ -52,17 +52,23 @@ class EpsilonGreedyModelTest extends ModelSerializationTestHelper {
     val action = random.uniformInt(1, m.classLabels.size)
 
     val s = m.getScore(null)
-    assertEquals(epsilon / m.classLabels.size, s._2.get.getScore.getProbability, delta)
+    val score = s._2.get
+    assertEquals(epsilon / m.classLabels.size, score.getScore.getProbability, delta)
     assertEquals(m.classLabels(action - 1), s._1.right.get)
     assertEquals("b", s._1.right.get)
+    assertTrue(score.getSubScoresList.isEmpty)
   }
 
   @Test def policy() {
     val epsilon = 0f
     val m = makeModel(1, epsilon, 0)
     val s = m.getScore(null)
-    assertEquals(1 - epsilon + epsilon / m.classLabels.size, s._2.get.getScore.getProbability, delta)
+
+    val score = s._2.get
+    assertEquals(1 - epsilon + epsilon / m.classLabels.size, score.getScore.getProbability, delta)
     assertEquals("a", s._1.right.get)
+    assertEquals(1, score.getSubScoresCount)
+    assertEquals("defaultPolicy", score.getSubScores(0).getScore.getModel.getName)
   }
 
   def makeModel(policyValue: Int, epsilon: Float, salt: Long): EpsilonGreedyModel[Any, String] = {
@@ -75,7 +81,7 @@ class EpsilonGreedyModelTest extends ModelSerializationTestHelper {
         | "salt": "$salt",
         | "defaultPolicy": {
         |   "modelType": "Constant",
-        |   "modelId": {"id": 1, "name": ""},
+        |   "modelId": {"id": 1, "name": "defaultPolicy"},
         |   "value": $policyValue
         | },
         | "classLabels": ["a", "b", "c"]

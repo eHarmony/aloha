@@ -46,24 +46,37 @@ class BootstrapModelTest extends ModelSerializationTestHelper {
   }
 
   @Test def saltZero() {
-    val m = makeModel(Seq(1, 2, 3), 0)
+    val m = makeModel(Seq(1, 2, 3, 3), 0)
     val s = m.getScore(null)
-    assertEquals(s._2.get.getScore.getProbability, 1f / 3, delta)
-    assertEquals(s._1.right.get, "a")
-  }
-
-  @Test def saltOne() {
-    val m = makeModel(Seq(1, 2, 3), 1)
-    val s = m.getScore(null)
-    assertEquals(s._2.get.getScore.getProbability, 1f / 3, delta)
-    assertEquals(s._1.right.get, "b")
-  }
-
-  @Test def saltTwo() {
-    val m = makeModel(Seq(1, 2, 3), 2)
-    val s = m.getScore(null)
-    assertEquals(s._2.get.getScore.getProbability, 1f / 3, delta)
+    val score = s._2.get
+    val subScores = score.getSubScoresList
+    assertEquals(score.getScore.getProbability, 0.5f, delta)
     assertEquals(s._1.right.get, "c")
+    assertEquals(2, subScores.size)
+    assertEquals("model: 3", subScores.get(0).getScore.getModel.getName)
+    assertEquals("model: 4", subScores.get(1).getScore.getModel.getName)
+  }
+
+  @Test def saltSix() {
+    val m = makeModel(Seq(1, 2, 3, 3), 6)
+    val s = m.getScore(null)
+    val score = s._2.get
+    val subScores = score.getSubScoresList
+    assertEquals(score.getScore.getProbability, 0.25f, delta)
+    assertEquals(s._1.right.get, "a")
+    assertEquals(1, subScores.size)
+    assertEquals("model: 1", subScores.get(0).getScore.getModel.getName)
+  }
+
+  @Test def saltFive() {
+    val m = makeModel(Seq(1, 2, 3, 3), 5)
+    val s = m.getScore(null)
+    val score = s._2.get
+    val subScores = score.getSubScoresList
+    assertEquals(score.getScore.getProbability, 0.25f, delta)
+    assertEquals(s._1.right.get, "b")
+    assertEquals(1, subScores.size)
+    assertEquals("model: 2", subScores.get(0).getScore.getModel.getName)
   }
 
   def makeModel(policies: Iterable[Int], salt: Long): BootstrapModel[Any, String] = {
@@ -71,8 +84,8 @@ class BootstrapModelTest extends ModelSerializationTestHelper {
       s"""
         | {
         |   "modelType": "Constant",
-        |   "modelId": {"id": ${p._1 + 1}, "name": ""},
-        |   "value": ${p._2 + 1}
+        |   "modelId": {"id": ${p._2 + 1}, "name": "model: ${p._2 + 1}"},
+        |   "value": ${p._1}
         | }
       """.stripMargin
     }.mkString(",")

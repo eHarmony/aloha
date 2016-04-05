@@ -79,9 +79,10 @@ case class BootstrapModel[A, B](
     successes: sci.IndexedSeq[Int] = sci.IndexedSeq.empty)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = {
     if (models.isEmpty) {
       val decision = explorer.chooseAction(salt(a), successes)
+      val usedSubScores = subScores.filter(_.getScore.getExtension(IntScore.impl).getScore == decision.getAction)
       success(
         score = classLabels(decision.getAction - 1),
-        subScores = subScores.filter(_.getScore.getExtension(IntScore.impl) == classLabels(decision.getAction - 1)),
+        subScores = usedSubScores,
         probability = Option(decision.getProbability)
       )
     }
