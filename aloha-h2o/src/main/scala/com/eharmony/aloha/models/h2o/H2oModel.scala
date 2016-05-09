@@ -5,12 +5,11 @@ import com.eharmony.aloha.id.{ModelId, ModelIdentity}
 import com.eharmony.aloha.io.AlohaReadable
 import com.eharmony.aloha.io.sources.{Base64StringSource, ExternalSource, ModelSource}
 import com.eharmony.aloha.io.vfs.Vfs
-import com.eharmony.aloha.io.vfs.VfsType.VfsType
 import com.eharmony.aloha.models.BaseModel
 import com.eharmony.aloha.models.h2o.H2oModel.Features
 import com.eharmony.aloha.models.h2o.categories._
 import com.eharmony.aloha.models.h2o.compiler.Compiler
-import com.eharmony.aloha.models.h2o.json.{H2oSpec, H2oAst}
+import com.eharmony.aloha.models.h2o.json.{H2oAst, H2oSpec}
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.aloha.score.basic.ModelOutput
@@ -22,7 +21,7 @@ import hex.genmodel.GenModel
 import hex.genmodel.easy.exception.PredictUnknownCategoricalLevelException
 import hex.genmodel.easy.{EasyPredictModelWrapper, RowData}
 import org.apache.commons.codec.binary.Base64
-import spray.json.{JsArray, DeserializationException, JsValue, JsonReader, pimpString, pimpAny}
+import spray.json.{DeserializationException, JsArray, JsValue, JsonReader, pimpAny, pimpString}
 
 import scala.annotation.tailrec
 import scala.collection.immutable.ListMap

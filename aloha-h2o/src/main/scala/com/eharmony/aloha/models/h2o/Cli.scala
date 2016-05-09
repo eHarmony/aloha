@@ -3,14 +3,8 @@ package com.eharmony.aloha.models.h2o
 import com.eharmony.aloha
 import com.eharmony.aloha.annotate.CLI
 import com.eharmony.aloha.id.ModelId
-import com.eharmony.aloha.io.sources.{Base64StringSource, ExternalSource, ModelSource}
 import com.eharmony.aloha.io.vfs.VfsType.VfsType
 import com.eharmony.aloha.io.vfs.{Vfs, VfsType}
-import com.eharmony.aloha.models.h2o.json.{H2oAst, H2oSpec}
-import org.apache.commons.codec.binary.Base64
-import spray.json._
-
-import scala.collection.immutable.ListMap
 
 /**
   * Created by rdeak on 11/17/15.
