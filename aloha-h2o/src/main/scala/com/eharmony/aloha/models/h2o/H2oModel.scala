@@ -249,12 +249,23 @@ object H2oModel extends ParserProviderCompanion
     }
   }
 
+  /**
+    *
+    * @param spec
+    * @param model
+    * @param id
+    * @param externalModel
+    * @param numMissingThreshold
+    * @param notes
+    * @return
+    */
+  @throws(classOf[IllegalArgumentException])
   private[eharmony] def json(spec: Vfs,
                              model: Vfs,
                              id: ModelId,
                              externalModel: Boolean = false,
                              numMissingThreshold: Option[Int] = None,
-                             notes: Option[Seq[String]] = None): Either[String, JsValue] = {
+                             notes: Option[Seq[String]] = None): JsValue = {
     val notesList = notes filter {_.nonEmpty}
     val modelSource = getModelSource(model, externalModel)
     val features = getFeatures(spec)
@@ -262,7 +273,7 @@ object H2oModel extends ParserProviderCompanion
     features.map { fs =>
       val ast = H2oAst(H2oModel.parser.modelType, id, modelSource, fs, numMissingThreshold)
       ast.toJson
-    }.toRight(s"Couldn't get features from $spec.")
+    } getOrElse { throw new IllegalArgumentException(s"Couldn't get features from $spec.") }
   }
 
   private[this] def getModelSource(model: Vfs, externalModel: Boolean): ModelSource =
