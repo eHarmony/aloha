@@ -271,7 +271,7 @@ object H2oModel extends ParserProviderCompanion
     val features = getFeatures(spec)
 
     features.map { fs =>
-      val ast = H2oAst(H2oModel.parser.modelType, id, modelSource, fs, numMissingThreshold, notes)
+      val ast = H2oAst(H2oModel.parser.modelType, id, modelSource, fs, numMissingThreshold, notesList)
       ast.toJson
     } getOrElse { throw new IllegalArgumentException(s"Couldn't get features from $spec.") }
   }
