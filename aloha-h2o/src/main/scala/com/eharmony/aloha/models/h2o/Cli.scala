@@ -3,14 +3,8 @@ package com.eharmony.aloha.models.h2o
 import com.eharmony.aloha
 import com.eharmony.aloha.annotate.CLI
 import com.eharmony.aloha.id.ModelId
-import com.eharmony.aloha.io.sources.{Base64StringSource, ExternalSource, ModelSource}
 import com.eharmony.aloha.io.vfs.VfsType.VfsType
 import com.eharmony.aloha.io.vfs.{Vfs, VfsType}
-import com.eharmony.aloha.models.h2o.json.{H2oAst, H2oSpec}
-import org.apache.commons.codec.binary.Base64
-import spray.json._
-
-import scala.collection.immutable.ListMap
 
 /**
   * Created by rdeak on 11/17/15.
@@ -42,43 +36,13 @@ object Cli {
 
   def main(args: Array[String]) {
     cliParser.parse(args, Config()) match {
-      case Some(Config(spec, model, id, name, externalModel, numMissingThresh, notesList, vfsType)) =>
-        val notes = Option(notesList) filter {_.nonEmpty}
-        val vfsFile = Vfs.fromVfsType(vfsType)
-        val s = vfsFile(spec)
+      case Some(Config(spec, model, id, name, externalModel, numMissingThresh, notes, vfsType)) =>
 
-        val modelSource = getModelSource(model, externalModel, vfsType)
-
-        val features = getFeatures(s)
-
-        features.map { fs =>
-          val ast = H2oAst(H2oModel.parser.modelType, ModelId(id, name), modelSource, fs, numMissingThresh)
-          ast.toJson.compactPrint
-        }.fold(throw new Exception(s"Couldn't get features from $spec."))(js => println(js))
-
+        val specVfs = Vfs.fromVfsType(vfsType)(spec)
+        val modelVfs = Vfs.fromVfsType(vfsType)(model)
+        val json = H2oModel.json(specVfs, modelVfs, ModelId(id, name), externalModel, numMissingThresh, Option(notes))
+        println(json.compactPrint)
       case None => // Will be taken care of by scopt.
-    }
-  }
-
-
-  private[this] def getModelSource(model: String, externalModel: Boolean, vfsType: VfsType): ModelSource = {
-    val f = Vfs.fromVfsType(vfsType)(model)
-    if (externalModel)
-      ExternalSource(f)
-    else {
-      val b64 = new String(Base64.encodeBase64(f.asByteArray()))
-      Base64StringSource(b64)
-    }
-  }
-
-  private[this] def getFeatures(spec: Vfs) = {
-    spec.asString().parseJson.asJsObject.getFields("features") match {
-      case Seq(JsArray(fs)) =>
-        Some(ListMap(fs.map { f =>
-          val s = f.convertTo[H2oSpec]
-          (s.name, s)
-        }:_*))
-      case _ => None
     }
   }
 

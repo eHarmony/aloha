@@ -1,16 +1,17 @@
 package com.eharmony.aloha.models.h2o.json
 
 
+import java.{lang => jl}
+
+import com.eharmony.aloha.factory.ScalaJsonFormats.listMapFormat
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.io.sources.ModelSource
-import com.eharmony.aloha.models.h2o.{H2oModel, StringFeatureFunction, DoubleFeatureFunction, FeatureFunction}
-import com.eharmony.aloha.reflect.{RefInfoOps, RefInfo}
+import com.eharmony.aloha.models.h2o.{DoubleFeatureFunction, FeatureFunction, StringFeatureFunction}
+import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.semantics.func.GenAggFunc
 import spray.json.DefaultJsonProtocol._
 import spray.json._
-import com.eharmony.aloha.factory.ScalaJsonFormats.listMapFormat
-import java.{lang => jl}
 
 import scala.collection.immutable.ListMap
 import scala.collection.{immutable => sci}
@@ -91,7 +92,8 @@ case class H2oAst(modelType: String,
                   modelId: ModelId,
                   modelSource: ModelSource,
                   features: sci.ListMap[String, H2oSpec],
-                  numMissingThreshold: Option[Int] = None)
+                  numMissingThreshold: Option[Int] = None,
+                  notes: Option[Seq[String]] = None)
 
 private[h2o] object H2oAst {
   implicit val h2oAstJsonFormat = new RootJsonFormat[H2oAst] with DefaultJsonProtocol {
@@ -108,7 +110,12 @@ private[h2o] object H2oAst {
         case _ => None
       }
 
-      H2oAst(modelType, modelId, modelSource, features, numMissingThreshold)
+      val notes = jso.getFields("notes") match {
+        case Seq(a: JsArray) => Option(a.convertTo[Seq[String]]).filter(_.nonEmpty)
+        case _ => None
+      }
+
+      H2oAst(modelType, modelId, modelSource, features, numMissingThreshold, notes)
     }
 
     override def write(h2oAst: H2oAst): JsValue = {
@@ -116,7 +123,8 @@ private[h2o] object H2oAst {
                    Seq("modelId" -> h2oAst.modelId.toJson) ++
                    h2oAst.numMissingThreshold.map(t => "numMissingThreshold" -> t.toJson).toSeq ++
                    Seq("features" -> h2oAst.features.toJson(H2oSpec.h2oFeaturesJsonFormat)) ++
-                   h2oAst.modelSource.toJson.asJsObject.fields.toSeq
+                   h2oAst.modelSource.toJson.asJsObject.fields.toSeq ++
+                   h2oAst.notes.map(t => "notes" -> t.toJson).toSeq
       JsObject(ListMap(fields:_*))
     }
   }

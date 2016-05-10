@@ -1,14 +1,15 @@
 package com.eharmony.aloha.models.h2o
 
 import com.eharmony.aloha.factory.{ModelParser, ModelParserWithSemantics, ParserProviderCompanion}
-import com.eharmony.aloha.id.ModelIdentity
+import com.eharmony.aloha.id.{ModelId, ModelIdentity}
 import com.eharmony.aloha.io.AlohaReadable
-import com.eharmony.aloha.io.sources.ModelSource
+import com.eharmony.aloha.io.sources.{Base64StringSource, ExternalSource, ModelSource}
+import com.eharmony.aloha.io.vfs.Vfs
 import com.eharmony.aloha.models.BaseModel
 import com.eharmony.aloha.models.h2o.H2oModel.Features
 import com.eharmony.aloha.models.h2o.categories._
 import com.eharmony.aloha.models.h2o.compiler.Compiler
-import com.eharmony.aloha.models.h2o.json.{H2oSpec, H2oAst}
+import com.eharmony.aloha.models.h2o.json.{H2oAst, H2oSpec}
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.aloha.score.basic.ModelOutput
@@ -19,9 +20,11 @@ import com.eharmony.aloha.util.{EitherHelpers, Logging}
 import hex.genmodel.GenModel
 import hex.genmodel.easy.exception.PredictUnknownCategoricalLevelException
 import hex.genmodel.easy.{EasyPredictModelWrapper, RowData}
-import spray.json.{DeserializationException, JsValue, JsonReader}
+import org.apache.commons.codec.binary.Base64
+import spray.json.{DeserializationException, JsArray, JsValue, JsonReader, pimpAny, pimpString}
 
 import scala.annotation.tailrec
+import scala.collection.immutable.ListMap
 import scala.collection.{immutable => sci}
 import scala.util.{Failure, Success, Try}
 
@@ -243,6 +246,49 @@ object H2oModel extends ParserProviderCompanion
             left.map(Seq(s"Error processing spec '${s.spec}'") ++ _).
             right.map(v => (k, v))
         }
+    }
+  }
+
+  /**
+    *
+    * @param spec
+    * @param model
+    * @param id
+    * @param externalModel
+    * @param numMissingThreshold
+    * @param notes
+    * @return
+    */
+  @throws(classOf[IllegalArgumentException])
+  private[eharmony] def json(spec: Vfs,
+                             model: Vfs,
+                             id: ModelId,
+                             externalModel: Boolean = false,
+                             numMissingThreshold: Option[Int] = None,
+                             notes: Option[Seq[String]] = None): JsValue = {
+    val notesList = notes filter {_.nonEmpty}
+    val modelSource = getModelSource(model, externalModel)
+    val features = getFeatures(spec)
+
+    features.map { fs =>
+      val ast = H2oAst(H2oModel.parser.modelType, id, modelSource, fs, numMissingThreshold, notes)
+      ast.toJson
+    } getOrElse { throw new IllegalArgumentException(s"Couldn't get features from $spec.") }
+  }
+
+  private[this] def getModelSource(model: Vfs, externalModel: Boolean): ModelSource =
+    if (externalModel)
+      ExternalSource(model)
+    else Base64StringSource(new String(Base64.encodeBase64(model.asByteArray())))
+
+  private[this] def getFeatures(spec: Vfs): Option[ListMap[String, H2oSpec]] = {
+    spec.asString().parseJson.asJsObject.getFields("features") match {
+      case Seq(JsArray(fs)) =>
+        Some(ListMap(fs.map { f =>
+          val s = f.convertTo[H2oSpec]
+          (s.name, s)
+        }:_*))
+      case _ => None
     }
   }
 }

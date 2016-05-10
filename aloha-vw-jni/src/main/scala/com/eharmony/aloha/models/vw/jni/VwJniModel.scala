@@ -284,15 +284,14 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
    * @param spline
    * @return
    */
-
-  def json(spec: Vfs,
-           model: Vfs,
-           id: ModelId,
-           vwArgs: Option[String],
-           externalModel: Boolean = false,
-           numMissingThreshold: Option[Int] = None,
-           notes: Option[Seq[String]] = None,
-           spline: Option[ConstantDeltaSpline] = None): JsValue = {
+  private[eharmony] def json(spec: Vfs,
+                             model: Vfs,
+                             id: ModelId,
+                             vwArgs: Option[String],
+                             externalModel: Boolean = false,
+                             numMissingThreshold: Option[Int] = None,
+                             notes: Option[Seq[String]] = None,
+                             spline: Option[ConstantDeltaSpline] = None): JsValue = {
 
     val js = StringReadable.fromInputStream(spec.inputStream).parseJson
     val vw = js.convertTo[VwUnlabeledJson]
@@ -313,15 +312,15 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
    * @param spline
    * @return
    */
-  def json(vw: VwJsonLike,
-           model: Vfs,
-           id: ModelId,
-           vwArgs: Option[String],
-           externalModel: Boolean,
-           numMissingThreshold: Option[Int],
-           notes: Option[Seq[String]],
-           spline: Option[ConstantDeltaSpline],
-           classLabels: Option[SimpleTypeSeq]): JsValue = {
+  private[eharmony] def json(vw: VwJsonLike,
+                             model: Vfs,
+                             id: ModelId,
+                             vwArgs: Option[String],
+                             externalModel: Boolean,
+                             numMissingThreshold: Option[Int],
+                             notes: Option[Seq[String]],
+                             spline: Option[ConstantDeltaSpline],
+                             classLabels: Option[SimpleTypeSeq]): JsValue = {
 
     def escape(s: String) = s.replaceAllLiterally("\\", "\\\\").replaceAllLiterally("\"", "\\\"")
 
