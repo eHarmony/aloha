@@ -3,7 +3,7 @@
     <parent>
         <groupId>com.eharmony</groupId>
         <artifactId>aloha</artifactId>
-        <version>3.2.3-SNAPSHOT</version>
+        <version>3.3.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -23,7 +23,7 @@
     </distributionManagement>
 
     <properties>
-        <h2o.version>3.6.0.8</h2o.version>
+        <h2o.version>3.8.2.3</h2o.version>
     </properties>
 
     <dependencies>
