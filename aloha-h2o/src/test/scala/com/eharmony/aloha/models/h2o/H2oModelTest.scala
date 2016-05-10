@@ -2,6 +2,8 @@ package com.eharmony.aloha.models.h2o
 
 import com.eharmony.aloha.FileLocations
 import com.eharmony.aloha.factory.ModelFactory
+import com.eharmony.aloha.id.ModelId
+import com.eharmony.aloha.io.vfs.{VfsType, Vfs}
 import com.eharmony.aloha.models.Model
 import com.eharmony.aloha.reflect.RefInfo
 import com.eharmony.aloha.score.conversions.ScoreConverter
@@ -111,6 +113,16 @@ class H2oModelTest extends Logging {
       val out = model(string2col(sex) +: padding)
       out.fold(fail(s"for $sex expected a result"))(assertEquals(s"for $sex", exp, _, 1.0e-6))
     }
+  }
+
+  @Test def testNotesAppear(): Unit = {
+
+    val spec = Vfs.fromVfsType(VfsType.vfs2)("res:com/eharmony/aloha/models/h2o/test_spec.json")
+    val model = Vfs.fromVfsType(VfsType.vfs2)("res:com/eharmony/aloha/models/h2o/glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.java")
+    val notes = Option(Vector("this is a note", "another note"))
+    val jsValue = H2oModel.json(spec, model, ModelId(1, "test-model"), true, None, notes)
+    val fields = jsValue.asJsObject.fields
+    assertEquals(notes, fields.get("notes").map(_.convertTo[Vector[String]]))
   }
 
   @Test def testMissingNonCategorical(): Unit = {
