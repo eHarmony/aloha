@@ -116,13 +116,20 @@ class H2oModelTest extends Logging {
   }
 
   @Test def testNotesAppear(): Unit = {
-
     val spec = Vfs.fromVfsType(VfsType.vfs2)("res:com/eharmony/aloha/models/h2o/test_spec.json")
     val model = Vfs.fromVfsType(VfsType.vfs2)("res:com/eharmony/aloha/models/h2o/glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.java")
     val notes = Option(Vector("this is a note", "another note"))
-    val jsValue = H2oModel.json(spec, model, ModelId(1, "test-model"), true, None, notes)
+    val jsValue = H2oModel.json(spec, model, ModelId(1, "test-model"), None, true, None, notes)
     val fields = jsValue.asJsObject.fields
     assertEquals(notes, fields.get("notes").map(_.convertTo[Vector[String]]))
+  }
+
+  @Test def removeLabel(): Unit = {
+    val spec = Vfs.fromVfsType(VfsType.vfs2)("res:com/eharmony/aloha/models/h2o/test_spec.json")
+    val model = Vfs.fromVfsType(VfsType.vfs2)("res:com/eharmony/aloha/models/h2o/glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.java")
+    val jsValue = H2oModel.json(spec, model, ModelId(1, "test-model"), Option("Sex"), true)
+    val sexField = jsValue.asJsObject.fields("features").asJsObject.fields("Sex")
+    assertEquals("\"null\"", sexField.asJsObject.fields("spec").toString)
   }
 
   @Test def testMissingNonCategorical(): Unit = {

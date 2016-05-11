@@ -40,7 +40,7 @@ object Cli {
 
         val specVfs = Vfs.fromVfsType(vfsType)(spec)
         val modelVfs = Vfs.fromVfsType(vfsType)(model)
-        val json = H2oModel.json(specVfs, modelVfs, ModelId(id, name), externalModel, numMissingThresh, Option(notes))
+        val json = H2oModel.json(specVfs, modelVfs, ModelId(id, name), None, externalModel, numMissingThresh, Option(notes))
         println(json.compactPrint)
       case None => // Will be taken care of by scopt.
     }

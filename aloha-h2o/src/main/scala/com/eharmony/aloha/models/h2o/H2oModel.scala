@@ -9,7 +9,7 @@ import com.eharmony.aloha.models.BaseModel
 import com.eharmony.aloha.models.h2o.H2oModel.Features
 import com.eharmony.aloha.models.h2o.categories._
 import com.eharmony.aloha.models.h2o.compiler.Compiler
-import com.eharmony.aloha.models.h2o.json.{H2oAst, H2oSpec}
+import com.eharmony.aloha.models.h2o.json.{StringH2oSpec, DoubleH2oSpec, H2oAst, H2oSpec}
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.aloha.score.basic.ModelOutput
@@ -253,21 +253,23 @@ object H2oModel extends ParserProviderCompanion
   private[eharmony] def json(spec: Vfs,
     model: Vfs,
     id: ModelId,
+    responseColumn: Option[String] = None,
     externalModel: Boolean = false,
     numMissingThreshold: Option[Int] = None,
     notes: Option[Seq[String]] = None): JsValue = {
     val modelSource = getModelSource(model, externalModel)
-    json(Right(spec), modelSource, id, numMissingThreshold, notes)
+    json(Right(spec), modelSource, id, responseColumn, numMissingThreshold, notes)
   }
 
   @throws(classOf[IllegalArgumentException])
   private[eharmony] def json(spec: String,
     model: String,
     id: ModelId,
+    responseColumn: Option[String],
     numMissingThreshold: Option[Int],
     notes: Option[Seq[String]]): JsValue = {
     val modelSource = getLocalSource(model.getBytes)
-    json(Left(spec.parseJson.asJsObject), modelSource, id, numMissingThreshold, notes)
+    json(Left(spec.parseJson.asJsObject), modelSource, id, responseColumn, numMissingThreshold, notes)
   }
 
   /**
@@ -280,18 +282,37 @@ object H2oModel extends ParserProviderCompanion
     * @return
     */
   @throws(classOf[IllegalArgumentException])
-  private[eharmony] def json(spec: Either[JsObject, Vfs],
-                             modelSource: ModelSource,
-                             id: ModelId,
-                             numMissingThreshold: Option[Int],
-                             notes: Option[Seq[String]]): JsValue = {
+  private[eharmony] def json(
+    spec: Either[JsObject, Vfs],
+    modelSource: ModelSource,
+    id: ModelId,
+    responseColumn: Option[String],
+    numMissingThreshold: Option[Int],
+    notes: Option[Seq[String]]): JsValue = {
     val notesList = notes filter {_.nonEmpty}
     val features = spec.fold(getFeatures, getFeatures)
 
     features.map { fs =>
-      val ast = H2oAst(H2oModel.parser.modelType, id, modelSource, fs, numMissingThreshold, notesList)
+      val updatedFs = removeResponse(responseColumn, fs)
+      val ast = H2oAst(H2oModel.parser.modelType, id, modelSource, updatedFs, numMissingThreshold, notesList)
       ast.toJson
     } getOrElse { throw new IllegalArgumentException(s"Couldn't get features from $spec.") }
+  }
+
+  private[this] def removeResponse(
+    responseColumn: Option[String],
+    featureMap: ListMap[String, H2oSpec]): ListMap[String, H2oSpec] = {
+    val updatedFeatureMap = for {
+      r <- responseColumn
+      spec <- featureMap.get(r)
+    } yield {
+      val newSpec = spec match {
+        case d: DoubleH2oSpec => d.copy(spec = "null")
+        case s: StringH2oSpec => s.copy(spec = "null")
+      }
+      featureMap + (r -> newSpec)
+    }
+    updatedFeatureMap.getOrElse(featureMap)
   }
 
   private[this] def getModelSource(model: Vfs, externalModel: Boolean): ModelSource =
