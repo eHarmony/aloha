@@ -295,26 +295,24 @@ object H2oModel extends ParserProviderCompanion
     val notesList = notes filter {_.nonEmpty}
 
     features.map { fs =>
-      val updatedFs = removeResponse(responseColumn, fs)
+      val updatedFs = responseColumn.fold(fs)(updateFeatureSpec(_, fs, "null"))
       val ast = H2oAst(H2oModel.parser.modelType, id, modelSource, updatedFs, numMissingThreshold, notesList)
       ast.toJson
     } getOrElse { throw new IllegalArgumentException(s"Couldn't get features from $spec.") }
   }
 
-  private[this] def removeResponse(
-    responseColumn: Option[String],
-    featureMap: ListMap[String, H2oSpec]): ListMap[String, H2oSpec] = {
-    val updatedFeatureMap = for {
-      r <- responseColumn
-      spec <- featureMap.get(r)
-    } yield {
-      val newSpec = spec match {
-        case d: DoubleH2oSpec => d.copy(spec = "null")
-        case s: StringH2oSpec => s.copy(spec = "null")
+  // This will update a specific feature in the model while preserving the order.  Because of the order preservation
+  // this function is O(N).
+  private[this] def updateFeatureSpec(name: String, features: ListMap[String, H2oSpec], replacement: String): ListMap[String, H2oSpec] = {
+    features.map{ case(key, value) =>
+      if (key == name) {
+        value match {
+          case d: DoubleH2oSpec => (key, d.copy(spec = replacement))
+          case s: StringH2oSpec => (key, s.copy(spec = replacement))
+        }
       }
-      featureMap + (r -> newSpec)
+      else (key, value)
     }
-    updatedFeatureMap.getOrElse(featureMap)
   }
 
   private[this] def getModelSource(model: Vfs, externalModel: Boolean): ModelSource =
