@@ -258,7 +258,8 @@ object H2oModel extends ParserProviderCompanion
     numMissingThreshold: Option[Int] = None,
     notes: Option[Seq[String]] = None): JsValue = {
     val modelSource = getModelSource(model, externalModel)
-    json(Right(spec), modelSource, id, responseColumn, numMissingThreshold, notes)
+    val features = getFeatures(spec)
+    json(spec.toString, features, modelSource, id, responseColumn, numMissingThreshold, notes)
   }
 
   @throws(classOf[IllegalArgumentException])
@@ -269,7 +270,8 @@ object H2oModel extends ParserProviderCompanion
     numMissingThreshold: Option[Int],
     notes: Option[Seq[String]]): JsValue = {
     val modelSource = getLocalSource(model.getBytes)
-    json(Left(spec.parseJson.asJsObject), modelSource, id, responseColumn, numMissingThreshold, notes)
+    val features = getFeatures(spec.parseJson.asJsObject)
+    json(spec, features, modelSource, id, responseColumn, numMissingThreshold, notes)
   }
 
   /**
@@ -283,14 +285,14 @@ object H2oModel extends ParserProviderCompanion
     */
   @throws(classOf[IllegalArgumentException])
   private[eharmony] def json(
-    spec: Either[JsObject, Vfs],
+    spec: String,
+    features: Option[ListMap[String, H2oSpec]],
     modelSource: ModelSource,
     id: ModelId,
     responseColumn: Option[String],
     numMissingThreshold: Option[Int],
     notes: Option[Seq[String]]): JsValue = {
     val notesList = notes filter {_.nonEmpty}
-    val features = spec.fold(getFeatures, getFeatures)
 
     features.map { fs =>
       val updatedFs = removeResponse(responseColumn, fs)
