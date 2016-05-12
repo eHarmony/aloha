@@ -83,7 +83,7 @@ extends AlohaReadable[Try[B]]
 
     val clazz = classLoader.loadClass(compilationUnit.className)
 
-    // Use the package from clazz to get the proper subdirectory
+    // Use the package from clazz to get the proper subdirectory.
     val pkg = Try { clazz.getPackage.getName } getOrElse ""
     val prependPkg = if (pkg == "") "" else s"$pkg."
     val dir = pkg.split('.').
@@ -96,9 +96,8 @@ extends AlohaReadable[Try[B]]
     // instantiate but at prediction time, the model will emit a ClassNotFound error
     // when trying to access the auxiliary classes.
 
-    // We assume the because all classes appear in the same generated h2o model file,
-    // they are have the same package which is the same package as the only in the
-    // compilationUnit.
+    // We assume that because all classes appear in the same generated h2o model file,
+    // they have the same package which is the same package as the package in clazz.
     dir.listFiles().filter { _.getCanonicalPath.endsWith(".class") }.foreach { f =>
       val className = f.getName.dropRight(6)   // ".class".length == 6
       classLoader.loadClass(s"$prependPkg$className")
