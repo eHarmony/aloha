@@ -60,7 +60,7 @@ extends AlohaReadable[Try[B]]
                      diagnosticCollector: DiagnosticCollector[JavaFileObject]) = Try {
     val locations = asJavaIterable(Seq("-d", compileDir.getCanonicalPath))
     val compiler = ToolProvider.getSystemJavaCompiler
-    val fileManager = compiler.getStandardFileManager(null, locale, charSet)
+//    val fileManager = compiler.getStandardFileManager(null, locale, charSet)
     compiler.getTask(null, null, diagnosticCollector, locations, null, Iterable(compilationUnit))
   }
 
@@ -80,7 +80,31 @@ extends AlohaReadable[Try[B]]
 
   def instantiate(compilationUnit: InMemoryJavaSource[B], compileDir: File) = Try[Any] {
     val classLoader = new URLClassLoader(Array(compileDir.toURI.toURL))
+
     val clazz = classLoader.loadClass(compilationUnit.className)
+
+    // Use the package from clazz to get the proper subdirectory
+    val pkg = Try { clazz.getPackage.getName } getOrElse ""
+    val prependPkg = if (pkg == "") "" else s"$pkg."
+    val dir = pkg.split('.').
+                  filterNot(0 == _.length).
+                  foldLeft(compileDir)(new File(_, _))
+
+    // Eagerly load all classes.  This is done because H2o can generate POJOs with
+    // auxiliary classes outside the main GenModel POJO.  If there are auxiliary
+    // non inner classes and the classes weren't loaded, the Model will compile and
+    // instantiate but at prediction time, the model will emit a ClassNotFound error
+    // when trying to access the auxiliary classes.
+
+    // We assume the because all classes appear in the same generated h2o model file,
+    // they are have the same package which is the same package as the only in the
+    // compilationUnit.
+    dir.listFiles().filter { _.getCanonicalPath.endsWith(".class") }.foreach { f =>
+      val className = f.getName.dropRight(6)   // ".class".length == 6
+      classLoader.loadClass(s"$prependPkg$className")
+    }
+
+    // Assume empty constructor for GenModel.
     clazz.newInstance()
   }
 

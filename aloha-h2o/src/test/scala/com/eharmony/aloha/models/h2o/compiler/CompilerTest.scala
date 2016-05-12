@@ -1,6 +1,7 @@
 package com.eharmony.aloha.models.h2o.compiler
 
 import hex.genmodel.GenModel
+import hex.genmodel.easy.prediction.RegressionModelPrediction
 import hex.genmodel.easy.{RowData, EasyPredictModelWrapper}
 import org.junit.Assert._
 import org.junit.Test
@@ -35,5 +36,17 @@ class CompilerTest {
     val genModel = compiler.fromResource("com/eharmony/aloha/models/h2o/domain.glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce37.java")
     val y: GenModel = genModel.get
     assertTrue(classOf[GenModel].isAssignableFrom(y.getClass))
+  }
+
+  @Test def testDrfCompiles(): Unit = {
+    val compiler = new Compiler[GenModel]()
+    val modelTry = compiler.fromResource("com/eharmony/aloha/models/h2o/DRF_model_1463074092542_1.java")
+    val model = new EasyPredictModelWrapper(modelTry.get)
+    val complexPrediction = model.predict(new RowData)
+    val pred = complexPrediction match {
+      case r: RegressionModelPrediction => Option(r.value)
+      case _ => None
+    }
+    assertEquals(Option(0.0), pred)
   }
 }
