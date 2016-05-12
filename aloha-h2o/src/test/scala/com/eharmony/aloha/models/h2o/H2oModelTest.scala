@@ -22,7 +22,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 import spray.json.DefaultJsonProtocol._
 import org.apache.commons.vfs2.VFS
-import spray.json.JsonReader
+import spray.json.{JsArray, JsonReader, pimpString}
 
 import scala.collection.{immutable => sci}
 import scala.language.implicitConversions
@@ -116,13 +116,20 @@ class H2oModelTest extends Logging {
   }
 
   @Test def testNotesAppear(): Unit = {
-
     val spec = Vfs.fromVfsType(VfsType.vfs2)("res:com/eharmony/aloha/models/h2o/test_spec.json")
     val model = Vfs.fromVfsType(VfsType.vfs2)("res:com/eharmony/aloha/models/h2o/glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.java")
     val notes = Option(Vector("this is a note", "another note"))
-    val jsValue = H2oModel.json(spec, model, ModelId(1, "test-model"), true, None, notes)
+    val jsValue = H2oModel.json(spec, model, ModelId(1, "test-model"), None, true, None, notes)
     val fields = jsValue.asJsObject.fields
     assertEquals(notes, fields.get("notes").map(_.convertTo[Vector[String]]))
+  }
+
+  @Test def removeLabel(): Unit = {
+    val spec = Vfs.fromVfsType(VfsType.vfs2)("res:com/eharmony/aloha/models/h2o/test_spec.json")
+    val model = Vfs.fromVfsType(VfsType.vfs2)("res:com/eharmony/aloha/models/h2o/glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.java")
+    val jsValue = H2oModel.json(spec, model, ModelId(1, "test-model"), Option("Sex"), true)
+    val modelFeatures = jsValue.asJsObject.fields("features").asJsObject.fields
+    assertFalse(modelFeatures.contains("Sex"))
   }
 
   @Test def testMissingNonCategorical(): Unit = {
