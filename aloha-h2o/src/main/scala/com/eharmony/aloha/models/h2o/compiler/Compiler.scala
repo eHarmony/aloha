@@ -60,7 +60,6 @@ extends AlohaReadable[Try[B]]
                      diagnosticCollector: DiagnosticCollector[JavaFileObject]) = Try {
     val locations = asJavaIterable(Seq("-d", compileDir.getCanonicalPath))
     val compiler = ToolProvider.getSystemJavaCompiler
-//    val fileManager = compiler.getStandardFileManager(null, locale, charSet)
     compiler.getTask(null, null, diagnosticCollector, locations, null, Iterable(compilationUnit))
   }
 
@@ -74,7 +73,6 @@ extends AlohaReadable[Try[B]]
         if (b) Success(diagnostics)
         else   Failure(CompilationError(diagnostics))
       },
-      // Failure(new Exception(s"Compilation failed for ${compilationUnit.className}."))
       f => Failure(f)
     )
 
@@ -83,12 +81,12 @@ extends AlohaReadable[Try[B]]
 
     val clazz = classLoader.loadClass(compilationUnit.className)
 
-    // Use the package from clazz to get the proper subdirectory.
-    val pkg = Try { clazz.getPackage.getName } getOrElse ""
-    val prependPkg = if (pkg == "") "" else s"$pkg."
-    val dir = pkg.split('.').
-                  filterNot(0 == _.length).
-                  foldLeft(compileDir)(new File(_, _))
+    // Use the package from clazz to get the proper subdirectory.  Ends with '.' if
+    // clazz is in a package.  Otherwise empty string.
+    val pkg = Try { clazz.getPackage.getName } map { p => s"$p."} getOrElse ""
+
+    // This potential dot at the end of pkg is OK because of the filterNot.
+    val dir = pkg.split('.').filterNot(0 == _.length).foldLeft(compileDir)(new File(_, _))
 
     // Eagerly load all classes.  This is done because H2o can generate POJOs with
     // auxiliary classes outside the main GenModel POJO.  If there are auxiliary
@@ -99,8 +97,10 @@ extends AlohaReadable[Try[B]]
     // We assume that because all classes appear in the same generated h2o model file,
     // they have the same package which is the same package as the package in clazz.
     dir.listFiles().filter { _.getCanonicalPath.endsWith(".class") }.foreach { f =>
-      val className = f.getName.dropRight(6)   // ".class".length == 6
-      classLoader.loadClass(s"$prependPkg$className")
+      // Drop the extension for a class file to form the class simple names.
+      // Notice the '$' at the end.  That is important!
+      val className = pkg + f.getName.replaceFirst("""\.class$""", "")
+      classLoader.loadClass(className)
     }
 
     // Assume empty constructor for GenModel.
