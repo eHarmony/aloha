@@ -83,7 +83,7 @@ extends AlohaReadable[Try[B]]
 
     // Use the package from clazz to get the proper subdirectory.  Ends with '.' if
     // clazz is in a package.  Otherwise empty string.
-    val pkg = Try { clazz.getPackage.getName } map { p => s"$p."} getOrElse ""
+    val pkg = Option(clazz.getPackage).fold("")(p => s"${p.getName}.")
 
     // This potential dot at the end of pkg is OK because of the filterNot.
     val dir = pkg.split('.').filterNot(0 == _.length).foldLeft(compileDir)(new File(_, _))
