@@ -258,8 +258,8 @@ object H2oModel extends ParserProviderCompanion
     numMissingThreshold: Option[Int] = None,
     notes: Option[Seq[String]] = None): JsValue = {
     val modelSource = getModelSource(model, externalModel)
-    val features = getFeatures(spec)
-    json(spec.toString, features, modelSource, id, responseColumn, numMissingThreshold, notes)
+    val features = getFeatures(spec, responseColumn)
+    json(spec.toString, features, modelSource, id, numMissingThreshold, notes)
   }
 
   @throws(classOf[IllegalArgumentException])
@@ -270,8 +270,8 @@ object H2oModel extends ParserProviderCompanion
     numMissingThreshold: Option[Int],
     notes: Option[Seq[String]]): JsValue = {
     val modelSource = getLocalSource(model.getBytes)
-    val features = getFeatures(spec.parseJson.asJsObject)
-    json(spec, features, modelSource, id, responseColumn, numMissingThreshold, notes)
+    val features = getFeatures(spec.parseJson.asJsObject, responseColumn)
+    json(spec, features, modelSource, id, numMissingThreshold, notes)
   }
 
   /**
@@ -289,14 +289,12 @@ object H2oModel extends ParserProviderCompanion
     features: Option[ListMap[String, H2oSpec]],
     modelSource: ModelSource,
     id: ModelId,
-    responseColumn: Option[String],
     numMissingThreshold: Option[Int],
     notes: Option[Seq[String]]): JsValue = {
     val notesList = notes filter {_.nonEmpty}
 
     features.map { fs =>
-      val updatedFs = responseColumn.fold(fs)(fs - _)
-      val ast = H2oAst(H2oModel.parser.modelType, id, modelSource, updatedFs, numMissingThreshold, notesList)
+      val ast = H2oAst(H2oModel.parser.modelType, id, modelSource, fs, numMissingThreshold, notesList)
       ast.toJson
     } getOrElse { throw new IllegalArgumentException(s"Couldn't get features from $spec.") }
   }
@@ -309,17 +307,18 @@ object H2oModel extends ParserProviderCompanion
   private[this] def getLocalSource(modelBytes: Array[Byte]) =
     Base64StringSource(new String(Base64.encodeBase64(modelBytes)))
 
-  private[this] def getFeatures(spec: Vfs): Option[ListMap[String, H2oSpec]] = {
-    getFeatures(spec.asString().parseJson.asJsObject)
+  private[this] def getFeatures(spec: Vfs, responseColumn: Option[String]): Option[ListMap[String, H2oSpec]] = {
+    getFeatures(spec.asString().parseJson.asJsObject, responseColumn)
   }
 
-  private[this] def getFeatures(spec: JsObject): Option[ListMap[String, H2oSpec]] = {
+  private[this] def getFeatures(spec: JsObject, responseColumn: Option[String]): Option[ListMap[String, H2oSpec]] = {
     spec.getFields("features") match {
       case Seq(JsArray(fs)) =>
-        Some(ListMap(fs.map { f =>
+        val features = fs.collect { case f if !responseColumn.exists(_ == f.asJsObject.fields("name").toString.replaceAll("\"", "")) =>
           val s = f.convertTo[H2oSpec]
           (s.name, s)
-        }:_*))
+        }
+        Some(ListMap(features:_*))
       case _ => None
     }
   }
