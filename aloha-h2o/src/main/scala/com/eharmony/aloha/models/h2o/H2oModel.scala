@@ -9,7 +9,7 @@ import com.eharmony.aloha.models.BaseModel
 import com.eharmony.aloha.models.h2o.H2oModel.Features
 import com.eharmony.aloha.models.h2o.categories._
 import com.eharmony.aloha.models.h2o.compiler.Compiler
-import com.eharmony.aloha.models.h2o.json.{StringH2oSpec, DoubleH2oSpec, H2oAst, H2oSpec}
+import com.eharmony.aloha.models.h2o.json.{H2oAst, H2oSpec}
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.aloha.score.basic.ModelOutput
@@ -22,6 +22,7 @@ import hex.genmodel.easy.exception.PredictUnknownCategoricalLevelException
 import hex.genmodel.easy.{EasyPredictModelWrapper, RowData}
 import org.apache.commons.codec.binary.Base64
 import spray.json._
+import spray.json.DefaultJsonProtocol.StringJsonFormat
 
 import scala.annotation.tailrec
 import scala.collection.immutable.ListMap
@@ -314,7 +315,7 @@ object H2oModel extends ParserProviderCompanion
   private[this] def getFeatures(spec: JsObject, responseColumn: Option[String]): Option[ListMap[String, H2oSpec]] = {
     spec.getFields("features") match {
       case Seq(JsArray(fs)) =>
-        val features = fs.collect { case f if !responseColumn.exists(_ == f.asJsObject.fields("name").toString.replaceAll("\"", "")) =>
+        val features = fs.collect { case f if !responseColumn.exists(_ == f.asJsObject.fields("name").convertTo[String]) =>
           val s = f.convertTo[H2oSpec]
           (s.name, s)
         }
