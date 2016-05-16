@@ -73,6 +73,10 @@ case object ClusteringModel extends H2oModelCategory[Int] {
 
 case object BinomialModel extends H2oModelCategory[Double] {
   protected[this] def ri = RefInfo[Double]
+  // classProbabilities is an Array of size 2.  We are assuming that a binomial model has a positive and negative class.
+  // We are also assuming that the label for the negative class comes lexographically before the label for the positive
+  // class.  If these assumptions are met then classProbabilities(1) will be the probability that the given example
+  // is positive.
   protected[this] def predictionFn(model: EasyPredictModelWrapper) =
     d => H2oModelCategory.filterWellConditionedScalar(model.predictBinomial(d).classProbabilities(1))
 }
