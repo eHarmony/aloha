@@ -315,9 +315,15 @@ object H2oModel extends ParserProviderCompanion
   private[this] def getFeatures(spec: JsObject, responseColumn: Option[String]): Option[ListMap[String, H2oSpec]] = {
     spec.getFields("features") match {
       case Seq(JsArray(fs)) =>
-        val features = fs.collect { case f if !responseColumn.exists(_ == f.asJsObject.fields("name").convertTo[String]) =>
+
+        // Note that the it is being assumed that an H2oSpec cannot be instantiated for the response column
+        // hence we cannot call f.convertTo[H2oSpec] on the response column.
+        def convertToSpec(f: JsValue) = {
           val s = f.convertTo[H2oSpec]
           (s.name, s)
+        }
+        val features = responseColumn.fold(fs.map(convertToSpec)){ r =>
+          fs.collect { case f if r != f.asJsObject.fields("name").convertTo[String] => convertToSpec(f)}
         }
         Some(ListMap(features:_*))
       case _ => None
