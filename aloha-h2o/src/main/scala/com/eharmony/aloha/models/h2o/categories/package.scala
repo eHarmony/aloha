@@ -19,11 +19,11 @@ case class TypeCoercionNotFound(modelCategory: ModelCategory) extends Prediction
 
 
 sealed trait H2oModelCategory[C] {
-  protected[this] implicit def ri: RefInfo[C]
+  protected[this] def ri: RefInfo[C]
   protected[this] def predictionFn(model: EasyPredictModelWrapper): RowData => Either[IllConditioned, C]
 
   final def predictor[B: RefInfo](model: EasyPredictModelWrapper): Either[TypeCoercionNotFound, RowData => Either[IllConditioned, B]] =
-    TypeCoercion[C, B] map { coercion =>
+    TypeCoercion[C, B](ri, RefInfo[B]) map { coercion =>
       predictionFn(model) andThen (_.right map coercion)
     } toRight noCoercionFound(model)
 
@@ -66,19 +66,23 @@ object H2oModelCategory {
 }
 
 case object ClusteringModel extends H2oModelCategory[Int] {
-  protected[this] implicit def ri = RefInfo[Int]
+  protected[this] def ri = RefInfo[Int]
   protected[this] def predictionFn(model: EasyPredictModelWrapper) =
     d => Right(model.predictClustering(d).cluster)
 }
 
 case object BinomialModel extends H2oModelCategory[Double] {
-  protected[this] implicit def ri = RefInfo[Double]
+  protected[this] def ri = RefInfo[Double]
+  // classProbabilities is an Array of size 2.  We are assuming that a binomial model has a positive and negative class.
+  // We are also assuming that the label for the negative class comes lexographically before the label for the positive
+  // class.  If these assumptions are met then classProbabilities(1) will be the probability that the given example
+  // is positive.
   protected[this] def predictionFn(model: EasyPredictModelWrapper) =
     d => H2oModelCategory.filterWellConditionedScalar(model.predictBinomial(d).classProbabilities(1))
 }
 
 case object MultinomialModel extends H2oModelCategory[Int] {
-  protected[this] implicit def ri = RefInfo[Int]
+  protected[this] def ri = RefInfo[Int]
   protected[this] def predictionFn(model: EasyPredictModelWrapper) =
     d => {
       val p = model.predictMultinomial(d)
@@ -90,7 +94,7 @@ case object MultinomialModel extends H2oModelCategory[Int] {
 }
 
 case object RegressionModel extends H2oModelCategory[Double] {
-  protected[this] val ri = RefInfo[Double]
+  protected[this] def ri = RefInfo[Double]
   protected[this] def predictionFn(model: EasyPredictModelWrapper) =
     d => H2oModelCategory.filterWellConditionedScalar(model.predictRegression(d).value)
 }
