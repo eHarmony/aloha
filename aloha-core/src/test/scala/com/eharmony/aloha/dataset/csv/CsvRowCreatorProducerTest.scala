@@ -87,7 +87,7 @@ object CsvRowCreatorProducerTest {
         )
 
         val plugin = CompiledSemanticsCsvPlugin(types.toMap)
-        val semantics = CompiledSemantics(TwitterEvalCompiler(classCacheDir = None), plugin, Nil)
+        val semantics = CompiledSemantics(TwitterEvalCompiler(classCacheDir = Option(FileLocations.testGeneratedClasses)), plugin, Nil)
         val csvLines = CsvLines(indices = types.unzip._1.zipWithIndex.toMap, fs = ",")
 
         val lines = csvLines(
