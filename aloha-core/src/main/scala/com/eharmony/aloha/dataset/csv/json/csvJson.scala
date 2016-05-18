@@ -58,18 +58,31 @@ extends DefaultJsonProtocol
 
             val spec = fieldType match {
                 case Some("string") => o.convertTo[CsvColumnWithDefault[String]]
+                case Some("option_string") => o.convertTo[CsvColumnWithDefault[Option[String]]]
                 case Some("double") => o.convertTo[CsvColumnWithDefault[Double]]
+                case Some("option_double") => o.convertTo[CsvColumnWithDefault[Option[Double]]]
                 case Some("float") => o.convertTo[CsvColumnWithDefault[Float]]
+                case Some("option_float") => o.convertTo[CsvColumnWithDefault[Option[Float]]]
                 case Some("long") => o.convertTo[CsvColumnWithDefault[Long]]
+                case Some("option_long") => o.convertTo[CsvColumnWithDefault[Option[Long]]]
                 case Some("int") => o.convertTo[CsvColumnWithDefault[Int]]
+                case Some("option_int") => o.convertTo[CsvColumnWithDefault[Option[Int]]]
                 case Some("short") => o.convertTo[CsvColumnWithDefault[Short]]
+                case Some("option_short") => o.convertTo[CsvColumnWithDefault[Option[Short]]]
                 case Some("byte") => o.convertTo[CsvColumnWithDefault[Byte]]
+                case Some("option_byte") => o.convertTo[CsvColumnWithDefault[Option[Byte]]]
                 case Some("char") => o.convertTo[CsvColumnWithDefault[Char]]
+                case Some("option_char") => o.convertTo[CsvColumnWithDefault[Option[Char]]]
                 case Some("boolean") => o.convertTo[CsvColumnWithDefault[Boolean]]
+                case Some("option_boolean") => o.convertTo[CsvColumnWithDefault[Option[Boolean]]]
                 case Some("enum") if (o.getFields("enumClass") match { case Seq(JsString(_)) => true; case _ => false }) =>
                     o.convertTo[EnumCsvColumn]
+                //case Some("option_enum") if (o.getFields("enumClass") match { case Seq(JsString(_)) => true; case _ => false }) =>
+                //    o.convertTo[Option[EnumCsvColumn]]
                 case Some("enum") if (o.getFields("values") match { case Seq(JsArray(_)) => true; case _ => false }) =>
                     o.convertTo[SyntheticEnumCsvColumn]
+                //case Some("option_enum") if (o.getFields("values") match { case Seq(JsArray(_)) => true; case _ => false }) =>
+                //    o.convertTo[Option[SyntheticEnumCsvColumn]]
                 case None =>
                     debug(s"No type provided.  Assuming Any.  Given: ${o.compactPrint}")
                     o.convertTo[DefaultCsvColumn]
