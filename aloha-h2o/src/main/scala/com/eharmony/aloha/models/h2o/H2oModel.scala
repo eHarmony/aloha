@@ -34,7 +34,7 @@ import scala.util.{Failure, Success, Try}
  */
 final case class H2oModel[-A, +B](
     modelId: ModelIdentity,
-    modelSource: ModelSource,
+    h2oPredictor: RowData => Either[IllConditioned, B],
     featureNames: sci.IndexedSeq[String],
     featureFunctions: sci.IndexedSeq[FeatureFunction[A]],
     numMissingThreshold: Option[Int] = None)(implicit private[this] val scb: ScoreConverter[B])
@@ -47,14 +47,6 @@ final case class H2oModel[-A, +B](
   private[this] val anyRefFF = featureFunctions map {
     case DoubleFeatureFunction(f) => f
     case StringFeatureFunction(f) => f
-  }
-
-  private[this] val h2oPredictor: RowData => Either[IllConditioned, B] = {
-    val sourceFile = new java.io.File(modelSource.localVfs.descriptor)
-    val p = getH2oPredictor(sourceFile, _.fromFile).get
-    if (modelSource.shouldDelete)
-      Try[Unit] { sourceFile.delete() }
-    p
   }
 
   override private[aloha] def getScore(a: A)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = {
@@ -156,22 +148,6 @@ final case class H2oModel[-A, +B](
 
     features(0, anyRefFF.size, new RowData, Map.empty, anyRefFF)
   }
-
-  protected[h2o] def mapRetrievalError[B: RefInfo](genModel: GenModel, retrieval: Either[PredictionFuncRetrievalError, RowData => Either[IllConditioned, B]]) = retrieval match {
-    case Right(f) => Success(f)
-    case Left(UnsupportedModelCategory(category)) => Failure(new UnsupportedOperationException(s"In model ${genModel.getClass.getCanonicalName}: ModelCategory ${category.name} non supported."))
-    case Left(TypeCoercionNotFound(category)) => Failure(new IllegalArgumentException(s"In model ${genModel.getClass.getCanonicalName}: Could not ${category.name} model to Aloha output type: ${RefInfoOps.toString[B]}."))
-  }
-
-  protected[h2o] def getH2oPredictor[C](input: => C, f: AlohaReadable[Try[GenModel]] => C => Try[GenModel]) = {
-    val compiler = new Compiler[GenModel]
-    implicit val rib = scb.ri
-    for {
-      genModel           <- f(compiler)(input)
-      predictorRetrieval = H2oModelCategory.predictor[B](new EasyPredictModelWrapper(genModel))
-      predictor          <- mapRetrievalError[B](genModel, predictorRetrieval)
-    } yield predictor
-  }
 }
 
 /**
@@ -222,8 +198,9 @@ object H2oModel extends ParserProviderCompanion
           case Left(errors) => throw new DeserializationException(errors.mkString("errors: ", "\n        ", ""))
           case Right(featureMap) =>
             val (names, functions) = featureMap.toIndexedSeq.unzip
+            val h2oPredictor = getPredictor(h2o.modelSource)
             H2oModel[A, B](h2o.modelId,
-              h2o.modelSource,
+              h2oPredictor,
               names,
               functions,
               h2o.numMissingThreshold)
@@ -238,6 +215,35 @@ object H2oModel extends ParserProviderCompanion
             right.map(v => (k, v))
         }
     }
+  }
+
+  protected[h2o] def mapRetrievalError[B: RefInfo](genModel: GenModel, retrieval: Either[PredictionFuncRetrievalError, RowData => Either[IllConditioned, B]]) = retrieval match {
+    case Right(f) => Success(f)
+    case Left(UnsupportedModelCategory(category)) => Failure(new UnsupportedOperationException(s"In model ${genModel.getClass.getCanonicalName}: ModelCategory ${category.name} non supported."))
+    case Left(TypeCoercionNotFound(category)) => Failure(new IllegalArgumentException(s"In model ${genModel.getClass.getCanonicalName}: Could not ${category.name} model to Aloha output type: ${RefInfoOps.toString[B]}."))
+  }
+
+  protected[h2o] def getH2oPredictor[B, C](
+    input: => C,
+    f: AlohaReadable[Try[GenModel]] => C => Try[GenModel]
+  )(implicit scb: ScoreConverter[B]) = {
+    val compiler = new Compiler[GenModel]
+    implicit val rib = scb.ri
+    for {
+      genModel           <- f(compiler)(input)
+      predictorRetrieval = H2oModelCategory.predictor[B](new EasyPredictModelWrapper(genModel))
+      predictor          <- mapRetrievalError[B](genModel, predictorRetrieval)
+    } yield predictor
+  }
+
+  private[this] def getPredictor[B](
+    modelSource: ModelSource
+  )(implicit scb: ScoreConverter[B]): RowData => Either[IllConditioned, B] = {
+    val sourceFile = new java.io.File(modelSource.localVfs.descriptor)
+    val p = getH2oPredictor(sourceFile, _.fromFile).get
+    if (modelSource.shouldDelete)
+      Try[Unit] { sourceFile.delete() }
+    p
   }
 
   @throws(classOf[IllegalArgumentException])
