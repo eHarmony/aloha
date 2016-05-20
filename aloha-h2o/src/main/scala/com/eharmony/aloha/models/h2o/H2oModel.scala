@@ -1,5 +1,7 @@
 package com.eharmony.aloha.models.h2o
 
+import java.io.File
+
 import com.eharmony.aloha.factory.{ModelParser, ModelParserWithSemantics, ParserProviderCompanion}
 import com.eharmony.aloha.id.{ModelId, ModelIdentity}
 import com.eharmony.aloha.io.AlohaReadable
@@ -15,6 +17,8 @@ import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.aloha.score.basic.ModelOutput
 import com.eharmony.aloha.score.conversions.ScoreConverter
 import com.eharmony.aloha.semantics.Semantics
+import com.eharmony.aloha.semantics.compiled.CompiledSemantics
+import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import com.eharmony.aloha.semantics.func.GenAggFunc
 import com.eharmony.aloha.util.{EitherHelpers, Logging}
 import hex.genmodel.GenModel
@@ -193,12 +197,13 @@ object H2oModel extends ParserProviderCompanion
     override def modelJsonReader[A, B](semantics: Semantics[A])(implicit jrB: JsonReader[B], scB: ScoreConverter[B]): JsonReader[H2oModel[A, B]] = new JsonReader[H2oModel[A, B]] {
       override def read(json: JsValue): H2oModel[A, B] = {
         val h2o = json.convertTo[H2oAst]
+        val classCacheDir = getClassCacheDir(semantics)
 
         features(h2o.features.toSeq, semantics) match {
           case Left(errors) => throw new DeserializationException(errors.mkString("errors: ", "\n        ", ""))
           case Right(featureMap) =>
             val (names, functions) = featureMap.toIndexedSeq.unzip
-            val h2oPredictor = getPredictor(h2o.modelSource)
+            val h2oPredictor = getPredictor(h2o.modelSource, classCacheDir)
             H2oModel[A, B](h2o.modelId,
               h2oPredictor,
               names,
@@ -217,6 +222,16 @@ object H2oModel extends ParserProviderCompanion
     }
   }
 
+  protected[h2o] def getClassCacheDir[A](semantics: Semantics[A]): Option[File] = {
+    semantics match {
+      case c: CompiledSemantics[A] => c.compiler match {
+        case t: TwitterEvalCompiler => t.classCacheDir
+        case _ => None
+      }
+      case _ => None
+    }
+  }
+
   protected[h2o] def mapRetrievalError[B: RefInfo](genModel: GenModel, retrieval: Either[PredictionFuncRetrievalError, RowData => Either[IllConditioned, B]]) = retrieval match {
     case Right(f) => Success(f)
     case Left(UnsupportedModelCategory(category)) => Failure(new UnsupportedOperationException(s"In model ${genModel.getClass.getCanonicalName}: ModelCategory ${category.name} non supported."))
@@ -225,9 +240,10 @@ object H2oModel extends ParserProviderCompanion
 
   protected[h2o] def getH2oPredictor[B, C](
     input: => C,
-    f: AlohaReadable[Try[GenModel]] => C => Try[GenModel]
+    f: AlohaReadable[Try[GenModel]] => C => Try[GenModel],
+    classCacheDir: Option[File]
   )(implicit scb: ScoreConverter[B]) = {
-    val compiler = new Compiler[GenModel]
+    val compiler = new Compiler[GenModel](classCacheDir)
     implicit val rib = scb.ri
     for {
       genModel           <- f(compiler)(input)
@@ -237,10 +253,11 @@ object H2oModel extends ParserProviderCompanion
   }
 
   private[this] def getPredictor[B](
-    modelSource: ModelSource
+    modelSource: ModelSource,
+    classCacheDir: Option[File]
   )(implicit scb: ScoreConverter[B]): RowData => Either[IllConditioned, B] = {
     val sourceFile = new java.io.File(modelSource.localVfs.descriptor)
-    val p = getH2oPredictor(sourceFile, _.fromFile).get
+    val p = getH2oPredictor(sourceFile, _.fromFile, classCacheDir).get
     if (modelSource.shouldDelete)
       Try[Unit] { sourceFile.delete() }
     p
