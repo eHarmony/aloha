@@ -32,10 +32,6 @@ import scala.util.{Failure, Success, Try}
 /**
  * Created by deak on 9/30/15.
  */
-// TODO: Need to make sure the model source is used rather than a model.
-//       This is because we want to protected against a user compiling a model locally and serializing it.
-//       Then deserializing on a cluster where the class files don't exist.  If we follow the same methodology as
-//       the VW model, then we can get the same guarantees.
 final case class H2oModel[-A, +B](
     modelId: ModelIdentity,
     modelSource: ModelSource,
@@ -48,22 +44,18 @@ final case class H2oModel[-A, +B](
   // Because H2o's RowData object is essentially a Map of String to Object, we unapply the wrapper
   // and throw away the type information on the function return type.  We have type safety because
   // FeatureFunction is sealed (ADT).
-  @transient private[this] lazy val lazyAnyRefFF = featureFunctions map {
+  private[this] val anyRefFF = featureFunctions map {
     case DoubleFeatureFunction(f) => f
     case StringFeatureFunction(f) => f
   }
 
-  @transient private[this] lazy val h2oPredictor: RowData => Either[IllConditioned, B] = {
+  private[this] val h2oPredictor: RowData => Either[IllConditioned, B] = {
     val sourceFile = new java.io.File(modelSource.localVfs.descriptor)
     val p = getH2oPredictor(sourceFile, _.fromFile).get
     if (modelSource.shouldDelete)
       Try[Unit] { sourceFile.delete() }
     p
   }
-
-  // Force initialization of lazy vals.
-  require(lazyAnyRefFF != null)
-  require(h2oPredictor != null)
 
   override private[aloha] def getScore(a: A)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = {
     val f = constructFeatures(a)
@@ -162,9 +154,7 @@ final case class H2oModel[-A, +B](
         case None    => features(i + 1, n, rowData, missing + (ff(i).specification -> ff(i).accessorOutputMissing(a)), ff)
       }
 
-    // Store lazyAnyRefFF to a local variable to avoid the repeated cost of asking for the lazy val.
-    val ff = lazyAnyRefFF
-    features(0, ff.size, new RowData, Map.empty, ff)
+    features(0, anyRefFF.size, new RowData, Map.empty, anyRefFF)
   }
 
   protected[h2o] def mapRetrievalError[B: RefInfo](genModel: GenModel, retrieval: Either[PredictionFuncRetrievalError, RowData => Either[IllConditioned, B]]) = retrieval match {
