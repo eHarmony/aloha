@@ -45,7 +45,7 @@ final case class H2oModel[-A, +B](
   extends BaseModel[A, B]
      with Logging {
 
-  // Because H2o's RowData object is essentially a Map of String to Object, we unapply the wrapper
+  // Because H2O's RowData object is essentially a Map of String to Object, we unapply the wrapper
   // and throw away the type information on the function return type.  We have type safety because
   // FeatureFunction is sealed (ADT).
   @transient private[this] lazy val lazyAnyRefFF = featureFunctions map {
