@@ -36,12 +36,12 @@ import scala.util.{Failure, Success, Try}
 /**
  * Created by deak on 9/30/15.
  */
-final case class H2oModel[-A, +B](
+final case class H2oModel[-A, +B : ScoreConverter](
     modelId: ModelIdentity,
     h2OModel: GenModel,
     featureNames: sci.IndexedSeq[String],
     featureFunctions: sci.IndexedSeq[FeatureFunction[A]],
-    numMissingThreshold: Option[Int] = None)(implicit private[this] val scb: ScoreConverter[B], implicit private[this] val rib: RefInfo[B])
+    numMissingThreshold: Option[Int] = None)
   extends BaseModel[A, B]
      with Logging {
 
@@ -54,19 +54,13 @@ final case class H2oModel[-A, +B](
   }
 
   @transient private[this] lazy val h2OPredictor: (RowData) => Either[IllConditioned, B] = {
-    val retrieval = H2oModelCategory.predictor[B](new EasyPredictModelWrapper(h2OModel))
-    mapRetrievalError[B](retrieval).get
+    val retrieval = H2oModelCategory.predictor[B](new EasyPredictModelWrapper(h2OModel))(implicitly[ScoreConverter[B]].ri)
+    H2oModel.mapRetrievalError[B](retrieval)(implicitly[ScoreConverter[B]].ri).get
   }
 
   // Force initialization of lazy vals.
   require(lazyAnyRefFF != null)
   require(h2OPredictor != null)
-
-  protected[h2o] def mapRetrievalError[B: RefInfo](retrieval: Either[PredictionFuncRetrievalError, RowData => Either[IllConditioned, B]]) = retrieval match {
-    case Right(f) => Success(f)
-    case Left(UnsupportedModelCategory(category)) => Failure(new UnsupportedOperationException(s"In model ${h2OModel.getClass.getCanonicalName}: ModelCategory ${category.name} non supported."))
-    case Left(TypeCoercionNotFound(category)) => Failure(new IllegalArgumentException(s"In model ${h2OModel.getClass.getCanonicalName}: Could not ${category.name} model to Aloha output type: ${RefInfoOps.toString[B]}."))
-  }
 
   override private[aloha] def getScore(a: A)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = {
     val f = constructFeatures(a)
@@ -221,7 +215,6 @@ object H2oModel extends ParserProviderCompanion
           case Right(featureMap) =>
             val (names, functions) = featureMap.toIndexedSeq.unzip
             val genModel = getGenModelFromFile(h2o.modelSource, classCacheDir)
-            implicit val rib = scB.ri
             H2oModel[A, B](h2o.modelId,
               genModel,
               names,
@@ -248,6 +241,12 @@ object H2oModel extends ParserProviderCompanion
       }
       case _ => None
     }
+  }
+
+  protected[h2o] def mapRetrievalError[B: RefInfo](retrieval: Either[PredictionFuncRetrievalError, RowData => Either[IllConditioned, B]]) = retrieval match {
+    case Right(f) => Success(f)
+    case Left(UnsupportedModelCategory(category)) => Failure(new UnsupportedOperationException(s"In model ${classOf[H2oModel[_, _]].getCanonicalName}: ModelCategory ${category.name} non supported."))
+    case Left(TypeCoercionNotFound(category)) => Failure(new IllegalArgumentException(s"In model ${classOf[H2oModel[_, _]].getCanonicalName}: Could not ${category.name} model to Aloha output type: ${RefInfoOps.toString[B]}."))
   }
 
   protected[h2o] def getGenModel[B, C](
