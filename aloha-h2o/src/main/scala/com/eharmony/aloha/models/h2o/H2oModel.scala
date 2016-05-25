@@ -1,5 +1,7 @@
 package com.eharmony.aloha.models.h2o
 
+import java.io.File
+
 import com.eharmony.aloha.factory.{ModelParser, ModelParserWithSemantics, ParserProviderCompanion}
 import com.eharmony.aloha.id.{ModelId, ModelIdentity}
 import com.eharmony.aloha.io.AlohaReadable
@@ -15,6 +17,8 @@ import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.aloha.score.basic.ModelOutput
 import com.eharmony.aloha.score.conversions.ScoreConverter
 import com.eharmony.aloha.semantics.Semantics
+import com.eharmony.aloha.semantics.compiled.CompiledSemantics
+import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import com.eharmony.aloha.semantics.func.GenAggFunc
 import com.eharmony.aloha.util.{EitherHelpers, Logging}
 import hex.genmodel.GenModel
@@ -32,20 +36,16 @@ import scala.util.{Failure, Success, Try}
 /**
  * Created by deak on 9/30/15.
  */
-// TODO: Need to make sure the model source is used rather than a model.
-//       This is because we want to protected against a user compiling a model locally and serializing it.
-//       Then deserializing on a cluster where the class files don't exist.  If we follow the same methodology as
-//       the VW model, then we can get the same guarantees.
-final case class H2oModel[-A, +B](
+final case class H2oModel[-A, +B : ScoreConverter](
     modelId: ModelIdentity,
-    modelSource: ModelSource,
+    h2OModel: GenModel,
     featureNames: sci.IndexedSeq[String],
     featureFunctions: sci.IndexedSeq[FeatureFunction[A]],
-    numMissingThreshold: Option[Int] = None)(implicit private[this] val scb: ScoreConverter[B])
+    numMissingThreshold: Option[Int] = None)
   extends BaseModel[A, B]
      with Logging {
 
-  // Because H2o's RowData object is essentially a Map of String to Object, we unapply the wrapper
+  // Because H2O's RowData object is essentially a Map of String to Object, we unapply the wrapper
   // and throw away the type information on the function return type.  We have type safety because
   // FeatureFunction is sealed (ADT).
   @transient private[this] lazy val lazyAnyRefFF = featureFunctions map {
@@ -53,17 +53,14 @@ final case class H2oModel[-A, +B](
     case StringFeatureFunction(f) => f
   }
 
-  @transient private[this] lazy val h2oPredictor: RowData => Either[IllConditioned, B] = {
-    val sourceFile = new java.io.File(modelSource.localVfs.descriptor)
-    val p = getH2oPredictor(sourceFile, _.fromFile).get
-    if (modelSource.shouldDelete)
-      Try[Unit] { sourceFile.delete() }
-    p
+  @transient private[this] lazy val h2OPredictor: (RowData) => Either[IllConditioned, B] = {
+    val retrieval = H2oModelCategory.predictor[B](new EasyPredictModelWrapper(h2OModel))(implicitly[ScoreConverter[B]].ri)
+    H2oModel.mapRetrievalError[B](retrieval)(implicitly[ScoreConverter[B]].ri).get
   }
 
   // Force initialization of lazy vals.
   require(lazyAnyRefFF != null)
-  require(h2oPredictor != null)
+  require(h2OPredictor != null)
 
   override private[aloha] def getScore(a: A)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = {
     val f = constructFeatures(a)
@@ -80,7 +77,7 @@ final case class H2oModel[-A, +B](
   }
 
   protected[this] def predict(f: Features[RowData])(implicit audit: Boolean) =
-    h2oPredictor(f.features).fold(ill => failure(Seq(ill.errorMsg), getMissingVariables(f.missing)),
+    h2OPredictor(f.features).fold(ill => failure(Seq(ill.errorMsg), getMissingVariables(f.missing)),
                                   s   => success(s))
 
   /**
@@ -166,22 +163,6 @@ final case class H2oModel[-A, +B](
     val ff = lazyAnyRefFF
     features(0, ff.size, new RowData, Map.empty, ff)
   }
-
-  protected[h2o] def mapRetrievalError[B: RefInfo](genModel: GenModel, retrieval: Either[PredictionFuncRetrievalError, RowData => Either[IllConditioned, B]]) = retrieval match {
-    case Right(f) => Success(f)
-    case Left(UnsupportedModelCategory(category)) => Failure(new UnsupportedOperationException(s"In model ${genModel.getClass.getCanonicalName}: ModelCategory ${category.name} non supported."))
-    case Left(TypeCoercionNotFound(category)) => Failure(new IllegalArgumentException(s"In model ${genModel.getClass.getCanonicalName}: Could not ${category.name} model to Aloha output type: ${RefInfoOps.toString[B]}."))
-  }
-
-  protected[h2o] def getH2oPredictor[C](input: => C, f: AlohaReadable[Try[GenModel]] => C => Try[GenModel]) = {
-    val compiler = new Compiler[GenModel]
-    implicit val rib = scb.ri
-    for {
-      genModel           <- f(compiler)(input)
-      predictorRetrieval = H2oModelCategory.predictor[B](new EasyPredictModelWrapper(genModel))
-      predictor          <- mapRetrievalError[B](genModel, predictorRetrieval)
-    } yield predictor
-  }
 }
 
 /**
@@ -227,13 +208,15 @@ object H2oModel extends ParserProviderCompanion
     override def modelJsonReader[A, B](semantics: Semantics[A])(implicit jrB: JsonReader[B], scB: ScoreConverter[B]): JsonReader[H2oModel[A, B]] = new JsonReader[H2oModel[A, B]] {
       override def read(json: JsValue): H2oModel[A, B] = {
         val h2o = json.convertTo[H2oAst]
+        val classCacheDir = getClassCacheDir(semantics)
 
         features(h2o.features.toSeq, semantics) match {
           case Left(errors) => throw new DeserializationException(errors.mkString("errors: ", "\n        ", ""))
           case Right(featureMap) =>
             val (names, functions) = featureMap.toIndexedSeq.unzip
+            val genModel = getGenModelFromFile(h2o.modelSource, classCacheDir)
             H2oModel[A, B](h2o.modelId,
-              h2o.modelSource,
+              genModel,
               names,
               functions,
               h2o.numMissingThreshold)
@@ -248,6 +231,42 @@ object H2oModel extends ParserProviderCompanion
             right.map(v => (k, v))
         }
     }
+  }
+
+  protected[h2o] def getClassCacheDir[A](semantics: Semantics[A]): Option[File] = {
+    semantics match {
+      case c: CompiledSemantics[A] => c.compiler match {
+        case t: TwitterEvalCompiler => t.classCacheDir
+        case _ => None
+      }
+      case _ => None
+    }
+  }
+
+  protected[h2o] def mapRetrievalError[B: RefInfo](retrieval: Either[PredictionFuncRetrievalError, RowData => Either[IllConditioned, B]]) = retrieval match {
+    case Right(f) => Success(f)
+    case Left(UnsupportedModelCategory(category)) => Failure(new UnsupportedOperationException(s"In model ${classOf[H2oModel[_, _]].getCanonicalName}: ModelCategory ${category.name} non supported."))
+    case Left(TypeCoercionNotFound(category)) => Failure(new IllegalArgumentException(s"In model ${classOf[H2oModel[_, _]].getCanonicalName}: Could not ${category.name} model to Aloha output type: ${RefInfoOps.toString[B]}."))
+  }
+
+  protected[h2o] def getGenModel[B, C](
+    input: => C,
+    f: AlohaReadable[Try[GenModel]] => C => Try[GenModel],
+    classCacheDir: Option[File]
+  ) = {
+    val compiler = new Compiler[GenModel](classCacheDir)
+    f(compiler)(input)
+  }
+
+  private[this] def getGenModelFromFile[B](
+    modelSource: ModelSource,
+    classCacheDir: Option[File]
+  )(implicit scb: ScoreConverter[B]): GenModel = {
+    val sourceFile = new java.io.File(modelSource.localVfs.descriptor)
+    val p = getGenModel(sourceFile, _.fromFile, classCacheDir).get
+    if (modelSource.shouldDelete)
+      Try[Unit] { sourceFile.delete() }
+    p
   }
 
   @throws(classOf[IllegalArgumentException])
