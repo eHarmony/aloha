@@ -59,6 +59,7 @@ extends DefaultJsonProtocol
     // Need to for some reason name the fields explicitly here...
     private[this] implicit val enumCsvColumnSpecFormat: RootJsonFormat[EnumCsvColumn] = jsonFormat(EnumCsvColumn.apply, "name", "spec", "enumClass")
     private[this] implicit val syntheticEnumCsvColumnSpecFormat: RootJsonFormat[SyntheticEnumCsvColumn] = jsonFormat(SyntheticEnumCsvColumn.apply, "name", "spec", "values", "defVal")
+    private[this] implicit val optionSyntheticEnumCsvColumnSpecFormat: RootJsonFormat[OptionSyntheticEnumCsvColumn] = jsonFormat(OptionSyntheticEnumCsvColumn.apply, "name", "spec", "values", "defVal")
 
     /**
      * Important.  If a type is not supplied, Double is assumed.
@@ -118,7 +119,9 @@ extends DefaultJsonProtocol
                             o.convertTo(OptionEnumCsvColumn.oeccFormat(clazz))
                         case _ => o.convertTo[EnumCsvColumn]
                     } orElse {
-                        Option(o.convertTo[SyntheticEnumCsvColumn])
+                        if (optional)
+                            Option(o.convertTo[OptionSyntheticEnumCsvColumn])
+                        else Option(o.convertTo[SyntheticEnumCsvColumn])
                     } getOrElse {
                         throw new DeserializationException(s"Couldn't create enum type: $o")
                     }
