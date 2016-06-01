@@ -14,7 +14,15 @@ import scala.util.Try
 /**
   * Note that the codomain of functions produced from a CsvColumn, `c`, is `Option[c.ColType]`.
   * This is so that functions with optional variables can be treated the same way as functions
-  * with no variables or only required variables.  In order to accomplish this, we need to
+  * with no variables or only required variables.  In order to accomplish this, we need to use
+  * `Option` so that if a variable is missing the feature output is `None`.  If all variables
+  * are present, it can be a `Some` that wraps the user-designed feature's functionality.
+  *
+  * We can go even further and allow the feature author to return an `Option` directly and then
+  * fall back to the `defVal` prodvided in the specification if the function returns `None`.
+  *
+  * This is how the feature function compilation works.  It does something like the following:
+  *
   * {{{
   * val semantics: CompiledSemantics[A] = ???
   * val c: CsvColumn = ???
