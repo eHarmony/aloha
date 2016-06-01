@@ -46,6 +46,15 @@ trait JavaJsonFormats {
         def write(i: jl.Double) = DoubleJsonFormat write i
         def read(json: JsValue) = DoubleJsonFormat read json
     }
+
+    def enumFormat[E <: Enum[E]](clas: Class[E]) = new JsonFormat[E] {
+        val lookup = clas.getEnumConstants.map{ c => c.name -> c }.toMap
+        override def write(e: E): JsValue = JsString(e.name())
+        override def read(json: JsValue): E = json match {
+            case JsString(v) => lookup.getOrElse(v, throw new DeserializationException(s" ${clas.getCanonicalName} doesn't have a value: $v"))
+            case d           => throw new DeserializationException(s"Expected JsString, Found ${d.getClass.getSimpleName}")
+        }
+    }
 }
 
 object ScalaJsonFormats extends ScalaJsonFormats

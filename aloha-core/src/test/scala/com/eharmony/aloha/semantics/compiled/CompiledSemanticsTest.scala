@@ -16,6 +16,25 @@ import org.junit.runners.BlockJUnit4ClassRunner
 class CompiledSemanticsTest {
     private[this] val compiler = TwitterEvalCompiler(classCacheDir = Option(FileLocations.testGeneratedClasses))
 
+//    @Test def testJonMorraTypeAscriptionProblem() {
+////        val s = CompiledSemantics(compiler, MapStringLongPlugin, Seq())
+//        val s = CompiledSemantics(compiler, MapStringLongPlugin, Seq()) // "com.eharmony.aloha.feature.BasicFunctions._", "com.eharmony.aloha.semantics.compiled.StaticFuncs.doubletoJlDouble"
+//
+//
+////        val f = s.createFunction[Option[Double]]("Map(1 -> 2d, 2 -> 4d).collectFirst{case (i, d) if 2*i == d => d}").right.get // works
+////        val f = s.createFunction[Option[Double]]("Map(1 -> 2d, 2 -> 4d).collectFirst{case (i, d) if 2*i == d => d}.getOrElse(0d): Double").right.get // works
+//        val f = s.createFunction[Option[Double]]("Map(1 -> 2d, 2 -> 4d).collectFirst{case (i, d) if 2*i == d => d}.getOrElse(0d)").right.get // doesn't work
+////        val f = s.createFunction[Option[Double]]("Map(1 -> 2d, 2 -> 4d).find{case (i, d) => 2*i == d}.map(_._2)").right.get // works
+////        val f = s.createFunction[Option[Double]]("Map(1 -> 2d, 2 -> 4d).find{case (i, d) => 2*i == d}.map(_._2).getOrElse(0d)").right.get // doesn't work
+////        val f = s.createFunction[Option[Double]]("Map(1 -> 2d, 2 -> 4d).find{case (i, d) => 2*i == d}.map(_._2).getOrElse(0d)").right.get
+////        val x1 = Map("five" -> 1L)
+////        val x2 = Map.empty[String, Long]
+////        val y1 = f(x1)
+////        val y2 = f(x2)
+//        val a = 1
+//    }
+
+
     @Test def test0() {
         val s = CompiledSemantics(compiler, MapStringLongPlugin, Seq())
         val f = s.createFunction[Int]("List(${five:-5L}).sum.toInt").right.get
@@ -121,4 +140,6 @@ class CompiledSemanticsTest {
 
 object StaticFuncs {
     def f(a: jl.Long): Long = if (null == a) 13 else 18
+
+    implicit def doubletoJlDouble(d: Double) = java.lang.Double.valueOf(d)
 }

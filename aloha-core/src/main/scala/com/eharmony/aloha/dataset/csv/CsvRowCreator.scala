@@ -82,7 +82,6 @@ final object CsvRowCreator {
                     f match {
                         case Left(msgs) => Failure { failure(csvCol.name, msgs) }
                         case Right(success) =>
-
                             val headersForCol = encoding.csvHeadersForColumn(csvCol)
 
                             // Get the finalizer.  This is based on the encoding in the case of categorical variables
@@ -92,7 +91,10 @@ final object CsvRowCreator {
                                 case EncodingBasedFinalizer(fnl) => fnl(encoding)
                             }
 
-                            val strFunc = success.andThenGenAggFunc(finalizer)
+                            val strFunc = success.
+                              andThenGenAggFunc(_ orElse csvCol.defVal).  // Issue #98: Inject defVal on None.
+                              andThenGenAggFunc(finalizer)                 // Finalizer to convert to string.
+
                             compile(it, (csvCol.name, strFunc) :: successes, headers ++ headersForCol)
                     }
                 }

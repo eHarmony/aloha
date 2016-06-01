@@ -4,16 +4,18 @@ import com.eharmony.aloha.FileLocations
 import com.eharmony.aloha.dataset.{MissingAndErroneousFeatureInfo, RowCreatorBuilder}
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
-import com.eharmony.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine, CsvLines, CsvTypes}
+import com.eharmony.aloha.semantics.compiled.plugin.csv._
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.language.postfixOps
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class CsvRowCreatorProducerTest {
+
     import CsvRowCreatorProducerTest._
 
     @Test def test1() {
@@ -63,15 +65,180 @@ class CsvRowCreatorProducerTest {
         val spec = specBuilder.fromString(json).get
 
         val expected = Seq(
-            (MissingAndErroneousFeatureInfo(List(),List()),                              "2.0,1,2.0,e1v1,e2v1,VALUE_2"),
-            (MissingAndErroneousFeatureInfo(List("default_field", "opt_double"),List()), "null,1,null,null,e2v1,VALUE_2"),
-            (MissingAndErroneousFeatureInfo(List(),List()),                              "2.0,1,2.0,null,null,VALUE_2"),
-            (MissingAndErroneousFeatureInfo(List(),List()),                              "2.0,1,2.0,e1v1,null,VALUE_3")
+            (MissingAndErroneousFeatureInfo(List(), List()),
+             "2.0,1,2.0,e1v1,e2v1,VALUE_2"),
+            (MissingAndErroneousFeatureInfo(List("default_field", "opt_double"), List()),
+             "null,1,null,null,e2v1,VALUE_2"),
+            (MissingAndErroneousFeatureInfo(List(), List()),
+             "2.0,1,2.0,null,null,VALUE_2"),
+            (MissingAndErroneousFeatureInfo(List(), List()),
+             "2.0,1,2.0,e1v1,null,VALUE_3")
         )
 
-        val actual = lines.map(spec.apply)
+        val actual = lines.map(spec)
 
         assertEquals(expected, actual)
+    }
+
+
+    // Issue 98:  Test that when optional flag is provided, the proper values are returned whether
+
+    @Test def testOptionalOutputWithNoVars() {
+        test(
+            """
+              |{
+              |  "imports": [],
+              |  "separator": ",",
+              |  "nullValue": "null",
+              |  "features": [
+              |    { "optional": true, "spec": "Some(1)", "defVal": -1, "type": "int", "name": "n_s_y" },
+              |    { "optional": true, "spec": "Some(1)",               "type": "int", "name": "n_s_n" },
+              |    { "optional": true, "spec": "None",    "defVal": -1, "type": "int", "name": "n_n_y" },
+              |    { "optional": true, "spec": "None",                  "type": "int", "name": "n_n_n" }
+              |  ]
+              |}
+            """.stripMargin,
+
+            """
+              |1, 1, -1, null
+              |1, 1, -1, null
+              |1, 1, -1, null
+              |1, 1, -1, null
+            """.stripMargin
+        )
+    }
+
+    @Test def testOptionalOutputWithOptVars() {
+        test(
+            """
+              |{
+              |  "imports": [],
+              |  "separator": ",",
+              |  "nullValue": "null",
+              |  "features": [
+              |    { "optional": true, "spec": "Some(${opt_double})",           "defVal": -1, "type": "double", "name": "o_s_y" },
+              |    { "optional": true, "spec": "Some(${opt_double})",                         "type": "double", "name": "o_s_n" },
+              |    { "optional": true, "spec": "None map (_ => ${opt_double})", "defVal": -1, "type": "double", "name": "o_n_y" },
+              |    { "optional": true, "spec": "None map (_ => ${opt_double})",               "type": "double", "name": "o_n_n" }
+              |  ]
+              |}
+            """.stripMargin,
+
+            """
+              | 2.0, 2.0,  -1.0, null
+              |-1.0, null, -1.0, null
+              | 2.0, 2.0,  -1.0, null
+              | 2.0, 2.0,  -1.0, null
+            """.stripMargin
+        )
+    }
+
+    @Test def testOptionalOutputWithReqVars() {
+        test(
+            """
+              |{
+              |  "imports": [],
+              |  "separator": ",",
+              |  "nullValue": "null",
+              |  "features": [
+              |    { "optional": true, "spec": "Some(${long})",           "defVal": -1, "type": "long", "name": "r_s_y" },
+              |    { "optional": true, "spec": "Some(${long})",                         "type": "long", "name": "r_s_n" },
+              |    { "optional": true, "spec": "None map (_ => ${long})", "defVal": -1, "type": "long", "name": "r_n_y" },
+              |    { "optional": true, "spec": "None map (_ => ${long})",               "type": "long", "name": "r_n_n" }
+              |  ]
+              |}
+            """.stripMargin,
+
+            """
+              |1, 1, -1, null
+              |1, 1, -1, null
+              |1, 1, -1, null
+              |1, 1, -1, null
+            """.stripMargin
+        )
+    }
+
+    @Test def testOptionalEnumOutputWithNoVars() {
+
+        test(
+            """
+              |{
+              |  "imports": [ "com.eharmony.matching.notaloha.AnEnum" ],
+              |  "separator": ",",
+              |  "nullValue": "null",
+              |  "features": [
+              |    { "optional": true, "spec": "Some(AnEnum.VALUE_2)",           "defVal": "VALUE_3", "type": "enum", "enumClass": "com.eharmony.matching.notaloha.AnEnum", "name": "o_s_y" },
+              |    { "optional": true, "spec": "Some(AnEnum.VALUE_2)",                                "type": "enum", "enumClass": "com.eharmony.matching.notaloha.AnEnum", "name": "o_s_n" },
+              |    { "optional": true, "spec": "None map (_ => AnEnum.VALUE_2)", "defVal": "VALUE_3", "type": "enum", "enumClass": "com.eharmony.matching.notaloha.AnEnum", "name": "o_n_y" },
+              |    { "optional": true, "spec": "None map (_ => AnEnum.VALUE_2)",                      "type": "enum", "enumClass": "com.eharmony.matching.notaloha.AnEnum", "name": "o_n_n" }
+              |  ]
+              |}
+            """.stripMargin,
+
+            """
+              |VALUE_2, VALUE_2, VALUE_3, null
+              |VALUE_2, VALUE_2, VALUE_3, null
+              |VALUE_2, VALUE_2, VALUE_3, null
+              |VALUE_2, VALUE_2, VALUE_3, null
+            """.stripMargin
+        )
+    }
+
+    @Test def testOptionalEnumOutputWithReqVars() {
+        test(
+            """
+              |{
+              |  "imports": [ "com.eharmony.matching.notaloha.AnEnum" ],
+              |  "separator": ",",
+              |  "nullValue": "null",
+              |  "features": [
+              |    { "optional": true, "spec": "Some(${long}) map (_ => AnEnum.VALUE_2)", "defVal": "VALUE_3", "type": "enum", "enumClass": "com.eharmony.matching.notaloha.AnEnum", "name": "o_s_y" },
+              |    { "optional": true, "spec": "Some(${long}) map (_ => AnEnum.VALUE_2)",                      "type": "enum", "enumClass": "com.eharmony.matching.notaloha.AnEnum", "name": "o_s_n" },
+              |    { "optional": true, "spec": "Some(${long}) flatMap (_ => None)",       "defVal": "VALUE_3", "type": "enum", "enumClass": "com.eharmony.matching.notaloha.AnEnum", "name": "o_n_y" },
+              |    { "optional": true, "spec": "Some(${long}) flatMap (_ => None)",                            "type": "enum", "enumClass": "com.eharmony.matching.notaloha.AnEnum", "name": "o_n_n" }
+              |  ]
+              |}
+            """.stripMargin,
+
+            """
+              |VALUE_2, VALUE_2, VALUE_3, null
+              |VALUE_2, VALUE_2, VALUE_3, null
+              |VALUE_2, VALUE_2, VALUE_3, null
+              |VALUE_2, VALUE_2, VALUE_3, null
+            """.stripMargin
+        )
+    }
+
+    @Test def testOptionalEnumOutputWithOptVars() {
+        test(
+            """
+              |{
+              |  "imports": [ "com.eharmony.matching.notaloha.AnEnum" ],
+              |  "separator": ",",
+              |  "nullValue": "null",
+              |  "features": [
+              |    { "optional": true, "spec": "Some(${opt_double}) map (i => AnEnum.values()(i.toInt - 2))", "defVal": "VALUE_3", "type": "enum", "enumClass": "com.eharmony.matching.notaloha.AnEnum", "name": "o_s_y" },
+              |    { "optional": true, "spec": "Some(${opt_double}) map (i => AnEnum.values()(i.toInt - 2))",                      "type": "enum", "enumClass": "com.eharmony.matching.notaloha.AnEnum", "name": "o_s_n" },
+              |    { "optional": true, "spec": "Some(${opt_double}) flatMap (_ => None)",                     "defVal": "VALUE_3", "type": "enum", "enumClass": "com.eharmony.matching.notaloha.AnEnum", "name": "o_n_y" },
+              |    { "optional": true, "spec": "Some(${opt_double}) flatMap (_ => None)",                                          "type": "enum", "enumClass": "com.eharmony.matching.notaloha.AnEnum", "name": "o_n_n" }
+              |  ]
+              |}
+            """.stripMargin,
+
+            """
+              |VALUE_2, VALUE_2, VALUE_3, null
+              |VALUE_3, null,    VALUE_3, null
+              |VALUE_2, VALUE_2, VALUE_3, null
+              |VALUE_2, VALUE_2, VALUE_3, null
+            """.stripMargin
+        )
+    }
+
+    def test(json: String, expected: String) = {
+        val exp = expected.trim.filterNot(' ' ==).split("\n").toVector
+        val spec = specBuilder.fromString(json).get
+        val actual = lines.map(spec).map(_._2.toString)
+        assertEquals(exp, actual)
     }
 }
 
