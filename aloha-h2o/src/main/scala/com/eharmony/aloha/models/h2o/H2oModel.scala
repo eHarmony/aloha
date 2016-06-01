@@ -137,7 +137,7 @@ final case class H2oModel[-A, +B](
   protected[this] def failureDueToMissing(missing: Map[String, Seq[String]])(implicit audit: Boolean) =
     failure(Seq(s"Too many features with missing variables: ${missing.count(_._2.nonEmpty)}"), getMissingVariables(missing))
 
-  protected[this] def constructFeatures(a: A): Features[RowData] = {
+  protected[h2o] def constructFeatures(a: A): Features[RowData] = {
 
     // If we are going to err out, allow a linear scan (with repeated work so that we can get richer error
     // diagnostics.  Only include the values where the list of missing accessors variables is not empty.

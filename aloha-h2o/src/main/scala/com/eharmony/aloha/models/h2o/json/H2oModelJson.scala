@@ -20,12 +20,18 @@ sealed trait H2oSpec {
   type A
   def name: String
   def spec: String
+
+  /**
+    * This will be used as a default if the resulting function returns `None` for a given value.
+    * @return
+    */
   def defVal: Option[A]
   implicit def refInfo: RefInfo[A]
   def ffConverter[B]: GenAggFunc[B, Option[A]] => FeatureFunction[B]
 
   def compile[B](semantics: Semantics[B]): Either[Seq[String], FeatureFunction[B]] =
-    semantics.createFunction[Option[A]](spec, Option(defVal))(RefInfoOps.option[A]).right.map(ffConverter)
+    semantics.createFunction[Option[A]](spec, Option(defVal))(RefInfoOps.option[A]).right.map(f =>
+      ffConverter(f.andThenGenAggFunc(_ orElse defVal)))
 }
 
 object H2oSpec {

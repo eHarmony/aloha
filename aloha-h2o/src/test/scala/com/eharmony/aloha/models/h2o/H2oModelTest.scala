@@ -5,6 +5,7 @@ import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.io.vfs.{VfsType, Vfs}
 import com.eharmony.aloha.models.Model
+import com.eharmony.aloha.models.h2o.H2oModel.Features
 import com.eharmony.aloha.reflect.RefInfo
 import com.eharmony.aloha.score.conversions.ScoreConverter
 import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits._
@@ -16,6 +17,7 @@ import com.eharmony.aloha.semantics.func.{GenAggFunc, GenFunc}
 import com.eharmony.aloha.test.proto.TestProtoBuffs.Abalone
 import com.eharmony.aloha.test.proto.TestProtoBuffs.Abalone.Gender.{FEMALE, MALE, INFANT}
 import com.eharmony.aloha.util.Logging
+import hex.genmodel.easy.RowData
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -28,6 +30,7 @@ import scala.collection.{immutable => sci}
 import scala.language.implicitConversions
 import scala.util.Try
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.collection.JavaConversions.mapAsScalaMap
 
 /**
  * Created by deak on 10/23/15.
@@ -35,6 +38,46 @@ import scala.concurrent.ExecutionContext.Implicits.global
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class H2oModelTest extends Logging {
   import H2oModelTest._
+
+  @Test def testConstructFeatures(): Unit = {
+    val json =
+      """
+        |{
+        |  "modelType": "H2o",
+        |  "modelId": { "id": 0, "name": "proto model" },
+        |  "features": {
+        |    "sex_none_def": { "spec": "None map (_ => ${sex}.name)",    "defVal": "MISSING", "type": "string" },
+        |    "sex_none_no":  { "spec": "None map (_ => ${sex}.name)",                         "type": "string" },
+        |    "sex_some_def": { "spec": "${sex}.name",                    "defVal": "MISSING", "type": "string" },
+        |    "sex_some_no":  { "spec": "${sex}.name",                                         "type": "string" },
+        |    "len_none_def": { "spec": "None map (_ => ${length})",      "defVal": -564321,   "type": "double" },
+        |    "len_none_no":  "None map (_ => ${length})",
+        |    "len_some_def": { "spec": "${length}",                      "defVal": -564321,   "type": "double" },
+        |    "len_some_no":  { "spec": "${length}",                                           "type": "double" }
+        |  },
+        |  "modelUrl": "res:com/eharmony/aloha/models/h2o/glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.java"
+        |}
+      """.stripMargin.trim
+
+    val model = ProtoFactory[Float].fromString(json).get.asInstanceOf[H2oModel[Abalone, Float]]
+
+    val x = AbaloneData.take(1).toSeq.head
+    val y: Features[RowData] = model.constructFeatures(x)
+    val rowData = mapAsScalaMap(y.features).toMap
+
+    assertEquals(6, rowData.size)
+
+    assertEquals("MISSING", rowData("sex_none_def").asInstanceOf[String])
+    assertEquals("MALE", rowData("sex_some_no").asInstanceOf[String])
+    assertEquals("MALE", rowData("sex_some_def").asInstanceOf[String])
+
+    assertEquals(-564321.0, rowData("len_none_def").asInstanceOf[java.lang.Double].doubleValue(), 0)
+    assertEquals(0.45500001311302185, rowData("len_some_def").asInstanceOf[java.lang.Double].doubleValue(), 0)
+    assertEquals(0.45500001311302185, rowData("len_some_no").asInstanceOf[java.lang.Double].doubleValue(), 0)
+
+    assertFalse(rowData.contains("sex_none_no"))
+    assertFalse(rowData.contains("len_none_no"))
+  }
 
   @Test def testProto(): Unit = {
     // All of the features just return the value one would expect to be associated with the name.
