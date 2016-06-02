@@ -6,6 +6,7 @@ import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.io.vfs.{VfsType, Vfs}
 import com.eharmony.aloha.models.Model
 import com.eharmony.aloha.models.h2o.H2oModel.Features
+import com.eharmony.aloha.models.h2o.json.{DoubleH2oSpec, H2oSpec}
 import com.eharmony.aloha.reflect.RefInfo
 import com.eharmony.aloha.score.conversions.ScoreConverter
 import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits._
@@ -38,6 +39,16 @@ import scala.collection.JavaConversions.mapAsScalaMap
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class H2oModelTest extends Logging {
   import H2oModelTest._
+
+  @Test def testParseSpecNoTypeIsDouble(): Unit = {
+    val json = """{ "myFeatureName": { "spec": "${length}", "defVal": -654321 } }"""
+    val Seq((name, spec)) = json.parseJson.convertTo[sci.ListMap[String, H2oSpec]].toSeq
+    val expectedName = "myFeatureName"
+    val expectedSpec = DoubleH2oSpec(expectedName, "${length}", Some(-654321))
+
+    assertEquals(expectedName, name)
+    assertEquals(expectedSpec, spec)
+  }
 
   @Test def testConstructFeatures(): Unit = {
     val json =
