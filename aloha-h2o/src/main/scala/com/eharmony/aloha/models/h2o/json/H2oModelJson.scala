@@ -20,12 +20,18 @@ sealed trait H2oSpec {
   type A
   def name: String
   def spec: String
+
+  /**
+    * This will be used as a default if the resulting function returns `None` for a given value.
+    * @return
+    */
   def defVal: Option[A]
   implicit def refInfo: RefInfo[A]
   def ffConverter[B]: GenAggFunc[B, Option[A]] => FeatureFunction[B]
 
   def compile[B](semantics: Semantics[B]): Either[Seq[String], FeatureFunction[B]] =
-    semantics.createFunction[Option[A]](spec, Option(defVal))(RefInfoOps.option[A]).right.map(ffConverter)
+    semantics.createFunction[Option[A]](spec, Option(defVal))(RefInfoOps.option[A]).right.map(f =>
+      ffConverter(f.andThenGenAggFunc(_ orElse defVal)))
 }
 
 object H2oSpec {
@@ -49,11 +55,12 @@ object H2oSpec {
       m.map {
         case (k, JsString(s)) => (k, DoubleH2oSpec(k, s, None))
         case (k, o: JsObject) => o.fields.get("type") match {
-          case Some(JsString("double")) => (k, DoubleH2oSpec(k, spec(o), o.fields.get("defVal").flatMap(_.convertTo[Option[Double]])))
-          case Some(JsString("string")) => (k, StringH2oSpec(k, spec(o), o.fields.get("defVal").flatMap(_.convertTo[Option[String]])))
-          case Some(JsString(d))        => throw new DeserializationException(s"unsupported H2oSpec type: $d. Should be 'double' or 'string'.")
-          case Some(d)                  => throw new DeserializationException(s"H2oSpec type expected string, got: $d")
-          case _                        => throw new DeserializationException(s"No 'type' field present.")
+          case None | Some(JsString("double")) => (k, DoubleH2oSpec(k, spec(o), o.fields.get("defVal").flatMap(_.convertTo[Option[Double]])))
+          case Some(JsString("string"))        => (k, StringH2oSpec(k, spec(o), o.fields.get("defVal").flatMap(_.convertTo[Option[String]])))
+          case Some(JsString(d))               => throw new DeserializationException(s"unsupported H2oSpec type: $d. Should be 'double' or 'string'.")
+          case Some(d)                         => throw new DeserializationException(s"H2oSpec type expected string, got: $d")
+
+
         }
         case (k, v) => throw new DeserializationException(s"key '$k' needs to be a JSON string or object. found $v.")
       }

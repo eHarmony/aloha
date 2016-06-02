@@ -1,5 +1,6 @@
 package com.eharmony.aloha.dataset.csv.json
 
+import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
@@ -24,9 +25,35 @@ class CsvColumnTest {
             EnumCsvColumn("enum", "${string}", "com.eharmony.matching.notaloha.AnEnum")
         )
 
-        val act = examples.foreach{ ex => CsvColumn.csvColumnSpecFormat.read(ex.parseJson) }
+        val act = examples.foreach { ex => CsvColumn.csvColumnSpecFormat.read(ex.parseJson) }
 
         // TODO: actually test.
         // assertEquals(expected, act)
+    }
+
+//    final case class SyntheticEnumCsvColumn(name: String, spec: String, values: Seq[String], defVal: Option[String] = None)
+
+    @Test def testReqEnum() {
+        val jsonTxt = """{ "name": "some_enum",
+                        |  "type": "enum",
+                        |  "spec": "${string}",
+                        |  "enumClass": "com.eharmony.matching.notaloha.AnEnum"
+                        |}""".stripMargin
+        val json = jsonTxt.parseJson
+        val col = json.convertTo[CsvColumn]
+        assertTrue(col.isInstanceOf[EnumCsvColumn])
+    }
+
+    @Test def testOptEnum() {
+        val jsonTxt = """{ "name": "some_enum",
+                        |  "type": "enum",
+                        |  "spec": "${string}",
+                        |  "enumClass": "com.eharmony.matching.notaloha.AnEnum",
+                        |  "defVal": "VALUE_2",
+                        |  "optional": true
+                        |}""".stripMargin
+        val json = jsonTxt.parseJson
+        val col = json.convertTo[CsvColumn]
+        assertTrue(col.isInstanceOf[OptionEnumCsvColumn[_]])
     }
 }

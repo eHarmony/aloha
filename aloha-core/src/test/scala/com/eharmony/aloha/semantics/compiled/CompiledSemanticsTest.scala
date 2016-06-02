@@ -121,4 +121,6 @@ class CompiledSemanticsTest {
 
 object StaticFuncs {
     def f(a: jl.Long): Long = if (null == a) 13 else 18
+
+    implicit def doubletoJlDouble(d: Double) = java.lang.Double.valueOf(d)
 }
