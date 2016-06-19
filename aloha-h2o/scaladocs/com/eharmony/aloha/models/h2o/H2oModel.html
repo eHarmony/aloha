@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>H2oModel - aloha-h2o 3.2.2 API - com.eharmony.aloha.models.h2o.H2oModel</title>
-          <meta name="description" content="H2oModel - aloha - h2o 3.2.2 API - com.eharmony.aloha.models.h2o.H2oModel" />
-          <meta name="keywords" content="H2oModel aloha h2o 3.2.2 API com.eharmony.aloha.models.h2o.H2oModel" />
+          <title>H2oModel - aloha-h2o 3.3.0 API - com.eharmony.aloha.models.h2o.H2oModel</title>
+          <meta name="description" content="H2oModel - aloha - h2o 3.3.0 API - com.eharmony.aloha.models.h2o.H2oModel" />
+          <meta name="keywords" content="H2oModel aloha h2o 3.3.0 API com.eharmony.aloha.models.h2o.H2oModel" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -35,7 +35,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">H2oModel</span><span class="tparams">[<span name="A">-A</span>, <span name="B">+B</span>]</span><span class="params">(<span name="modelId">modelId: <span class="extype" name="com.eharmony.aloha.id.ModelIdentity">ModelIdentity</span></span>, <span name="modelSource">modelSource: <span class="extype" name="com.eharmony.aloha.io.sources.ModelSource">ModelSource</span></span>, <span name="featureNames">featureNames: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="featureFunctions">featureFunctions: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<a href="FeatureFunction.html" class="extype" name="com.eharmony.aloha.models.h2o.FeatureFunction">FeatureFunction</a>[<span class="extype" name="com.eharmony.aloha.models.h2o.H2oModel.A">A</span>]]</span>, <span name="numMissingThreshold">numMissingThreshold: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>] = <span class="symbol">scala.None</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="scb">scb: <span class="extype" name="com.eharmony.aloha.score.conversions.ScoreConverter">ScoreConverter</span>[<span class="extype" name="com.eharmony.aloha.models.h2o.H2oModel.B">B</span>]</span>)</span><span class="result"> extends <span class="extype" name="com.eharmony.aloha.models.BaseModel">BaseModel</span>[<span class="extype" name="com.eharmony.aloha.models.h2o.H2oModel.A">A</span>, <span class="extype" name="com.eharmony.aloha.models.h2o.H2oModel.B">B</span>] with <span class="extype" name="com.eharmony.aloha.util.Logging">Logging</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">H2oModel</span><span class="tparams">[<span name="A">-A</span>, <span name="B">+B</span>]</span><span class="params">(<span name="modelId">modelId: <span class="extype" name="com.eharmony.aloha.id.ModelIdentity">ModelIdentity</span></span>, <span name="h2OModel">h2OModel: <span class="extype" name="hex.genmodel.GenModel">GenModel</span></span>, <span name="featureNames">featureNames: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="featureFunctions">featureFunctions: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<a href="FeatureFunction.html" class="extype" name="com.eharmony.aloha.models.h2o.FeatureFunction">FeatureFunction</a>[<span class="extype" name="com.eharmony.aloha.models.h2o.H2oModel.A">A</span>]]</span>, <span name="numMissingThreshold">numMissingThreshold: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>] = <span class="symbol">scala.None</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="evidence$1">evidence$1: <span class="extype" name="com.eharmony.aloha.score.conversions.ScoreConverter">ScoreConverter</span>[<span class="extype" name="com.eharmony.aloha.models.h2o.H2oModel.B">B</span>]</span>)</span><span class="result"> extends <span class="extype" name="com.eharmony.aloha.models.BaseModel">BaseModel</span>[<span class="extype" name="com.eharmony.aloha.models.h2o.H2oModel.A">A</span>, <span class="extype" name="com.eharmony.aloha.models.h2o.H2oModel.B">B</span>] with <span class="extype" name="com.eharmony.aloha.util.Logging">Logging</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -81,7 +81,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.eharmony.aloha.models.h2o.H2oModel#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(modelId:com.eharmony.aloha.id.ModelIdentity,modelSource:com.eharmony.aloha.io.sources.ModelSource,featureNames:scala.collection.immutable.IndexedSeq[String],featureFunctions:scala.collection.immutable.IndexedSeq[com.eharmony.aloha.models.h2o.FeatureFunction[A]],numMissingThreshold:Option[Int])(implicitscb:com.eharmony.aloha.score.conversions.ScoreConverter[B]):com.eharmony.aloha.models.h2o.H2oModel[A,B]"></a>
+      <a id="&lt;init&gt;(modelId:com.eharmony.aloha.id.ModelIdentity,h2OModel:hex.genmodel.GenModel,featureNames:scala.collection.immutable.IndexedSeq[String],featureFunctions:scala.collection.immutable.IndexedSeq[com.eharmony.aloha.models.h2o.FeatureFunction[A]],numMissingThreshold:Option[Int])(implicitevidence$1:com.eharmony.aloha.score.conversions.ScoreConverter[B]):com.eharmony.aloha.models.h2o.H2oModel[A,B]"></a>
       <a id="&lt;init&gt;:H2oModel[A,B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -89,7 +89,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">H2oModel</span><span class="params">(<span name="modelId">modelId: <span class="extype" name="com.eharmony.aloha.id.ModelIdentity">ModelIdentity</span></span>, <span name="modelSource">modelSource: <span class="extype" name="com.eharmony.aloha.io.sources.ModelSource">ModelSource</span></span>, <span name="featureNames">featureNames: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="featureFunctions">featureFunctions: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<a href="FeatureFunction.html" class="extype" name="com.eharmony.aloha.models.h2o.FeatureFunction">FeatureFunction</a>[<span class="extype" name="com.eharmony.aloha.models.h2o.H2oModel.A">A</span>]]</span>, <span name="numMissingThreshold">numMissingThreshold: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>] = <span class="symbol">scala.None</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="scb">scb: <span class="extype" name="com.eharmony.aloha.score.conversions.ScoreConverter">ScoreConverter</span>[<span class="extype" name="com.eharmony.aloha.models.h2o.H2oModel.B">B</span>]</span>)</span>
+        <span class="name">H2oModel</span><span class="params">(<span name="modelId">modelId: <span class="extype" name="com.eharmony.aloha.id.ModelIdentity">ModelIdentity</span></span>, <span name="h2OModel">h2OModel: <span class="extype" name="hex.genmodel.GenModel">GenModel</span></span>, <span name="featureNames">featureNames: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="featureFunctions">featureFunctions: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<a href="FeatureFunction.html" class="extype" name="com.eharmony.aloha.models.h2o.FeatureFunction">FeatureFunction</a>[<span class="extype" name="com.eharmony.aloha.models.h2o.H2oModel.A">A</span>]]</span>, <span name="numMissingThreshold">numMissingThreshold: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>] = <span class="symbol">scala.None</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="com.eharmony.aloha.score.conversions.ScoreConverter">ScoreConverter</span>[<span class="extype" name="com.eharmony.aloha.models.h2o.H2oModel.B">B</span>]</span>)</span>
       </span>
       </h4>
       
@@ -240,7 +240,7 @@
         <span class="name">constructFeatures</span><span class="params">(<span name="a">a: <span class="extype" name="com.eharmony.aloha.models.h2o.H2oModel.A">A</span></span>)</span><span class="result">: <a href="H2oModel$$Features.html" class="extype" name="com.eharmony.aloha.models.h2o.H2oModel.Features">Features</a>[<span class="extype" name="hex.genmodel.easy.RowData">RowData</span>]</span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="package.html" class="extype" name="com.eharmony.aloha.models.h2o">com.eharmony.aloha.models.h2o</a>] </dd></dl></div>
     </li><li name="com.eharmony.aloha.util.Logging#debug" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="debug(msg:=&gt;Any,t:=&gt;Throwable):Unit"></a>
       <a id="debug(⇒Any,⇒Throwable):Unit"></a>
@@ -390,19 +390,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="com.eharmony.aloha.models.h2o.H2oModel#getH2oPredictor" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getH2oPredictor[C](input:=&gt;C,f:com.eharmony.aloha.io.AlohaReadable[scala.util.Try[hex.genmodel.GenModel]]=&gt;(C=&gt;scala.util.Try[hex.genmodel.GenModel])):scala.util.Try[hex.genmodel.easy.RowData=&gt;Either[com.eharmony.aloha.models.h2o.IllConditioned,B]]"></a>
-      <a id="getH2oPredictor[C](⇒C,(AlohaReadable[Try[GenModel]])⇒(C)⇒Try[GenModel]):Try[(RowData)⇒Either[IllConditioned,B]]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">getH2oPredictor</span><span class="tparams">[<span name="C">C</span>]</span><span class="params">(<span name="input">input: ⇒ <span class="extype" name="com.eharmony.aloha.models.h2o.H2oModel.getH2oPredictor.C">C</span></span>, <span name="f">f: (<span class="extype" name="com.eharmony.aloha.io.AlohaReadable">AlohaReadable</span>[<span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="hex.genmodel.GenModel">GenModel</span>]]) ⇒ (<span class="extype" name="com.eharmony.aloha.models.h2o.H2oModel.getH2oPredictor.C">C</span>) ⇒ <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="hex.genmodel.GenModel">GenModel</span>]</span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[(<span class="extype" name="hex.genmodel.easy.RowData">RowData</span>) ⇒ <span class="extype" name="scala.Either">Either</span>[<a href="IllConditioned.html" class="extype" name="com.eharmony.aloha.models.h2o.IllConditioned">IllConditioned</a>, <span class="extype" name="com.eharmony.aloha.models.h2o.H2oModel.B">B</span>]]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="package.html" class="extype" name="com.eharmony.aloha.models.h2o">com.eharmony.aloha.models.h2o</a>] </dd></dl></div>
     </li><li name="com.eharmony.aloha.models.h2o.H2oModel#getMissingVariables" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getMissingVariables(missing:Map[String,Seq[String]]):Seq[String]"></a>
       <a id="getMissingVariables(Map[String,Seq[String]]):Seq[String]"></a>
@@ -416,6 +403,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.h2o.H2oModel#h2OModel" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="h2OModel:hex.genmodel.GenModel"></a>
+      <a id="h2OModel:GenModel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">h2OModel</span><span class="result">: <span class="extype" name="hex.genmodel.GenModel">GenModel</span></span>
+      </span>
+      </h4>
+      
     </li><li name="com.eharmony.aloha.models.h2o.H2oModel#handleBadCategorical" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="handleBadCategorical(e:hex.genmodel.easy.exception.PredictUnknownCategoricalLevelException,f:com.eharmony.aloha.models.h2o.H2oModel.Features[hex.genmodel.easy.RowData])(implicitaudit:Boolean):(com.eharmony.aloha.score.basic.ModelOutput[B],Option[com.eharmony.aloha.score.Scores.Score])"></a>
       <a id="handleBadCategorical(PredictUnknownCategoricalLevelException,Features[RowData])(Boolean):(ModelOutput[B],Option[Score])"></a>
@@ -591,19 +591,6 @@ when there is missing data in a categorical variable.</p></div><dl class="paramc
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>Logging</dd></dl></div>
-    </li><li name="com.eharmony.aloha.models.h2o.H2oModel#mapRetrievalError" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="mapRetrievalError[B](genModel:hex.genmodel.GenModel,retrieval:Either[com.eharmony.aloha.models.h2o.categories.PredictionFuncRetrievalError,hex.genmodel.easy.RowData=&gt;Either[com.eharmony.aloha.models.h2o.IllConditioned,B]])(implicitevidence$1:com.eharmony.aloha.reflect.RefInfo[B]):ProductwithSerializablewithscala.util.Try[hex.genmodel.easy.RowData=&gt;Either[com.eharmony.aloha.models.h2o.IllConditioned,B]]"></a>
-      <a id="mapRetrievalError[B](GenModel,Either[PredictionFuncRetrievalError,(RowData)⇒Either[IllConditioned,B]])(RefInfo[B]):ProductwithSerializablewithTry[(RowData)⇒Either[IllConditioned,B]]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">mapRetrievalError</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="genModel">genModel: <span class="extype" name="hex.genmodel.GenModel">GenModel</span></span>, <span name="retrieval">retrieval: <span class="extype" name="scala.Either">Either</span>[<a href="categories/PredictionFuncRetrievalError.html" class="extype" name="com.eharmony.aloha.models.h2o.categories.PredictionFuncRetrievalError">PredictionFuncRetrievalError</a>, (<span class="extype" name="hex.genmodel.easy.RowData">RowData</span>) ⇒ <span class="extype" name="scala.Either">Either</span>[<a href="IllConditioned.html" class="extype" name="com.eharmony.aloha.models.h2o.IllConditioned">IllConditioned</a>, <span class="extype" name="com.eharmony.aloha.models.h2o.H2oModel.mapRetrievalError.B">B</span>]]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="com.eharmony.aloha.reflect.RefInfo">RefInfo</span>[<span class="extype" name="com.eharmony.aloha.models.h2o.H2oModel.mapRetrievalError.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span> with <span class="extype" name="scala.util.Try">Try</span>[(<span class="extype" name="hex.genmodel.easy.RowData">RowData</span>) ⇒ <span class="extype" name="scala.Either">Either</span>[<a href="IllConditioned.html" class="extype" name="com.eharmony.aloha.models.h2o.IllConditioned">IllConditioned</a>, <span class="extype" name="com.eharmony.aloha.models.h2o.H2oModel.mapRetrievalError.B">B</span>]]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="package.html" class="extype" name="com.eharmony.aloha.models.h2o">com.eharmony.aloha.models.h2o</a>] </dd></dl></div>
     </li><li name="com.eharmony.aloha.models.h2o.H2oModel#modelId" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="modelId:com.eharmony.aloha.id.ModelIdentity"></a>
       <a id="modelId:ModelIdentity"></a>
@@ -617,19 +604,6 @@ when there is missing data in a categorical variable.</p></div><dl class="paramc
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.eharmony.aloha.models.h2o.H2oModel">H2oModel</a> → Identifiable</dd></dl></div>
-    </li><li name="com.eharmony.aloha.models.h2o.H2oModel#modelSource" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="modelSource:com.eharmony.aloha.io.sources.ModelSource"></a>
-      <a id="modelSource:ModelSource"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">modelSource</span><span class="result">: <span class="extype" name="com.eharmony.aloha.io.sources.ModelSource">ModelSource</span></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
