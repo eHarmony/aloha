@@ -1,7 +1,7 @@
 package com.eharmony.aloha.models.h2o.compiler
 
 import java.io.File
-import java.net.URLClassLoader
+import java.net.{URL, URLClassLoader}
 import java.nio.charset.Charset
 import java.util.Locale
 import javax.tools.JavaCompiler.CompilationTask
@@ -18,6 +18,8 @@ import scala.util.{Failure, Success, Try}
 
 /**
  * A compiler that compiles and instantiates the code.
+  * @param compilationClassPaths A collection of jars to be added to the class path at compilation time.
+  *                              It this is empty the default classpath will be used.
  * @param classDir If supplied, an attempt to create the directory but no attempt to delete the
  *                 directory will be made.
  * @param locale A Locale
@@ -25,7 +27,8 @@ import scala.util.{Failure, Success, Try}
  * @param riB reflection info about the output type B.
  * @tparam B the output type.  This should be an interface or base class that the compiled class extends.
  */
-private[h2o] class Compiler[B](classDir: Option[File] = None,
+private[h2o] class Compiler[B](compilationClassPaths: Iterable[String] = Iterable.empty,
+                               classDir: Option[File] = None,
                                locale: Locale   = Locale.getDefault,
                                charSet: Charset = Charset.defaultCharset)
                               (implicit riB: RefInfo[B])
@@ -58,9 +61,14 @@ extends AlohaReadable[Try[B]]
   def getCompileTask(compilationUnit: InMemoryJavaSource[B],
                      compileDir: File,
                      diagnosticCollector: DiagnosticCollector[JavaFileObject]) = Try {
-    val locations = asJavaIterable(Seq("-d", compileDir.getCanonicalPath))
+    val locations = Seq("-d", compileDir.getCanonicalPath)
+
+    val options =
+      if (compilationClassPaths.isEmpty) locations
+      else locations ++ Seq("-classpath", compilationClassPaths.mkString(File.pathSeparator))
+
     val compiler = ToolProvider.getSystemJavaCompiler
-    compiler.getTask(null, null, diagnosticCollector, locations, null, Iterable(compilationUnit))
+    compiler.getTask(null, null, diagnosticCollector, asJavaIterable(options), null, Iterable(compilationUnit))
   }
 
   def compile(compileTask: CompilationTask,
@@ -77,7 +85,7 @@ extends AlohaReadable[Try[B]]
     )
 
   def instantiate(compilationUnit: InMemoryJavaSource[B], compileDir: File) = Try[Any] {
-    val classLoader = new URLClassLoader(Array(compileDir.toURI.toURL))
+    val classLoader = new URLClassLoader(Array(compileDir.toURI.toURL), Compiler.currentClassLoader)
 
     val clazz = classLoader.loadClass(compilationUnit.className)
 
@@ -109,7 +117,8 @@ extends AlohaReadable[Try[B]]
 
   def cast(instance: Any): Try[B] = instance match {
     case b: B => Try(b)
-    case d    => Failure(new IllegalArgumentException(s"Expected ${RefInfoOps.toString[B]}.  Found: ${d.getClass.getCanonicalName}"))
+    case d    => Failure(new IllegalArgumentException(s"Expected ${RefInfoOps.toString[B]}.  Found: ${d.getClass.getCanonicalName}.  " +
+      s"Parent is ${d.getClass.getSuperclass.getCanonicalName}"))
   }
 
   def getCompilationUnit(code: String): Try[InMemoryJavaSource[B]] =
@@ -129,6 +138,8 @@ extends AlohaReadable[Try[B]]
 }
 
 private[h2o] object Compiler extends Logging {
+  def currentClassLoader = Thread.currentThread().getContextClassLoader
+
   def tmpDir = Try[File] {
     val f = File.createTempFile("javacompiler", "classdir")
     debug(s"creating temp class directory: ${f.getCanonicalPath}")

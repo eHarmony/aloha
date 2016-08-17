@@ -1,6 +1,8 @@
 package com.eharmony.aloha.models.h2o
 
-import java.io.File
+import java.io.{File, StringReader}
+import java.net.{URL, URLClassLoader}
+import java.util.Properties
 
 import com.eharmony.aloha.factory.{ModelParser, ModelParserWithSemantics, ParserProviderCompanion}
 import com.eharmony.aloha.id.{ModelId, ModelIdentity}
@@ -31,6 +33,7 @@ import spray.json.DefaultJsonProtocol.StringJsonFormat
 import scala.annotation.tailrec
 import scala.collection.immutable.ListMap
 import scala.collection.{immutable => sci}
+import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
 /**
@@ -249,12 +252,35 @@ object H2oModel extends ParserProviderCompanion
     case Left(TypeCoercionNotFound(category)) => Failure(new IllegalArgumentException(s"In model ${classOf[H2oModel[_, _]].getCanonicalName}: Could not ${category.name} model to Aloha output type: ${RefInfoOps.toString[B]}."))
   }
 
+  private[h2o] def getJar(collectFn: URL => Boolean): Array[String] =
+    Compiler.currentClassLoader match {
+      case urlClassLoader: URLClassLoader => urlClassLoader.getURLs.collect{case x if collectFn(x) => x.toString}
+      case _ => Array.empty[String]
+    }
+
+  private[h2o] lazy val h2oProps = {
+    val stream = getClass.getClassLoader.getResourceAsStream("h2o_mvn.properties")
+    try {
+      val p = new Properties
+      p.load(stream)
+      p
+    }
+    finally stream.close()
+  }
+
   protected[h2o] def getGenModel[B, C](
     input: => C,
     f: AlohaReadable[Try[GenModel]] => C => Try[GenModel],
     classCacheDir: Option[File]
   ) = {
-    val compiler = new Compiler[GenModel](classCacheDir)
+    // It turns out that running Aloha under some environments has class loader issues.  Specifically when compiling an
+    // H2O model within Jetty this has proven to fail.  Because Jetty has its own classloader the h2o-genmodel jar is
+    // not available in the System's classloader, however, it is available in the thread's local classloader.
+    //
+    // This has been proven to work within a Jetty environment.
+    val h2oGenModelJarName = h2oProps.getProperty("h2oGenModelName")
+    val h2oGenModelJar = getJar((url: URL) => url.toString.contains(h2oGenModelJarName))
+    val compiler = new Compiler[GenModel](h2oGenModelJar, classCacheDir)
     f(compiler)(input)
   }
 
