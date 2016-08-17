@@ -714,7 +714,7 @@ from Double values to Long values.  It works by applying the following transform
 
 *v* = *scale* &times; *submodel value* + *translation*  
 *v*&prime; = *IF round THEN* round(*v*) *ELSE* floor(*v*)  
-*output* = max(*clampUpper*, min(*v*&prime;, *clampUpper*))
+*output* = max(*clampLower*, min(*v*&prime;, *clampUpper*))
 
 This model is useful for [eHarmony](http://www.eharmony.com)-specific purposes, but others may find it useful as well. 
 
