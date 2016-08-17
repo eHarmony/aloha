@@ -86,6 +86,20 @@ class ManifestParserTest {
       case (_, Left(m))           => fail(s"Parse failure on Iterable[AnyVar]. Failure: $m")
     }
   }
+
+  @Test def testClassManifest(): Unit =
+    assertEquals(manifest[String], ManifestParser.classManifest("java.lang.String"))
+
+  @Test def testArrayManifest(): Unit = {
+    val s = ManifestParser.classManifest("java.lang.String")
+    assertEquals(manifest[String].arrayManifest, ManifestParser.arrayManifest(s))
+  }
+
+  @Test def testParameterizedManifest(): Unit = {
+    val s = ManifestParser.classManifest("java.lang.String")
+    val m = ManifestParser.parameterizedManifest("scala.collection.Iterable", Seq(s))
+    assertEquals(manifest[Iterable[String]], m)
+  }
 }
 
 object ManifestParserTest {

@@ -125,14 +125,28 @@ object ManifestParser {
     lazy val arrayToken = """^(scala\.)?Array""".r
   }
 
-  // vvvvvvvvvv   Functions for transforming input to Manifest instances.   vvvvvvvvvv
-  // TODO: These should be package private for testing.
-
+  /**
+    * Create a `Manifest` for an unparameterized class.
+    * @param tpe string representation of the type.
+    * @return
+    */
   private[reflect] def classManifest(tpe: String): Manifest[_] =
     ManifestFactory.classType(Class.forName(tpe))
 
+  /**
+    * Create a `Array` `Manifest` from a Manifest.
+    * @param tpe a manifest for the element type.
+    * @return
+    */
   private[reflect] def arrayManifest(tpe: Manifest[_]) = ManifestFactory.arrayType(tpe)
 
+  /**
+    * Create a `Manifest` for a parameterized type given a string representation of a type constructor and
+    * a sequence of `Manifest`s, one for each type parameter.
+    * @param tpe string representation for the type constructor
+    * @param typeParams Manifests for each type parameter.
+    * @return
+    */
   private[reflect] def parameterizedManifest(tpe: String, typeParams: Seq[Manifest[_]]): Manifest[_] = {
     val clas = Class.forName(tpe)
     val (first, rest) = typeParams.splitAt(1)
