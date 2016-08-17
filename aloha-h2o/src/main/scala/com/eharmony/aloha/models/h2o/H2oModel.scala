@@ -1,6 +1,6 @@
 package com.eharmony.aloha.models.h2o
 
-import java.io.{File, StringReader}
+import java.io.File
 import java.net.{URL, URLClassLoader}
 import java.util.Properties
 
@@ -27,13 +27,12 @@ import hex.genmodel.GenModel
 import hex.genmodel.easy.exception.PredictUnknownCategoricalLevelException
 import hex.genmodel.easy.{EasyPredictModelWrapper, RowData}
 import org.apache.commons.codec.binary.Base64
-import spray.json._
 import spray.json.DefaultJsonProtocol.StringJsonFormat
+import spray.json._
 
 import scala.annotation.tailrec
 import scala.collection.immutable.ListMap
 import scala.collection.{immutable => sci}
-import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
 /**
