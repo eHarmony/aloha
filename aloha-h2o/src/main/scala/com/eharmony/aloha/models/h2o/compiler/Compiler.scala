@@ -1,7 +1,7 @@
 package com.eharmony.aloha.models.h2o.compiler
 
 import java.io.File
-import java.net.{URL, URLClassLoader}
+import java.net.URLClassLoader
 import java.nio.charset.Charset
 import java.util.Locale
 import javax.tools.JavaCompiler.CompilationTask
