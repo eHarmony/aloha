@@ -18,16 +18,18 @@ import scala.util.{Failure, Success, Try}
 
 /**
  * A compiler that compiles and instantiates the code.
-  * @param compilationClassPaths A collection of jars to be added to the class path at compilation time.
-  *                              It this is empty the default classpath will be used.
- * @param classDir If supplied, an attempt to create the directory but no attempt to delete the
- *                 directory will be made.
- * @param locale A Locale
- * @param charSet A CharSet
- * @param riB reflection info about the output type B.
- * @tparam B the output type.  This should be an interface or base class that the compiled class extends.
+  * @param parentClassLoader The parent ClassLoader to be used when adding the classes.
+  * @param compilationClassPathFiles A collection of jars to be added to the class path at compilation time.
+  *                                  It this is empty the default classpath will be used.
+  * @param classDir If supplied, an attempt to create the directory but no attempt to delete the
+  *                 directory will be made.
+  * @param locale A Locale
+  * @param charSet A CharSet
+  * @param riB reflection info about the output type B.
+  * @tparam B the output type.  This should be an interface or base class that the compiled class extends.
  */
-private[h2o] class Compiler[B](compilationClassPaths: Iterable[String] = Iterable.empty,
+private[h2o] class Compiler[B](parentClassLoader: ClassLoader = ToolProvider.getSystemToolClassLoader,
+                               compilationClassPathFiles: Iterable[File] = Iterable.empty,
                                classDir: Option[File] = None,
                                locale: Locale   = Locale.getDefault,
                                charSet: Charset = Charset.defaultCharset)
@@ -63,6 +65,7 @@ extends AlohaReadable[Try[B]]
                      diagnosticCollector: DiagnosticCollector[JavaFileObject]) = Try {
     val locations = Seq("-d", compileDir.getCanonicalPath)
 
+    val compilationClassPaths = compilationClassPathFiles.collect{case f if f.isFile => f.getAbsolutePath}
     val options =
       if (compilationClassPaths.isEmpty) locations
       else locations ++ Seq("-classpath", compilationClassPaths.mkString(File.pathSeparator))
@@ -85,7 +88,7 @@ extends AlohaReadable[Try[B]]
     )
 
   def instantiate(compilationUnit: InMemoryJavaSource[B], compileDir: File) = Try[Any] {
-    val classLoader = new URLClassLoader(Array(compileDir.toURI.toURL), Compiler.currentClassLoader)
+    val classLoader = new URLClassLoader(Array(compileDir.toURI.toURL), parentClassLoader)
 
     val clazz = classLoader.loadClass(compilationUnit.className)
 
@@ -138,8 +141,6 @@ extends AlohaReadable[Try[B]]
 }
 
 private[h2o] object Compiler extends Logging {
-  def currentClassLoader = Thread.currentThread().getContextClassLoader
-
   def tmpDir = Try[File] {
     val f = File.createTempFile("javacompiler", "classdir")
     debug(s"creating temp class directory: ${f.getCanonicalPath}")

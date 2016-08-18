@@ -251,12 +251,20 @@ object H2oModel extends ParserProviderCompanion
     case Left(TypeCoercionNotFound(category)) => Failure(new IllegalArgumentException(s"In model ${classOf[H2oModel[_, _]].getCanonicalName}: Could not ${category.name} model to Aloha output type: ${RefInfoOps.toString[B]}."))
   }
 
-  private[h2o] def getJar(collectFn: URL => Boolean): Array[String] =
-    Compiler.currentClassLoader match {
-      case urlClassLoader: URLClassLoader => urlClassLoader.getURLs.collect{case x if collectFn(x) => x.toString}
-      case _ => Array.empty[String]
+  private[h2o] def getJar(collectFn: URL => Boolean): Array[File] =
+    currentClassLoader match {
+      case urlClassLoader: URLClassLoader => urlClassLoader.getURLs.flatMap { url =>
+        // The File constructor can throw if the URL does not reference a local file.  This might be possible if
+        // running in some kind of applet.
+        if (collectFn(url)) Try(new File(url.toURI)).toOption
+        else None
+      }
+      case _ => Array.empty[File]
     }
 
+  // This guarantees that the h2oGenModelName property used below is guaranteed to be in sync with the maven artifact
+  // dependency defined in the POM. This is because the h2o_mvn.properties is a filtered resource, meaning maven injects
+  // values from the build into the properties file at build time.
   private[h2o] lazy val h2oProps = {
     val stream = getClass.getClassLoader.getResourceAsStream("h2o_mvn.properties")
     try {
@@ -266,6 +274,8 @@ object H2oModel extends ParserProviderCompanion
     }
     finally stream.close()
   }
+
+  private[this] lazy val currentClassLoader = Thread.currentThread().getContextClassLoader
 
   protected[h2o] def getGenModel[B, C](
     input: => C,
@@ -279,7 +289,7 @@ object H2oModel extends ParserProviderCompanion
     // This has been proven to work within a Jetty environment.
     val h2oGenModelJarName = h2oProps.getProperty("h2oGenModelName")
     val h2oGenModelJar = getJar((url: URL) => url.toString.contains(h2oGenModelJarName))
-    val compiler = new Compiler[GenModel](h2oGenModelJar, classCacheDir)
+    val compiler = new Compiler[GenModel](currentClassLoader, h2oGenModelJar, classCacheDir)
     f(compiler)(input)
   }
 
