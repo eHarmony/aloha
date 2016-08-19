@@ -62,6 +62,12 @@
 			<artifactId>scalaz-core_2.10</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>com.github.deaktator</groupId>
+			<artifactId>scala-runtime-manifest_${scala.major.version}</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+
 		<!-- This is where the Score protobuf object comes from. -->
 		<dependency>
 			<groupId>com.eharmony</groupId>

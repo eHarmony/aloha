@@ -2,6 +2,8 @@ package com.eharmony.aloha.reflect
 
 import java.{lang => jl}
 
+import deaktator.reflect.runtime.manifest.ManifestParser
+
 object RefInfo {
     val Any = RefInfoOps.refInfo[Any]
     val AnyRef = RefInfoOps.refInfo[AnyRef]
