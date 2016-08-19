@@ -2,6 +2,8 @@ package com.eharmony.aloha.reflect
 
 import java.{lang => jl}
 
+import deaktator.reflect.runtime.manifest.ManifestParser
+
 object RefInfo {
     val Any = RefInfoOps.refInfo[Any]
     val AnyRef = RefInfoOps.refInfo[AnyRef]
@@ -28,4 +30,13 @@ object RefInfo {
     val Unit = RefInfoOps.refInfo[Unit]
     val String = RefInfoOps.refInfo[String]
     def apply[A: RefInfo] = RefInfoOps.refInfo[A]
+
+  /**
+    * Create an untyped RefInfo from `strRep`.
+    * @param strRep a string representation of the Manifest.
+    * @return Either an error message on the Left in the event of a failure or a `RefInfo` on
+    *         the Right for a success.
+    */
+    def fromString(strRep: String): Either[String, RefInfo[_]] =
+      ManifestParser.parse(strRep)
 }
