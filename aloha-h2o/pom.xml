@@ -24,6 +24,7 @@
 
     <properties>
         <h2o.version>3.8.2.3</h2o.version>
+        <h2o.genmodel.artifact>h2o-genmodel</h2o.genmodel.artifact>
     </properties>
 
     <dependencies>
@@ -59,7 +60,7 @@
         </dependency>
         <dependency>
             <groupId>ai.h2o</groupId>
-            <artifactId>h2o-genmodel</artifactId>
+            <artifactId>${h2o.genmodel.artifact}</artifactId>
             <version>${h2o.version}</version>
             <exclusions>
                 <exclusion>
@@ -103,6 +104,26 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.3</version>
                 <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target/classes</outputDirectory>
+                            <encoding>UTF-8</encoding>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>h2o_mvn.properties</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>copy-test-resources</id>
                         <phase>process-test-resources</phase>

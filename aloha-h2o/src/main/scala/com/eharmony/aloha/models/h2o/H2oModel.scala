@@ -1,6 +1,8 @@
 package com.eharmony.aloha.models.h2o
 
 import java.io.File
+import java.net.{URL, URLClassLoader}
+import java.util.Properties
 
 import com.eharmony.aloha.factory.{ModelParser, ModelParserWithSemantics, ParserProviderCompanion}
 import com.eharmony.aloha.id.{ModelId, ModelIdentity}
@@ -25,8 +27,8 @@ import hex.genmodel.GenModel
 import hex.genmodel.easy.exception.PredictUnknownCategoricalLevelException
 import hex.genmodel.easy.{EasyPredictModelWrapper, RowData}
 import org.apache.commons.codec.binary.Base64
-import spray.json._
 import spray.json.DefaultJsonProtocol.StringJsonFormat
+import spray.json._
 
 import scala.annotation.tailrec
 import scala.collection.immutable.ListMap
@@ -249,12 +251,45 @@ object H2oModel extends ParserProviderCompanion
     case Left(TypeCoercionNotFound(category)) => Failure(new IllegalArgumentException(s"In model ${classOf[H2oModel[_, _]].getCanonicalName}: Could not ${category.name} model to Aloha output type: ${RefInfoOps.toString[B]}."))
   }
 
+  private[h2o] def getJar(collectFn: URL => Boolean): Array[File] =
+    currentClassLoader match {
+      case urlClassLoader: URLClassLoader => urlClassLoader.getURLs.flatMap { url =>
+        // The File constructor can throw if the URL does not reference a local file.  This might be possible if
+        // running in some kind of applet.
+        if (collectFn(url)) Try(new File(url.toURI)).toOption
+        else None
+      }
+      case _ => Array.empty[File]
+    }
+
+  // This guarantees that the h2oGenModelName property used below is guaranteed to be in sync with the maven artifact
+  // dependency defined in the POM. This is because the h2o_mvn.properties is a filtered resource, meaning maven injects
+  // values from the build into the properties file at build time.
+  private[h2o] lazy val h2oProps = {
+    val stream = getClass.getClassLoader.getResourceAsStream("h2o_mvn.properties")
+    try {
+      val p = new Properties
+      p.load(stream)
+      p
+    }
+    finally stream.close()
+  }
+
+  private[this] lazy val currentClassLoader = Thread.currentThread().getContextClassLoader
+
   protected[h2o] def getGenModel[B, C](
     input: => C,
     f: AlohaReadable[Try[GenModel]] => C => Try[GenModel],
     classCacheDir: Option[File]
   ) = {
-    val compiler = new Compiler[GenModel](classCacheDir)
+    // It turns out that running Aloha under some environments has class loader issues.  Specifically when compiling an
+    // H2O model within Jetty this has proven to fail.  Because Jetty has its own classloader the h2o-genmodel jar is
+    // not available in the System's classloader, however, it is available in the thread's local classloader.
+    //
+    // This has been proven to work within a Jetty environment.
+    val h2oGenModelJarName = h2oProps.getProperty("h2oGenModelName")
+    val h2oGenModelJar = getJar((url: URL) => url.toString.contains(h2oGenModelJarName))
+    val compiler = new Compiler[GenModel](currentClassLoader, h2oGenModelJar, classCacheDir)
     f(compiler)(input)
   }
 
