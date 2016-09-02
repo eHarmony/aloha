@@ -1,11 +1,14 @@
 package com.eharmony.aloha.semantics.compiled
 
+import com.eharmony.aloha.semantics.compiled.plugin.proto.CompiledSemanticsProtoPlugin
+import com.google.protobuf.GeneratedMessage
+
 import scala.util.Try
 import scala.concurrent.{ Future, Await, ExecutionContext }
 import scala.concurrent.duration._
 import com.eharmony.aloha.NoEvictionCache
 import com.eharmony.aloha.io.ContainerReadable
-import com.eharmony.aloha.semantics.{ ErrorEnrichingSemantics, Semantics }
+import com.eharmony.aloha.semantics.{MorphableSemantics, ErrorEnrichingSemantics, Semantics}
 import com.eharmony.aloha.semantics.func.{ GeneratedAccessor, OptionalFunc, GenFunc, GenAggFunc }
 import com.eharmony.aloha.util.EitherHelpers
 import com.eharmony.aloha.reflect.{ RefInfoOps, RefInfo }
@@ -154,6 +157,7 @@ case class CompiledSemantics[A](
   imports: Seq[String],
   override val provideSemanticsUdfException: Boolean = true)(implicit protected val ec: ExecutionContext)
   extends CompiledSemanticsLike[A]
+  with MorphableSemantics[CompiledSemantics, A]
   with ErrorEnrichingSemantics[A]
   with Logging {
 
@@ -195,6 +199,38 @@ case class CompiledSemantics[A](
    * @return
    */
   def retainGeneratedCode(): Boolean = isDebugEnabled
+
+  def semantics: CompiledSemantics[A] = this
+
+  def morph[B](implicit ri: RefInfo[B]): Option[CompiledSemantics[B]] = {
+    if (RefInfoOps.isSubType(ri, RefInfo[GeneratedMessage]) &&
+
+        // ======================================================================
+        // TODO: Figure out what to do here ...
+        // ======================================================================
+
+        // Gives the compilation error:
+        //
+        //   type arguments [A] do not conform to class CompiledSemanticsProtoPlugin's type parameter bounds [A <: com.google.protobuf.GeneratedMessage]
+        //            plugin.isInstanceOf[CompiledSemanticsProtoPlugin[A]]) {
+        //                                ^
+        //
+        plugin.isInstanceOf[CompiledSemanticsProtoPlugin[A]]) {
+      plugin match {
+        case CompiledSemanticsProtoPlugin(deref) =>
+
+          // ======================================================================
+          // TODO: Figure out if there is a way to remove these horrible casts.
+          // ======================================================================
+
+          val newPlugin = CompiledSemanticsProtoPlugin(deref)(ri.asInstanceOf[RefInfo[GeneratedMessage]])
+          Option(copy(plugin = newPlugin)).asInstanceOf[Option[CompiledSemantics[B]]]
+
+        case _ => None
+      }
+    }
+    else None
+  }
 }
 
 /**
