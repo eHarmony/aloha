@@ -204,16 +204,12 @@ case class CompiledSemantics[A](
 
   /**
     * Attempt to create a new [[CompiledSemantics]] with a different type parameter.
-    * @param ri reflection information that may be necessary to determine whether to create
-    *           the [[MorphableSemantics]] that was requested.
     * @tparam B input type for the new [[MorphableSemantics]] instance that might be created.
     *           A [[MorphableSemantics]] instance may choose not allow morphing to all `B`.
     *           In that case, a `None` will be returned.
     * @return
     */
-  def morph[B](implicit ri: RefInfo[B]): Option[CompiledSemantics[B]] = {
-    protoSemantics[B] // orElse ... orElse ...
-  }
+  def morph[B: RefInfo]: Option[CompiledSemantics[B]] = protoSemantics[B] // orElse ... orElse ...
 
   private[compiled] def protoSemantics[B](implicit ri: RefInfo[B]): Option[CompiledSemantics[B]] = {
     // The filter works because only the TYPE / structure of the plugin needs to be confirmed.
