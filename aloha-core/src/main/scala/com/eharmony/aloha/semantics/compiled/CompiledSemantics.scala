@@ -212,23 +212,16 @@ case class CompiledSemantics[A](
   def morph[B: RefInfo]: Option[CompiledSemantics[B]] = protoSemantics[B] // orElse ... orElse ...
 
   private[compiled] def protoSemantics[B](implicit ri: RefInfo[B]): Option[CompiledSemantics[B]] = {
-    // The filter works because only the TYPE / structure of the plugin needs to be confirmed.
-    // Since the type parameter of the plugin is the same as the type parameter of semantics,
-    // it isn't necessary to check the type parameter.  But this still seems like a suboptimal
-    // way to do this check.
-    // TODO: Find a better way to do the check in second term of the filter.
-    Option(plugin) filter { p =>
-      RefInfoOps.isSubType(ri, RefInfo[GeneratedMessage]) &&
-      p.isInstanceOf[CompiledSemanticsProtoPlugin[_]]
-    } collect { case CompiledSemanticsProtoPlugin(deref) =>
-      // TODO: Attempt to remove these horrible casts.
-      // It's known by the first clause of the filter that this is true.
-      // Can implicit evidence somehow be provided?
-      val castedRefInfo = ri.asInstanceOf[RefInfo[GeneratedMessage]]
-      val newPlugin = CompiledSemanticsProtoPlugin(deref)(castedRefInfo)
+    Option(plugin) collect {
+      case CompiledSemanticsProtoPlugin(deref) if RefInfoOps.isSubType(ri, RefInfo[GeneratedMessage]) =>
+        // TODO: Attempt to remove these horrible casts.
+        // It's known by the IF condition above that this is true.
+        // Can implicit evidence somehow be provided instead?
+        val castedRefInfo = ri.asInstanceOf[RefInfo[GeneratedMessage]]
+        val newPlugin = CompiledSemanticsProtoPlugin(deref)(castedRefInfo)
 
-      // TODO: Test whether `compiler` can be reused.
-      copy(plugin = newPlugin).asInstanceOf[CompiledSemantics[B]]
+        // TODO: Test whether `compiler` can be reused.
+        copy(plugin = newPlugin).asInstanceOf[CompiledSemantics[B]]
     }
   }
 }
