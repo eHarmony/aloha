@@ -202,34 +202,38 @@ case class CompiledSemantics[A](
 
   def semantics: CompiledSemantics[A] = this
 
+  /**
+    * Attempt to create a new [[CompiledSemantics]] with a different type parameter.
+    * @param ri reflection information that may be necessary to determine whether to create
+    *           the [[MorphableSemantics]] that was requested.
+    * @tparam B input type for the new [[MorphableSemantics]] instance that might be created.
+    *           A [[MorphableSemantics]] instance may choose not allow morphing to all `B`.
+    *           In that case, a `None` will be returned.
+    * @return
+    */
   def morph[B](implicit ri: RefInfo[B]): Option[CompiledSemantics[B]] = {
-    if (RefInfoOps.isSubType(ri, RefInfo[GeneratedMessage]) &&
+    protoSemantics[B] // orElse ... orElse ...
+  }
 
-        // ======================================================================
-        // TODO: Figure out what to do here ...
-        // ======================================================================
+  private[compiled] def protoSemantics[B](implicit ri: RefInfo[B]): Option[CompiledSemantics[B]] = {
+    // The filter works because only the TYPE / structure of the plugin needs to be confirmed.
+    // Since the type parameter of the plugin is the same as the type parameter of semantics,
+    // it isn't necessary to check the type parameter.  But this still seems like a suboptimal
+    // way to do this check.
+    // TODO: Find a better way to do the check in second term of the filter.
+    Option(plugin) filter { p =>
+      RefInfoOps.isSubType(ri, RefInfo[GeneratedMessage]) &&
+      p.isInstanceOf[CompiledSemanticsProtoPlugin[_]]
+    } collect { case CompiledSemanticsProtoPlugin(deref) =>
+      // TODO: Attempt to remove these horrible casts.
+      // It's known by the first clause of the filter that this is true.
+      // Can implicit evidence somehow be provided?
+      val castedRefInfo = ri.asInstanceOf[RefInfo[GeneratedMessage]]
+      val newPlugin = CompiledSemanticsProtoPlugin(deref)(castedRefInfo)
 
-        // Gives the compilation error:
-        //
-        //   type arguments [A] do not conform to class CompiledSemanticsProtoPlugin's type parameter bounds [A <: com.google.protobuf.GeneratedMessage]
-        //            plugin.isInstanceOf[CompiledSemanticsProtoPlugin[A]]) {
-        //                                ^
-        //
-        plugin.isInstanceOf[CompiledSemanticsProtoPlugin[A]]) {
-      plugin match {
-        case CompiledSemanticsProtoPlugin(deref) =>
-
-          // ======================================================================
-          // TODO: Figure out if there is a way to remove these horrible casts.
-          // ======================================================================
-
-          val newPlugin = CompiledSemanticsProtoPlugin(deref)(ri.asInstanceOf[RefInfo[GeneratedMessage]])
-          Option(copy(plugin = newPlugin)).asInstanceOf[Option[CompiledSemantics[B]]]
-
-        case _ => None
-      }
+      // TODO: Test whether `compiler` can be reused.
+      copy(plugin = newPlugin).asInstanceOf[CompiledSemantics[B]]
     }
-    else None
   }
 }
 
