@@ -1,5 +1,6 @@
 package com.eharmony.aloha.semantics.compiled
 
+import com.eharmony.aloha.semantics.compiled.plugin.MorphableCompiledSemanticsPlugin
 import com.eharmony.aloha.semantics.compiled.plugin.proto.CompiledSemanticsProtoPlugin
 import com.google.protobuf.GeneratedMessage
 
@@ -209,21 +210,10 @@ case class CompiledSemantics[A](
     *           In that case, a `None` will be returned.
     * @return
     */
-  def morph[B: RefInfo]: Option[CompiledSemantics[B]] = protoSemantics[B] // orElse ... orElse ...
-
-  private[compiled] def protoSemantics[B](implicit ri: RefInfo[B]): Option[CompiledSemantics[B]] = {
-    Option(plugin) collect {
-      case CompiledSemanticsProtoPlugin(deref) if RefInfoOps.isSubType(ri, RefInfo[GeneratedMessage]) =>
-        // TODO: Attempt to remove these horrible casts.
-        // It's known by the IF condition above that this is true.
-        // Can implicit evidence somehow be provided instead?
-        val castedRefInfo = ri.asInstanceOf[RefInfo[GeneratedMessage]]
-        val newPlugin = CompiledSemanticsProtoPlugin(deref)(castedRefInfo)
-
-        // TODO: Test whether `compiler` can be reused.
-        copy(plugin = newPlugin).asInstanceOf[CompiledSemantics[B]]
+  def morph[B](implicit ri: RefInfo[B]): Option[CompiledSemantics[B]] =
+    plugin match { case p: MorphableCompiledSemanticsPlugin =>
+      p.morph[B] map { p => copy(plugin = p)}
     }
-  }
 }
 
 /**
