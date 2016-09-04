@@ -75,6 +75,10 @@ trait MorphableSemantics[M[_] <: Semantics[_], A] { self: Semantics[A] =>
     * {{{
     * def specific[A](x: X[A]): X[A] = x.semantics
     * }}}
+    *
+    * '''Note''':The return type `this.type` could have been used, but that causes some issues
+    *            later.  This doesn't have the problems and is easy for the implementer to add.
+    *
     * @return `this`, cast as `Semantics[A]`.
     */
   def semantics: Semantics[A]
