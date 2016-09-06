@@ -201,8 +201,6 @@ case class CompiledSemantics[A](
    */
   def retainGeneratedCode(): Boolean = isDebugEnabled
 
-  def semantics: CompiledSemantics[A] = this
-
   /**
     * Attempt to create a new [[CompiledSemantics]] with a different type parameter.
     * @tparam B input type for the new [[MorphableSemantics]] instance that might be created.

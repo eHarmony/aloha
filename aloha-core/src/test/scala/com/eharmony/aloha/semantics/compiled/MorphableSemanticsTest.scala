@@ -56,8 +56,7 @@ class MorphableSemanticsTest {
     */
   private[this] def morphedSemantics[B: RefInfo](s: Semantics[UserProto]): Semantics[B] = {
     val sO: Option[Semantics[B]] = s match {
-      case ms: MorphableSemantics[_, UserProto] =>
-        ms.morph[B].map(_.semantics)
+      case ms: MorphableSemantics[_, _] => ms.morph[B]
       case _ => None
     }
 
