@@ -34,7 +34,7 @@ class MorphableSemanticsTest {
     val photos = createPhotosFn(sUserProto)
 
     // Morph to a different kind of protobuf.  Use the new semantics to create a function.
-    implicit val sPhotoProto = morphedSemantics[PhotoProto](sUserProto)
+    val sPhotoProto = morphedSemantics[PhotoProto](sUserProto)
     val height = createPhotoHeightFn(sPhotoProto)
 
     // Compose the functions.
