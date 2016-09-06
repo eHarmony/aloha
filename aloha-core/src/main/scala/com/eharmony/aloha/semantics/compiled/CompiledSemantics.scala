@@ -1,16 +1,18 @@
 package com.eharmony.aloha.semantics.compiled
 
-import scala.util.Try
-import scala.concurrent.{ Future, Await, ExecutionContext }
-import scala.concurrent.duration._
+import java.io.{PrintWriter, StringWriter}
+
 import com.eharmony.aloha.NoEvictionCache
 import com.eharmony.aloha.io.ContainerReadable
-import com.eharmony.aloha.semantics.{ ErrorEnrichingSemantics, Semantics }
-import com.eharmony.aloha.semantics.func.{ GeneratedAccessor, OptionalFunc, GenFunc, GenAggFunc }
-import com.eharmony.aloha.util.EitherHelpers
-import com.eharmony.aloha.reflect.{ RefInfoOps, RefInfo }
-import java.io.{ PrintWriter, StringWriter }
-import com.eharmony.aloha.util.Logging
+import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
+import com.eharmony.aloha.semantics.compiled.plugin.MorphableCompiledSemanticsPlugin
+import com.eharmony.aloha.semantics.func.{GenAggFunc, GenFunc, GeneratedAccessor, OptionalFunc}
+import com.eharmony.aloha.semantics.{ErrorEnrichingSemantics, MorphableSemantics, Semantics}
+import com.eharmony.aloha.util.{EitherHelpers, Logging}
+
+import scala.concurrent.duration._
+import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.util.Try
 
 /**
  * A semantics that can interpret complicated expressions by compiling the expressions.  This semantics constructs
@@ -154,6 +156,7 @@ case class CompiledSemantics[A](
   imports: Seq[String],
   override val provideSemanticsUdfException: Boolean = true)(implicit protected val ec: ExecutionContext)
   extends CompiledSemanticsLike[A]
+  with MorphableSemantics[CompiledSemantics, A]
   with ErrorEnrichingSemantics[A]
   with Logging {
 
@@ -195,6 +198,18 @@ case class CompiledSemantics[A](
    * @return
    */
   def retainGeneratedCode(): Boolean = isDebugEnabled
+
+  /**
+    * Attempt to create a new [[CompiledSemantics]] with a different type parameter.
+    * @tparam B input type for the new [[MorphableSemantics]] instance that might be created.
+    *           A [[MorphableSemantics]] instance may choose not allow morphing to all `B`.
+    *           In that case, a `None` will be returned.
+    * @return
+    */
+  def morph[B](implicit ri: RefInfo[B]): Option[CompiledSemantics[B]] =
+    plugin match { case p: MorphableCompiledSemanticsPlugin =>
+      p.morph[B] map { p => copy(plugin = p)}
+    }
 }
 
 /**
@@ -225,7 +240,7 @@ sealed trait CompiledSemanticsLike[A]
   def retainGeneratedCode(): Boolean // See comments in CompiledSemantics case class for documentation.
   protected implicit val ec: ExecutionContext // See comments in CompiledSemantics case class for documentation.
 
-  import CompiledSemantics.{ genFuncClassName, maxGenWaitInSec, FunctionContainer, RequiredFunctionContainer, OptionalFunctionContainer }
+  import CompiledSemantics.{FunctionContainer, OptionalFunctionContainer, RequiredFunctionContainer, genFuncClassName, maxGenWaitInSec}
 
   private[this]type VarSpecAndDefault = (String, Option[String])
 
@@ -644,7 +659,7 @@ sealed trait CompiledSemanticsLike[A]
    * @param vac the code for the accessor.
    */
   private[this] case class Accessor(descriptor: String, default: Option[String], vac: VariableAccessorCode) {
-    import CompiledSemantics.{ generatedAccessorClassName => gac }
+    import CompiledSemantics.{generatedAccessorClassName => gac}
     val optional = vac.isOptional
     def accessorString = "${" + descriptor + default.map(specDefSep + _).getOrElse("") + "}"
 

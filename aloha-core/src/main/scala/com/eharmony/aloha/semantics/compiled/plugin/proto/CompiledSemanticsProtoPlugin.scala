@@ -1,5 +1,7 @@
 package com.eharmony.aloha.semantics.compiled.plugin.proto
 
+import com.eharmony.aloha.semantics.compiled.plugin.MorphableCompiledSemanticsPlugin
+
 import scalaz.ValidationNel
 import scalaz.syntax.validation.ToValidationV // scalaz.syntax.validation.ToValidationOps for latest scalaz
 
@@ -56,7 +58,8 @@ import com.eharmony.aloha.util.EitherHelpers
  */
 case class CompiledSemanticsProtoPlugin[A <: GeneratedMessage](dereferenceAsOptional: Boolean = true)(implicit val refInfoA: RefInfo[A])
   extends CompiledSemanticsPlugin[A]
-  with EitherHelpers {
+     with MorphableCompiledSemanticsPlugin
+     with EitherHelpers {
 
   /**
    * This type represents the separation of field accessors into 3 values:
@@ -354,6 +357,17 @@ case class CompiledSemanticsProtoPlugin[A <: GeneratedMessage](dereferenceAsOpti
   private[proto] def err(consumed: List[Token], addlMsg: String = ""): ValidationNel[String, Nothing] = {
     val problem = consumed.reverse.map({ case Field(f) => f; case Index(i) => "[" + i + "]" }).mkString(".").replaceAll("""\.\[""", "[")
     ("Problem found at: '" + problem + "'. " + addlMsg).trim.failNel
+  }
+
+  override def morph[B](implicit ri: RefInfo[B]): Option[CompiledSemanticsPlugin[B]] = {
+    Option(this) collect {
+      case CompiledSemanticsProtoPlugin(deref) if RefInfoOps.isSubType(ri, RefInfo[GeneratedMessage]) =>
+        // TODO: Attempt to remove these horrible casts.
+        // It's known by the IF condition above that this is true.
+        // Can implicit evidence somehow be provided instead?
+        val castedRefInfo = ri.asInstanceOf[RefInfo[GeneratedMessage]]
+        CompiledSemanticsProtoPlugin(deref)(castedRefInfo).asInstanceOf[CompiledSemanticsProtoPlugin[B]]
+    }
   }
 }
 
