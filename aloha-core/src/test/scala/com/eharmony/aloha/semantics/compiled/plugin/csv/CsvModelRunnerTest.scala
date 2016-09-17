@@ -219,7 +219,7 @@ class CsvModelRunnerTest {
 
     val cols = Set(0, 2, 3)
     val actualData = actual.drop(1).map{ v => v.zipWithIndex.filter{case (x, i) => cols contains i}.unzip._1 }
-
+    
     assertEquals(expectedHeaders, actual.head)
     assertEquals(expected, actualData)
   }
