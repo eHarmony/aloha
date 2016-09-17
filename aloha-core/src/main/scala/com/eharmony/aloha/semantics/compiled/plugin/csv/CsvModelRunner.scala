@@ -1,20 +1,25 @@
 package com.eharmony.aloha.semantics.compiled.plugin.csv
 
-import java.io.{File, PrintStream}
+import java.io.{InputStream, OutputStream, File, PrintStream}
 import java.util.regex.Matcher
 
 import com.eharmony.aloha
 import com.eharmony.aloha.annotate.CLI
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.io.StringReadable
+import com.eharmony.aloha.models.Model
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import com.eharmony.aloha.score.conversions.ScoreConverter
 import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits._
 import com.eharmony.aloha.semantics.compiled.{CompiledSemanticsPlugin, CompiledSemantics}
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import com.eharmony.aloha.semantics.compiled.plugin.proto.CompiledSemanticsProtoPlugin
+import com.eharmony.aloha.util.Timing
 import com.google.protobuf.GeneratedMessage
 import org.apache.commons.codec.binary.Base64
+
+import scala.collection.parallel.immutable.ParVector
+
 // import org.apache.commons.lang3.StringEscapeUtils
 import org.apache.commons.vfs2.{FileObject, VFS}
 import spray.json.{JsonFormat, pimpString}
@@ -179,7 +184,126 @@ object OutputType extends Enumeration {
 
 import com.eharmony.aloha.semantics.compiled.plugin.csv.InputPosition._
 
+sealed trait PredictionOutputFormat {
+    def run(): Unit
+}
 
+case class ModelPredictionOutput(
+    out: OutputStream,
+    closeOut: Boolean,
+    predictionFn: (String => Option[Any]),
+    in: Iterator[String],
+    inputPosInOutput: InputPosition,
+    outputSep: String,
+    predictionMissing: String
+) extends PredictionOutputFormat {
+    def run(): Unit = {
+        try {
+            val pStream = new PrintStream(out)
+
+            // Create a writing function.  The first function parameter is the input, the second is the model output.
+            val writingFunc: (String, String) => String = inputPosInOutput match {
+                case InputPosition.Neither => (i, o) => o
+                case InputPosition.Before => (i, o) => s"$i$outputSep$o"
+                case InputPosition.After => (i, o) => s"$o$outputSep$i"
+                case InputPosition.Both => throw new IllegalStateException("Can't output input before and after output.")
+            }
+
+            in.foreach{ line => pStream.println(writingFunc(line, predictionFn(line).map(_.toString).getOrElse(predictionMissing))) }
+        }
+        finally {
+            if (closeOut)
+                org.apache.commons.io.IOUtils.closeQuietly(out)
+        }
+    }
+}
+
+case class LoadTestOutput(
+    out: OutputStream,
+    closeOut: Boolean,
+    in: Iterator[String],
+    inputFn: (String => Any),
+    model: Model[Any, Any],
+    outputSep: String,
+    ltConf: LoadTestConfig
+) extends PredictionOutputFormat with Timing {
+    def run(): Unit = {
+        val input = correctSizedInput()
+        val inputSize = input.size
+        val models = ParVector.fill(ltConf.threads)(model)
+
+        var loops = 0
+        var pred = 0L
+        var nonEmpty = 0L
+
+        try {
+            val pStream = new PrintStream(out)
+
+            // Clean up before calculating and reporting on memory usage.
+            1 to 5 foreach { _ => System.gc() }
+
+            pStream.println(header)
+            pStream.println(report(0, 0, 0, Float.MinPositiveValue, inputSize, models.size))
+            pStream.flush()
+
+            while (loops < ltConf.loops) {
+                val (ne, intTime) = time(models.map(m => input.foldLeft(0)((s, x) => s + m(x).fold(0)(_ => 1))).sum)
+                nonEmpty += ne
+                pred += input.size * models.size
+                loops += 1
+
+                if (loops % ltConf.reportLoopMultiple == 0) {
+                    pStream.println(report(loops, pred, nonEmpty, intTime, inputSize, models.size))
+                    pStream.flush() // Flush because these might take a long time and the output is small.
+                }
+            }
+        }
+        finally {
+            if (closeOut)
+                org.apache.commons.io.IOUtils.closeQuietly(out)
+        }
+    }
+
+    private[this] def header = {
+        val t = outputSep
+        s"loop_number${t}pred_sec${t}running_pred${t}running_nonempty_pred${t}mem_used_mb${t}mem_unallocated_mb${t}unixtime_ns"
+    }
+
+    private[this] def report(loops: Int, pred: Long, nonEmpty: Long, intervalTime: Float, intervalSize: Int, models: Int): String = {
+        val time = System.nanoTime()
+        val t = outputSep
+        val predSec = intervalSize * models / intervalTime
+        val (usedMB, unallocMB) = memStats()
+        s"$loops$t$predSec$t$pred$t$nonEmpty$t$usedMB$t$unallocMB$t$time"
+    }
+
+    private[this] def memStats() = {
+        val r = Runtime.getRuntime
+        val tot = r.totalMemory()
+        val free = r.freeMemory()
+        val max = r.maxMemory()
+        val used = tot - free
+        val unalloc = max - used
+        (used / (1 << 20).toFloat, unalloc / (1 << 20).toFloat)
+    }
+
+    private[this] def correctSizedInput() = {
+        val input = in.take(ltConf.predictionsPerLoop).map(inputFn).toVector
+        val s = input.size
+        if (s >= ltConf.predictionsPerLoop) input
+        else {
+            val n = math.ceil(ltConf.predictionsPerLoop.toDouble / s).toInt
+            Vector.fill(n)(input).flatten.take(ltConf.predictionsPerLoop)
+        }
+    }
+}
+
+case class LoadTestConfig(
+    loops: Long = Long.MaxValue,
+    threads: Int = Runtime.getRuntime.availableProcessors(),
+    predictionsPerLoop: Int = 100,
+    reportLoopMultiple: Int = 10
+)
 
 case class CsvModelRunnerConfig(
     inputPosInOutput: InputPosition = Neither,
@@ -192,8 +316,8 @@ case class CsvModelRunnerConfig(
     outputType: OutputType.Value = OutputType.IntType,
     inputType: Either[Unit, Option[InputType]] = Right(None),
     outputSep: String = "\t",
-    predictionMissing: String = "") {
-
+    predictionMissing: String = "",
+    loadTest: Option[LoadTestConfig] = None) {
 
     def validate: Either[String, Unit] = {
         if (inputPosInOutput == Both)                   Left("Cannot place input both before and after the model output in the output.")
@@ -236,6 +360,11 @@ object CsvModelRunnerConfig {
             )
         }
 
+    def updateLoadTest(c: CsvModelRunnerConfig)(transform: LoadTestConfig => LoadTestConfig) = {
+        val loadTest = transform(c.loadTest.getOrElse(LoadTestConfig()))
+        c.copy(loadTest = Option(loadTest))
+    }
+
     private[this] implicit val vfs2FoRead = scopt.Read.reads(VFS.getManager.resolveFile)
 
     val parser = new scopt.OptionParser[CsvModelRunnerConfig]("model-runner-tool") {
@@ -244,6 +373,40 @@ object CsvModelRunnerConfig {
         arg[FileObject]("<model>") required() action { (m, c) =>
             c.copy(model = Some(m))
         } text "Apache VFS URL to model file."
+
+        // vvvvv   Load test options   vvvvv
+
+        opt[Long]("lt-loops") action { (loops, c) =>
+            updateLoadTest(c)(_.copy(loops = loops))
+        } validate { loops =>
+            if (loops >= 1) Right(())
+            else Left(s"load-test-loops must be at least one.  Found $loops.")
+        } text "Run a load test with the number of specified loops over the data."
+
+        opt[Int]("lt-threads") action { (threads, c) =>
+            updateLoadTest(c)(_.copy(threads = threads))
+        } validate { threads =>
+            val p = Runtime.getRuntime.availableProcessors
+            if (1 <= threads && threads <= p) Right(())
+            else Left(s"threads must be between 1 and $p.  Found $threads.")
+        } text "Run a load test with the specified number of threads."
+
+        opt[Int]("lt-pred-per-loop") action { (pred, c) =>
+            updateLoadTest(c)(_.copy(predictionsPerLoop = pred))
+        } validate { pred =>
+            if (pred >= 100) Right(())
+            else Left(s"Predictions per round must be at least 100.  Found $pred.")
+        } text "Run a load test with the number of predictions per loop."
+
+        opt[Int]("lt-report-loop-multiple") action { (mult, c) =>
+            updateLoadTest(c)(_.copy(reportLoopMultiple = mult))
+        } validate { mult =>
+            if (mult >= 1) Right(())
+            else Left(s"report loop multiple must be positive.  Found $mult.")
+        } text "Run a load test, reporting statistics every [arg] loops."
+
+
+        // ^^^^^   Load test options   ^^^^^
 
         opt[Unit]('A', "after") action { (_, c) =>
             c.copy(inputPosInOutput = InputPosition(c.inputPosInOutput.id | After.id))
@@ -492,7 +655,7 @@ object CsvModelRunner {
     def getConf(args: Seq[String]): Option[CsvModelRunnerConfig] =
         CsvModelRunnerConfig.parser.parse(args, CsvModelRunnerConfig())
 
-    def predictionFunction[A](inputType: InputType, outputType: OutputType.Value, imports: Seq[String], cacheDir: Option[File], model: FileObject) = {
+    def inputAndModel[A](inputType: InputType, outputType: OutputType.Value, imports: Seq[String], cacheDir: Option[File], model: FileObject): ((String) => A, Model[A, Any]) = {
         val (s, fn, refInfo) = inputType match {
             case t : CsvInputType  =>
                 val (p, csvLines) = t.csvPluginAndLines
@@ -528,21 +691,35 @@ object CsvModelRunner {
             case StringType  => instantiate[String]
         }
 
-        (s: String) => m(fn(s))
+        ((s: String) => fn(s), m)
     }
 
-    def getRunnableInfo(config: Option[CsvModelRunnerConfig]) = config map { case conf =>
-        val inputType = conf.inputType.right.get.get
+    def getPredictionOutputFormat(config: Option[CsvModelRunnerConfig]): Option[PredictionOutputFormat] = config map { case conf =>
+        val inputType: InputType = conf.inputType.right.get.get
 
-        val fn = predictionFunction(inputType, conf.outputType, conf.imports, conf.classCacheDir, conf.model.get)
+        // (String) => Nothing
+        // Model[Nothing, Any]
+        val (inF, model) = inputAndModel(inputType, conf.outputType, conf.imports, conf.classCacheDir, conf.model.get)
 
-        val out = conf.outputFile.map(f => VFS.getManager.resolveFile(f).getContent.getOutputStream).getOrElse(System.out)
-        val closeOut = conf.outputFile.isDefined
+        val out: OutputStream = conf.outputFile.map(f => VFS.getManager.resolveFile(f).getContent.getOutputStream).getOrElse(System.out)
+        val closeOut: Boolean = conf.outputFile.isDefined
 
-        val is = conf.inputFile.map(f => VFS.getManager.resolveFile(f).getContent.getInputStream).getOrElse(System.in)
-        val in = scala.io.Source.fromInputStream(is).getLines()
+        val is: InputStream = conf.inputFile.map(f => VFS.getManager.resolveFile(f).getContent.getInputStream).getOrElse(System.in)
+        val in: Iterator[String] = scala.io.Source.fromInputStream(is).getLines()
 
-        (conf, in, fn, out, closeOut)
+        conf.loadTest match {
+            case Some(lt) =>
+                LoadTestOutput(out, closeOut, in, inF, model.asInstanceOf[Model[Any, Any]], conf.outputSep, lt)
+            case None =>
+                ModelPredictionOutput(
+                    out,
+                    closeOut,
+                    (s: String) => model(inF(s)),
+                    in,
+                    conf.inputPosInOutput,
+                    conf.outputSep,
+                    conf.predictionMissing)
+        }
     }
 
     /**
@@ -588,27 +765,7 @@ object CsvModelRunner {
             }
         }
 
-        // Extract to named parameters and if the necessary information exists, run each line
-        // through the model and write out the output to STDOUT.
-        getRunnableInfo(config) foreach { case (conf, lines, model, out, closeOut) =>
-            try {
-                val pStream = new PrintStream(out)
-
-                // Create a writing function.  The first function parameter is the input, the second is the model output.
-                val writingFunc: (String, String) => String = conf.inputPosInOutput match {
-                    case InputPosition.Neither => (i, o) => o
-                    case InputPosition.Before => (i, o) => s"$i${conf.outputSep}$o"
-                    case InputPosition.After => (i, o) => s"$o${conf.outputSep}$i"
-                    case InputPosition.Both => throw new IllegalStateException("Can't output input before and after output.")
-                }
-
-                lines.foreach{ line => pStream.println(writingFunc(line, model(line).map(_.toString).getOrElse(conf.predictionMissing))) }
-            }
-            finally {
-                if (closeOut)
-                    org.apache.commons.io.IOUtils.closeQuietly(out)
-            }
-        }
+        getPredictionOutputFormat(config) foreach { pof => pof.run() }
     }
 
     private[this] def unescape(s: String) = s.replaceAllLiterally("\\\\", "\\")

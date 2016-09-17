@@ -173,6 +173,30 @@ class CsvModelRunnerTest {
                     toSeq
     assertEquals(expected, actual)
   }
+
+  @Test def testProtoLoadTest() {
+    // Use a temp file so we can get at the results for comparison.  Also shows how to write to a VFS file.
+    val tmpFile = "ram://results.txt"
+
+    val args = Array(
+      "-p", "com.eharmony.aloha.test.proto.Testing.UserProto",
+      "--imports", "scala.math._,com.eharmony.aloha.feature.BasicFunctions._",
+      "--input-file", "res:fizz_buzzs.proto",
+      "--output-file", tmpFile,
+      "--lt-loops", "10000",
+//      "--lt-threads", "2",
+      "--lt-pred-per-loop", "1000",
+      "--lt-report-loop-multiple", "1",
+      "res:fizzbuzz_proto.json"
+    )
+
+    CsvModelRunner.main(args)
+
+    val actual = scala.io.Source.
+      fromInputStream(VFS.getManager.resolveFile(tmpFile).getContent.getInputStream).
+      getLines().
+      foreach(println)
+  }
 }
 
 private object CsvModelRunnerTest {
