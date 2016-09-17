@@ -12,7 +12,7 @@ if [ ! -d "$HOME/protobuf/lib" ]; then
   mv gtest-download/googletest-release-1.3.0 gtest
   ./autogen.sh
   ./configure --prefix=$HOME/protobuf && make && make install
-  cd -
+  cd ..
 else
   echo "Using cached directory."
 fi
