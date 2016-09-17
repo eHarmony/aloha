@@ -178,24 +178,50 @@ class CsvModelRunnerTest {
     // Use a temp file so we can get at the results for comparison.  Also shows how to write to a VFS file.
     val tmpFile = "ram://results.txt"
 
+    val predPerLoop = 100
+    val threads = 2
+    val loops = 2
+
     val args = Array(
       "-p", "com.eharmony.aloha.test.proto.Testing.UserProto",
       "--imports", "scala.math._,com.eharmony.aloha.feature.BasicFunctions._",
       "--input-file", "res:fizz_buzzs.proto",
       "--output-file", tmpFile,
-      "--lt-loops", "10000",
-//      "--lt-threads", "2",
-      "--lt-pred-per-loop", "1000",
+      "--lt-loops", loops.toString,
+      "--lt-threads", threads.toString,
+      "--lt-pred-per-loop", predPerLoop.toString,
       "--lt-report-loop-multiple", "1",
       "res:fizzbuzz_proto.json"
     )
 
     CsvModelRunner.main(args)
 
+    val expectedHeaders = Seq(
+      "loop_number",
+      "pred_sec",
+      "running_pred",
+      "running_nonempty_pred",
+      "mem_used_mb",
+      "mem_unallocated_mb",
+      "unixtime_ns"
+    )
+
+    val expected = 0 to loops map { i =>
+      val n = (i * threads * predPerLoop).toString
+      Seq(i.toString, n, n)
+    }
+
     val actual = scala.io.Source.
       fromInputStream(VFS.getManager.resolveFile(tmpFile).getContent.getInputStream).
       getLines().
-      foreach(println)
+      map(s => s.split("\t").toSeq).
+      toVector
+
+    val cols = Set(0, 2, 3)
+    val actualData = actual.drop(1).map{ v => v.zipWithIndex.filter{case (x, i) => cols contains i}.unzip._1 }
+
+    assertEquals(expectedHeaders, actual.head)
+    assertEquals(expected, actualData)
   }
 }
 
