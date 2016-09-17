@@ -3,7 +3,7 @@ set -e
 # check to see if protobuf folder is empty
 if [ ! -d "$HOME/protobuf/lib" ]; then
   wget https://github.com/google/protobuf/archive/v2.4.1.zip
-  unzip protobuf-2.4.1.tar.gz
+  unzip v2.4.1.zip
   cd protobuf-2.4.1 && ./configure --prefix=$HOME/protobuf && make && make install
   cd -
 else
