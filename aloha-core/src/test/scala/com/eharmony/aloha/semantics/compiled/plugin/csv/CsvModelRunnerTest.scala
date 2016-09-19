@@ -191,6 +191,7 @@ class CsvModelRunnerTest {
       "--lt-threads", threads.toString,
       "--lt-pred-per-loop", predPerLoop.toString,
       "--lt-report-loop-multiple", "1",
+      "--lt-use-score-objects", "true",
       "res:fizzbuzz_proto.json"
     )
 
