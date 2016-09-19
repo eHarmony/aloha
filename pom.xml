@@ -300,6 +300,7 @@
                             <include>**/*Test.scala</include>
                         </includes>
                         <forkMode>once</forkMode>
+                        <argLine>-Xmx2g</argLine>
                     </configuration>
                 </plugin>
 
