@@ -209,7 +209,7 @@ case class ModelPredictionOutput(
                 case InputPosition.Both => throw new IllegalStateException("Can't output input before and after output.")
             }
 
-            in.foreach{ line => pStream.println(writingFunc(line, predictionFn(line).map(_.toString).getOrElse(predictionMissing))) }
+            in.foreach{ line => pStream.println(writingFunc(line, predictionFn(line).fold(predictionMissing)(_.toString))) }
         }
         finally {
             if (closeOut)
@@ -246,8 +246,12 @@ case class LoadTestOutput(
             pStream.println(report(0, 0, 0, Float.MinPositiveValue, inputSize, models.size))
             pStream.flush()
 
+            val score: (Any) => Int =
+                if (ltConf.useScoreObjects) (a: Any) => if (model.score(a).hasScore) 1 else 0
+                else (a: Any) => model(a).fold(0)(_ => 1)
+
             while (loops < ltConf.loops) {
-                val (ne, intTime) = time(models.map(m => input.foldLeft(0)((s, x) => s + m(x).fold(0)(_ => 1))).sum)
+                val (ne, intTime) = time(models.map(m => input.foldLeft(0)((s, x) => s + score(x))).sum)
                 nonEmpty += ne
                 pred += input.size * models.size
                 loops += 1
@@ -273,11 +277,11 @@ case class LoadTestOutput(
         val time = System.nanoTime()
         val t = outputSep
         val predSec = intervalSize * models / intervalTime
-        val (usedMB, unallocMB) = memStats()
+        val (usedMB, unallocMB) = memStatsMb()
         s"$loops$t$predSec$t$pred$t$nonEmpty$t$usedMB$t$unallocMB$t$time"
     }
 
-    private[this] def memStats() = {
+    private[this] def memStatsMb() = {
         val r = Runtime.getRuntime
         val tot = r.totalMemory()
         val free = r.freeMemory()
@@ -302,7 +306,8 @@ case class LoadTestConfig(
     loops: Long = Long.MaxValue,
     threads: Int = Runtime.getRuntime.availableProcessors(),
     predictionsPerLoop: Int = 100,
-    reportLoopMultiple: Int = 10
+    reportLoopMultiple: Int = 10,
+    useScoreObjects: Boolean = false
 )
 
 case class CsvModelRunnerConfig(
@@ -405,6 +410,9 @@ object CsvModelRunnerConfig {
             else Left(s"report loop multiple must be positive.  Found $mult.")
         } text "Run a load test, reporting statistics every [arg] loops."
 
+        opt[Boolean]("lt-use-score-objects") action { (useObjs, c) =>
+            updateLoadTest(c)(_.copy(useScoreObjects = useObjs))
+        } text "For load test, use score objects if true, otherwise use score primitives. Default = false."
 
         // ^^^^^   Load test options   ^^^^^
 
@@ -701,10 +709,10 @@ object CsvModelRunner {
         // Model[Nothing, Any]
         val (inF, model) = inputAndModel(inputType, conf.outputType, conf.imports, conf.classCacheDir, conf.model.get)
 
-        val out: OutputStream = conf.outputFile.map(f => VFS.getManager.resolveFile(f).getContent.getOutputStream).getOrElse(System.out)
+        val out: OutputStream = conf.outputFile.fold[OutputStream](System.out)(f => VFS.getManager.resolveFile(f).getContent.getOutputStream())
         val closeOut: Boolean = conf.outputFile.isDefined
 
-        val is: InputStream = conf.inputFile.map(f => VFS.getManager.resolveFile(f).getContent.getInputStream).getOrElse(System.in)
+        val is: InputStream = conf.inputFile.fold(System.in)(f => VFS.getManager.resolveFile(f).getContent.getInputStream)
         val in: Iterator[String] = scala.io.Source.fromInputStream(is).getLines()
 
         conf.loadTest match {
