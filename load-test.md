@@ -125,15 +125,15 @@ val data =
 val minimaMiddle = 
   data.sliding(3).
     collect { 
-      case Vector((i1, v1),(i2, v2),(i3, v3)) if v1 >= v2 && v2 <= v3 => (i2.toInt, v2) 
+      case Vector((_, x),p@(_, y),(_, z)) if x > y && y < z => p
     }.toVector
 
 // Find local minima at ends of data.    
-val firstMinimum = data.take(if (data(0)._2 < data(1)._2) 1 else 0)
+val firstMinimum = data.take(if (data.head._2 < data(1)._2) 1 else 0)
 val lastMinimum = data.takeRight(if (data.last._2 < data(data.size - 2)._2) 1 else 0)
-val minima = (firstMinimum ++: minimaMiddle) ++ lastMinimum
+val minima = firstMinimum ++ minimaMiddle ++ lastMinimum
 
 // Print the results in TSV format.
-minima.foreach{ case(i, v) => println(s"$i\t$v") }
+minima foreach { case(i, v) => println(s"$i\t$v") }
 ```
 
