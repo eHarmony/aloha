@@ -1,6 +1,6 @@
 # Load Testing Aloha Models
 
-As of version `3.3.2-SNAPSHOT`, Aloha supports loading testing through the command line 
+As of version `3.3.2-SNAPSHOT`, Aloha supports load testing through the command line 
 interface (CLI).  This load test functionality is exposed through the *modelrunner* API 
 in `aloha-core`.  To load test, we recommend using the `aloha-cli/bin/aloha-cli` script.  
 An example follows:
@@ -36,11 +36,14 @@ necessary to run the CLI.  The first entry one will notice is the
 `aloha-cli-[VERSION]-jar-with-dependencies.jar`.  This contains the code necessary to 
 run the infrastructure.  The second entry is for the jar that has the proto definitions. 
 This is only necessary when specififying the `-p` option along its argument: the protocol 
-buffer class name whose type is used as the model input domain.
+buffer canonical class name whose type is used as the model's domain.  
+
+If `-p` is provided, the input format is expected to be one base64-encoded byte array per
+line.  This is the same as in other CLI use cases. 
 
 Like in other CLI use cases one can use the `--imports`, `--input-file`, `--output-file` 
-options.  The `--imports` option, like when creating a `CompiledSemantics` 
-programmatically, augments the capabilities available to the model feature specifications.
+options.  The `--imports` option--like when creating a `CompiledSemantics` 
+programmatically--augments the capabilities available to the model feature specifications.
 
 The middle five parameters in the above command, prefixed by `--lt-` are load 
 test-specific parameters.  These include:
@@ -137,3 +140,29 @@ val minima = firstMinimum ++ minimaMiddle ++ lastMinimum
 minima foreach { case(i, v) => println(s"$i\t$v") }
 ```
 
+From these local minima values, we can run a one-sided 
+[t-test](https://en.wikipedia.org/wiki/Student%27s_t-test#Slope_of_a_regression_line) on the 
+slope of the line determined by an 
+[OLS linear regression](https://en.wikipedia.org/wiki/Ordinary_least_squares).  This will provide 
+(for a specified [significance](https://en.wikipedia.org/wiki/Statistical_significance)) whether a
+memory leak may have occurred.  To do this, we run the following:
+
+```scala
+def getSlopeAndPValue(data: Seq[(Double, Double)]): (Double, Double) = {
+  val(xs, ys) = data.unzip
+
+  // Create a linear regression (with intercept).
+  val r = new org.apache.commons.math3.stat.regression.SimpleRegression(true)
+  r.addObservations(xs.map(x => Array(x)).toArray, ys.toArray)
+  (r.getSlope, r.getSignificance)
+}
+
+def possibleMemoryLeak(data: Seq[(Double, Double)], alpha: Double = 0.05): Boolean = {
+  val (slope, pValue) = getSlopeAndPValue(data)
+  slope > 0 && pValue < 2 * alpha
+}
+```
+
+Notice what was done in the check.  We check if the slope is positive and whether the *p-value* is less than `2α`  This is done because we are doing a *one-sided* test.  Since no memory leak in the case of decreasing memory usage and since the *Student t-interval* is symmetric, we discard the lower half of the interval and only care about the upper part of the interval.  Because of this, we need to adjust the alpha by a factory of two.
+
+Notice in the above graph, since the slope is negative, we can't reject the null hypothesis that no memory leak occurred.
