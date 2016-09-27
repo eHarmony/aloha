@@ -148,7 +148,7 @@ slope of the line determined by an
 memory leak may have occurred.  To do this, we run the following:
 
 ```scala
-def getSlopeAndPValue(data: Seq[(Double, Double)]): (Double, Double) = {
+def getSlopeAndTwoTailedPValue(data: Seq[(Double, Double)]): (Double, Double) = {
   val(xs, ys) = data.unzip
 
   // Create a linear regression (with intercept).
@@ -158,11 +158,20 @@ def getSlopeAndPValue(data: Seq[(Double, Double)]): (Double, Double) = {
 }
 
 def possibleMemoryLeak(data: Seq[(Double, Double)], alpha: Double = 0.05): Boolean = {
-  val (slope, pValue) = getSlopeAndPValue(data)
-  slope > 0 && pValue < 2 * alpha
+  val (slope, twoTailedPValue) = getSlopeAndTwoTailedPValue(data)
+
+  // http://www.ats.ucla.edu/stat/mult_pkg/faq/general/tail_tests.htm
+  val oneTailedPValue = if (slope > 0) twoTailedPValue / 2
+                        else           1 - twoTailedPValue / 2
+
+  oneTailedPValue < alpha
 }
 ```
 
-Notice what was done in the check.  We check if the slope is positive and whether the *p-value* is less than `2α`  This is done because we are doing a *one-sided* test.  Since no memory leak in the case of decreasing memory usage and since the *Student t-interval* is symmetric, we discard the lower half of the interval and only care about the upper part of the interval.  Because of this, we need to adjust the alpha by a factory of two.
+We turn the two-tailed *p-value* into a one-tailed *p-value* for the case that *β* > 0 and 
+compared it *α* to determine whether the null hypothesis that *β* ≤ 0 should be rejected.
 
-Notice in the above graph, since the slope is negative, we can't reject the null hypothesis that no memory leak occurred.
+Notice in the above graph, that since the slope is negative (`-0.003`) and the two-sided 
+*p-value* is `0.117`, we can't reject the null hypothesis at a significance level *α* = 0.05
+because `1 - 0.117 / 2 > 0.05`.  So we can't say with significance that a memory leak 
+occurred.
