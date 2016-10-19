@@ -47,7 +47,7 @@
         <dependency>
             <groupId>com.github.johnlangford</groupId>
             <artifactId>vw-jni</artifactId>
-            <version>8.1.0</version>
+            <version>8.2.2-SNAPSHOT</version>
         </dependency>
 
         <dependency>

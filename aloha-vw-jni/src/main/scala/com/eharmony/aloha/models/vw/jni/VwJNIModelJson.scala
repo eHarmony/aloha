@@ -6,6 +6,7 @@ import com.eharmony.aloha.id.ModelIdentityJson.modelIdentityJsonFormat
 import com.eharmony.aloha.io.sources.ModelSource
 import com.eharmony.aloha.models.reg.ConstantDeltaSpline
 import com.eharmony.aloha.models.reg.json.{Spec, SpecJson}
+import com.eharmony.aloha.semantics.func.GenAggFunc
 import com.eharmony.aloha.util.SimpleTypeSeq
 import spray.json.DefaultJsonProtocol._
 import spray.json._
@@ -52,6 +53,9 @@ trait VwJniModelJson extends SpecJson {
      * @param modelId a model ID
      * @param features an map of features (whose iteration order is the declaration order).
      * @param vw an object for configuring the VwScorer object that will be embedded in the VwJniModel.
+     * @param labelDomain a function to get an IndexedSeq on the list of labels.
+     * @param labelType string containing the type of each label.
+     * @param ldfs a map of label dependent features (whose iteration order is the declaration order).
      * @param namespaces an map of namespace name to sequence of feature names in the namespace.
      * @param numMissingThreshold A threshold dictating how many missing features to allow before making
      *                            the prediction fail.  None means the threshold is &infin;.  If, when mapping
@@ -65,11 +69,15 @@ trait VwJniModelJson extends SpecJson {
         modelId: ModelIdentity,
         features: ListMap[String, Spec],
         vw: Vw,
+        labelDomain: Option[String] = None,
+        labelType: Option[String] = None,
+        ldfs: Option[ListMap[String, Spec]] = None,
         namespaces: Option[ListMap[String, Seq[String]]] = Some(ListMap.empty),
         numMissingThreshold: Option[Int] = None,
         notes: Option[Seq[String]] = None,
         spline: Option[ConstantDeltaSpline] = None,
-        classLabels: Option[SimpleTypeSeq] = None)
+        classLabels: Option[SimpleTypeSeq] = None,
+        salt: Option[String] = None)
 
     protected[this] implicit object VwFormat extends RootJsonFormat[Vw] {
         override def read(json: JsValue) = {
@@ -93,5 +101,5 @@ trait VwJniModelJson extends SpecJson {
     }
 
     protected[this] final implicit val splineJsonFormat = jsonFormat(ConstantDeltaSpline, "min", "max", "knots")
-    protected[this] final implicit val vwJNIAstFormat: RootJsonFormat[VwJNIAst] = jsonFormat9(VwJNIAst.apply)
+    protected[this] final implicit val vwJNIAstFormat: RootJsonFormat[VwJNIAst] = jsonFormat13(VwJNIAst.apply)
 }
