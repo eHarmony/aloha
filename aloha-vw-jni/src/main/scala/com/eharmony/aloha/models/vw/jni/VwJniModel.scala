@@ -1,25 +1,24 @@
 package com.eharmony.aloha.models.vw.jni
 
 import java.io._
-import java.lang.Float
 import java.util
 
-import com.eharmony.aloha.dataset.SparseFeatureExtractorFunction
 import com.eharmony.aloha.dataset.json.SparseSpec.SparseSpecOps
 import com.eharmony.aloha.dataset.vw.json.VwJsonLike
-import com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator
 import com.eharmony.aloha.dataset.vw.unlabeled.json.VwUnlabeledJson
 import com.eharmony.aloha.factory.{ModelParser, ModelParserWithSemantics, ParserProviderCompanion}
 import com.eharmony.aloha.id.{ModelId, ModelIdentity}
 import com.eharmony.aloha.io.StringReadable
 import com.eharmony.aloha.io.sources.{Base64StringSource, ExternalSource, ModelSource}
-import com.eharmony.aloha.io.vfs.{Vfs, VfsType}
-import com.eharmony.aloha.models.reg.{ConstantDeltaSpline, RegFeatureCompiler, RegressionFeatures}
+import com.eharmony.aloha.io.vfs.Vfs
+import com.eharmony.aloha.models.reg.json.Spec
+import com.eharmony.aloha.models.reg.{ConstantDeltaSpline, RegFeatureCompiler}
 import com.eharmony.aloha.models.{BaseModel, TypeCoercion}
 import com.eharmony.aloha.reflect._
 import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.aloha.score.basic.ModelOutput
 import com.eharmony.aloha.score.conversions.ScoreConverter
+import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits._
 import com.eharmony.aloha.semantics.{MorphableSemantics, Semantics}
 import com.eharmony.aloha.semantics.func.GenAggFunc
 import com.eharmony.aloha.util.{EitherHelpers, Logging, SimpleTypeSeq}
@@ -38,17 +37,17 @@ import scala.util.{Failure, Success, Try}
 
 private[this] case object DefaultScorer extends Scorer[ActionProbs] {
 
-  override def scoreActions(context: ActionProbs): util.ArrayList[Float] = {
+  def scoreActions(context: ActionProbs): util.ArrayList[java.lang.Float] = {
     context.probsAsList
   }
 
 }
 
 trait VwJniModel[-A, +B] extends BaseModel[A, B]
-  with RegressionFeatures[A]
   with Logging {
 
-  val modelId: ModelIdentity
+  type VwInput
+
   val vwParams: String
   val modelSource: ModelSource
   val featureNames: sci.IndexedSeq[String]
@@ -57,18 +56,57 @@ trait VwJniModel[-A, +B] extends BaseModel[A, B]
   val namespaces: List[(String, List[Int])]
   val numMissingThreshold: Option[Int]
 
+  val learnerCreator: VWLearner => VwEvaluator[A, VwInput, (B, Option[Float])]
+  val vwInputGen: VwInputGenerator[A, VwInput]
+
   /**
-    * The object responsible to taking the computed features and turning it into a VW input formatted string.
-    * This is a transient lazy val so that we can properly serialize
+    * This is the function responsible to scoring, using VW.
     */
-  private[jni] val vwRowCreator =
-  new VwRowCreator(SparseFeatureExtractorFunction(featureNames zip featureFunctions), defaultNs, namespaces, None)
+  @transient private[jni] lazy val learnerEvaluator = learnerCreator(vwLearner)
 
   @transient private[jni] lazy val vwLearner: VWLearner = {
     val (learner, deletedFile) = VwJniModel.getVwLearner(modelSource, vwParams, modelId)
     deletedFile.foreach(_.delete())
     learner
   }
+
+  {
+    require(
+      featureNames.size == featureFunctions.size,
+      s"featureNames.size (${featureNames.size}}) != featureFunctions.size (${featureFunctions.size}})"
+    )
+
+    // Initialize the lazy vals.  This is done so that errors will be thrown on creation.
+    require(vwLearner != null)
+    require(learnerEvaluator != null)
+  }
+
+  /** Produce a score.
+    * @param a an input to the model representing covariate data.
+    * @param audit Whether the second field of the result Tuple2 should be Some (true) or None (false)
+    * @return a Tuple2 whose first field represents a simple version of the score, the second field (that should be
+    *         a Some instance if audit is true) is a more involved reporting of the score including errors and all
+    *         sub-model scores.
+    */
+  override private[aloha] final def getScore(a: A)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = {
+    vwInputGen(a) match {
+      case Left(missing) => failure(Seq(s"Too many features with missing variables: ${missing.count(_._2.nonEmpty)}"), getMissingVariables(missing))
+      case Right(vwIn) =>
+        Try { learnerEvaluator(a, vwIn) } match {
+          case Success(y) => success(score = y._1, probability = y._2)
+          case Failure(ex) => failure(Seq(ex.getMessage))
+        }
+    }
+  }
+
+  /**
+    * Close the underlying VW model.
+    */
+  override def close(): Unit = vwLearner.close()
+
+  // TODO: Figure out how to make the missing features fast.
+  private[jni] def getMissingVariables(missing: scm.Map[String, Seq[String]]): Seq[String] =
+  missing.unzip._2.foldLeft(Set.empty[String])(_ ++ _).toIndexedSeq.sorted
 
 }
 
@@ -97,21 +135,9 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
           case Left(errors) => throw new DeserializationException(errors.mkString("errors: ", "\n        ", ""))
           case Right(featureMap) =>
             val (names, functions) = featureMap.toIndexedSeq.unzip
-
-            val indices = featureMap.unzip._1.view.zipWithIndex.toMap
-            val nssRaw = vw.namespaces.getOrElse(sci.ListMap.empty)
-            val nss = nssRaw.map { case (ns, fs) =>
-              val fi = fs.flatMap { f =>
-                val oInd = indices.get(f)
-                if (oInd.isEmpty) info(s"Ignoring feature '$f' in namespace '$ns'.  Not in the feature list.")
-                oInd
-              }.toList
-              (ns, fi)
-            }.toList
+            val (defaultNs, nss) = getNamespaceFeatureIndexMap(featureMap, vw.namespaces, vw.labelDependendentFeatures.getOrElse(ListMap.empty[String, Spec]).keySet)
 
             val vwParams = vw.vw.params.fold("")(_.fold(_.mkString(" "), x => x)).trim
-
-            val defaultNs = (indices.keySet -- (Set.empty[String] /: nssRaw)(_ ++ _._2)).flatMap(indices.get).toList
 
             // We have to create these conversion functions and reference elements in the
             // vw object outside of the learnerCreator or else we have serialization issues.
@@ -120,19 +146,20 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
             // at model instantiation if the user supplies a VW model which output an array type.
 
             val intCf = vw.classLabels.fold(getConversionFunction[Int, B])(l => getConversionFunction(l.values)(l.refInfo, scB))
+
+            // doubleCf is only used in doubleCfSpline
             val doubleCf = getConversionFunction[Double, B]
             val doubleCfSpline = vw.spline.map(_.andThen(doubleCf)).getOrElse(doubleCf)
 
             val saltFunc = vw.salt.map(spec => semantics.createFunction[Long](spec).fold(l => throw new DeserializationException(l.mkString("\n")), identity))
 
-            (vw.labelDomain, vw.labelType, vw.ldfs) match {
-              case (Some(labelDomainSpec), Some(labelTypeString), Some(ldfs)) =>
-                // create new semantics, then basically rewrite the code from above starting at features(vw.features.toSeq, semantics) match {
+            (vw.labelDomain, vw.labelType, vw.labelDependendentFeatures, vw.scoreExtractor) match {
+              case (Some(labelDomainSpec), Some(labelTypeString), Some(ldfs), Some(scoreExtractorSpec)) =>
                 val labelType: RefInfo[_] = ManifestParser.parse(labelTypeString) match {
-                  case Left(error) => throw new DeserializationException(error)
+                  case Left(error) => throw new DeserializationException(s"Error while parsing labelType $labelTypeString: $error")
                   case Right(lt) => lt
                 }
-                val labelDomainFn = getLabelDomainFn(labelDomainSpec, semantics)(labelType)
+                val labelDomainFn: GenAggFunc[A, IndexedSeq[Any]] = getLabelDomainFn(labelDomainSpec, semantics)(labelType)
                 val ldfSemantics = semantics match {
                   case ms: MorphableSemantics[_, _] => ms.morph(labelType).getOrElse(
                     throw new ClassCastException(s"${ms.getClass.getCanonicalName} could not be morphed to $labelTypeString")
@@ -140,27 +167,63 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
                   case ms: Semantics[_] => throw new IllegalStateException(s"${ms.getClass.getCanonicalName} is not a MorphableSemantics.")
                   case ms => throw new IllegalStateException(s"${ms.getClass.getCanonicalName} is not a Semantics.")
                 }
+                val scoreExtractorFn: GenAggFunc[Any, B] = ??? //getScoreExtractorFn[B](scoreExtractorSpec, ldfSemantics)(labelType)
                 features(ldfs.toSeq, ldfSemantics) match {
                   case Left(errors) => throw new DeserializationException(errors.mkString("errors: ", "\n        ", ""))
-                  case Right(ldfMap) =>
-                    val (ldfNames, ldfFunctions) = ldfMap.toIndexedSeq.unzip
-                    ???
+                  case Right(labelDependentFeatureMap) =>
+                    val (labelDependentFeatureNames, labelDependentFeatureFunctions) = labelDependentFeatureMap.toIndexedSeq.unzip
+                    val (labelDependentFeatureDefaultNs, labelDependentFeatureNss) = getNamespaceFeatureIndexMap(labelDependentFeatureMap, vw.namespaces, names.toSet)
+                    val learnerCreator = (vwLearner: VWLearner) => {
+                      vwLearner match {
+                        case l: VWMulticlassLearner => DefaultEvaluator((x: Array[String]) => (intCf(l.predict(x)), None))
+                        case l: VWScalarLearner => DefaultEvaluator((x: Array[String]) => (doubleCfSpline(l.predict(x)), None))
+                        case l: VWActionProbsLearner => ContextualEvaluator(saltFunc.get, (salt: Long, x: Array[String]) => {
+                          val prediction = l.predict(x)
+                          val explorer = new GenericExplorer(DefaultScorer, prediction.getActionProbs.length)
+                          val decision = explorer.chooseAction(salt, prediction)
+                          val action = decision.getAction
+                          val probability = decision.getProbability
+
+                          // TODO: Introduce a function '''Int => IndexedSeq[Any] => B''' and use that instead of intCf for VWActionProbsLearner and VWActionScoresLearner
+                          (intCf(action), Some(probability))
+                        })
+                        case l: VWActionScoresLearner => DefaultEvaluator((x: Array[String]) => (intCf(l.predict(x).getActionScores.apply(0).getAction), None))
+                        case l: VWLearner => throw new UnsupportedOperationException(s"Unsupported learner type ${l.getClass.getCanonicalName} produced by arguments: $vwParams")
+                        case d => throw new IllegalStateException(s"${d.getClass.getCanonicalName} is not a VWLeaner.")
+                      }
+                    }
+                    VwMultiFeatureSetJniModel(
+                      vw.modelId,
+                      vwParams,
+                      vw.vw.modelSource,
+                      names,
+                      functions,
+                      defaultNs,
+                      nss,
+                      learnerCreator,
+                      vw.numMissingThreshold,
+                      labelDomainFn,
+                      labelDependentFeatureNames,
+                      labelDependentFeatureFunctions,
+                      labelDependentFeatureDefaultNs,
+                      labelDependentFeatureNss,
+                      vw.numMissingLDFThreshold
+                    )
                 }
-              case (None, None, None) =>
+              case (None, None, None, None) =>
                 val learnerCreator = (vwLearner: VWLearner) => {
                   vwLearner match {
-                    case l: VWMulticlassLearner => Left((x: String) => intCf(l.predict(x)))
-                    case l: VWScalarLearner => Left((x: String) => doubleCfSpline(l.predict(x)))
-                    case l: VWActionProbsLearner => Right((x: String, salt: Long) => {
+                    case l: VWMulticlassLearner => DefaultEvaluator((x: String) => (intCf(l.predict(x)), None))
+                    case l: VWScalarLearner => DefaultEvaluator((x: String) => (doubleCfSpline(l.predict(x)), None))
+                    case l: VWActionProbsLearner => ContextualEvaluator(saltFunc.get, (salt: Long, x: String) => {
                       val prediction = l.predict(x)
                       val explorer = new GenericExplorer(DefaultScorer, prediction.getActionProbs.length)
                       val decision = explorer.chooseAction(salt, prediction)
                       val action = decision.getAction
                       val probability = decision.getProbability
-                      // record probability
-                      intCf(action)
+                      (intCf(action), Some(probability))
                     })
-                    case l: VWActionScoresLearner => Left((x: String) => intCf(l.predict(x).getActionScores.apply(0).getAction))
+                    case l: VWActionScoresLearner => DefaultEvaluator((x: String) => (intCf(l.predict(x).getActionScores.apply(0).getAction), None))
                     case l: VWLearner => throw new UnsupportedOperationException(s"Unsupported learner type ${l.getClass.getCanonicalName} produced by arguments: $vwParams")
                     case d => throw new IllegalStateException(s"${d.getClass.getCanonicalName} is not a VWLeaner.")
                   }
@@ -174,10 +237,9 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
                   defaultNs,
                   nss,
                   learnerCreator,
-                  vw.numMissingThreshold,
-                  saltFunc
+                  vw.numMissingThreshold
                 )
-              case (_, _, _) => throw new IllegalArgumentException(s"One or more of, but not all, labelDomainFn, labelType, ldfs absent")
+              case (_, _, _, _) => throw new IllegalArgumentException(s"One or more, but not all, of labelDomainFn, labelType, labelDependentFeatures and scoreExtractor absent")
             }
         }
       }
@@ -243,6 +305,34 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
       case Left(errors) => throw new DeserializationException(errors.mkString("errors: ", "\n        ", ""))
       case Right(labelDomainFn) => labelDomainFn
     }
+  }
+
+  // TODO: Be sure that this function is correctly implemented
+//
+//  private[jni] def getScoreExtractorFn[LabelType: RefInfo, B: ScoreConverter](scoreExtractorSpec: String, semantics: Semantics[LabelType]): GenAggFunc[LabelType, B] = {
+//    semantics.createFunction[B](scoreExtractorSpec, None) match {
+//      case Left(errors) => throw new DeserializationException(errors.mkString("errors: ", "\n        ", ""))
+//      case Right(labelDomainFn) => labelDomainFn
+//    }
+//  }
+
+  private[jni] def getNamespaceFeatureIndexMap[A](
+                                                   featureMap: Seq[(String, GenAggFunc[A, Iterable[(String, Double)]])],
+                                                   namespaces: Option[ListMap[String, Seq[String]]],
+                                                   remainingFeatureNames: Set[String]
+                                                 ): (List[Int], List[(String, List[Int])]) = {
+    val indices = featureMap.unzip._1.view.zipWithIndex.toMap
+    val nssRaw = namespaces.getOrElse(sci.ListMap.empty)
+    val nss = nssRaw.map { case (ns, fs) =>
+      val fi = fs.flatMap { f =>
+        val oInd = indices.get(f)
+        if (oInd.isEmpty && !remainingFeatureNames.contains(f)) info(s"Ignoring feature '$f' in namespace '$ns'.  Not in the feature list.")
+        oInd
+      }.toList
+      (ns, fi)
+    }.toList
+    val defaultNs = (indices.keySet -- (Set.empty[String] /: nssRaw)(_ ++ _._2)).flatMap(indices.get).toList
+    (defaultNs, nss)
   }
 
   /**

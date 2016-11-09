@@ -55,7 +55,7 @@ trait VwJniModelJson extends SpecJson {
      * @param vw an object for configuring the VwScorer object that will be embedded in the VwJniModel.
      * @param labelDomain a function to get an IndexedSeq on the list of labels.
      * @param labelType string containing the type of each label.
-     * @param ldfs a map of label dependent features (whose iteration order is the declaration order).
+     * @param labelDependendentFeatures a map of label dependent features (whose iteration order is the declaration order).
      * @param namespaces an map of namespace name to sequence of feature names in the namespace.
      * @param numMissingThreshold A threshold dictating how many missing features to allow before making
      *                            the prediction fail.  None means the threshold is &infin;.  If, when mapping
@@ -65,19 +65,31 @@ trait VwJniModelJson extends SpecJson {
      *                            '''false'''; otherwise, it will be '''true'''.
      */
     protected[this] case class VwJNIAst(
-        modelType: String,
-        modelId: ModelIdentity,
-        features: ListMap[String, Spec],
-        vw: Vw,
-        labelDomain: Option[String] = None,
-        labelType: Option[String] = None,
-        ldfs: Option[ListMap[String, Spec]] = None,
-        namespaces: Option[ListMap[String, Seq[String]]] = Some(ListMap.empty),
-        numMissingThreshold: Option[Int] = None,
-        notes: Option[Seq[String]] = None,
-        spline: Option[ConstantDeltaSpline] = None,
-        classLabels: Option[SimpleTypeSeq] = None,
-        salt: Option[String] = None)
+                                         modelType: String,
+                                         modelId: ModelIdentity,
+                                         features: ListMap[String, Spec],
+                                         vw: Vw,
+                                         namespaces: Option[ListMap[String, Seq[String]]] = Some(ListMap.empty),
+                                         numMissingThreshold: Option[Int] = None,
+                                         notes: Option[Seq[String]] = None,
+                                         spline: Option[ConstantDeltaSpline] = None,
+                                         classLabels: Option[SimpleTypeSeq] = None,
+
+                                         // label dependent features parameters
+                                         labelDomain: Option[String] = None,
+                                         scoreExtractor: Option[String] = None,
+                                         labelType: Option[String] = None,
+                                         labelDependendentFeatures: Option[ListMap[String, Spec]] = None,
+                                         numMissingLDFThreshold: Option[Int] = None,
+
+                                         // required for --cb_explore and --cb_explore_adf
+                                         salt: Option[String] = None
+                                       ) {
+        {
+            val ldfParams = Seq(labelDomain.isDefined, labelType.isDefined, labelDependendentFeatures.isDefined)
+            require(ldfParams.forall(b => b) || ldfParams.forall(b => !b))
+        }
+    }
 
     protected[this] implicit object VwFormat extends RootJsonFormat[Vw] {
         override def read(json: JsValue) = {
@@ -101,5 +113,5 @@ trait VwJniModelJson extends SpecJson {
     }
 
     protected[this] final implicit val splineJsonFormat = jsonFormat(ConstantDeltaSpline, "min", "max", "knots")
-    protected[this] final implicit val vwJNIAstFormat: RootJsonFormat[VwJNIAst] = jsonFormat13(VwJNIAst.apply)
+    protected[this] final implicit val vwJNIAstFormat: RootJsonFormat[VwJNIAst] = jsonFormat15(VwJNIAst.apply)
 }
