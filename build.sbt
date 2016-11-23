@@ -27,6 +27,7 @@ lazy val commonSettings = Seq(
     Resolver.sonatypeRepo("snapshots")
   ),
   scalacOptions ++= Seq(
+    // "-verbose",
     "-unchecked",
     "-deprecation",
     "-feature",
@@ -40,14 +41,14 @@ lazy val versionDependentSettings = Seq(
   scalacOptions ++= {
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, scalaMajor)) if scalaMajor == 10 => Seq(
-        "-Yinline",
+        // "-Yinline",
         "-Yclosure-elim",
         "-Ydead-code"
       )
       case Some((2, scalaMajor)) if scalaMajor == 11 => Seq(
         "-Ywarn-unused",
         "-Ywarn-unused-import",
-        "-Yinline",
+        // "-Yinline",
         "-Yclosure-elim",
         "-Ydead-code" //,
 
@@ -75,6 +76,24 @@ lazy val root = project.in(file("."))
 //   version := "2.4.1"
 // ))
 
+// lazy val protobufCompile = taskKey[Unit]("Generate java source from protocol buffers")
+//
+// protobufCompile := {
+//   val s: TaskStreams = streams.value
+//   val shell: Seq[String] = if (sys.props("os.name").contains("Windows")) Seq("cmd", "/c") else Seq("bash", "-c")
+//   val pwd: Seq[String] = shell :+ "pwd"
+//   val compile: Seq[String] = shell :+ "protoc --proto_path=src/test/proto --java_out=src/test/java-x"
+//   val move: Seq[String] = shell :+    "ls"
+//   s.log.info("compiling protos...")
+//   if((pwd #&& compile #&& move !) == 0) {
+//     s.log.success("protos compiled successful!")
+//   } else {
+//     throw new IllegalStateException("protos compilation failed!")
+//   }
+// }
+
+// (run in Test) := (run in Test).dependsOn(protobufCompile)
+
 lazy val core = project.in(file("aloha-core"))
   .settings(commonSettings: _*)
   .settings(versionDependentSettings: _*)
@@ -92,6 +111,13 @@ lazy val core = project.in(file("aloha-core"))
     // This is a hack to make tests pass by not allowing the tests to run in parallel.
     parallelExecution in Test := false
   )
+
+// lazy val editSourceSettings = Seq[Setting[_]](
+//   sources in EditSource := baseDirectory.map(d => (d / "src" / "test" / "resources" ** "mvn_gen_test.properties").get),
+//   targetDirectory in EditSource := baseDirectory(_ / "target"),
+//   flatten in EditSource := true,
+//   variables in EditSource := baseDirectory(_ / "target") {name => ("""project\.build\.directory""", name.getCanonicalPath)}
+// )
 
 lazy val coreDependencies: Seq[Setting[_]] = Seq(
   libraryDependencies := Seq(
@@ -121,7 +147,17 @@ lazy val coreDependencies: Seq[Setting[_]] = Seq(
     "com.github.multiworldtesting" % "explore-java" % "1.0.0",
 
     "junit" % "junit" % "4.11" % "test",
-    "cc.mallet" %  "mallet" % "2.0.7" % "test"
+    "cc.mallet" %  "mallet" % "2.0.7" % "test" excludeAll(ExclusionRule("junit", "junit")),
+
+    "org.springframework" % "spring-beans" % "3.1.4.RELEASE" % "test",
+    "org.springframework" % "spring-context-support" % "3.1.4.RELEASE" % "test",
+    "org.springframework" % "spring-context" % "3.1.4.RELEASE" % "test",
+    "org.springframework" % "spring-core" % "3.1.4.RELEASE" % "test",
+    "org.springframework" % "spring-test" % "3.1.4.RELEASE" % "test",
+
+    "com.novocode" % "junit-interface" % "0.11" % "test"
+
+
 
 
 //      "org.slf4j" % "slf4j-api" % "1.7.10",

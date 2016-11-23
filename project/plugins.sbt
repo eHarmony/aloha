@@ -17,3 +17,6 @@ addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.3")
 // This doesn't need to be there by default.  Just for testing.
 //
 // addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.8.2")
+
+// To do resource filtering.
+addSbtPlugin("org.clapper" % "sbt-editsource" % "0.7.0")
