@@ -184,9 +184,14 @@ object DatasetCli extends Logging {
                 }
             case ProtoInputType(protoClass) =>
                 val (untypedP, unTypedF) = getProtoPluginAndExtractorFunction(protoClass)
-                val p = untypedP.asInstanceOf[CompiledSemanticsProtoPlugin[A]]
+// TODO: Remove commented code after getting SBT build working.
+//                val p = untypedP.asInstanceOf[CompiledSemanticsProtoPlugin[A]]
+//                val f = unTypedF.asInstanceOf[String => A]
+//                val s = CompiledSemantics[A](TwitterEvalCompiler(classCacheDir = cacheDir), p, imports)
                 val f = unTypedF.asInstanceOf[String => A]
-                val s = CompiledSemantics[A](TwitterEvalCompiler(classCacheDir = cacheDir), p, imports)
+                val s = CompiledSemantics[Nothing](TwitterEvalCompiler(classCacheDir = cacheDir), untypedP, imports).
+                          asInstanceOf[CompiledSemantics[A]]
+
                 datasets map {
                     case(dsType, out) => dsType -> LineWriter.create(f, s, dsType, out, spec)
                 } flatMap {

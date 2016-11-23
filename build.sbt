@@ -1,5 +1,8 @@
 import sbt.inc.IncOptions
 
+// import sbtprotobuf.{ProtobufPlugin=>PB}
+// PB.protobufSettings // move this later
+
 name := "aloha"
 
 homepage := Some(url("https://github.com/eharmony/aloha"))
@@ -15,7 +18,7 @@ description := """Scala-based machine learning library with generic models and l
 lazy val commonSettings = Seq(
   organization := "com.eharmony",
   scalaVersion := "2.11.8",
-  crossScalaVersions := Seq("2.10.5", "2.11.8", "2.12.0"),
+  crossScalaVersions := Seq("2.10.5", "2.11.8"),
   crossPaths := true,
   incOptions := incOptions.value.withNameHashing(true),
   javacOptions ++= Seq("-Xlint:unchecked"),
@@ -46,11 +49,10 @@ lazy val versionDependentSettings = Seq(
         "-Ywarn-unused-import",
         "-Yinline",
         "-Yclosure-elim",
-        "-Ydead-code"
-      )
-      case Some((2, scalaMajor)) if scalaMajor == 12 => Seq(
-        "-Ywarn-unused",
-        "-Ywarn-unused-import"
+        "-Ydead-code" //,
+
+        // "-Xlog-implicit-conversions",
+        // "-Xlog-implicits"
       )
       case _ => Seq()
     }
@@ -60,6 +62,89 @@ lazy val versionDependentSettings = Seq(
 // ===========================================================================
 //  Modules
 // ===========================================================================
+
+lazy val root = project.in(file("."))
+  .aggregate(core)
+  .dependsOn(core)
+  .settings(commonSettings: _*)
+  .settings(versionDependentSettings: _*)
+
+// PB.protobufConfig.version := "2.4.1"
+
+// val pbconfig = inConfig(protobufConfig)(Seq[Setting[_]](
+//   version := "2.4.1"
+// ))
+
+lazy val core = project.in(file("aloha-core"))
+  .settings(commonSettings: _*)
+  .settings(versionDependentSettings: _*)
+  .settings(coreDependencies: _*)
+  // .settings(PB.protobufSettings : _*)
+  // .settings(
+  //   version in PB.protobufConfig := "2.4.1",
+  //   sourceDirectory in PB.protobufConfig := new java.io.File("src/test/protobuf"),
+  //   javaSource in PB.protobufConfig := new java.io.File("$sourceManaged/generated-test-sources")  // $sourceManaged/compiled_protobuf
+  // ) // .settings(pbconfig: _*)
+  .settings(
+    name := "aloha-core",
+
+    // Because 2.10 runtime reflection is not thread-safe, tests fail non-deterministically.
+    // This is a hack to make tests pass by not allowing the tests to run in parallel.
+    parallelExecution in Test := false
+  )
+
+lazy val coreDependencies: Seq[Setting[_]] = Seq(
+  libraryDependencies := Seq(
+    "org.scala-lang" % "scala-library" % scalaVersion.value,
+    "org.scala-lang" % "scala-reflect" % scalaVersion.value,
+    "org.scala-lang" % "scala-compiler" % scalaVersion.value,
+    // "org.scalaz" %% "scalaz-core" % "7.0.0", // % scalaVersion.value,
+    "org.scalaz" %% "scalaz-core" % "7.0.6", // % scalaVersion.value, // 7.0.6 is the first cross built for 2.10 and 2.11
+    "com.github.deaktator" %% "scala-runtime-manifest" % "1.0.0",
+
+    "com.eharmony" % "aloha-proto" % "2.0.1",
+    "com.google.protobuf" % "protobuf-java" % "2.4.1",
+
+    "com.fasterxml" % "classmate" % "1.0.0",
+    "com.github.scopt" %% "scopt" % "3.3.0",
+    "com.twitter" %% "util-core" % "6.27.0",
+    "commons-codec" % "commons-codec" % "1.10",
+    "commons-io" % "commons-io" % "2.4",
+    "commons-vfs" % "commons-vfs" % "1.0"  excludeAll(ExclusionRule("commons-logging", "commons-logging")),
+    "org.apache.commons" % "commons-vfs2" % "2.0" excludeAll(ExclusionRule("org.apache.maven.scm", "maven-scm-api"),
+                                                             ExclusionRule("org.apache.maven.scm", "maven-scm-provider-svnexe")),
+    "io.spray" %% "spray-json" % "1.3.1",
+
+    "org.reflections" % "reflections" % "0.9.9",
+    "org.slf4j" % "slf4j-api" % "1.7.10",
+
+    "com.github.multiworldtesting" % "explore-java" % "1.0.0",
+
+    "junit" % "junit" % "4.11" % "test",
+    "cc.mallet" %  "mallet" % "2.0.7" % "test"
+
+
+//      "org.slf4j" % "slf4j-api" % "1.7.10",
+
+
+/*
+    "org.apache.commons" % "commons-vfs2" % "2.0" excludeAll(ExclusionRule("org.apache.maven.scm", "maven-scm-api"),
+                                                             ExclusionRule("org.apache.maven.scm", "maven-scm-provider-svnexe")) ,
+    "org.apache.commons" % "commons-lang3" % "3.2",
+    "commons-logging" % "commons-logging" % "1.1.1",
+
+    "org.slf4j" % "slf4j-api" % "1.7.10",
+    "org.slf4j" % "slf4j-log4j12" % "1.7.10",
+    "commons-logging" % "commons-logging" % "1.1.1",
+    "commons-logging" % "commons-logging" % "1.1.1",
+    "commons-logging" % "commons-logging" % "1.1.1",
+*/
+
+
+//      "org.scalatest" %% "scalatest" % "2.2.5" % "test",
+//      "org.slf4j" % "slf4j-log4j12" % "1.7.10" % "test"
+  )
+)
 
 
 

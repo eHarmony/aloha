@@ -366,7 +366,9 @@ case class CompiledSemanticsProtoPlugin[A <: GeneratedMessage](dereferenceAsOpti
         // It's known by the IF condition above that this is true.
         // Can implicit evidence somehow be provided instead?
         val castedRefInfo = ri.asInstanceOf[RefInfo[GeneratedMessage]]
-        CompiledSemanticsProtoPlugin(deref)(castedRefInfo).asInstanceOf[CompiledSemanticsProtoPlugin[B]]
+        // TODO: Remove commented code after getting SBT build working.
+//        CompiledSemanticsProtoPlugin(deref)(castedRefInfo).asInstanceOf[CompiledSemanticsProtoPlugin[B]]
+        CompiledSemanticsProtoPlugin(deref)(castedRefInfo).asInstanceOf[CompiledSemanticsPlugin[B]]
     }
   }
 }
