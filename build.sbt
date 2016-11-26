@@ -3,6 +3,12 @@ import sbt.inc.IncOptions
 // import sbtprotobuf.{ProtobufPlugin=>PB}
 // PB.protobufSettings // move this later
 
+// Currently, we have to do
+// sbt
+//  +test
+//  run `mv_filtered` in another window in root project directory.
+//  +test (again)
+
 name := "aloha"
 
 homepage := Some(url("https://github.com/eharmony/aloha"))
@@ -93,11 +99,33 @@ lazy val root = project.in(file("."))
 // }
 
 // (run in Test) := (run in Test).dependsOn(protobufCompile)
+// resources in Test in core ++= (edit in Test in EditSource).value // .data
+
+// (copyResources in core in Test) <<= (copyResources in core in Test) map { _ =>
+//   (edit in EditSource).value
+// }
+(copyResources in core in Test) := ((copyResources in core in Test) dependsOn (edit in EditSource)).value
+
+def editSourceSettings = Seq[Setting[_]](
+  // This might be the only one that requires def instead of lazy val:
+  targetDirectory in EditSource := (crossTarget / "filtered").value,
+
+  // These don't change per project and should be OK with a lazy val instead of def:
+  flatten in EditSource := false,
+  (sources in EditSource) <++= baseDirectory map { d =>
+    (d / "src" / "main" / "filtered_resources" / "" ** "*.*").get ++
+    (d / "src" / "test" / "filtered_resources" / "" ** "*.*").get
+  },
+  variables in EditSource <+= crossTarget {t => ("projectBuildDirectory", t.getCanonicalPath)},
+  variables in EditSource <+= (sourceDirectory in Test) {s => ("scalaTestSource", s.getCanonicalPath)},
+  variables in EditSource <+= version {s => ("projectVersion", s.toString)}
+)
 
 lazy val core = project.in(file("aloha-core"))
   .settings(commonSettings: _*)
   .settings(versionDependentSettings: _*)
   .settings(coreDependencies: _*)
+  .settings(editSourceSettings: _*)
   // .settings(PB.protobufSettings : _*)
   // .settings(
   //   version in PB.protobufConfig := "2.4.1",
@@ -107,17 +135,21 @@ lazy val core = project.in(file("aloha-core"))
   .settings(
     name := "aloha-core",
 
+    // See: http://www.scala-sbt.org/release/docs/Running-Project-Code.html
+    // fork := true is needed; otherwise we see error:
+    //
+    // Test com.eharmony.aloha.models.CategoricalDistibutionModelTest.testSerialization
+    // failed: java.lang.ClassCastException: cannot assign instance of
+    // scala.collection.immutable.List$SerializationProxy to field
+    // com.eharmony.aloha.models.CategoricalDistibutionModel.features of type
+    // scala.collection.Seq in instance of
+    // com.eharmony.aloha.models.CategoricalDistibutionModel
+    fork := true,
+
     // Because 2.10 runtime reflection is not thread-safe, tests fail non-deterministically.
     // This is a hack to make tests pass by not allowing the tests to run in parallel.
-    parallelExecution in Test := false
+    parallelExecution in Test := true
   )
-
-// lazy val editSourceSettings = Seq[Setting[_]](
-//   sources in EditSource := baseDirectory.map(d => (d / "src" / "test" / "resources" ** "mvn_gen_test.properties").get),
-//   targetDirectory in EditSource := baseDirectory(_ / "target"),
-//   flatten in EditSource := true,
-//   variables in EditSource := baseDirectory(_ / "target") {name => ("""project\.build\.directory""", name.getCanonicalPath)}
-// )
 
 lazy val coreDependencies: Seq[Setting[_]] = Seq(
   libraryDependencies := Seq(

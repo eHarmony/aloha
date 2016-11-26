@@ -1,7 +1,7 @@
 package com.eharmony.aloha.semantics.compiled
 
 import com.eharmony.aloha.FileLocations
-import com.eharmony.aloha.reflect.RefInfo
+import com.eharmony.aloha.reflect.{RefInfoOps, RefInfo}
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import com.eharmony.aloha.semantics.compiled.plugin.proto.CompiledSemanticsProtoPlugin
 import com.eharmony.aloha.semantics.func.GenAggFunc
@@ -19,6 +19,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
   */
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class MorphableSemanticsTest {
+  import MorphableSemanticsTest._
+
   private[this] val compiler = TwitterEvalCompiler(classCacheDir = Option(FileLocations.testGeneratedClasses))
 
   @Test def testMorphingWorksAndSemanticsWorksAfterMorphing(): Unit = {
@@ -82,5 +84,34 @@ class MorphableSemanticsTest {
       addPhotos(PhotoProto.newBuilder.setId(2)).
       addPhotos(PhotoProto.newBuilder.setId(3).setHeight(3)).
       build
+  }
+
+  @Test def testSem(): Unit = {
+    assertFalse(new NoTypeParamSem().morph[Float].isDefined)
+    assertTrue(new NoTypeParamSem().morph[Double].isDefined)
+  }
+}
+
+object MorphableSemanticsTest {
+  import scala.language.reflectiveCalls
+
+  /**
+    * An example of a MorphableSemantics class '''not parameterized by type'''.
+    * The focus here is just the types necessary.  Notice the type lambdas and casting.
+    */
+  class NoTypeParamSem extends NonFunctionalSemantics[Double]
+                          with MorphableSemantics[({type L[_] = NoTypeParamSem})#L, Double] {
+    override def refInfoA = RefInfo[Double]
+    override def morph[B: RefInfo] =
+      if (RefInfoOps.isSubType[B, Double])
+        // Need to cast `this` to the proper type.  Could create a new one if desired.
+        Option(this.asInstanceOf[MorphableSemantics[({type L[_] = NoTypeParamSem})#L, B]])
+      else None
+  }
+
+  trait NonFunctionalSemantics[A] extends Semantics[A] {
+    override def accessorFunctionNames = Seq.empty
+    override def createFunction[B: RefInfo](codeSpec: String, default: Option[B]) = Left(Nil)
+    override def close(): Unit = ()
   }
 }
