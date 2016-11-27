@@ -21,7 +21,14 @@ addons:
 
 scala:
     - 2.10.5
+    - 2.11.8
 
 before_install:
     - source travis-install-protobuf.sh
     - bash travis-install-aloha-proto.sh
+    - source travis-mv-filtered.sh # This is just temporary until a better solution.
+
+# This is just for now until SBT issues are totally fixed.
+script:
+    - sbt ++$TRAVIS_SCALA_VERSION clean editsource:edit && mv_filtered
+    - sbt ++$TRAVIS_SCALA_VERSION test || sbt ++$TRAVIS_SCALA_VERSION test:test-quick || sbt ++$TRAVIS_SCALA_VERSION test:test-quick || sbt ++$TRAVIS_SCALA_VERSION test:test-quick
