@@ -4,6 +4,8 @@ import java.io.{ByteArrayOutputStream, PrintStream}
 
 import org.junit.{After, Before}
 
+import scala.util.Try
+
 /**
  * Exposes a way to capture and read data that goes to stdout and stderr.
  * See [[IoCaptureCompanion]] for usage.
@@ -34,12 +36,16 @@ abstract class TestWithIoCapture[C <: IoCaptureCompanion](companion: C) {
     protected[this] def runMain[A <: PrintStream](mainFn: Array[String] => Unit, args: Array[String])
                                                  (implicit out: A, err: A): (A, A) = {
 
-        Console.withOut(out) {
+        val t = Console.withOut(out) {
             Console.withErr(err) {
-                mainFn(args)
-                (out, err)
+                Try {
+                    mainFn(args)
+                    (out, err)
+                }
             }
         }
+
+        t.get
 
         // TODO: Remove
 //        val (cOut, cErr) = (Console.out, Console.err)
