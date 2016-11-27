@@ -8,7 +8,7 @@ and not a **SNAPSHOT** version.
 # To be run in project root directory.
 function mv_filtered() {
   for v in 10 11; do
-    for d in $(find */target/scala-2.${v}/filtered -name "*" -d 3); do
+    for d in $(find */target/scala-2.${v}/filtered -mindepth 3 -maxdepth 3 -type d); do
       PROJECT=$(echo $d | grep -Po '^[^/]*')
       if [ $(echo $d | grep '/test/') ]; then
         CLASS_PREFIX='test-'

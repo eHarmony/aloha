@@ -15,12 +15,12 @@ object Cli {
     def main(args: Array[String]): Unit = {
 
         if (args.isEmpty) {
-            System.err.println("No arguments supplied. Supply one of: " + flagClassMap.keys.toVector.sorted.map("'" + _ + "'").mkString(", ") + ".")
+            Console.err.println("No arguments supplied. Supply one of: " + flagClassMap.keys.toVector.sorted.map("'" + _ + "'").mkString(", ") + ".")
         }
         else {
             val flag = args(0)
             if (!flagClassMap.contains(flag)) {
-                System.err.println(s"'$flag' supplied. Supply one of: " + flagClassMap.keys.toVector.sorted.map("'" + _ + "'").mkString(", ") + ".")
+                Console.err.println(s"'$flag' supplied. Supply one of: " + flagClassMap.keys.toVector.sorted.map("'" + _ + "'").mkString(", ") + ".")
             }
             else {
                 flagClassMap(flag).

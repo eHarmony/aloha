@@ -17,17 +17,19 @@ class CliTest extends TestWithIoCapture(CliTest) {
     import CliTest._
 
     @Test def testNoArgs(): Unit = {
-        Cli.main(Array.empty)
-        assertEquals("No arguments supplied. Supply one of: '--dataset', '--h2o', '--modelrunner', '--vw'.", errContent.trim)
+        val (out, err: InterrogatablePrintStream) = runMain(Cli.main, Array.empty)
+//        assertEquals("No arguments supplied. Supply one of: '--dataset', '--h2o', '--modelrunner', '--vw'.", err.output.trim)
+        assertEquals("No arguments supplied. Supply one of: '--dataset', '--h2o', '--modelrunner', '--vw'.", err.output.trim)
     }
 
     @Test def testBadFlag(): Unit = {
-        Cli.main(Array("-BADFLAG"))
-        assertEquals("'-BADFLAG' supplied. Supply one of: '--dataset', '--h2o', '--modelrunner', '--vw'.", errContent.trim)
+        val (out, err: InterrogatablePrintStream) = runMain(Cli.main, Array("-BADFLAG"))
+//        assertEquals("'-BADFLAG' supplied. Supply one of: '--dataset', '--h2o', '--modelrunner', '--vw'.", err.output.trim)
+        assertEquals("'-BADFLAG' supplied. Supply one of: '--dataset', '--h2o', '--modelrunner', '--vw'.", err.output.trim)
     }
 
     @Test def testVw(): Unit = {
-        Cli.main(Array("--vw"))
+        val (out, err) = runMain(Cli.main, Array("--vw"))
         val expected =
             """
               |Error: Missing option --spec
@@ -61,7 +63,7 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |        max value for spline domain. (must additional provide spline-min, spline-delta, and spline-knots).
             """.stripMargin
 
-        assertEquals(expected.trim, errContent.trim)
+        assertEquals(expected.trim, err.output.trim)
     }
 }
 

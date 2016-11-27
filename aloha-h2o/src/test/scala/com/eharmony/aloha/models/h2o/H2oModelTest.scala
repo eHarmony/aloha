@@ -42,7 +42,11 @@ class H2oModelTest extends Logging {
 
   @Test def testParseSpecNoTypeIsDouble(): Unit = {
     val json = """{ "myFeatureName": { "spec": "${length}", "defVal": -654321 } }"""
-    val Seq((name, spec)) = json.parseJson.convertTo[sci.ListMap[String, H2oSpec]].toSeq
+    val mapSeq = json.parseJson.convertTo[sci.ListMap[String, H2oSpec]].toSeq
+
+    assertEquals(1, mapSeq.size)
+    val name = mapSeq.head._1
+    val spec = mapSeq.head._2
     val expectedName = "myFeatureName"
     val expectedSpec = DoubleH2oSpec(expectedName, "${length}", Some(-654321))
 

@@ -29,10 +29,11 @@ import org.junit.AfterClass
  * @author R M Deak
  */
 trait IoCaptureCompanion {
-    private[this] val stdOut = System.out
-    private[this] val stdErr = System.err
-    private[this] val stdIn = System.in
-    def originalStdIn = stdIn
+    // TODO: Uncomment
+//    private[this] val stdOut = System.out
+//    private[this] val stdErr = System.err
+//    private[this] val stdIn = System.in
+//    def originalStdIn = stdIn
 
 //    trait ProxiedInputStream extends InputStream with Closeable {
 //        protected[this] val is: InputStream
@@ -60,25 +61,27 @@ trait IoCaptureCompanion {
 //
 //  private[io] def setStdIn(): Unit = System.setIn(new PrintStream(stdoutBaos.get))
 
-    private[this] val stderrBaos = new ThreadLocal[ByteArrayOutputStream] {
-        override protected[this] def initialValue() = new ByteArrayOutputStream
-    }
 
-    private[this] val stdoutBaos = new ThreadLocal[ByteArrayOutputStream] {
-        override protected[this] def initialValue() = new ByteArrayOutputStream
-    }
-
-    private[io] def setStdOut(): Unit = System.setOut(new PrintStream(stdoutBaos.get))
-    private[io] def setStdErr(): Unit = System.setErr(new PrintStream(stderrBaos.get))
-    def clearStdOut(): Unit = stdoutBaos.get.reset()
-    def clearStdErr(): Unit = stderrBaos.get.reset()
-
-
-    def errContent = stderrBaos.get.toString
-    def outContent = stdoutBaos.get.toString
-
-    @AfterClass def afterClass(): Unit = {
-        System.setErr(stdErr)
-        System.setOut(stdOut)
-    }
+// TODO: Uncomment
+//    private[this] val stderrBaos = new ThreadLocal[ByteArrayOutputStream] {
+//        override protected[this] def initialValue() = new ByteArrayOutputStream
+//    }
+//
+//    private[this] val stdoutBaos = new ThreadLocal[ByteArrayOutputStream] {
+//        override protected[this] def initialValue() = new ByteArrayOutputStream
+//    }
+//
+//    private[io] def setStdOut(): Unit = System.setOut(new PrintStream(stdoutBaos.get))
+//    private[io] def setStdErr(): Unit = System.setErr(new PrintStream(stderrBaos.get))
+//    def clearStdOut(): Unit = stdoutBaos.get.reset()
+//    def clearStdErr(): Unit = stderrBaos.get.reset()
+//
+//
+//    def errContent = stderrBaos.get.toString
+//    def outContent = stdoutBaos.get.toString
+//
+//    @AfterClass def afterClass(): Unit = {
+//        System.setErr(stdErr)
+//        System.setOut(stdOut)
+//    }
 }

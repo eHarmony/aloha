@@ -45,7 +45,7 @@ class CliTest extends TestWithIoCapture(CliTest) {
     import CliTest._
 
     @Test def testMissingBothParams(): Unit = {
-        Cli.main(Array.empty)
+        val (out, err) = runMain[InterrogatablePrintStream](Cli.main, Array.empty)
         val expected =
             ("""
               |Error: Missing option --spec
@@ -79,11 +79,13 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |        max value for spline domain. (must additional provide spline-min, spline-delta, and spline-knots).
             """).stripMargin
 
-        assertEquals(expected.trim, errContent.trim)
+//      assertEquals(expected.trim, errContent.trim)
+      assertEquals(expected.trim, err.output.trim)
     }
 
     @Test def testMissingSpecParam(): Unit = {
-        Cli.main(Array("-m", VwJniModelTest.VwModelPath))
+      val (out, err) = runMain[InterrogatablePrintStream](Cli.main, Array("-m", VwJniModelTest.VwModelPath))
+
         val expected =
             """
               |Error: Missing option --spec
@@ -116,11 +118,13 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |        max value for spline domain. (must additional provide spline-min, spline-delta, and spline-knots).
             """.stripMargin
 
-        assertEquals(expected.trim, errContent.trim)
+//      assertEquals(expected.trim, errContent.trim)
+      assertEquals(expected.trim, err.output.trim)
     }
 
     @Test def testMissingModelParam(): Unit = {
-        Cli.main(Array("-s", "res:com/eharmony/aloha/models/vw/jni/good.logistic.aloha.js"))
+      val (out, err) = runMain[InterrogatablePrintStream](Cli.main, Array("-s", "res:com/eharmony/aloha/models/vw/jni/good.logistic.aloha.js"))
+//      val (out, err) = Cli.mainWithOutput(Array("-s", "res:com/eharmony/aloha/models/vw/jni/good.logistic.aloha.js"))
         val expected =
             """
               |Error: Missing option --model
@@ -153,7 +157,8 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |        max value for spline domain. (must additional provide spline-min, spline-delta, and spline-knots).
             """.stripMargin
 
-        assertEquals(expected.trim, errContent.trim)
+//      assertEquals(expected.trim, errContent.trim)
+      assertEquals(expected.trim, err.output.trim)
     }
 
     @Test def testSpecFileDoesntExist(): Unit = {
@@ -195,7 +200,7 @@ class CliTest extends TestWithIoCapture(CliTest) {
                 "--vw-args", "--quiet -t"
             )
 
-            Cli.main(args)
+            val (out, err) = runMain[InterrogatablePrintStream](Cli.main, args)
 
             val expected =
                 ("""
@@ -215,7 +220,8 @@ class CliTest extends TestWithIoCapture(CliTest) {
                    |}
                  """).stripMargin.parseJson
 
-            val fields = outContent.parseJson.asJsObject.fields
+//          val fields = outContent.parseJson.asJsObject.fields
+          val fields = out.output.parseJson.asJsObject.fields
             val actual = JsObject(fields + ("vw" -> JsObject(fields("vw").asJsObject.fields - "creationDate")))
 
             assertEquals(expected, actual)
@@ -233,7 +239,7 @@ class CliTest extends TestWithIoCapture(CliTest) {
                 "--external"
             )
 
-            Cli.main(args)
+            val (out, err) = runMain[InterrogatablePrintStream](Cli.main, args)
 
             val url = vfs2.VFS.getManager.resolveFile(VwJniModelTest.VwModelPath)
 
@@ -256,7 +262,8 @@ class CliTest extends TestWithIoCapture(CliTest) {
                    |}
                  """).stripMargin.parseJson
 
-            val fields = outContent.parseJson.asJsObject.fields
+//          val fields = outContent.parseJson.asJsObject.fields
+          val fields = out.output.parseJson.asJsObject.fields
             val actual = JsObject(fields + ("vw" -> JsObject(fields("vw").asJsObject.fields - "creationDate")))
 
             assertEquals(expected, actual)
@@ -276,7 +283,7 @@ class CliTest extends TestWithIoCapture(CliTest) {
       "--vw-args", "--quiet -t",
       "--external"
     )
-    Cli.main(args)
+    val (out, err) = runMain[InterrogatablePrintStream](Cli.main, args)
 
     val url = vfs2.VFS.getManager.resolveFile(CliTest.cbVwModelPath)
 
@@ -299,7 +306,8 @@ class CliTest extends TestWithIoCapture(CliTest) {
          |}
        """).stripMargin.parseJson
 
-    val fields = outContent.parseJson.asJsObject.fields
+//    val fields = outContent.parseJson.asJsObject.fields
+    val fields = out.output.parseJson.asJsObject.fields
     val actual = JsObject(fields + ("vw" -> JsObject(fields("vw").asJsObject.fields - "creationDate")))
 
     assertEquals(expected, actual)
