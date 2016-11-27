@@ -4,7 +4,7 @@ set -e
 
 function mv_filtered() {
   for v in 10 11; do
-    for d in $(find */target/scala-2.${v}/filtered -name "*" -d 3); do
+    for d in $(find */target/scala-2.${v}/filtered -maxdepth 3 -type d -name "filtered_resources"); do
       PROJECT=$(echo $d | grep -Po '^[^/]*')
       if [ $(echo $d | grep '/test/') ]; then
         CLASS_PREFIX='test-'
