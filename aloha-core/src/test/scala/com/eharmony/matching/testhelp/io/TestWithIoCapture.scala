@@ -34,18 +34,26 @@ abstract class TestWithIoCapture[C <: IoCaptureCompanion](companion: C) {
     protected[this] def runMain[A <: PrintStream](mainFn: Array[String] => Unit, args: Array[String])
                                                  (implicit out: A, err: A): (A, A) = {
 
-        val (cOut, cErr) = (Console.out, Console.err)
-
-        Console.setOut(out)
-        Console.setErr(err)
-
-        try {
-            mainFn(args)
-            (out, err)
+        Console.withOut(out) {
+            Console.withErr(err) {
+                mainFn(args)
+                (out, err)
+            }
         }
-        finally {
-            Console.setOut(cOut)
-            Console.setErr(cErr)
-        }
+
+        // TODO: Remove
+//        val (cOut, cErr) = (Console.out, Console.err)
+//
+//        Console.setOut(out)
+//        Console.setErr(err)
+//
+//        try {
+//            mainFn(args)
+//            (out, err)
+//        }
+//        finally {
+//            Console.setOut(cOut)
+//            Console.setErr(cErr)
+//        }
     }
 }
