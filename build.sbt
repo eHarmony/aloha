@@ -89,8 +89,8 @@ lazy val versionDependentSettings = Seq(
 lazy val root = project.in(file("."))
   .aggregate(core, vwJni, h2o, cli)
   .dependsOn(core, vwJni, h2o, cli)
-  .settings(commonSettings: _*)
-  .settings(versionDependentSettings: _*)
+//  .settings(commonSettings: _*)
+//  .settings(versionDependentSettings: _*)
 
 // (run in Test) := (run in Test).dependsOn(protobufCompile)
 // resources in Test in core ++= (edit in Test in EditSource).value // .data
