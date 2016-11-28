@@ -42,9 +42,6 @@ lazy val commonSettings = Seq(
     "-Ycheck:jvm"
   ),
 
-  // Add the Aloha generated classes directory to the test classpath.
-  unmanagedClasspath in Test += crossTarget.value / "test-classes" / "generated",
-
   // See: http://www.scala-sbt.org/release/docs/Running-Project-Code.html
   // fork := true is needed; otherwise we see error:
   //

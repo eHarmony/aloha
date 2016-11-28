@@ -30,5 +30,4 @@ before_install:
 
 # This is just for now until SBT issues are totally fixed.
 script:
-    - sbt ++$TRAVIS_SCALA_VERSION clean editsource:edit && mv_filtered
-    - sbt ++$TRAVIS_SCALA_VERSION test || sbt ++$TRAVIS_SCALA_VERSION test || sbt ++$TRAVIS_SCALA_VERSION test || sbt ++$TRAVIS_SCALA_VERSION test
+    - sbt ++$TRAVIS_SCALA_VERSION clean editsource:edit && mv_filtered && sbt ++$TRAVIS_SCALA_VERSION test
