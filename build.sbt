@@ -54,6 +54,8 @@ lazy val commonSettings = Seq(
   // com.eharmony.aloha.models.CategoricalDistibutionModel
   fork := true,
 
+  javaOptions ++= Seq("-Xmx2g"),
+
   // Because 2.10 runtime reflection is not thread-safe, tests fail non-deterministically.
   // This is a hack to make tests pass by not allowing the tests to run in parallel.
   parallelExecution in Test := false
