@@ -40,5 +40,5 @@ before_install:
 #script:
 #    - sbt ++$TRAVIS_SCALA_VERSION clean editsource:edit && mv_filtered && sbt ++$TRAVIS_SCALA_VERSION test && sbt ++$TRAVIS_SCALA_VERSION last core/test:test
 script:
-  - sbt -J-XX:ErrorFile=/home/travis/build/eHarmony/aloha/error.log -J-Xmx3g ++$TRAVIS_SCALA_VERSION clean test || cat /home/travis/build/eHarmony/aloha/error.log
+  - sbt -J-XX:ErrorFile=/home/travis/build/eHarmony/aloha/error.log -J-Xmx3g -J-XX:MaxPermSize=2048M ++$TRAVIS_SCALA_VERSION clean test || cat /home/travis/build/eHarmony/aloha/error.log
   - find $HOME/.sbt -name "*.lock" | xargs rm
