@@ -29,5 +29,5 @@ before_install:
     - source travis-mv-filtered.sh # This is just temporary until a better solution.
 
 # This is just for now until SBT issues are totally fixed.
-script:
-    - sbt ++$TRAVIS_SCALA_VERSION clean editsource:edit && mv_filtered && sbt ++$TRAVIS_SCALA_VERSION test || sbt ++$TRAVIS_SCALA_VERSION last test
+#script:
+#    - sbt ++$TRAVIS_SCALA_VERSION clean editsource:edit && mv_filtered && sbt ++$TRAVIS_SCALA_VERSION test && sbt ++$TRAVIS_SCALA_VERSION last core/test:test

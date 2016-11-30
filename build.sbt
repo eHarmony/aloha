@@ -14,6 +14,7 @@ homepage := Some(url("https://github.com/eharmony/aloha"))
 licenses := Seq("MIT License" -> url("http://opensource.org/licenses/MIT"))
 description := """Scala-based machine learning library with generic models and lazily created features."""
 
+
 // ===========================================================================
 //  Build Settings
 // ===========================================================================
@@ -82,23 +83,10 @@ lazy val versionDependentSettings = Seq(
   }
 )
 
+
 // ===========================================================================
-//  Modules
+//  Resource Filtering
 // ===========================================================================
-
-lazy val root = project.in(file("."))
-  .aggregate(core, vwJni, h2o, cli)
-  .dependsOn(core, vwJni, h2o, cli)
-//  .settings(commonSettings: _*)
-//  .settings(versionDependentSettings: _*)
-
-// (run in Test) := (run in Test).dependsOn(protobufCompile)
-// resources in Test in core ++= (edit in Test in EditSource).value // .data
-
-// (copyResources in core in Test) <<= (copyResources in core in Test) map { _ =>
-//   (edit in EditSource).value
-// }
-(copyResources in core in Test) := ((copyResources in core in Test) dependsOn (edit in EditSource)).value
 
 def editSourceSettings = Seq[Setting[_]](
   // This might be the only one that requires def instead of lazy val:
@@ -113,8 +101,58 @@ def editSourceSettings = Seq[Setting[_]](
   variables in EditSource <+= crossTarget {t => ("projectBuildDirectory", t.getCanonicalPath)},
   variables in EditSource <+= (sourceDirectory in Test) {s => ("scalaTestSource", s.getCanonicalPath)},
   variables in EditSource <+= version {s => ("projectVersion", s.toString)},
-  variables in EditSource += ("h2oVersion", Dependencies.h2oVersion.toString)
+  variables in EditSource += ("h2oVersion", Dependencies.h2oVersion.toString),
+
+  compile in Compile := {
+    val c = (compile in Compile).value
+    filteredTask.value
+    c
+  }
 )
+
+/**
+ * This task moves the filtered files to the proper target directory. It is
+ * based on specific EditSource settings, especially that filtered_resources
+ * is the only directory in which EditSource searches.
+ */
+lazy val filteredTask = Def.task {
+  val s = streams.value
+  val files = (edit in EditSource).value
+
+  // This directory is dependent on the target of EditSource.  It assumes that
+  // it is crossTarget / "filtered".
+  val slash = System.getProperty("file.separator", "/")
+
+  val components = ("^(.*)/filtered/src/(main|test)/filtered_resources/(.*)$").r
+  val mappings = files map { f =>
+    // Replace in case this bombs in Windows.
+    val newF = f.getCanonicalPath.replace(slash, "/") match {
+      case components(prefix, srcType, suffix) =>
+        // This could probably be more robust.
+        val classDir = if (srcType == "test") "test-classes" else "classes"
+        file(prefix) / classDir / suffix
+    }
+    (f, newF)
+  }
+
+  mappings foreach { case (f, t) =>
+    val msg = s"""Moving "$f" -> "$t""""
+    s.log.info(msg)
+    val success = ((t.getParentFile.exists || t.getParentFile.mkdirs()) && f.renameTo(t))
+    if (!success) s.log.error(s"Failure $msg")
+  }
+}
+
+
+// ===========================================================================
+//  Modules
+// ===========================================================================
+
+lazy val root = project.in(file("."))
+  .aggregate(core, vwJni, h2o, cli)
+  .dependsOn(core, vwJni, h2o, cli)
+  .settings(commonSettings: _*)
+  .settings(versionDependentSettings: _*)
 
 lazy val core = project.in(file("aloha-core"))
   .settings(name := "aloha-core")
