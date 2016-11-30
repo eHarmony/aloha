@@ -98,6 +98,17 @@ def editSourceSettings = Seq[Setting[_]](
   variables in EditSource <+= version {s => ("projectVersion", s.toString)},
   variables in EditSource += ("h2oVersion", Dependencies.h2oVersion.toString),
 
+  // Try doing this with adding to sourceManaged direcory instead of directly
+  // adding to the class directory in the compile task.  This would most likely
+  // be better because we could incorporate src/main/scala if we wanted.  This
+  // could easily be accomplished if we rename the filtered_resources directory
+  // and add an indicator in the file names (like __filtered__ or something).
+  // For instance, do something like this:
+  //
+  //    mySourceGenerator in Compile := {
+  //      generate( (sourceManaged in Compile).value / "some_directory")
+  //    }
+  //
   compile in Compile := {
     val c = (compile in Compile).value
     filteredTask.value
