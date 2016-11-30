@@ -1,5 +1,9 @@
 language: scala
 
+scala:
+  - 2.10.5
+  - 2.11.8
+
 jdk:
   - oraclejdk7
 
@@ -27,17 +31,6 @@ addons:
     packages:
       - libboost-program-options-dev
 
-scala:
-  - 2.10.5
-  - 2.11.8
-
 before_install:
   - source travis-install-protobuf.sh
   - bash travis-install-aloha-proto.sh
-#    - source travis-mv-filtered.sh # This is just temporary until a better solution.
-
-# This is just for now until SBT issues are totally fixed.
-#script:
-#    - sbt ++$TRAVIS_SCALA_VERSION clean editsource:edit && mv_filtered && sbt ++$TRAVIS_SCALA_VERSION test && sbt ++$TRAVIS_SCALA_VERSION last core/test:test
-# script:
-#   - sbt -J-XX:ErrorFile=/home/travis/build/eHarmony/aloha/error.log -J-Xmx3g -J-XX:MaxPermSize=2048M ++$TRAVIS_SCALA_VERSION clean test || cat /home/travis/build/eHarmony/aloha/error.log

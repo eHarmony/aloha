@@ -1,14 +1,5 @@
 import sbt.inc.IncOptions
 
-// import sbtprotobuf.{ProtobufPlugin=>PB}
-// PB.protobufSettings // move this later
-
-// Currently, we have to do
-// sbt
-//  +test
-//  run `mv_filtered` in another window in root project directory.
-//  +test (again)
-
 name := "aloha"
 homepage := Some(url("https://github.com/eharmony/aloha"))
 licenses := Seq("MIT License" -> url("http://opensource.org/licenses/MIT"))
@@ -54,6 +45,8 @@ lazy val commonSettings = Seq(
   // com.eharmony.aloha.models.CategoricalDistibutionModel
   fork := true,
 
+  // This is required to avoid Travis failures in sbt.ForkMain with message
+  // "failed with exit code 137".  This is an issue others have when forking.
   javaOptions ++= Seq("-Xmx2g"),
 
   // Because 2.10 runtime reflection is not thread-safe, tests fail non-deterministically.
