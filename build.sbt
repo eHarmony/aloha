@@ -85,17 +85,17 @@ lazy val versionDependentSettings = Seq(
 
 def editSourceSettings = Seq[Setting[_]](
   // This might be the only one that requires def instead of lazy val:
-  targetDirectory in EditSource := (crossTarget / "filtered").value,
+  targetDirectory in EditSource := (crossTarget.value / "filtered"),
 
   // These don't change per project and should be OK with a lazy val instead of def:
   flatten in EditSource := false,
-  (sources in EditSource) <++= baseDirectory map { d =>
+  (sources in EditSource) ++= baseDirectory.map { d =>
     (d / "src" / "main" / "filtered_resources" / "" ** "*.*").get ++
     (d / "src" / "test" / "filtered_resources" / "" ** "*.*").get
-  },
-  variables in EditSource <+= crossTarget {t => ("projectBuildDirectory", t.getCanonicalPath)},
-  variables in EditSource <+= (sourceDirectory in Test) {s => ("scalaTestSource", s.getCanonicalPath)},
-  variables in EditSource <+= version {s => ("projectVersion", s.toString)},
+  }.value,
+  variables in EditSource += crossTarget {t => ("projectBuildDirectory", t.getCanonicalPath)}.value,
+  variables in EditSource += (sourceDirectory in Test) {s => ("scalaTestSource", s.getCanonicalPath)}.value,
+  variables in EditSource += version {s => ("projectVersion", s.toString)}.value,
   variables in EditSource += ("h2oVersion", Dependencies.h2oVersion.toString),
 
   // Try doing this with adding to sourceManaged direcory instead of directly
