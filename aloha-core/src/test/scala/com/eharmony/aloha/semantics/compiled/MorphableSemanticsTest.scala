@@ -93,7 +93,6 @@ class MorphableSemanticsTest {
 }
 
 object MorphableSemanticsTest {
-  import scala.language.reflectiveCalls
 
   /**
     * An example of a MorphableSemantics class '''not parameterized by type'''.

@@ -4,8 +4,7 @@ import java.net.URI
 import javax.tools.JavaFileObject.Kind
 import javax.tools.SimpleJavaFileObject
 
-import com.eharmony.aloha.io.{ReadableByString, AlohaReadable, ContainerReadableByString, ContainerReadable}
-import com.eharmony.aloha.reflect.{RefInfoOps, RefInfo}
+import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 
 import scala.util.matching.Regex
 
@@ -19,7 +18,7 @@ private[h2o] object InMemoryJavaSource {
 
   def fromString[B](code: String)(implicit baseClass: RefInfo[B]): Option[InMemoryJavaSource[B]] = {
     val classNameRe = classNameRegex[B](code)
-    val className = determineClassName(code, classNameRegex[B](code)) map determineCanonicalClassName(code)
+    val className = determineClassName(code, classNameRe) map determineCanonicalClassName(code)
     className map (cn => new InMemoryJavaSource[B](code, cn))
   }
 

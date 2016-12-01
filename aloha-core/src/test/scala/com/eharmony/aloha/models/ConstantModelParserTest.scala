@@ -43,7 +43,8 @@ class ConstantModelParserTest {
             """.stripMargin.parseJson
 
         val f = ModelFactory(ConstantModel.parser)
-        val m = f.getModel[String, Int](js).get
+        val m = f.getModel[String, Int](js)
+        m.get
     }
 
     @Test(expected = classOf[Exception])
@@ -57,7 +58,8 @@ class ConstantModelParserTest {
             """.stripMargin.parseJson
 
         val f = ModelFactory(ConstantModel.parser)
-        val m = f.getModel[String, Int](js).get
+        val m = f.getModel[String, Int](js)
+        m.get
     }
 
     @Test(expected = classOf[AlohaFactoryException])
@@ -69,6 +71,7 @@ class ConstantModelParserTest {
             """.stripMargin.parseJson
 
         val f = ModelFactory(ConstantModel.parser)
-        val m = f.getModel[String, Int](js).get
+        val m = f.getModel[String, Int](js)
+        m.get
     }
 }

@@ -1,26 +1,22 @@
 package com.eharmony.aloha.models.conversion
 
 import com.eharmony.aloha.ModelSerializationTestHelper
-import com.eharmony.aloha.id.{ModelId, ModelIdentity}
-import com.eharmony.aloha.util.Logging
-
-import scala.language.implicitConversions
-
-import org.junit.runners.BlockJUnit4ClassRunner
-import org.junit.runner.RunWith
-import org.junit.Test
-import org.junit.Assert._
 import com.eharmony.aloha.factory.ModelFactory
-import com.eharmony.aloha.semantics.EmptySemantics
-
+import com.eharmony.aloha.id.ModelId
+import com.eharmony.aloha.interop.LongFactoryInfo
+import com.eharmony.aloha.models._
 import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.LongScoreConverter
 import com.eharmony.aloha.score.conversions.rich.RichScore
-
+import com.eharmony.aloha.semantics.EmptySemantics
+import org.junit.Assert._
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.BlockJUnit4ClassRunner
 import spray.json.DefaultJsonProtocol.LongJsonFormat
-import com.eharmony.aloha.models._
-import com.eharmony.aloha.interop.LongFactoryInfo
-import scala.util.Try
 import spray.json.DeserializationException
+
+import scala.language.implicitConversions
+import scala.util.Try
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class DoubleToLongModelTest extends ModelSerializationTestHelper {
@@ -122,7 +118,6 @@ object DoubleToLongModelTest {
     def getScalaLongFactory = scalaFactory
     def getJavaLongFactory = javaFactory
 
-    private implicit def toOpt[A](a: A): Option[A] = Option(a)
     private implicit def intToOptLong(a: Int): Option[Long] = Option(a)
     private implicit def intToOptDouble(a: Int): Option[Double] = Option(a)
 

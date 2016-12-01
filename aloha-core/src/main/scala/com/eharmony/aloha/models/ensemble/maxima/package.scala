@@ -1,8 +1,6 @@
 package com.eharmony.aloha.models.ensemble
 
 import com.eharmony.aloha.score.basic.ModelOutput
-import ModelOutput.Implicits.modelOutputOrdering
-import com.eharmony.aloha.score.basic.ModelOutput
 import com.eharmony.aloha.models.ensemble.tie.TieBreaker
 
 package object maxima {

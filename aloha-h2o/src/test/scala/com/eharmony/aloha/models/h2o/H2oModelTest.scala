@@ -3,7 +3,7 @@ package com.eharmony.aloha.models.h2o
 import com.eharmony.aloha.FileLocations
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
-import com.eharmony.aloha.io.vfs.{VfsType, Vfs}
+import com.eharmony.aloha.io.vfs.{Vfs, VfsType}
 import com.eharmony.aloha.models.Model
 import com.eharmony.aloha.models.h2o.H2oModel.Features
 import com.eharmony.aloha.models.h2o.json.{DoubleH2oSpec, H2oSpec}
@@ -16,22 +16,22 @@ import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import com.eharmony.aloha.semantics.compiled.plugin.proto.CompiledSemanticsProtoPlugin
 import com.eharmony.aloha.semantics.func.{GenAggFunc, GenFunc}
 import com.eharmony.aloha.test.proto.TestProtoBuffs.Abalone
-import com.eharmony.aloha.test.proto.TestProtoBuffs.Abalone.Gender.{FEMALE, MALE, INFANT}
+import com.eharmony.aloha.test.proto.TestProtoBuffs.Abalone.Gender.{FEMALE, INFANT, MALE}
 import com.eharmony.aloha.util.Logging
 import hex.genmodel.easy.RowData
+import org.apache.commons.vfs2.VFS
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 import spray.json.DefaultJsonProtocol._
-import org.apache.commons.vfs2.VFS
-import spray.json.{JsArray, JsonReader, pimpString}
+import spray.json.{JsonReader, pimpString}
 
+import scala.collection.JavaConversions.mapAsScalaMap
 import scala.collection.{immutable => sci}
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.implicitConversions
 import scala.util.Try
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.collection.JavaConversions.mapAsScalaMap
 
 /**
  * Created by deak on 10/23/15.
@@ -367,7 +367,6 @@ object H2oModelTest {
     override def accessorFunctionNames: Seq[String] = Nil
     override def close(): Unit = ()
     override def createFunction[B: RefInfo](codeSpec: String, default: Option[B]): Either[Seq[String], GenAggFunc[Seq[Option[H2oColumn]], B]] = {
-      val b = RefInfo[B]
       val i = codeSpec.toInt
       val f = (s: Seq[Option[H2oColumn]]) => Try {s(i)}.toOption.flatten match {
         case Some(H2oDoubleColumn(v)) => Some(v).asInstanceOf[B]

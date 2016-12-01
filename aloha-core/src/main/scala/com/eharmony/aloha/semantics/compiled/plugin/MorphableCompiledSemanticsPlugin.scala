@@ -3,8 +3,6 @@ package com.eharmony.aloha.semantics.compiled.plugin
 import com.eharmony.aloha.reflect.RefInfo
 import com.eharmony.aloha.semantics.compiled.CompiledSemanticsPlugin
 
-import scala.language.higherKinds
-
 /**
   * Provides a way to adapt a [[CompiledSemanticsPlugin]] to a new one with a
   * different type parameter.

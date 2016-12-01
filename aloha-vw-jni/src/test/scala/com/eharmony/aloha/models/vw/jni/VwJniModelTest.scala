@@ -658,7 +658,7 @@ object VwJniModelTest extends Logging {
     // echo "" | vw -t --quiet -i log_0.5.model -p pred; cat pred; rm -f ./pred ./log_0.5.model
     // 0.504197
     private[this] def allocateModel() = {
-        val m: VWFloatLearner = VWLearners.create(s"--quiet --loss_function logistic --link logistic -f $VwModelPath")
+        val m = VWLearners.create[VWFloatLearner](s"--quiet --loss_function logistic --link logistic -f $VwModelPath")
         1 to 100 foreach { _ =>
             m.learn("-1 | ")
             m.learn( "1 | ")
@@ -671,7 +671,7 @@ object VwJniModelTest extends Logging {
     private def readFile(f: java.io.File, maxFileSize: Int = 1024): Array[Byte] =
         readInputStream(new FileInputStream(f), maxFileSize)
 
-    private def readInputStream(is: InputStream, maxFileSize: Int = 1024): Array[Byte] = {
+    private def readInputStream(is: InputStream, maxFileSize: Int): Array[Byte] = {
         val d = new Array[Byte](maxFileSize)
         try {
             val nBytes = is.read(d)

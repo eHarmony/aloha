@@ -1,11 +1,9 @@
 package com.eharmony.aloha.interop
 
-import java.{lang => jl}
-
 import com.fasterxml.classmate.{TypeResolver, ResolvedType}
 
 import spray.json.DefaultJsonProtocol.StringJsonFormat
-import com.eharmony.aloha.reflect.{ReflectionConversions, RefInfo}
+import com.eharmony.aloha.reflect.ReflectionConversions
 import ReflectionConversions.Implicits.ResolvedTypeToScalaReflection
 import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.StringScoreConverter
 import com.eharmony.aloha.reflect.RefInfo

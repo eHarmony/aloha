@@ -99,8 +99,6 @@ object EpsilonGreedyModel extends ParserProviderCompanion {
       }
     }
 
-    // TODO: Remove commented code after getting SBT build working.
-//    protected[this] implicit def astJsonFormat[B: JsonFormat: ScoreConverter] = jsonFormat(Ast.apply[B], "defaultPolicy", "epsilon", "salt", "classLabels")
     protected[this] def astJsonFormat[B: JsonFormat: ScoreConverter] = jsonFormat(Ast.apply[B], "defaultPolicy", "epsilon", "salt", "classLabels")
 
     /**

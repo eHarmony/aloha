@@ -3,7 +3,7 @@ package com.eharmony.aloha.dataset
 import com.eharmony.aloha.dataset.density.{Sparse, Dense}
 import com.eharmony.aloha.semantics.func.GenAggFunc
 
-import scala.collection.{immutable => sci, mutable => scm}
+import scala.collection.{immutable => sci}
 import scala.reflect.{ClassTag, classTag}
 
 final case class SparseFeatureExtractorFunction[-A](features: sci.IndexedSeq[(String, GenAggFunc[A, Iterable[(String, Double)]])])

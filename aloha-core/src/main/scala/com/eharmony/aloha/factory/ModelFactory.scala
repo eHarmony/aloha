@@ -14,7 +14,6 @@ import org.reflections.Reflections
 import spray.json.DefaultJsonProtocol._
 import spray.json.{JsValue, JsonReader}
 
-import scala.language.higherKinds
 import scala.util.{Failure, Success, Try}
 
 case class ModelFactory(modelParsers: ModelParser*) extends JsValuePimpz {
@@ -85,7 +84,7 @@ case class ModelFactory(modelParsers: ModelParser*) extends JsValuePimpz {
     }
 
     private[this] def recursionDetected(fileStack: List[String]) =
-        Failure { throw new RecursiveModelDefinitionException(fileStack) }
+        Failure { new RecursiveModelDefinitionException(fileStack) }
 
     /**
       * @param json JSON to be parsed and translated to a model.

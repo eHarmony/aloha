@@ -17,7 +17,6 @@ import spray.json.{DeserializationException, JsonFormat}
 import vw.learner.{VWIntLearner, VWLearners}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.language.implicitConversions
 import scala.util.Failure
 
 object CbVwJniModelTest {
@@ -31,7 +30,7 @@ object CbVwJniModelTest {
     tf.deleteOnExit()
     val p = tf.getCanonicalPath
 
-    val vw: VWIntLearner = VWLearners.create(s"--cb 2 --quiet -f $p")
+    val vw = VWLearners.create[VWIntLearner](s"--cb 2 --quiet -f $p")
     val input = Vector("1:2:0.5 | a c",
                        "2:1:0.5 | b c")
     for {

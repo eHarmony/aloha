@@ -8,7 +8,6 @@ import com.eharmony.aloha.util.Logging
 import spray.json._
 
 import scala.collection.{immutable => sci}
-import scala.language.implicitConversions
 import scala.util.Try
 
 /**

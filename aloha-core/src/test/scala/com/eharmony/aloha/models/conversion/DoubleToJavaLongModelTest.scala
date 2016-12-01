@@ -2,7 +2,7 @@ package com.eharmony.aloha.models.conversion
 
 import com.eharmony.aloha.ModelSerializationTestHelper
 import com.eharmony.aloha.id.ModelId
-import com.eharmony.aloha.models.{Model, ErrorModel}
+import com.eharmony.aloha.models.ErrorModel
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith

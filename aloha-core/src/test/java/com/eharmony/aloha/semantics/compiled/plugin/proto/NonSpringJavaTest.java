@@ -123,6 +123,7 @@ public class NonSpringJavaTest {
 		// THIS CAST IS NECESSARY (even though it might not seem like it):
 		// (Scala compiler bug)
 		// Get an attempt to get the model.
+		@SuppressWarnings("unchecked")
 		final Try<Model<TestProto, Double>> modelTry = (Try<Model<TestProto, Double>>) modelFactory
 				.fromVfs2(fo2Model);
 
@@ -190,6 +191,7 @@ public class NonSpringJavaTest {
 		// features. I.e., it
 		// transforms them from specifications to working functions.
 		// ------------------------------------------------------------------------------------------------
+		@SuppressWarnings("unchecked")
 		final CompiledSemantics<TestProto> semantics = new CompiledSemantics(
 				compiler, userPairingProtoPlugin, SEMANTICS_IMPORTS,
 				scala.concurrent.ExecutionContext$.MODULE$.global());

@@ -1,7 +1,5 @@
 package com.eharmony.aloha.models
 
-import scala.language.higherKinds
-
 import com.eharmony.aloha.id.ModelIdentity
 import com.eharmony.aloha.factory.{ModelParser, BasicModelParser, ParserProviderCompanion}
 import spray.json.{DeserializationException, JsValue, JsonReader}

@@ -614,7 +614,6 @@ class TypeCoercionTest extends Logging {
         assertTrue(s"Found ${missing.size} Option to Option functions missing: ${missing.mkString("\n\t", "\n\t", "")}", missing.isEmpty)
     }
 
-    private[this] def jBool(v: Boolean) = jl.Boolean.valueOf(v)
     private[this] def jChar(v: Int) = jl.Character.valueOf(v.toChar)
     private[this] def jByte(v: Int) = jl.Byte.valueOf(v.toByte)
     private[this] def jShort(v: Int) = jl.Short.valueOf(v.toShort)

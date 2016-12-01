@@ -5,8 +5,6 @@ import java.io.File
 import com.eharmony.aloha.FileLocations
 import com.eharmony.aloha.factory.{ModelFactory, TypedModelFactory}
 import com.eharmony.aloha.models.Model
-import com.eharmony.aloha.score.Scores.Score
-import com.eharmony.aloha.score.basic.ModelOutput
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import com.eharmony.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine, CsvLines, Enum}
@@ -111,9 +109,9 @@ class FizzBuzzCsvRegModelTest {
     data.foreach { case (i, s) =>
       val in = csvLines(s)
 
-      val scoreOpt: Option[Double]         = model(in)
-      val score: Score                     = model.score(in)
-      val scoreEither: ModelOutput[Double] = model.scoreAsEither(in)
+      val scoreOpt: Option[Double] = model(in)
+      model.score(in)
+      model.scoreAsEither(in)
 
       assertEquals(s"$i", expected(i), scoreOpt.get, 0)
     }

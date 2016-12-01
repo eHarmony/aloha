@@ -105,7 +105,7 @@ class DecisionTreeBasicTest {
         root
     }
 
-    private[this] def wrap(f: Long => Boolean, descriptor: String = "", key: String = "") = {
+    private[this] def wrap(f: Long => Boolean, descriptor: String, key: String) = {
         val g = GenFunc.f1(get(key))(descriptor, _ map f)
         g
     }

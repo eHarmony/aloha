@@ -94,10 +94,10 @@ class CompiledSemanticsCsvPluginTest {
             // The actual value.  On throwing exception, output failure instead.
             act = try { Right(f(x)) } catch { case e: Exception => Left(()) }
         } {
-            if (Seq(lvp, oivp).flatten.toString == "List((required.long,1), (optional.int,1))") {
-                val y = CsvLineTest.getCsvLine(CsvLineTest.csvLines, Seq(lvp, oivp).flatten:_*)
-
-            }
+            // TODO: Figure out if this should be removed or an additional assert should be added.
+//            if (Seq(lvp, oivp).flatten.toString == "List((required.long,1), (optional.int,1))") {
+//                val y = CsvLineTest.getCsvLine(CsvLineTest.csvLines, Seq(lvp, oivp).flatten:_*)
+//            }
 
             assertEquals(exp, act)
         }

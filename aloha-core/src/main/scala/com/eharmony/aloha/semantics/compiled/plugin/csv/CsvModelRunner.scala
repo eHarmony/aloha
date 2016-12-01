@@ -30,9 +30,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success, Try}
 import scala.util.parsing.combinator.RegexParsers
 
-sealed trait InputType {
-
-}
+sealed trait InputType
 
 case class ProtoInputType(protoClass: String) extends InputType {
     /**
@@ -60,7 +58,7 @@ case class ProtoInputType(protoClass: String) extends InputType {
     }
 }
 
-trait CsvInputType extends InputType {
+sealed trait CsvInputType extends InputType {
     def csvPluginAndLines: (CompiledSemanticsCsvPlugin, CsvLines)
 }
 
@@ -705,9 +703,7 @@ object CsvModelRunner {
     def getPredictionOutputFormat(config: Option[CsvModelRunnerConfig]): Option[PredictionOutputFormat] = config map { case conf =>
         val inputType: InputType = conf.inputType.right.get.get
 
-        // (String) => Nothing
-        // Model[Nothing, Any]
-        val (inF, model) = inputAndModel(inputType, conf.outputType, conf.imports, conf.classCacheDir, conf.model.get)
+        val (inF, model) = inputAndModel[Any](inputType, conf.outputType, conf.imports, conf.classCacheDir, conf.model.get)
 
         val out: OutputStream = conf.outputFile.fold[OutputStream](System.out)(f => VFS.getManager.resolveFile(f).getContent.getOutputStream())
         val closeOut: Boolean = conf.outputFile.isDefined

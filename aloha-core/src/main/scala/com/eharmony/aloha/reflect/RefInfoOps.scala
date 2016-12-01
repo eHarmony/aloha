@@ -168,10 +168,10 @@ object RefInfoOps extends RefInfoOps[RefInfo] with EitherHelpers {
   @SuppressWarnings(Array("deprecation"))
   def isSubType[Sub, Super](implicit sub: RefInfo[Sub], sup: RefInfo[Super]): Boolean = sub <:< sup
 
-  def isJavaInterface[A](implicit a: RefInfo[A]) = a.erasure.isInterface
+  def isJavaInterface[A](implicit a: RefInfo[A]) = a.runtimeClass.isInterface
 
   def classRegex[A](implicit a: RefInfo[A]): Regex = {
-    val erasure = a.erasure
+    val erasure = a.runtimeClass
     val pkg = erasure.getPackage.getName
     val simpleName = erasure.getSimpleName
     val canonicalName = erasure.getCanonicalName

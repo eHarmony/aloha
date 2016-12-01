@@ -97,7 +97,7 @@ class IntAliasMethodSamplerTest {
         (1 to 3).foreach(i => test1(2, 3, rand, Some(i)))
     }
 
-    private[this] def test1(minSize: Int, maxSize: Int, rand: Random, testNumber: Option[Int] = None) {
+    private[this] def test1(minSize: Int, maxSize: Int, rand: Random, testNumber: Option[Int]) {
         //   _ _ _ _ _ | _ | _ _ _ _ _
         //   _________   _   _________
         //   size = j    j
@@ -155,7 +155,7 @@ class IntAliasMethodSamplerTest {
         s.sample(x, pp)
     }
 
-    private[this] def randomSeq(n: Int, sum: Double = 1)(implicit rand: Random) = {
+    private[this] def randomSeq(n: Int, sum: Double)(implicit rand: Random) = {
         val xs = Seq.fill(n)(rand.nextDouble())
         val res = normalize(xs, sum)
         res

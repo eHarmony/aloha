@@ -2,7 +2,6 @@ package com.eharmony.matching.notaloha
 
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import com.eharmony.aloha.util.Logging
-import com.eharmony.matching.notaloha.Model.WrappedModel
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
@@ -110,7 +109,7 @@ case object WrappedModelCreator extends ModelCreator[Model.WrappedModel] {
 class TestX extends Logging {
   @Test def test1() {
     val c = X(CompositeModelCreator)
-    val w: X[WrappedModel] = X(WrappedModelCreator)
+    X(WrappedModelCreator)
 
     // Notice no errors
     val cid = c.create[Int, Double]
@@ -119,6 +118,5 @@ class TestX extends Logging {
     debug(cid.values)
     debug(cid.modelId)
     debug((1 to 10).map(i => cid(i)).mkString("\n"))
-    //    1 to 10 map (i => println(cid(i)))
   }
 }

@@ -11,7 +11,7 @@ import com.eharmony.aloha.factory.{ModelParser, ModelParserWithSemantics, Parser
 import com.eharmony.aloha.id.{ModelId, ModelIdentity}
 import com.eharmony.aloha.io.StringReadable
 import com.eharmony.aloha.io.sources.{Base64StringSource, ExternalSource, ModelSource}
-import com.eharmony.aloha.io.vfs.{Vfs, VfsType}
+import com.eharmony.aloha.io.vfs.Vfs
 import com.eharmony.aloha.models.reg.{ConstantDeltaSpline, RegFeatureCompiler, RegressionFeatures}
 import com.eharmony.aloha.models.{BaseModel, TypeCoercion}
 import com.eharmony.aloha.reflect._
@@ -228,7 +228,7 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
   private[jni] def getVwLearner(modelSource: ModelSource, vwParams: String, modelId: ModelIdentity): (VWLearner, Option[File]) = {
     val file = localModelFile(modelSource)
     val newParams = updatedVwModelParams(file, vwParams, modelId)
-    val vwLearner: VWLearner = VWLearners.create(newParams)
+    val vwLearner = VWLearners.create[VWLearner](newParams)
     (vwLearner, if (modelSource.shouldDelete) Some(file) else None)
   }
 
@@ -334,7 +334,8 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
     //   val vwParams = Option(vwArgs).filter(_.trim.nonEmpty).map(args => Right(StringEscapeUtils.escapeJson(args)))
     val vwParams = vwArgs.filter(_.trim.nonEmpty).map(args => Right(escape(args)))
 
-    val params = vwArgs.getOrElse("").trim
+    // TODO: Figure out what to do about these VW arguments.
+//    val params = vwArgs.getOrElse("").trim
 
     val vwObj = if (externalModel)
       Vw(ExternalSource(model), vwParams)

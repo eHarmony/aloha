@@ -120,8 +120,6 @@ object BootstrapModel extends ParserProviderCompanion {
       }
     }
 
-    // TODO: Remove commented code after getting SBT build working.
-//    protected[this] implicit def astJsonFormat[B: JsonFormat: ScoreConverter]: RootJsonFormat[Ast[B]] = jsonFormat(Ast.apply[B], "policies", "salt", "classLabels")
     protected[this] def astJsonFormat[B: JsonFormat: ScoreConverter]: RootJsonFormat[Ast[B]] = jsonFormat(Ast.apply[B], "policies", "salt", "classLabels")
 
     /**
