@@ -248,7 +248,7 @@ public class NonSpringJavaTest {
 
 		try {
 			props.load(vfs2FileManager
-					.resolveFile("res:mvn_gen_test.properties").getContent()
+					.resolveFile("res:filtered_test.properties").getContent()
 					.getInputStream());
 			props.load(vfs2FileManager
 					.resolveFile("res:spring_test/spring_test.properties")

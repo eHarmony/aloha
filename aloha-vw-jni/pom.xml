@@ -30,6 +30,11 @@
         </site>
     </distributionManagement>
 
+    <properties>
+        <projectVersion>${parent.version}</projectVersion>
+        <projectBuildDirectory>${project.build.directory}</projectBuildDirectory>
+        <scalaTestSource>${project.basedir}/src/main/scala</scalaTestSource>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -95,18 +100,15 @@
                             <encoding>UTF-8</encoding>
                             <resources>
                                 <resource>
-                                    <directory>src/test/resources</directory>
+                                    <directory>src/test/filtered_resources</directory>
                                     <filtering>true</filtering>
                                     <includes>
-                                        <include>mvn_gen_test.properties</include>
+                                        <include>**</include>
                                     </includes>
                                 </resource>
                                 <resource>
                                     <directory>src/test/resources</directory>
                                     <filtering>false</filtering>
-                                    <excludes>
-                                        <exclude>mvn_gen_test.properties</exclude>
-                                    </excludes>
                                 </resource>
                             </resources>
                         </configuration>

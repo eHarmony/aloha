@@ -39,6 +39,10 @@
 	        mvn -Dprotoc=/opt/local/bin/protoc clean test
 		-->
 		<protoc>protoc</protoc>
+
+		<projectVersion>${parent.version}</projectVersion>
+		<projectBuildDirectory>${project.build.directory}</projectBuildDirectory>
+		<scalaTestSource>${project.basedir}/src/main/scala</scalaTestSource>
 	</properties>
 
 	<dependencies>
@@ -241,18 +245,15 @@
 							<encoding>UTF-8</encoding>
 							<resources>
 								<resource>
-									<directory>src/main/resources</directory>
+									<directory>src/main/filtered_resources</directory>
 									<filtering>true</filtering>
 									<includes>
-										<include>**/version.properties</include>
+										<include>**</include>
 									</includes>
 								</resource>
 								<resource>
 									<directory>src/main/resources</directory>
 									<filtering>false</filtering>
-									<excludes>
-										<exclude>**/version.properties</exclude>
-									</excludes>
 								</resource>
 							</resources>
 						</configuration>
@@ -268,107 +269,18 @@
 							<encoding>UTF-8</encoding>
 							<resources>
 								<resource>
-									<directory>src/test/resources</directory>
+									<directory>src/test/filtered_resources</directory>
 									<filtering>true</filtering>
 									<includes>
-										<include>**/success_1_level_file.json</include>
-										<include>mvn_gen_test.properties</include>
+										<include>**</include>
 									</includes>
 								</resource>
 								<resource>
 									<directory>src/test/resources</directory>
 									<filtering>false</filtering>
-									<excludes>
-										<!--
-											It's really important that test-protos.jar is not in target/test-classes.
-											WE DON'T WANT IT ON THE CLASSPATH!
-										-->
-										<!--<exclude>**/test-protos.jar</exclude>-->
-										<exclude>**/success_1_level_file.json</exclude>
-										<exclude>mvn_gen_test.properties</exclude>
-									</excludes>
 								</resource>
 							</resources>
 						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<!--<plugin>-->
-				<!--<groupId>com.google.protobuf.tools</groupId>-->
-				<!--<artifactId>maven-protoc-plugin</artifactId>-->
-				<!--<version>0.1.10</version>-->
-				<!--<executions>-->
-					<!--<execution>-->
-						<!--<id>test-protos</id>-->
-						<!--<goals>-->
-							<!--<goal>testCompile</goal>-->
-						<!--</goals>-->
-						<!--<phase>generate-sources</phase>-->
-					<!--</execution>-->
-				<!--</executions>-->
-			<!--</plugin>-->
-
-			<!--
-			maven-antrun-plugin added to get test protos into target/generated-test-sources and then compiled
-			classes into target/test-classes directories.
-
-			TODO: Fix this using maven-protoc-plugin and appropriately phased maven-compiler-plugin. (RMD 2015-04-23)
-
-			Both the antrun plugin and the build-helper-maven-plugin need to run using the generate-sources rather than
-			the generate-test-sources because the tests won't compile otherwise. Removed the proto directory in
-			generated-test-sources for IntelliJ interoperability.
-			http://stackoverflow.com/questions/5170620/unable-to-use-intellij-with-a-generated-sources-folder
-    		-->
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>compile-test-protoc</id>
-						<phase>generate-sources</phase>
-						<configuration>
-							<tasks>
-								<!--
-								This probably should go here but it's used to create the aloha generated class file
-								cache directory.
-								TODO: Put this somewhere else.
-								-->
-								<mkdir dir="${generated.classes.test}" />
-
-								<mkdir dir="${project.build.directory}/generated-test-sources" />
-								<path id="proto.path">
-									<fileset dir="src/test/proto">
-										<include name="**/*.proto" />
-									</fileset>
-								</path>
-								<pathconvert pathsep=" " property="proto.files" refid="proto.path" />
-								<!-- This required protoc to be installed INSTRUCTIONS: wget http://protobuf.googlecode.com/files/protobuf-2.4.1.tar.gz
-									tar -xzf protobuf-2.4.1.tar.gz cd protobuf-2.4.1 sudo ./configure sudo make
-									sudo make install If on a mac, sudo port install protobuf-java
-								-->
-
-								<echo message="Creating protobuf instance source" />
-								<exec executable="${protoc}" failonerror="true">
-									<arg value="--java_out=${project.build.directory}/generated-test-sources" />
-									<arg value="-I${project.basedir}/src/test/proto" />
-									<arg line="${proto.files}" />
-								</exec>
-
-								<!--
-								=======================================================================================
-								 This is a hack to get the protos compiled into the test-classes directory.
-								 TODO: Fix this by using an appropriate maven-compiler-plugin execution. (RMD 2015-04-23)
-								=======================================================================================
-								-->
-								<echo message="Compiling protobuf source to .class files." />
-								<exec executable="javac" failonerror="true">
-									<arg line="-d ${project.build.testOutputDirectory} -classpath ${settings.localRepository}/com/google/protobuf/protobuf-java/${protobuf.version}/protobuf-java-${protobuf.version}.jar ${project.build.directory}/generated-test-sources/com/eharmony/aloha/test/proto/TestProtoBuffs.java ${project.build.directory}/generated-test-sources/com/eharmony/aloha/test/proto/Testing.java" />
-								</exec>
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
 					</execution>
 				</executions>
 			</plugin>
@@ -411,6 +323,7 @@
 								<include>**/ModelSerializabilityTestBase*</include>
 								<include>**/ModelSerializationTestHelper*</include>
 								<include>**/testhelp/**</include>
+								<include>**/util/io/**</include>
                                 <include>**/README.md</include>
                             </includes>
                         </configuration>

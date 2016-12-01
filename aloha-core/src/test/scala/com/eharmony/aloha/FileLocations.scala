@@ -8,7 +8,7 @@ import java.io.{IOException, File, StringReader}
   *
   */
 object FileLocations {
-    private[this] val fileName = "mvn_gen_test.properties"
+    private[this] val fileName = "filtered_test.properties"
     private[this] val testGeneratedClassesVar = "testGeneratedClasses"
     private[this] val buildDirectoryVar = "targetDirectory"
     private[this] val testClassesDirectoryVar = "testClassesDirectory"

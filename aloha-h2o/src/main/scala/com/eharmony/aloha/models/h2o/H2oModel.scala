@@ -263,10 +263,10 @@ object H2oModel extends ParserProviderCompanion
     }
 
   // This guarantees that the h2oGenModelName property used below is guaranteed to be in sync with the maven artifact
-  // dependency defined in the POM. This is because the h2o_mvn.properties is a filtered resource, meaning maven injects
+  // dependency defined in the POM. This is because the h2o.properties is a filtered resource, meaning maven injects
   // values from the build into the properties file at build time.
   private[h2o] lazy val h2oProps = {
-    val stream = getClass.getClassLoader.getResourceAsStream("h2o_mvn.properties")
+    val stream = getClass.getClassLoader.getResourceAsStream("h2o.properties")
     try {
       val p = new Properties
       p.load(stream)
