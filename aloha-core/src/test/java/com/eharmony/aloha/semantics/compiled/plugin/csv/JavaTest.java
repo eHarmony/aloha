@@ -3,6 +3,7 @@ package com.eharmony.aloha.semantics.compiled.plugin.csv;
 import com.eharmony.aloha.models.Model;
 import com.eharmony.aloha.score.Scores;
 import com.eharmony.aloha.score.conversions.RelaxedConversions;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
@@ -16,6 +17,6 @@ public class JavaTest {
         final Scores.Score score = model.score(line);
 
         final double d = RelaxedConversions.asJavaDouble(score);
-        System.out.println("my value: " + d);
+        assertEquals(0.04125072271616186, d, 1e-6);
     }
 }

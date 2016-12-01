@@ -1,5 +1,7 @@
 package com.eharmony.aloha.models
 
+import com.eharmony.aloha.util.Logging
+
 import scala.language.existentials
 
 import java.{lang => jl}
@@ -26,7 +28,7 @@ import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
  * @author R M Deak
  */
 @RunWith(classOf[BlockJUnit4ClassRunner])
-class TypeCoercionTest {
+class TypeCoercionTest extends Logging {
     val (matrix, types) = matrixAndTypes()
 
     @Test def test_Bo_Bo_0(): Unit = assertEquals(true, TypeCoercion[Boolean, Boolean].get.apply(true))
@@ -563,7 +565,7 @@ class TypeCoercionTest {
             ok = shouldExist == doesExist  // p -> q == ~p v q
         } yield (shouldExist, ok, s"${RefInfoOps.toString(f)} => ${RefInfoOps.toString(t)}")
 
-        println(s"Found ${funcs.count(_._1)} coercion functions.")
+        debug(s"Found ${funcs.count(_._1)} coercion functions.")
         val missing = funcs.collect { case (sE, ok, f) if !ok => f }
         assertTrue(s"Found ${missing.size} functions missing: ${missing.mkString("\n\t", "\n\t", "")}", missing.isEmpty)
     }
@@ -585,7 +587,7 @@ class TypeCoercionTest {
             ok = shouldExist == doesExist  // p -> q == ~p v q
         } yield (shouldExist, ok, s"${RefInfoOps.toString(f)} => ${RefInfoOps.toString(t)}")
 
-        println(s"Found ${funcs.count(_._1)} toOption coercion functions.")
+        debug(s"Found ${funcs.count(_._1)} toOption coercion functions.")
         val missing = funcs.collect { case (sE, ok, f) if !ok => f }
         assertTrue(s"Found ${missing.size} toOption functions missing: ${missing.mkString("\n\t", "\n\t", "")}", missing.isEmpty)
     }
@@ -607,7 +609,7 @@ class TypeCoercionTest {
             ok = shouldExist == doesExist  // p -> q == ~p v q
         } yield (shouldExist, ok, s"${RefInfoOps.toString(f)} => ${RefInfoOps.toString(t)}")
 
-        println(s"Found ${funcs.count(_._1)} Option to Option coercion functions.")
+        debug(s"Found ${funcs.count(_._1)} Option to Option coercion functions.")
         val missing = funcs.collect { case (sE, ok, f) if !ok => f }
         assertTrue(s"Found ${missing.size} Option to Option functions missing: ${missing.mkString("\n\t", "\n\t", "")}", missing.isEmpty)
     }

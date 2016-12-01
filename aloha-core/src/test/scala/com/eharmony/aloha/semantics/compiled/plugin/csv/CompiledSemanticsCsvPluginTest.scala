@@ -1,5 +1,7 @@
 package com.eharmony.aloha.semantics.compiled.plugin.csv
 
+import com.eharmony.aloha.util.Logging
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import org.junit.runner.RunWith
@@ -102,10 +104,10 @@ class CompiledSemanticsCsvPluginTest {
     }
 }
 
-private object CompiledSemanticsCsvPluginTest {
+private object CompiledSemanticsCsvPluginTest extends Logging {
     val csvPlugin = {
         val m = CsvLineTest.types.toMap
-        val c = m.map{case(k, v) => println(s"$k\t$v"); (k, CsvTypes.withNameExtended(v))}
+        val c = m.map{case(k, v) => debug(s"$k\t$v"); (k, CsvTypes.withNameExtended(v))}
         new CompiledSemanticsCsvPlugin(c)
     }
     val compiler = TwitterEvalCompiler(classCacheDir = Option(FileLocations.testGeneratedClasses))

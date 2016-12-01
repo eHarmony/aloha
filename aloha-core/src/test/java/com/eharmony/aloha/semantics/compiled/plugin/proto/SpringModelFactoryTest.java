@@ -13,6 +13,8 @@ import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.VFS;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -27,6 +29,7 @@ import com.eharmony.aloha.test.proto.TestProtoBuffs.TestProto;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:spring/model.cfg.xml" })
 public class SpringModelFactoryTest {
+	private static final Logger LOG = LoggerFactory.getLogger(SpringModelFactoryTest.class);
 
 	static final double TOLERANCE = 1.0e-7;
 
@@ -74,7 +77,7 @@ public class SpringModelFactoryTest {
 	@Test
 	public void testUsingModelPulledFromSpringCtx() {
 		final TestProto p = PROTOS.get(1);
-		System.out.println("testing proto: " + p);
+		LOG.debug("testing proto: " + p);
 		final Score s = models.get(0).score(p);
 		final Double d = StrictConversions.asJavaDouble(s);
 		assertEquals(EXPECTED_1, d, TOLERANCE);
