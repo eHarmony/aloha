@@ -206,10 +206,22 @@ lazy val cli = project.in(file("aloha-cli"))
 sonatypeProfileName := "com.eharmony"
 
 pomExtra in Global := (
+  <distributionManagement>
+    <repository>
+      <id>zefr</id>
+      <name>Zefr</name>
+      <url>http://nexus.zefr.com/repository/maven-releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>zefr-snapshots</id>
+      <name>Zefr Snapshots</name>
+      <url>http://nexus.zefr.com/repository/maven-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
     <scm>
-      <url>git@github.com:eharmony/aloha.git</url>
-      <developerConnection>scm:git:git@github.com:eharmony/aloha.git</developerConnection>
-      <connection>scm:git:git@github.com:eharmony/aloha.git</connection>
+      <url>git@github.com:ZEFR-INC/aloha.git</url>
+      <developerConnection>scm:git:git@github.com:ZEFR-INC/aloha.git</developerConnection>
+      <connection>scm:git:git@github.com:ZEFR-INC/aloha.git</connection>
     </scm>
     <developers>
       <developer>
