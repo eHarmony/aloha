@@ -5,7 +5,7 @@ import sbt._
 object Dependencies {
 
   val springVersion = "3.1.4.RELEASE"
-  val protobufVersion = "2.4.1"
+  val protobufVersion = "3.0.0"
   val alohaProtoVersion = "2.0.1"
 
   val scalazVersion = "7.0.6"

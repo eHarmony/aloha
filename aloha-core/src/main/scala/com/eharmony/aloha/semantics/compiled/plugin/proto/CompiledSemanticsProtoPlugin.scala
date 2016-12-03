@@ -5,7 +5,7 @@ import com.eharmony.aloha.semantics.compiled.plugin.MorphableCompiledSemanticsPl
 import scalaz.ValidationNel
 import scalaz.syntax.validation.ToValidationV // scalaz.syntax.validation.ToValidationOps for latest scalaz
 
-import com.google.protobuf.GeneratedMessage
+import com.google.protobuf.AbstractMessage
 import com.google.protobuf.Descriptors.{ FieldDescriptor, Descriptor }
 
 import com.eharmony.aloha.semantics.compiled.{ OptionalAccessorCode, RequiredAccessorCode, VariableAccessorCode, CompiledSemanticsPlugin }
@@ -56,7 +56,7 @@ import com.eharmony.aloha.util.EitherHelpers
  * @param refInfoA
  * @tparam A a type of generated protocol buffer message.
  */
-case class CompiledSemanticsProtoPlugin[A <: GeneratedMessage](dereferenceAsOptional: Boolean = true)(implicit val refInfoA: RefInfo[A])
+case class CompiledSemanticsProtoPlugin[A <: AbstractMessage](dereferenceAsOptional: Boolean = true)(implicit val refInfoA: RefInfo[A])
   extends CompiledSemanticsPlugin[A]
      with MorphableCompiledSemanticsPlugin
      with EitherHelpers {
@@ -361,11 +361,11 @@ case class CompiledSemanticsProtoPlugin[A <: GeneratedMessage](dereferenceAsOpti
 
   override def morph[B](implicit ri: RefInfo[B]): Option[CompiledSemanticsPlugin[B]] = {
     Option(this) collect {
-      case CompiledSemanticsProtoPlugin(deref) if RefInfoOps.isSubType(ri, RefInfo[GeneratedMessage]) =>
+      case CompiledSemanticsProtoPlugin(deref) if RefInfoOps.isSubType(ri, RefInfo[AbstractMessage]) =>
         // TODO: Attempt to remove these horrible casts.
         // It's known by the IF condition above that this is true.
         // Can implicit evidence somehow be provided instead?
-        val castedRefInfo = ri.asInstanceOf[RefInfo[GeneratedMessage]]
+        val castedRefInfo = ri.asInstanceOf[RefInfo[AbstractMessage]]
         // TODO: Remove commented code after getting SBT build working.
 //        CompiledSemanticsProtoPlugin(deref)(castedRefInfo).asInstanceOf[CompiledSemanticsProtoPlugin[B]]
         CompiledSemanticsProtoPlugin(deref)(castedRefInfo).asInstanceOf[CompiledSemanticsPlugin[B]]
@@ -374,13 +374,13 @@ case class CompiledSemanticsProtoPlugin[A <: GeneratedMessage](dereferenceAsOpti
 }
 
 object CompiledSemanticsProtoPlugin {
-  def apply[A <: GeneratedMessage: RefInfo]: CompiledSemanticsProtoPlugin[A] = new CompiledSemanticsProtoPlugin
+  def apply[A <: AbstractMessage: RefInfo]: CompiledSemanticsProtoPlugin[A] = new CompiledSemanticsProtoPlugin
   object Implicits {
-    implicit def protoSemantics[A <: GeneratedMessage: RefInfo]: CompiledSemanticsProtoPlugin[A] = apply[A]
+    implicit def protoSemantics[A <: AbstractMessage: RefInfo]: CompiledSemanticsProtoPlugin[A] = apply[A]
   }
 }
 
-//case class ProtoSemantics[A <: GeneratedMessage](dereferenceAsOptional: Boolean = true)(implicit m: Manifest[A]) extends Semantics[A] {
+//case class ProtoSemantics[A <: AbstractMessage](dereferenceAsOptional: Boolean = true)(implicit m: Manifest[A]) extends Semantics[A] {
 //    /** This type represents the separation of field accessors into 3 values:
 //      1 the sequence of accessors before a repeated field accessor
 //      1 the repeated (list) field accessor
@@ -684,7 +684,7 @@ object CompiledSemanticsProtoPlugin {
 //      * @tparam A
 //      * @return
 //      */
-//    def apply[A <: GeneratedMessage : Manifest]: ProtoSemantics[A] = new ProtoSemantics
+//    def apply[A <: AbstractMessage : Manifest]: ProtoSemantics[A] = new ProtoSemantics
 //
 //    object Implicits {
 //
@@ -693,6 +693,6 @@ object CompiledSemanticsProtoPlugin {
 //          * @tparam A
 //          * @return
 //          */
-//        implicit def protoSemantics[A <: GeneratedMessage : Manifest]: ProtoSemantics[A] = apply[A]
+//        implicit def protoSemantics[A <: AbstractMessage : Manifest]: ProtoSemantics[A] = apply[A]
 //    }
 //}
