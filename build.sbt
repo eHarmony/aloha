@@ -34,6 +34,11 @@ lazy val commonSettings = Seq(
     "-Ycheck:jvm"
   ),
 
+  // Set the dependency conflict resolution behavior.  For more info, see:
+  //   http://www.scala-sbt.org/0.13/api/index.html#sbt.ConflictManager$
+  //   https://ant.apache.org/ivy/history/latest-milestone/settings/conflict-managers.html
+  conflictManager := ConflictManager.strict,
+
   // See: http://www.scala-sbt.org/release/docs/Running-Project-Code.html
   // fork := true is needed; otherwise we see error:
   //
@@ -159,6 +164,7 @@ lazy val root = project.in(file("."))
   .dependsOn(core, vwJni, h2o, cli)
   .settings(commonSettings: _*)
   .settings(versionDependentSettings: _*)
+  .settings(dependencyOverrides ++= Dependencies.overrideDeps)
 
 lazy val core = project.in(file("aloha-core"))
   .settings(name := "aloha-core")
@@ -169,6 +175,7 @@ lazy val core = project.in(file("aloha-core"))
     "org.scala-lang" % "scala-reflect" % scalaVersion.value,
     "org.scala-lang" % "scala-compiler" % scalaVersion.value
   ) ++ Dependencies.coreDeps)
+  .settings(dependencyOverrides ++= Dependencies.overrideDeps)
 
 lazy val vwJni = project.in(file("aloha-vw-jni"))
   .settings(name := "aloha-vw-jni")
@@ -177,6 +184,7 @@ lazy val vwJni = project.in(file("aloha-vw-jni"))
   .settings(versionDependentSettings: _*)
   .settings(editSourceSettings: _*)
   .settings(libraryDependencies ++= Dependencies.vwJniDeps)
+  .settings(dependencyOverrides ++= Dependencies.overrideDeps)
 
 lazy val h2o = project.in(file("aloha-h2o"))
   .settings(name := "aloha-h2o")
@@ -185,6 +193,7 @@ lazy val h2o = project.in(file("aloha-h2o"))
   .settings(versionDependentSettings: _*)
   .settings(editSourceSettings: _*)
   .settings(libraryDependencies ++= Dependencies.h2oDeps)
+  .settings(dependencyOverrides ++= Dependencies.overrideDeps)
 
 lazy val cli = project.in(file("aloha-cli"))
   .settings(name := "aloha-cli")
@@ -193,6 +202,7 @@ lazy val cli = project.in(file("aloha-cli"))
   .settings(versionDependentSettings: _*)
   .settings(editSourceSettings: _*)
   .settings(libraryDependencies ++= Dependencies.cliDeps)
+  .settings(dependencyOverrides ++= Dependencies.overrideDeps)
 
 
 // ===========================================================================
