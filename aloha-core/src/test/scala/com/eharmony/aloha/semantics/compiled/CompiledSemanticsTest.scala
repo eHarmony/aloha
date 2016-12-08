@@ -1,16 +1,17 @@
 package com.eharmony.aloha.semantics.compiled
 
-import concurrent.ExecutionContext.Implicits.global
-
 import java.{lang => jl}
 
-import org.junit.Test
-import org.junit.Assert._
-import org.junit.runner.RunWith
-import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import com.eharmony.aloha.FileLocations
 import com.eharmony.aloha.reflect.RefInfo
+import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
+import org.junit.Assert._
+import org.junit.Test
+import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.language.implicitConversions
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class CompiledSemanticsTest {
@@ -21,9 +22,8 @@ class CompiledSemanticsTest {
         val f = s.createFunction[Int]("List(${five:-5L}).sum.toInt").right.get
         val x1 = Map("five" -> 1L)
         val x2 = Map.empty[String, Long]
-        val y1 = f(x1)
-        val y2 = f(x2)
-        val a = 1
+        assertEquals(1, f(x1))
+        assertEquals(5, f(x2))
     }
 
     @Test def test1() {
@@ -56,7 +56,7 @@ class CompiledSemanticsTest {
         val s = CompiledSemantics(compiler, MapStringLongPlugin, Seq("com.eharmony.aloha.semantics.compiled.StaticFuncs._"))
         val f = s.createFunction[Long]("f(${one})").left.map(_.foreach(println)).right.get
         val y1 = f(Map("one" -> 1))
-        val a = 1
+        assertEquals(18, y1)
     }
 
     /** '''NOTE''': While this is indeed possible, users are strongly advised not to do this!!!
@@ -106,21 +106,10 @@ class CompiledSemanticsTest {
             }
         }
     }
-
-    private[this] object MapStringJLongPlugin extends CompiledSemanticsPlugin[Map[String, jl.Long]] {
-        def refInfoA = RefInfo[Map[String, jl.Long]]
-        def accessorFunctionCode(spec: String) = {
-            val required = Seq("user.inboundComm", "one", "two", "three")
-            spec match {
-                case s if required contains s  => Right(RequiredAccessorCode(Seq("(_:Map[String, java.lang.Long]).apply(\"" + spec + "\")")))
-                case _                         => Right(OptionalAccessorCode(Seq("(_:Map[String, java.lang.Long]).get(\"" + spec + "\")")))
-            }
-        }
-    }
 }
 
 object StaticFuncs {
     def f(a: jl.Long): Long = if (null == a) 13 else 18
 
-    implicit def doubletoJlDouble(d: Double) = java.lang.Double.valueOf(d)
+    implicit def doubletoJlDouble(d: Double): java.lang.Double = java.lang.Double.valueOf(d)
 }

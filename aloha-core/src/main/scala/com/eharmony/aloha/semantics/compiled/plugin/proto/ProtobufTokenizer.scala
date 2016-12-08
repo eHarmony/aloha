@@ -9,7 +9,7 @@ import scalaz.syntax.validation.ToValidationV // scalaz.syntax.validation.ToVali
  * This tokenizer extracts sequences of Field and Index tokens which are then used in conjunction with the reflection
  * APIs in the Protocol Buffers library to synthesize code for high-performance, type-safe accessor functions.
  */
-private[this] object ProtobufTokenizer {
+private[proto] object ProtobufTokenizer {
   private val tokenizer = Tokenizer("[", "]")
 
   val leftBracket = tokenizer.leftBracket

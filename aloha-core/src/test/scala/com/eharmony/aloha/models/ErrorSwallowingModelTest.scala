@@ -4,7 +4,6 @@ import com.eharmony.aloha.ModelSerializationTestHelper
 import com.eharmony.aloha.ex.SchrodingerException
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
-import com.eharmony.aloha.models.conversion.DoubleToJavaLongModel
 import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.DoubleScoreConverter
 import com.eharmony.aloha.semantics.{FunctionWithErrorProducingSemantics, SemanticsUdfException}
 import org.junit.Assert._

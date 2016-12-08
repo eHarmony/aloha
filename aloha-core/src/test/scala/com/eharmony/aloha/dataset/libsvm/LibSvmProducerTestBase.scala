@@ -62,7 +62,7 @@ trait LibSvmProducerTestBase {
         val line: CsvLine = CsvLines(Map.empty)("")
 
         // Compute the actual value.
-        val (missing, actual) = libSvmSpec(line)
+        val (_, actual) = libSvmSpec(line)
 
         assertEquals(expected, actual.toString)
     }

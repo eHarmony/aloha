@@ -1,8 +1,9 @@
 package com.eharmony.aloha
 
-import concurrent.{ExecutionContext, Promise, promise, Future, future}
-import collection.concurrent.TrieMap
-import com.eharmony.aloha.reflect.{RefInfoOps, RefInfo}
+import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
+
+import scala.collection.concurrent.TrieMap
+import scala.concurrent.{ExecutionContext, Future, Promise}
 
 /** A cache that is a hybrid of the Memoizer in Listing 5.19 in Java Concurrency in Practice and
   * https://www.bionicspirit.com/blog/2012/07/02/love-scala.html.  Makes sure to put a Promise
@@ -56,9 +57,9 @@ class NoEvictionCache(implicit ec: ExecutionContext) {
       * @return the promise in the cache associated with k
       */
     @inline private[this] def createAndCache[A](k: (String, String), a: => A): Promise[_] = {
-        val p = promise[A]
+        val p = Promise[A]
         val op = cache.putIfAbsent(k, p)                // Only insert p if another promise didn't race in.
-        val p1 = op.getOrElse(p completeWith future(a)) // Only execute a if another promise didn't race in.
+        val p1 = op.getOrElse(p completeWith Future(a)) // Only execute a if another promise didn't race in.
         logging(k, op.isEmpty)                          // Can be overridden for testing if necessary.
         p1
     }

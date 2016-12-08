@@ -67,7 +67,9 @@ object SegmentationModel extends ParserProviderCompanion {
             }
         }
 
-        protected[this] implicit def astJsonFormat[B: JsonFormat: ScoreConverter] = jsonFormat(Ast.apply[B], "subModel", "subModelOutputType", "thresholds", "labels")
+        // TODO: Remove commented code after getting SBT build working.
+//        protected[this] implicit def astJsonFormat[B: JsonFormat: ScoreConverter] = jsonFormat(Ast.apply[B], "subModel", "subModelOutputType", "thresholds", "labels")
+        protected[this] def astJsonFormat[B: JsonFormat: ScoreConverter] = jsonFormat(Ast.apply[B], "subModel", "subModelOutputType", "thresholds", "labels")
 
         /**
          * @param factory ModelFactory[Model[_, _] ]
@@ -81,7 +83,7 @@ object SegmentationModel extends ParserProviderCompanion {
 
                 // TODO: Make this way better and way more generalized so that it can be used in the ensemble code.
                 val mId = getModelId(json).get
-                val ast = json.convertTo[Ast[B]]
+                val ast = json.convertTo[Ast[B]](astJsonFormat(lift(jr), sc))
 
                 import ScoreConverter.Implicits._
 

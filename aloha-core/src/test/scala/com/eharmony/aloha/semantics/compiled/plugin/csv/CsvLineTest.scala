@@ -1,12 +1,11 @@
 package com.eharmony.aloha.semantics.compiled.plugin.csv
 
+import org.junit.Assert.{assertEquals, assertFalse, fail}
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 import org.junit.{Ignore, Test}
-import org.junit.Assert._
 
 import scalaz.syntax.std.list.ToListOpsFromList
-import scala.collection.immutable.IndexedSeq
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class CsvLineTest {
@@ -1076,7 +1075,6 @@ class CsvLineTest {
     }
 
     @Test def testRepeatedFloatAsDouble() {
-        val asdf: IndexedSeq[Float] = extract("repeated.float", "0.0", _.vf)
         assertEquals(Vector(0f), extract("repeated.float", "0.0", _.vf))
     }
 

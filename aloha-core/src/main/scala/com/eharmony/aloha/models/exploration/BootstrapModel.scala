@@ -120,7 +120,7 @@ object BootstrapModel extends ParserProviderCompanion {
       }
     }
 
-    protected[this] implicit def astJsonFormat[B: JsonFormat: ScoreConverter] = jsonFormat(Ast.apply[B], "policies", "salt", "classLabels")
+    protected[this] def astJsonFormat[B: JsonFormat: ScoreConverter]: RootJsonFormat[Ast[B]] = jsonFormat(Ast.apply[B], "policies", "salt", "classLabels")
 
     /**
       * @param factory ModelFactory[Model[_, _] ]
@@ -134,7 +134,7 @@ object BootstrapModel extends ParserProviderCompanion {
         import com.eharmony.aloha.factory.ScalaJsonFormats.lift
 
         val mId = getModelId(json).get
-        val ast = json.convertTo[Ast[B]]
+        val ast = json.convertTo[Ast[B]](astJsonFormat(lift(jr), sc))
 
         val model = ast.createModel[A, B](factory, semantics.get, mId)
 

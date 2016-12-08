@@ -1,7 +1,5 @@
 package com.eharmony.aloha.factory
 
-import java.{lang => jl}
-import spray.json._
 import spray.json.DefaultJsonProtocol.IntJsonFormat
 import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.IntScoreConverter
 import com.eharmony.aloha.models.{ConstantModel, ErrorModel}

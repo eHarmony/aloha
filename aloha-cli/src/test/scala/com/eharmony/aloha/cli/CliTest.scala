@@ -1,33 +1,30 @@
 package com.eharmony.aloha.cli
 
 import com.eharmony.aloha
-import com.eharmony.matching.testhelp.io.{IoCaptureCompanion, TestWithIoCapture}
+import com.eharmony.aloha.util.io.TestWithIoCapture
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 
-object CliTest extends IoCaptureCompanion
-
 /**
  * Created by rdeak on 6/16/15.
  */
 @RunWith(classOf[BlockJUnit4ClassRunner])
-class CliTest extends TestWithIoCapture(CliTest) {
-    import CliTest._
+class CliTest extends TestWithIoCapture {
 
     @Test def testNoArgs(): Unit = {
-        Cli.main(Array.empty)
-        assertEquals("No arguments supplied. Supply one of: '--dataset', '--h2o', '--modelrunner', '--vw'.", errContent.trim)
+        val res = run(Cli.main)(Array.empty)
+        assertEquals("No arguments supplied. Supply one of: '--dataset', '--h2o', '--modelrunner', '--vw'.", res.err.contents.trim)
     }
 
     @Test def testBadFlag(): Unit = {
-        Cli.main(Array("-BADFLAG"))
-        assertEquals("'-BADFLAG' supplied. Supply one of: '--dataset', '--h2o', '--modelrunner', '--vw'.", errContent.trim)
+        val res = run(Cli.main)(Array("-BADFLAG"))
+        assertEquals("'-BADFLAG' supplied. Supply one of: '--dataset', '--h2o', '--modelrunner', '--vw'.", res.err.contents.trim)
     }
 
     @Test def testVw(): Unit = {
-        Cli.main(Array("--vw"))
+        val res = run(Cli.main)(Array("--vw"))
         val expected =
             """
               |Error: Missing option --spec
@@ -61,7 +58,6 @@ class CliTest extends TestWithIoCapture(CliTest) {
               |        max value for spline domain. (must additional provide spline-min, spline-delta, and spline-knots).
             """.stripMargin
 
-        assertEquals(expected.trim, errContent.trim)
+        assertEquals(expected.trim, res.err.contents.trim)
     }
 }
-

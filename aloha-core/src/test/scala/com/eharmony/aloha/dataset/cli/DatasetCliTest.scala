@@ -6,8 +6,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 
-import scala.language.implicitConversions
-
 /**
  * Not testing STDIN here.  It hangs in IDE due to lack of test isolation.
  */

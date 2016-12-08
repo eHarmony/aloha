@@ -1,7 +1,6 @@
 package com.eharmony.aloha.models.tree.decision
 
 import scala.collection.immutable
-import scala.language.higherKinds
 import spray.json.{JsValue, JsonReader}
 
 import com.eharmony.aloha.models.{BaseModel, Model}

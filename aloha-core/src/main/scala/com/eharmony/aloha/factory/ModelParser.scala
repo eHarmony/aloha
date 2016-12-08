@@ -1,7 +1,5 @@
 package com.eharmony.aloha.factory
 
-import scala.language.higherKinds
-
 
 import spray.json._
 import spray.json.DefaultJsonProtocol.{LongJsonFormat, StringJsonFormat}

@@ -129,8 +129,8 @@ class CompiledSemanticsProtoPluginTest {
         val f = semantics.createFunction[Iterable[(String, Double)]](s).right.toOption.get
 
         val p = protos.last.toBuilder.setReqStr1("handsome smart stubborn").build()
-        val a = f(p)
-        val v = 1
+        val a = f(p).toSet
+        assertEquals(Set(("handsome", 1.0), ("smart", 1.0), ("stubborn", 1.0)), a)
     }
 
     @Test def test_BagOfWords2() {
@@ -155,8 +155,8 @@ class CompiledSemanticsProtoPluginTest {
             """.stripMargin).get
 
         val p = bagOfWordsProto
-        val v = m(p)
-        val a = 1
+        val v = m(p).toSeq
+        assertEquals(Seq(7), v)
     }
 
 

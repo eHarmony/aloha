@@ -1,6 +1,6 @@
 package com.eharmony.aloha.dataset
 
-import java.io.{File, InputStream, Reader}
+import java.io._
 import java.net.URL
 import java.{util => ju}
 
@@ -95,7 +95,17 @@ extends AlohaReadable[Try[B]]
     private[this] def fail(failures: List[Failure[B]]): Failure[B] = {
       val s = if (failures.size == 1) "" else "s" // Pluralization
       info {
-        val stackMsgs = producers.zip(failures).zipWithIndex.map{ case ((p, e), i) => s"${i+1})\t${p.name}: ${e.failed.get.getMessage}\n\t\t${e.failed.get.getStackTraceString.replaceAll("\n", "\n\t\t")}"}
+        val stackMsgs = producers.zip(failures).zipWithIndex.map{ case ((p, e), i) =>
+          val throwable = e.failed.get
+
+          val stackTrace = Try {
+            val baos = new ByteArrayOutputStream
+            throwable.printStackTrace(new PrintStream(baos))
+            new String(baos.toByteArray)
+          }.getOrElse("").replaceAll("\n", "\n\t\t")
+
+          s"${i+1})\t${p.name}: ${throwable.getMessage}\n\t\t$stackTrace"
+        }
         stackMsgs.mkString(s"${failures.size} failure$s occurred while attempting to produce spec:\n\t", "\n\t", "")
       }
 

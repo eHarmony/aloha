@@ -5,7 +5,6 @@ import java.io.FileInputStream
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.io.vfs.{File, Vfs1, Vfs2}
 import com.eharmony.aloha.models.reg.ConstantDeltaSpline
-import com.eharmony.matching.testhelp.io.IoCaptureCompanion
 import org.apache.commons.{vfs => vfs1, vfs2}
 import org.junit.Assert._
 import org.junit.{BeforeClass, Test}
@@ -20,7 +19,7 @@ import spray.json.{JsObject, pimpString}
  *
  * Created by jmorra on 7/10/15.
  */
-object VwJniModelJsonTest extends IoCaptureCompanion {
+object VwJniModelJsonTest  {
   @BeforeClass def createModel(): Unit = VwJniModelTest.createModel()
   lazy val base64EncodedModelString = VwJniModel.readBinaryVwModelToB64String(new FileInputStream(VwJniModelTest.VwModelFile))
   val vfs = vfs2.VFS.getManager

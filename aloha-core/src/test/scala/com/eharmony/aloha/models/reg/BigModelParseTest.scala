@@ -7,10 +7,10 @@ import org.junit.runners.BlockJUnit4ClassRunner
 import org.junit.runner.RunWith
 import org.junit.Test
 import org.junit.Assert._
-import com.eharmony.aloha.util.Timing
+import com.eharmony.aloha.util.{Logging, Timing}
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
-class BigModelParseTest extends RegressionModelJson with Timing {
+class BigModelParseTest extends RegressionModelJson with Timing with Logging {
 
     /** The purpose of this test is that we can parse a fairly large model JSON to an abstract syntax tree of data used
       * to construct the regression model.  This JSON has
@@ -33,7 +33,7 @@ class BigModelParseTest extends RegressionModelJson with Timing {
         assertEquals("Higher order weights", 30598, data.higherOrderFeatures.map(_.size).getOrElse(0))
         assertEquals("spline size", 341, data.spline.map(_.knots.size).getOrElse(0))
 
-        println("file lines: 184846, features: 94, first order weights: 874, higher order weights: 30598, spline size: 341")
+        debug("file lines: 184846, features: 94, first order weights: 874, higher order weights: 30598, spline size: 341")
     }
 
     private[this] def getBigZippedData(resourcePath: String) = {

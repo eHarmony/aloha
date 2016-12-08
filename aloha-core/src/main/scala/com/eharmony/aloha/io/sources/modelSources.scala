@@ -40,12 +40,14 @@ object ModelSource {
         case _        => None
       }
 
-      val params = jso.getFields("params") match {
-        case Seq(p) => Option(p.convertTo[Either[Seq[String], String]])
-        case Nil    => None
-      }
 
-      val paramStr = params.map(_.fold(_.mkString(" "), identity)) getOrElse ""
+      // TODO: Maybe use this in the future.  Removing now to remove compiler warning.
+//      val params = jso.getFields("params") match {
+//        case Seq(p) => Option(p.convertTo[Either[Seq[String], String]])
+//        case Nil    => None
+//      }
+//
+//      val paramStr = params.map(_.fold(_.mkString(" "), identity)) getOrElse ""
 
       // Default to VFS 2 for external source.
       val modelSource = (modelVal, modelUrlVal, vfsType) match {

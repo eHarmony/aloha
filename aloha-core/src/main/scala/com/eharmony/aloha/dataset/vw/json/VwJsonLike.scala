@@ -4,9 +4,6 @@ import com.eharmony.aloha.dataset.density.Sparse
 import com.eharmony.aloha.dataset.json.validation.{FeatureValidation, NsValidation, Validation}
 import com.eharmony.aloha.dataset.json.{CovariateJson, Namespace}
 
-import scala.collection.{immutable => sci}
-
-
 trait VwJsonLike
 extends CovariateJson[Sparse]
    with Validation

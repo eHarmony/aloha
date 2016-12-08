@@ -28,6 +28,9 @@ object SimpleTypeSeq {
       case jsa@JsArray(values) =>
         Try { jsa.convertTo[Vector[BigDecimal]] } flatMap {
           case a if a.forall(x => x.isValidLong && !x.toString().contains(".")) => Try { LongSeq(a.map(_.toLong)) }
+
+          // TODO: Need to extract to version specific src dirs to avoid deprecation errors.
+          // TODO: isValidDouble in 2.10 and isExactDouble in 2.11.
           case a if a.forall(_.isValidDouble)                                   => Try { DoubleSeq(a.map(_.toDouble)) }
           case a                                                                => Failure(new DeserializationException(""))
         } recoverWith {

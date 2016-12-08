@@ -26,7 +26,10 @@ public class JavaReadableTypeList {
     @Test
     public void prependTest() throws MalformedURLException {
         final ICList<ReadableSource> readableSourceList = createPrependedList();
-        assertEquals("List(FileReadableType(" + FILE_LOC + "), UrlReadableType(" + URL_LOC + "))", readableSourceList.toList().toString());
+        final List<ReadableSource> lst = readableSourceList.toList();
+        assertEquals("Size not as expected:", 2, lst.size());
+        assertEquals("List head not as expected:", fileReadable(), lst.head());
+        assertEquals("List last element not as expected:", urlReadable(), lst.apply(1));
     }
 
     @Test
@@ -38,7 +41,10 @@ public class JavaReadableTypeList {
                 .append(new File(FILE_LOC), ReadableSourceConverters.fileReadableConverter())
                 .toList();
 
-        assertEquals("List(UrlReadableType(" + URL_LOC + "), FileReadableType(" + FILE_LOC + "))", readables.toString());
+        final List<ReadableSource> lst = readables.toList();
+        assertEquals("Size not as expected:", 2, lst.size());
+        assertEquals("List head not as expected:", urlReadable(), lst.head());
+        assertEquals("List last element not as expected:", fileReadable(), lst.apply(1));
     }
 
     /**
@@ -51,4 +57,17 @@ public class JavaReadableTypeList {
                 .prepend(new URL(URL_LOC), ReadableSourceConverters.urlReadableConverter())
                 .prepend(new File(FILE_LOC), ReadableSourceConverters.fileReadableConverter());
     }
+
+    private static ReadableSource fileReadable() {
+        return ReadableSourceConverters.fileReadableConverter().apply(new File(FILE_LOC));
+    }
+
+    private static ReadableSource urlReadable() {
+        try {
+            return ReadableSourceConverters.urlReadableConverter().apply(new URL(URL_LOC));
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
+

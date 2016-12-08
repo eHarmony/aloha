@@ -1,7 +1,6 @@
 package com.eharmony.aloha.models.tree
 
 import scala.language.higherKinds
-import scala.collection.immutable
 
 object Tree {
 
@@ -90,7 +89,7 @@ object Tree {
         val n = nodes.size
         val order = topologicalSort(rootId, childMap, n)
         val built = collection.mutable.ArrayBuffer.fill(n)(null.asInstanceOf[TreeImpl])
-        order.map(i => {
+        order.foreach(i => {
             val c = childMap.getOrElse(i, Nil)
             built(i) = builder(nodes(i), c.map(nodes(_)), c.map(built(_)))
         })
@@ -126,7 +125,7 @@ object Tree {
             parents: Seq[Int],
             builder: (A, Seq[A], Seq[TreeImpl]) => TreeImpl): TreeImpl = findRoot(parents) match {
         case None => throw new IllegalArgumentException
-        case Some(rootId) => apply[A, C, TreeImpl](nodes, adjacenyListStructure(rootId, parents).toMap, rootId, builder)
+        case Some(rootId) => apply[A, C, TreeImpl](nodes, adjacenyListStructure(rootId, parents), rootId, builder)
     }
 
     /**
@@ -136,9 +135,9 @@ object Tree {
       * @param getId a function taking a node that returns an ID
       * @param childrenIds a function taking a node and a that returns ID for it children
       * @param builder a builder function
-      * @tparam A
-      * @tparam C
-      * @tparam TreeImpl
+      * @tparam A type of nodes
+      * @tparam C type of collection for children
+      * @tparam TreeImpl the implementation of the tree
       * @return
       */
     def apply[A, C[_] <: Iterable[_], TreeImpl <: Tree[_, C, _]](
@@ -171,7 +170,7 @@ trait Tree[+A, +C[_] <: Iterable[_], +This <: Tree[_, C, _]] {
         val s = new collection.mutable.Stack[(This, Int)]
         s.push((this,0).asInstanceOf[(This, Int)])
         new Iterator[(This, Int)] {
-            def hasNext = !s.isEmpty
+            def hasNext = s.nonEmpty
             def next() = {
                 val n = s.pop()
                 s.pushAll(n._1.descendants.iterator.asInstanceOf[Iterator[This]].zip(Iterator.continually(n._2 + 1)))

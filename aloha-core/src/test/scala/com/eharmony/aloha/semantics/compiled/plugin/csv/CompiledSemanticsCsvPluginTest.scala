@@ -1,5 +1,7 @@
 package com.eharmony.aloha.semantics.compiled.plugin.csv
 
+import com.eharmony.aloha.util.Logging
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import org.junit.runner.RunWith
@@ -92,20 +94,20 @@ class CompiledSemanticsCsvPluginTest {
             // The actual value.  On throwing exception, output failure instead.
             act = try { Right(f(x)) } catch { case e: Exception => Left(()) }
         } {
-            if (Seq(lvp, oivp).flatten.toString == "List((required.long,1), (optional.int,1))") {
-                val y = CsvLineTest.getCsvLine(CsvLineTest.csvLines, Seq(lvp, oivp).flatten:_*)
-
-            }
+            // TODO: Figure out if this should be removed or an additional assert should be added.
+//            if (Seq(lvp, oivp).flatten.toString == "List((required.long,1), (optional.int,1))") {
+//                val y = CsvLineTest.getCsvLine(CsvLineTest.csvLines, Seq(lvp, oivp).flatten:_*)
+//            }
 
             assertEquals(exp, act)
         }
     }
 }
 
-private object CompiledSemanticsCsvPluginTest {
+private object CompiledSemanticsCsvPluginTest extends Logging {
     val csvPlugin = {
         val m = CsvLineTest.types.toMap
-        val c = m.map{case(k, v) => println(s"$k\t$v"); (k, CsvTypes.withNameExtended(v))}
+        val c = m.map{case(k, v) => debug(s"$k\t$v"); (k, CsvTypes.withNameExtended(v))}
         new CompiledSemanticsCsvPlugin(c)
     }
     val compiler = TwitterEvalCompiler(classCacheDir = Option(FileLocations.testGeneratedClasses))

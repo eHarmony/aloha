@@ -10,12 +10,12 @@ import org.junit.runner.RunWith
 import org.junit.{Ignore, Test}
 import org.junit.Assert._
 
-import com.eharmony.aloha.util.Timing
+import com.eharmony.aloha.util.{Logging, Timing}
 
 /**
   */
 @RunWith(classOf[BlockJUnit4ClassRunner])
-class CsvLinesTest extends Timing {
+class CsvLinesTest extends Timing with Logging {
 
     /** Test that parallel is faster most of the time.  Only run this when there are at least 3 "processors"
       * (concurrent threads).  This is ignored because it results in intermittent failing builds.  This is probably
@@ -24,11 +24,11 @@ class CsvLinesTest extends Timing {
     @Ignore @Test def testParallelVsSequential() {
 
         if (Runtime.getRuntime.availableProcessors() <= 2) {
-            println(s"available processors = ${Runtime.getRuntime.availableProcessors}.  Cancelling test.")
+            debug(s"available processors = ${Runtime.getRuntime.availableProcessors}.  Cancelling test.")
             return
         }
 
-        println(s"available processors = ${Runtime.getRuntime.availableProcessors}.")
+        debug(s"available processors = ${Runtime.getRuntime.availableProcessors}.")
 
         // Parameters (~2M = 20 * 1000 * 100 values)
         val trials = 20
@@ -64,8 +64,8 @@ class CsvLinesTest extends Timing {
             parTime < seqTime
         }}.count(identity)
 
-        println(s"parallel faster $successes / $trials")
-        println(times.view.map(_.mkString(", ")).reverse.mkString("par (s), seq (s):\n", "\n", ""))
+        debug(s"parallel faster $successes / $trials")
+        debug(times.view.map(_.mkString(", ")).reverse.mkString("par (s), seq (s):\n", "\n", ""))
         assertTrue(RequiredSuccessRate * trials <= successes)
     }
 

@@ -25,10 +25,9 @@ class CsvColumnTest {
             EnumCsvColumn("enum", "${string}", "com.eharmony.matching.notaloha.AnEnum")
         )
 
-        val act = examples.foreach { ex => CsvColumn.csvColumnSpecFormat.read(ex.parseJson) }
+        val act = examples.map { ex => CsvColumn.csvColumnSpecFormat.read(ex.parseJson) }
 
-        // TODO: actually test.
-        // assertEquals(expected, act)
+        assertEquals(expected, act)
     }
 
 //    final case class SyntheticEnumCsvColumn(name: String, spec: String, values: Seq[String], defVal: Option[String] = None)

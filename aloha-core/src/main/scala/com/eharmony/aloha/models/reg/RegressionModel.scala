@@ -14,7 +14,6 @@ import com.eharmony.aloha.semantics.func.GenAggFunc
 import com.eharmony.aloha.util.{EitherHelpers, Logging}
 
 import scala.collection.{immutable => sci}
-import scala.language.{higherKinds, implicitConversions}
 
 /**
  * A regression model capable of doing not only linear regression but polynomial regression in general.

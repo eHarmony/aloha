@@ -3,7 +3,6 @@ package com.eharmony.aloha.semantics.compiled.compiler
 import java.io.File
 import com.eharmony.aloha.io.ContainerReadableByString
 import scala.util.Try
-import scala.util.hashing.MurmurHash3
 import com.eharmony.aloha.util.Logging
 
 /**
@@ -65,11 +64,11 @@ case class TwitterEvalCompiler(threadingModel: EvalThreadingModel = SingleThread
   private[this] def validateDirectory() {
     classCacheDir.foreach(f =>
       (for {
-        e <- f.exists or s"Directory ${f} does not exist."
-        d <- f.isDirectory or s"${f} is not a directory."
-        r <- f.canRead or s"Directory ${f} is not readable."
-        w <- f.canWrite or s"Directory ${f} is not writable."
-        e <- f.canExecute or s"Directory ${f} is not executable."
+        e <- f.exists or s"Directory $f does not exist."
+        d <- f.isDirectory or s"$f is not a directory."
+        r <- f.canRead or s"Directory $f is not readable."
+        w <- f.canWrite or s"Directory $f is not writable."
+        e <- f.canExecute or s"Directory $f is not executable."
       } yield e).left.foreach(throw _))
   }
 
@@ -83,7 +82,7 @@ case class TwitterEvalCompiler(threadingModel: EvalThreadingModel = SingleThread
     /**
      * This is a slightly modified version of the uniqueId in the com.twitter.util.Eval class. I would consider
      * that function to contain a bug as of 6.3.4 because the pattern matched statement doesn't seem right.
-     * @param code
+     * @param code code from which an ID is generated.
      * @param idOpt optional class suffix.  Long, instead of Int in Twitter's version, to allow unixtime-based dates.
      * @return `hex(SHA1(code)) + idOpt.map("_" + _).getOrElse("")`
      */
@@ -121,25 +120,5 @@ case class TwitterEvalCompiler(threadingModel: EvalThreadingModel = SingleThread
   private[this] class ThreadLocalEvaluator extends EvaluatorContainer {
     private[this] val tlE = new ThreadLocal[Eval] { override final protected def initialValue = new Eval(classCacheDir) }
     def get() = tlE.get
-  }
-
-  /**
-   * Placeholder for actor-based Evaluator.  This is beneficial because it would allow the instantiator of the
-   * TwitterEvalWrapper instance to have control over exact number of compiler instances.
-   * @param numActors
-   */
-  private[this] class ActorEvaluator(numActors: Int) extends Evaluator {
-    throw new UnsupportedOperationException("ActorEvaluator not yet implemented.  Specify")
-
-    // Internal pool of actors.
-
-    /**
-     * Call to internal pool of actors that block on each call and return a result.
-     * Maybe use a typed actor here...
-     * @param code
-     * @tparam A
-     * @return
-     */
-    def apply[A](code: String) = throw new UnsupportedOperationException("not yet implemented")
   }
 }

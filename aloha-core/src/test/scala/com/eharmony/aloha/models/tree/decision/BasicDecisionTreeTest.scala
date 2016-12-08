@@ -2,12 +2,11 @@ package com.eharmony.aloha.models.tree.decision
 
 import com.eharmony.aloha.ModelSerializationTestHelper
 import com.eharmony.aloha.id.ModelId
-import com.eharmony.aloha.models.{TopLevelModel, ErrorModel}
+import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.IntScoreConverter
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
-import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.IntScoreConverter
 
 /**
   * Created by ryan on 12/7/15.

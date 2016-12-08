@@ -62,13 +62,13 @@ class VwContextualBanditRowCreatorTest {
 
         val creator = new VwContextualBanditRowCreator.Producer[CsvLine].getRowCreator(semantics, json).get
 
-      val (m1, y1) = creator(csvLines("Career"))
+      val (_, y1) = creator(csvLines("Career"))
       assertEquals("1:3:0.5 | b c", y1.toString)
 
-      val (m2, y2) = creator(csvLines("Family"))
+      val (_, y2) = creator(csvLines("Family"))
       assertEquals("2:3:0.5 | b c", y2.toString)
 
-      val (m3, y3) = creator(csvLines(""))
+      val (_, y3) = creator(csvLines(""))
       assertEquals("| b c", y3.toString)
     }
 
@@ -96,10 +96,10 @@ class VwContextualBanditRowCreatorTest {
 
     val creator = new VwContextualBanditRowCreator.Producer[CsvLine].getRowCreator(semantics, json).get
 
-    val (m1, y1) = creator(csvLines("Career"))
+    val (_, y1) = creator(csvLines("Career"))
     assertEquals("1:3:0.5 | b c", y1.toString)
 
-    val (m2, y2) = creator(csvLines("Family"))
+    val (_, y2) = creator(csvLines("Family"))
     assertEquals("2:3:0.5 | b c", y2.toString)
   }
 }

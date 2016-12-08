@@ -22,10 +22,8 @@ class ErrorModelParserTest {
             """.stripMargin.parseJson
 
         val p = ModelFactory(ErrorModel.parser)
-        val m = p.getModel[String, Int](js).get
-        val a = 1
-
-
+        val m = p.getModel[String, Int](js)
+        m.get
     }
 
     @Test def test0Errors() {
@@ -39,8 +37,8 @@ class ErrorModelParserTest {
             """.stripMargin.parseJson
 
         val p = ModelFactory(ErrorModel.parser)
-        val m = p.getModel[String, Int](js).get
-        val a = 1
+        val m = p.getModel[String, Int](js)
+        m.get
     }
 
     @Test def test1Error() {
@@ -56,10 +54,8 @@ class ErrorModelParserTest {
             """.stripMargin.parseJson
 
         val p = ModelFactory(ErrorModel.parser)
-        val m = p.getModel[String, Int](js).get
-        val a = 1
-
-
+        val m = p.getModel[String, Int](js)
+        m.get
     }
 
     @Test def test2Errors() {
@@ -76,9 +72,7 @@ class ErrorModelParserTest {
             """.stripMargin.parseJson
 
         val p = ModelFactory(ErrorModel.parser)
-        val m = p.getModel[String, Int](js).get
-        val a = 1
-
-
+        val m = p.getModel[String, Int](js)
+        m.get
     }
 }

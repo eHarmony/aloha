@@ -50,7 +50,7 @@ class SkipGramsTest {
     }
   }
 
-  @Test def outputSkipGrams(): Unit = {
+  @Ignore @Test def outputSkipGrams(): Unit = {
     val maxK = allTests.map(_.split("""\s+""").length).max - 2
     val data = for {
                  k <- 0 to maxK

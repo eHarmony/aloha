@@ -4,7 +4,7 @@ import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.aloha.score.Scores.Score.BaseScore.ScoreType
 import com.eharmony.aloha.score.Scores.Score.ScoreError
 import com.eharmony.aloha.score.conversions.{BasicTypeScoreConversions, RelaxedConversions, StrictConversions}
-import com.eharmony.aloha.score.order.Orderings._  // TODO: Remove this after renaming package to com.eharmony.aloha
+import com.eharmony.aloha.score.order.Orderings._
 
 import scala.language.higherKinds
 

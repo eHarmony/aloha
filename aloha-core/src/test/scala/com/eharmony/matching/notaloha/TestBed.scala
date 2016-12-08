@@ -1,12 +1,12 @@
 package com.eharmony.matching.notaloha
 
-import scala.language.{ higherKinds, implicitConversions }
-
-import org.junit.runner.RunWith
-import org.junit.internal.runners.JUnit4ClassRunner
+import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
+import com.eharmony.aloha.util.Logging
 import org.junit.Test
-import Model.WrappedModel
-import com.eharmony.aloha.reflect.{ RefInfoOps, RefInfo }
+import org.junit.runner.RunWith
+import org.junit.runners.BlockJUnit4ClassRunner
+
+import scala.language.{higherKinds, implicitConversions}
 
 // Case classes don't need a new to be instantiated which is their main advantage here
 case class ModelId(id: Long, name: String)
@@ -105,18 +105,18 @@ case object WrappedModelCreator extends ModelCreator[Model.WrappedModel] {
   }
 }
 
-@RunWith(classOf[JUnit4ClassRunner])
-class TestX {
+@RunWith(classOf[BlockJUnit4ClassRunner])
+class TestX extends Logging {
   @Test def test1() {
     val c = X(CompositeModelCreator)
-    val w: X[WrappedModel] = X(WrappedModelCreator)
+    X(WrappedModelCreator)
 
     // Notice no errors
     val cid = c.create[Int, Double]
-    println(cid.submodels)
-    println(cid.subModelIntIds)
-    println(cid.values)
-    println(cid.modelId)
-    1 to 10 map (i => println(cid(i)))
+    debug(cid.submodels)
+    debug(cid.subModelIntIds)
+    debug(cid.values)
+    debug(cid.modelId)
+    debug((1 to 10).map(i => cid(i)).mkString("\n"))
   }
 }
