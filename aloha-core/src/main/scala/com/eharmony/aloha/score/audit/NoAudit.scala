@@ -3,7 +3,8 @@ package com.eharmony.aloha.score.audit
 import com.eharmony.aloha.reflect.RefInfo
 
 /**
-  * A [[MorphableAuditor]] that
+  * A [[MorphableAuditor]] that throws away all audit history but the most recent success
+  * value or error set of errors.
   *
   * Created by ryan on 12/9/16.
   */
