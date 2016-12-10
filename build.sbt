@@ -51,7 +51,15 @@ lazy val commonSettings = Seq(
 
   // Because 2.10 runtime reflection is not thread-safe, tests fail non-deterministically.
   // This is a hack to make tests pass by not allowing the tests to run in parallel.
-  parallelExecution in Test := false
+  parallelExecution in Test := false,
+
+  publishTo := {
+    if (isSnapshot.value)
+      Some("snapshots" at "http://nexus.zefr.com/repository/maven-snapshots")
+    else
+      Some("releases"  at "http://nexus.zefr.com/repository/maven-releases")
+  },
+  credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
 )
 
 lazy val versionDependentSettings = Seq(
