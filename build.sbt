@@ -34,6 +34,11 @@ lazy val commonSettings = Seq(
     "-Ycheck:jvm"
   ),
 
+  // Set the dependency conflict resolution behavior.  For more info, see:
+  //   http://www.scala-sbt.org/0.13/api/index.html#sbt.ConflictManager$
+  //   https://ant.apache.org/ivy/history/latest-milestone/settings/conflict-managers.html
+  conflictManager := ConflictManager.strict,
+
   // See: http://www.scala-sbt.org/release/docs/Running-Project-Code.html
   // fork := true is needed; otherwise we see error:
   //
@@ -51,15 +56,7 @@ lazy val commonSettings = Seq(
 
   // Because 2.10 runtime reflection is not thread-safe, tests fail non-deterministically.
   // This is a hack to make tests pass by not allowing the tests to run in parallel.
-  parallelExecution in Test := false,
-
-  publishTo := {
-    if (isSnapshot.value)
-      Some("snapshots" at "http://nexus.zefr.com/repository/maven-snapshots")
-    else
-      Some("releases"  at "http://nexus.zefr.com/repository/maven-releases")
-  },
-  credentials += Credentials(Path.userHome / ".ivy2" / ".credentials")
+  parallelExecution in Test := false
 )
 
 lazy val versionDependentSettings = Seq(
@@ -99,7 +96,7 @@ def editSourceSettings = Seq[Setting[_]](
   flatten in EditSource := false,
   (sources in EditSource) ++= baseDirectory.map { d =>
     (d / "src" / "main" / "filtered_resources" / "" ** "*.*").get ++
-    (d / "src" / "test" / "filtered_resources" / "" ** "*.*").get
+      (d / "src" / "test" / "filtered_resources" / "" ** "*.*").get
   }.value,
   variables in EditSource += crossTarget {t => ("projectBuildDirectory", t.getCanonicalPath)}.value,
   variables in EditSource += (sourceDirectory in Test) {s => ("scalaTestSource", s.getCanonicalPath)}.value,
@@ -125,10 +122,10 @@ def editSourceSettings = Seq[Setting[_]](
 )
 
 /**
- * This task moves the filtered files to the proper target directory. It is
- * based on specific EditSource settings, especially that filtered_resources
- * is the only directory in which EditSource searches.
- */
+  * This task moves the filtered files to the proper target directory. It is
+  * based on specific EditSource settings, especially that filtered_resources
+  * is the only directory in which EditSource searches.
+  */
 lazy val filteredTask = Def.task {
   val s = streams.value
   val files = (edit in EditSource).value
@@ -167,6 +164,7 @@ lazy val root = project.in(file("."))
   .dependsOn(core, vwJni, h2o, cli)
   .settings(commonSettings: _*)
   .settings(versionDependentSettings: _*)
+  .settings(dependencyOverrides ++= Dependencies.overrideDeps)
 
 lazy val core = project.in(file("aloha-core"))
   .settings(name := "aloha-core")
@@ -177,6 +175,7 @@ lazy val core = project.in(file("aloha-core"))
     "org.scala-lang" % "scala-reflect" % scalaVersion.value,
     "org.scala-lang" % "scala-compiler" % scalaVersion.value
   ) ++ Dependencies.coreDeps)
+  .settings(dependencyOverrides ++= Dependencies.overrideDeps)
 
 lazy val vwJni = project.in(file("aloha-vw-jni"))
   .settings(name := "aloha-vw-jni")
@@ -185,6 +184,7 @@ lazy val vwJni = project.in(file("aloha-vw-jni"))
   .settings(versionDependentSettings: _*)
   .settings(editSourceSettings: _*)
   .settings(libraryDependencies ++= Dependencies.vwJniDeps)
+  .settings(dependencyOverrides ++= Dependencies.overrideDeps)
 
 lazy val h2o = project.in(file("aloha-h2o"))
   .settings(name := "aloha-h2o")
@@ -193,6 +193,7 @@ lazy val h2o = project.in(file("aloha-h2o"))
   .settings(versionDependentSettings: _*)
   .settings(editSourceSettings: _*)
   .settings(libraryDependencies ++= Dependencies.h2oDeps)
+  .settings(dependencyOverrides ++= Dependencies.overrideDeps)
 
 lazy val cli = project.in(file("aloha-cli"))
   .settings(name := "aloha-cli")
@@ -201,6 +202,7 @@ lazy val cli = project.in(file("aloha-cli"))
   .settings(versionDependentSettings: _*)
   .settings(editSourceSettings: _*)
   .settings(libraryDependencies ++= Dependencies.cliDeps)
+  .settings(dependencyOverrides ++= Dependencies.overrideDeps)
 
 
 // ===========================================================================
@@ -214,31 +216,19 @@ lazy val cli = project.in(file("aloha-cli"))
 sonatypeProfileName := "com.eharmony"
 
 pomExtra in Global := (
-  <distributionManagement>
-    <repository>
-      <id>zefr</id>
-      <name>Zefr</name>
-      <url>http://nexus.zefr.com/repository/maven-releases/</url>
-    </repository>
-    <snapshotRepository>
-      <id>zefr-snapshots</id>
-      <name>Zefr Snapshots</name>
-      <url>http://nexus.zefr.com/repository/maven-snapshots/</url>
-    </snapshotRepository>
-  </distributionManagement>
-    <scm>
-      <url>git@github.com:ZEFR-INC/aloha.git</url>
-      <developerConnection>scm:git:git@github.com:ZEFR-INC/aloha.git</developerConnection>
-      <connection>scm:git:git@github.com:ZEFR-INC/aloha.git</connection>
-    </scm>
+  <scm>
+    <url>git@github.com:eharmony/aloha.git</url>
+    <developerConnection>scm:git:git@github.com:eharmony/aloha.git</developerConnection>
+    <connection>scm:git:git@github.com:eharmony/aloha.git</connection>
+  </scm>
     <developers>
       <developer>
         <id>deaktator</id>
         <name>R M Deak</name>
         <url>https://deaktator.github.io</url>
         <roles>
-            <role>creator</role>
-            <role>developer</role>
+          <role>creator</role>
+          <role>developer</role>
         </roles>
         <timezone>-7</timezone>
       </developer>
@@ -264,3 +254,12 @@ releaseProcess := Seq[ReleaseStep](
   ReleaseStep(action = Command.process("sonatypeReleaseAll", _), enableCrossBuild = true),
   pushChanges
 )
+
+publishTo := {
+  val nexus = "http://nexus.zefr.com/repository/maven"
+  if (isSnapshot.value)
+    Some("snapshots" at s"$nexus-snapshots")
+  else
+    Some("releases"  at s"$nexus-releases")
+}
+credentials += Credentials(file(".ivy2/.credentials"))
