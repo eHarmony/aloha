@@ -305,7 +305,7 @@ object H2oModel extends ParserProviderCompanion
   }
 
   @throws(classOf[IllegalArgumentException])
-  private[eharmony] def json(spec: Vfs,
+  def json(spec: Vfs,
     model: Vfs,
     id: ModelId,
     responseColumn: Option[String] = None,
@@ -318,7 +318,7 @@ object H2oModel extends ParserProviderCompanion
   }
 
   @throws(classOf[IllegalArgumentException])
-  private[eharmony] def json(spec: String,
+  def json(spec: String,
     model: String,
     id: ModelId,
     responseColumn: Option[String],
@@ -339,7 +339,7 @@ object H2oModel extends ParserProviderCompanion
     * @return
     */
   @throws(classOf[IllegalArgumentException])
-  private[eharmony] def json(
+  def json(
     spec: String,
     features: Option[ListMap[String, H2oSpec]],
     modelSource: ModelSource,

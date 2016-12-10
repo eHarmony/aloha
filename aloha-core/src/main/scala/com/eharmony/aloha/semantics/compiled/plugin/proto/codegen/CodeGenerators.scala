@@ -2,6 +2,7 @@ package com.eharmony.aloha.semantics.compiled.plugin.proto.codegen
 
 import com.eharmony.aloha.semantics.compiled.plugin.proto.accessor._
 import MapType._
+import com.google.protobuf.Descriptors.FieldDescriptor
 
 
 private[proto] object CodeGenerators {
@@ -108,7 +109,12 @@ private[proto] object CodeGenerators {
     implicit object OptionalCodeGen extends ContainerCodeGen[Opt] with UnitCodeGen[Opt] {
         def unit(req: Seq[Req], i: Int, fa: Opt): String = {
             val prefix = reqPrefix(i, req) + "."
-            indent(i) + "(if (" + prefix + generateHas(fa) + ") Option(" + prefix + generateGet(fa) + ") else None)"
+            val fileProto = fa.field.getFile.toProto
+            val isProto2 = !fileProto.hasSyntax || (fileProto.hasSyntax && fileProto.getSyntax == "proto2")
+            if (fa.field.getType == FieldDescriptor.Type.MESSAGE || isProto2)
+                indent(i) + "(if (" + prefix + generateHas(fa) + ") Option(" + prefix + generateGet(fa) + ") else None)"
+            else
+                indent(i) + "Option(" + prefix + generateGet(fa) + ")"
         }
     }
 

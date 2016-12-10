@@ -4,7 +4,7 @@ object Dependencies {
 
   val scalaToolsVersion = "1.0.4"
   val springVersion = "3.1.4.RELEASE"
-  val protobufVersion = "2.4.1"
+  val protobufVersion = "3.0.0"
   val alohaProtoVersion = "2.0.1"
 
   val scalazVersion = "7.0.6"
@@ -31,7 +31,7 @@ object Dependencies {
   val commonsIo = "commons-io" % "commons-io" % commonsIoVersion
   val vfs1 = "commons-vfs" % "commons-vfs" % "1.0"
   val vfs2 = "org.apache.commons" % "commons-vfs2" % "2.0" excludeAll(ExclusionRule("org.apache.maven.scm", "maven-scm-api"),
-                                                                      ExclusionRule("org.apache.maven.scm", "maven-scm-provider-svnexe"))
+    ExclusionRule("org.apache.maven.scm", "maven-scm-provider-svnexe"))
   val sprayJson = "io.spray" %% "spray-json" % "1.3.1"
 
   val reflections = "org.reflections" % "reflections" % "0.9.9"
@@ -91,6 +91,6 @@ object Dependencies {
   )
 
   lazy val overrideDeps = Set(
-    guava, parserCombinators, scalaXml, commonsLogging, log4j
+    guava, parserCombinators, scalaXml, commonsLogging, log4j, protobuf
   )
 }

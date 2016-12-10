@@ -96,7 +96,7 @@ def editSourceSettings = Seq[Setting[_]](
   flatten in EditSource := false,
   (sources in EditSource) ++= baseDirectory.map { d =>
     (d / "src" / "main" / "filtered_resources" / "" ** "*.*").get ++
-    (d / "src" / "test" / "filtered_resources" / "" ** "*.*").get
+      (d / "src" / "test" / "filtered_resources" / "" ** "*.*").get
   }.value,
   variables in EditSource += crossTarget {t => ("projectBuildDirectory", t.getCanonicalPath)}.value,
   variables in EditSource += (sourceDirectory in Test) {s => ("scalaTestSource", s.getCanonicalPath)}.value,
@@ -122,10 +122,10 @@ def editSourceSettings = Seq[Setting[_]](
 )
 
 /**
- * This task moves the filtered files to the proper target directory. It is
- * based on specific EditSource settings, especially that filtered_resources
- * is the only directory in which EditSource searches.
- */
+  * This task moves the filtered files to the proper target directory. It is
+  * based on specific EditSource settings, especially that filtered_resources
+  * is the only directory in which EditSource searches.
+  */
 lazy val filteredTask = Def.task {
   val s = streams.value
   val files = (edit in EditSource).value
@@ -216,19 +216,19 @@ lazy val cli = project.in(file("aloha-cli"))
 sonatypeProfileName := "com.eharmony"
 
 pomExtra in Global := (
-    <scm>
-      <url>git@github.com:eharmony/aloha.git</url>
-      <developerConnection>scm:git:git@github.com:eharmony/aloha.git</developerConnection>
-      <connection>scm:git:git@github.com:eharmony/aloha.git</connection>
-    </scm>
+  <scm>
+    <url>git@github.com:eharmony/aloha.git</url>
+    <developerConnection>scm:git:git@github.com:eharmony/aloha.git</developerConnection>
+    <connection>scm:git:git@github.com:eharmony/aloha.git</connection>
+  </scm>
     <developers>
       <developer>
         <id>deaktator</id>
         <name>R M Deak</name>
         <url>https://deaktator.github.io</url>
         <roles>
-            <role>creator</role>
-            <role>developer</role>
+          <role>creator</role>
+          <role>developer</role>
         </roles>
         <timezone>-7</timezone>
       </developer>
@@ -254,3 +254,12 @@ releaseProcess := Seq[ReleaseStep](
   ReleaseStep(action = Command.process("sonatypeReleaseAll", _), enableCrossBuild = true),
   pushChanges
 )
+
+publishTo := {
+  val nexus = "http://nexus.zefr.com/repository/maven"
+  if (isSnapshot.value)
+    Some("snapshots" at s"$nexus-snapshots")
+  else
+    Some("releases"  at s"$nexus-releases")
+}
+credentials += Credentials(file(".ivy2/.credentials"))

@@ -284,7 +284,7 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
    * @param spline
    * @return
    */
-  private[eharmony] def json(spec: Vfs,
+  def json(spec: Vfs,
                              model: Vfs,
                              id: ModelId,
                              vwArgs: Option[String],
@@ -312,7 +312,7 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
    * @param spline
    * @return
    */
-  private[eharmony] def json(vw: VwJsonLike,
+  def json(vw: VwJsonLike,
                              model: Vfs,
                              id: ModelId,
                              vwArgs: Option[String],
