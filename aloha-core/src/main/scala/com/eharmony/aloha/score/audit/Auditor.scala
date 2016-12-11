@@ -1,5 +1,7 @@
 package com.eharmony.aloha.score.audit
 
+import com.eharmony.aloha.reflect.RefInfo
+
 import scala.language.higherKinds
 
 /**
@@ -10,7 +12,7 @@ import scala.language.higherKinds
   * @tparam A The output of something that should be audited.
   * @tparam B The output type of the auditor.  This is the type of values the Auditor produces.
   */
-trait Auditor[K, -A, +B] {
+trait Auditor[K, A, +B] {
 
   /**
     * `AuditOutput` is the type constructor which represents the mapping between the
@@ -21,6 +23,11 @@ trait Auditor[K, -A, +B] {
     * @tparam U the type of raw value being audited.
     */
   type AuditOutput[C]
+
+  /**
+    * @return reflection information about the type of values being audited.
+    */
+  def refInfo: RefInfo[A]
 
   private[aloha] def failure[C](key: K,
                                 errorMsgs: Seq[String],

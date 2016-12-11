@@ -63,7 +63,7 @@ import com.eharmony.aloha.reflect.RefInfo
   * @tparam Impl The concrete implementation.
   */
 // TODO: Specialization
-trait MorphableAuditor[K, -A, +B, Impl <: MorphableAuditor[K, A, B, Impl]]
+trait MorphableAuditor[K, A, +B, Impl <: MorphableAuditor[K, A, B, Impl]]
   extends Auditor[K, A, B] {
 
   /**

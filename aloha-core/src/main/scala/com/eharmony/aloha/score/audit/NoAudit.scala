@@ -8,7 +8,7 @@ import com.eharmony.aloha.reflect.RefInfo
   *
   * Created by ryan on 12/9/16.
   */
-final case class NoAudit[K, @specialized V]()
+final case class NoAudit[K, @specialized V](implicit val refInfo: RefInfo[V])
   extends MorphableAuditor[K, V, Option[V], NoAudit[K, V]] {
   override type AuditOutput[A] = Option[A]
   override def auditor[U: RefInfo]: Option[NoAudit[K, U]] = Option(NoAudit[K, U]())
