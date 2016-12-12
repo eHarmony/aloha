@@ -19,11 +19,11 @@ class AuditTest {
   }
 
   @Test def test2(): Unit = {
-    val na = NoAudit[ModelId, Double]
-    val f = ModelFactories.create(na)
     val x = 1d
+    val na = NoAudit[ModelId, Double]
+    val f = StdModelFactory(na)
     val model = f.createConstantModel(Semantics[Any](), ModelId(1, "test"), x).right.get
-    val y = model(x)
+    val y = model(())
     assertEquals(Option(x), y)
   }
 
