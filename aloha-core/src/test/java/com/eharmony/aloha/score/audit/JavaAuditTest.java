@@ -21,6 +21,18 @@ public class JavaAuditTest {
         assertEquals(Option.apply(constant), value);
     }
 
+    @Test
+    public void testTypeInference() throws JavaModelFactoryException {
+        final ModelId id = new ModelId(1, "test");
+        final Manifest<Double> m = manifest("java.lang.Double");
+        final Semantics<String> s = new Semantics<String>();
+        final OptionAuditor<ModelId, Double> a = new OptionAuditor<ModelId, Double>(m);
+        final Double v = 1.234d;
+
+        // The point here is that no types of any kind are explicitly provided here.
+        assertEquals(Option.apply(v), JavaModelFactories.create(a).createConstantModel(s, id, v).apply(null));
+    }
+
     /**
      * Steps to creating a model in Java:
      * <ol>
@@ -35,8 +47,8 @@ public class JavaAuditTest {
      */
     private static Model<Object, Option<Float>> getModel(final Float constant) throws JavaModelFactoryException {
         final Manifest<Float> refInfo = manifest("java.lang.Float");
-        final NoAudit<ModelId, Float> na = new NoAudit<ModelId, Float>(refInfo);
-        final JavaModelFactory<Float, Option<Float>, NoAudit<ModelId, Float>> factory = JavaModelFactories.create(na);
+        final OptionAuditor<ModelId, Float> na = new OptionAuditor<ModelId, Float>(refInfo);
+        final JavaModelFactory<Float, Option<Float>, OptionAuditor<ModelId, Float>> factory = JavaModelFactories.create(na);
         final Semantics<Object> semantics = new Semantics<Object>();
         final ModelId modelId = new ModelId(1, "test");
         return factory.createConstantModel(semantics, modelId, constant);
