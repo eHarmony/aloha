@@ -41,7 +41,7 @@ class AuditTest {
     val aO = OptionAuditor[ModelId, Float]
 
     val sub = ConstantModel(idI, cI, aO.auditor[Double].get)
-    val model: Model[Any, Option[Float]] = HierarchicalConstantModel(idO, cO, aO, sub)
+    val model = HierarchicalConstantModel(idO, cO, aO)(sub)
     val y = model(())
     assertEquals(Option(cO), y)
   }

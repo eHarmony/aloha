@@ -14,6 +14,39 @@ import static org.junit.Assert.assertEquals;
 @RunWith(BlockJUnit4ClassRunner.class)
 public class JavaAuditTest {
     @Test
+    public void testHierarchical() {
+        final Double cI = 1d;
+        final ModelId idI = new ModelId(1, "one");
+        final Float cO = 2f;
+        final ModelId idO = new ModelId(2, "two");
+
+        final Manifest<Float> mO = manifest("java.lang.Float");
+        final OptionAuditor<ModelId, Float> aO = new OptionAuditor<>(mO);
+        final Manifest<Double> mI = manifest("java.lang.Double");
+
+        final ConstantModel<Object, Double, Option<Double>> sub =
+                new ConstantModel<>(idI, cI, aO.auditor(mI).get());
+
+        // Need to cast b/c of the higher-kinded types in HierarchicalConstantModel.apply's
+        // 4th input parameter. Scala emits an Object when as the expected type because the
+        // JVM doesn't have a notion of higher-kinded types.  So it expects
+        // Submodel<Object, Double, Object>.  Therefore, we need to take sub, which has the
+        // proper typing, and dumb it down.  Unfortunately, we run into issues if we try to
+        // cast directly; therefore, we need to cast to a capture then to Object, hence the
+        // two casts.  Yay "Seemless Java Interop"!
+        // http://www.scala-lang.org/what-is-scala.html#seamless-java-interop
+        final Submodel<Object, Double, Object> casted =
+                (Submodel<Object, Double, Object>)
+                (Submodel<Object, Double, ?>) sub;
+
+        final HierarchicalConstantModel<Object, Double, Float, Option<Float>> model =
+                HierarchicalConstantModel$.MODULE$.apply(idO, cO, aO, casted);
+
+        final Option<Float> y = model.apply(cI);
+        assertEquals(Option.apply(cO), y);
+    }
+
+    @Test
     public void test1() throws JavaModelFactoryException {
         final Float constant = 1f;
         final Model<Object, Option<Float>> m = getModel(constant);

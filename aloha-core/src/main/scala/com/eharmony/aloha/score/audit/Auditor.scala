@@ -32,11 +32,11 @@ trait Auditor[K, A, +B] {
   private[aloha] def failure[C](key: K,
                                 errorMsgs: Seq[String],
                                 missingVarNames: Set[String] = Set.empty,
-                                childValues: Seq[AuditOutput[C]] = Nil): B
+                                childValues: Seq[this.type#AuditOutput[C]] = Nil): B
 
   private[aloha] def success[C](key: K,
                                 valueToAudit: A,
                                 missingVarNames: Set[String] = Set.empty,
-                                childValues: Seq[AuditOutput[C]] = Nil,
+                                childValues: Seq[this.type#AuditOutput[C]] = Nil,
                                 prob: Option[Double] = None): B
 }

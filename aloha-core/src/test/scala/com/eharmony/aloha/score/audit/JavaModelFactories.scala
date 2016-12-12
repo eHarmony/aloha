@@ -17,14 +17,14 @@ object JavaModelFactories {
     * </pre>
     * @param aud a [[MorphableAuditor]] that is used to audit model output values '''and''' to create
     *            other auditors for submodels.
-    * @tparam B The "''natural output type''" of the top-level model.  For instance, a regression model
+    * @tparam N The "''natural output type''" of the top-level model.  For instance, a regression model
     *           have a real-valued ''natural output type'', hence this would most likely be a `Float`
     *           or `Double`.
-    * @tparam Y The auditor output type.  This is the same as the model output type.
+    * @tparam B The auditor output type.  This is the same as the model output type.
     * @tparam MA The implementation of the [[MorphableAuditor]].
     * @return a [[ModelFactory]] used to create model instances.
     */
-  def create[B, Y, MA <: MorphableAuditor[ModelId, B, Y, MA]](aud: MorphableAuditor[ModelId, B, Y, MA]): JavaModelFactory[B, Y, MA] = {
+  def create[N, B, MA <: MorphableAuditor[ModelId, N, B, MA]](aud: MorphableAuditor[ModelId, N, B, MA]): JavaModelFactory[N, B, MA] = {
     JavaModelFactory(StdModelFactory(aud))
   }
 }
