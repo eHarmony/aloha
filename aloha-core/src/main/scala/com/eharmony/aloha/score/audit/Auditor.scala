@@ -22,7 +22,7 @@ trait Auditor[K, A, +B] {
     * }}}
     * @tparam U the type of raw value being audited.
     */
-  type AuditOutput[C]
+  type AuditOutput[_]
 
   /**
     * @return reflection information about the type of values being audited.
@@ -30,13 +30,13 @@ trait Auditor[K, A, +B] {
   def refInfo: RefInfo[A]
 
   private[aloha] def failure[C](key: K,
-                                errorMsgs: Seq[String],
-                                missingVarNames: Set[String] = Set.empty,
-                                childValues: Seq[this.type#AuditOutput[C]] = Nil): B
+                                errorMsgs: => Seq[String],
+                                missingVarNames: => Set[String] = Set.empty,
+                                childValues: Seq[AuditOutput[C]] = Nil): B
 
   private[aloha] def success[C](key: K,
                                 valueToAudit: A,
-                                missingVarNames: Set[String] = Set.empty,
-                                childValues: Seq[this.type#AuditOutput[C]] = Nil,
-                                prob: Option[Double] = None): B
+                                missingVarNames: => Set[String] = Set.empty,
+                                childValues: Seq[AuditOutput[C]] = Nil,
+                                prob: => Option[Double] = None): B
 }

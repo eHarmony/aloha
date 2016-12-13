@@ -1,6 +1,6 @@
 package com.eharmony.aloha.score.audit
 
-import com.eharmony.aloha.id.ModelId
+import com.eharmony.aloha.id.{ModelId, ModelIdentity}
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -11,18 +11,19 @@ import org.junit.runners.BlockJUnit4ClassRunner
   */
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class AuditTest {
-  @Test def test1(): Unit = {
-    val na: MorphableAuditor[Long, Int, Option[Int], OptionAuditor[Long, Int]] = OptionAuditor[Long, Int]
-    val impl = na.auditor[Float].get
-    val audit = impl.success(1L, 1.5f)
+  @Test def verifyRetrievalOfAuditorWithDifferentType(): Unit = {
+    val intOptAud: MorphableAuditor[Long, Int, Option[Int], OptionAuditor[Long, Int]] = OptionAuditor[Long, Int]
+    val floatOptAud = intOptAud.auditor[Float].get
+    val audit = floatOptAud.success(1L, 1.5f)
     assertEquals(Option(1.5f), audit.map(floatIdentity))
   }
 
-  @Test def test2(): Unit = {
+  @Test def verifyFactoryCreationAndBasicModelCreation(): Unit = {
     val x = 1d
-    val na = OptionAuditor[ModelId, Double]
-    val f = StdModelFactory(na)
-    val model = f.createConstantModel(Semantics[Any](), ModelId(1, "test"), x).right.get
+    val oa = OptionAuditor[ModelIdentity, Double]
+    val f = StdModelFactory()
+    val s = Semantics[Any]()
+    val model = f.createConstantModel(s, oa, ModelId(1, "test"), x).right.get
     val y = model(())
     assertEquals(Option(x), y)
   }
@@ -36,11 +37,11 @@ class AuditTest {
   @Test def test4(): Unit = {
     val cI = 1d
     val idI = ModelId(1, "one")
+    val aO = OptionAuditor[ModelIdentity, Float]
+    val sub = ConstantModel(idI, cI, aO.auditor[Double].get)
+
     val cO = 2f
     val idO = ModelId(2, "two")
-    val aO = OptionAuditor[ModelId, Float]
-
-    val sub = ConstantModel(idI, cI, aO.auditor[Double].get)
     val model = HierarchicalConstantModel(idO, cO, aO)(sub)
     val y = model(())
     assertEquals(Option(cO), y)

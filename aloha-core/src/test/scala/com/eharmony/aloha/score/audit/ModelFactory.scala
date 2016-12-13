@@ -1,10 +1,12 @@
 package com.eharmony.aloha.score.audit
 
-import com.eharmony.aloha.id.ModelId
+import com.eharmony.aloha.id.ModelIdentity
 
-trait ModelFactory[N, B, MA <: MorphableAuditor[ModelId, N, B, MA]] {
-
-  /** This is just a fake placeholder method for now */
-  def createConstantModel[A](sem: Semantics[A], mId: ModelId, b: N): Either[String, Model[A, B]]
+trait ModelFactory {
+  def createConstantModel[A, N, B, MA <: MorphableAuditor[ModelIdentity, N, B, MA]](
+    sem: Semantics[A],
+    auditor: MorphableAuditor[ModelIdentity, N, B, MA],
+    mId: ModelIdentity,
+    constant: N): Either[String, Model[A, B]]
 }
 

@@ -1,6 +1,6 @@
 package com.eharmony.aloha.score.audit
 
-import com.eharmony.aloha.id.ModelId
+import com.eharmony.aloha.id.ModelIdentity
 
 /**
   *
@@ -10,6 +10,6 @@ import com.eharmony.aloha.id.ModelId
   * @tparam N model's "''natural output type''".
   * @tparam B model's audited output type.
   */
-trait Submodel[-A, N, +B] extends Model[A, B] {
-  def auditor: Auditor[ModelId, N, B]
+trait AuditedModel[-A, N, +B] extends Model[A, B] {
+  def auditor: Auditor[ModelIdentity, N, B]
 }

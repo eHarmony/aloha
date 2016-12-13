@@ -1,7 +1,8 @@
 package com.eharmony.aloha.score.audit
 
-import com.eharmony.aloha.id.ModelId
 
+// TODO: Determine if this object still has merit.  We can just use the Java facade.
+// This would just control the creation of that class which might be nice.
 object JavaModelFactories {
 
   /**
@@ -24,7 +25,7 @@ object JavaModelFactories {
     * @tparam MA The implementation of the [[MorphableAuditor]].
     * @return a [[ModelFactory]] used to create model instances.
     */
-  def create[N, B, MA <: MorphableAuditor[ModelId, N, B, MA]](aud: MorphableAuditor[ModelId, N, B, MA]): JavaModelFactory[N, B, MA] = {
-    JavaModelFactory(StdModelFactory(aud))
-  }
+//  def create[N, B, MA <: MorphableAuditor[ModelId, N, B, MA]](aud: MorphableAuditor[ModelId, N, B, MA]): JavaModelFactory[N, B, MA] = {
+//    JavaModelFactory(StdModelFactory(aud))
+//  }
 }

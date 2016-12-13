@@ -1,17 +1,23 @@
 package com.eharmony.aloha.score.audit
 
-import com.eharmony.aloha.id.ModelId
+import com.eharmony.aloha.id.ModelIdentity
 import com.eharmony.aloha.score.audit.JavaModelFactory.JavaModelFactoryException
 
-case class JavaModelFactory[N, B, MA <: MorphableAuditor[ModelId, N, B, MA]](
-    modelFactory: ModelFactory[N, B, MA]) {
+/**
+  * A facade around [[ModelFactory]] that provides more natural model creation from Java.
+  * @param modelFactory
+  */
+case class JavaModelFactory(modelFactory: ModelFactory) {
 
   @throws(classOf[JavaModelFactoryException])
-  def createConstantModel[A](sem: Semantics[A], mId: ModelId, b: N): Model[A, B] = {
-    // There shouldn't be any recoverable Exceptions thrown in the Scala factory methods.
-    modelFactory.createConstantModel(sem, mId, b).fold(
+  def createConstantModel[A, N, B, MA <: MorphableAuditor[ModelIdentity, N, B, MA]](
+      sem: Semantics[A],
+      auditor: MorphableAuditor[ModelIdentity, N, B, MA],
+      mId: ModelIdentity,
+      constant: N): Model[A, B] = {
+    modelFactory.createConstantModel(sem, auditor, mId, constant).fold(
       msg => throw new JavaModelFactoryException(msg),
-      m => m
+      identity
     )
   }
 }
