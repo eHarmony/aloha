@@ -31,16 +31,16 @@ import com.eharmony.aloha.reflect.RefInfo
   * this can be seen here:
   *
   * {{{
-  * import com.eharmony.aloha.score.audit.NoAudit
+  * import com.eharmony.aloha.score.audit.OptionAuditor
   *
-  * val na = NoAudit[Long, Int]()
-  * val impl = na.auditor[Float].get
-  * val auditedValue = impl.success(1L, 1.5f).get
+  * val ioa = OptionAuditor[Long, Int]()
+  * val foa = ioa.auditor[Float].get
+  * val auditedValue = foa.success(1L, 1.5f).get
   * }}}
   *
   * This code will work regardless of whether we include the `Impl` type parameter in
   * [[MorphableAuditor]].  The difference is in the resulting type of `auditedValue`.  If
-  * `Impl` is omitted, we would get a type of `na.Audited[Float]`.  If subsequently,
+  * `Impl` is omitted, we would get a type of `ioa.Audited[Float]`.  If subsequently,
   * we tried to call the following code, we'd get a compiler error:
   *
   * {{{
@@ -49,16 +49,13 @@ import com.eharmony.aloha.reflect.RefInfo
   * }}}
   *
   * If however, we use type projections, we don't get this compiler because
-  * `auditedValue` is related to the type of `na` and not tied to the instance `na`
+  * `auditedValue` is related to the type of `ioa` and not tied to the instance `ioa`
   * itself.
   *
   * Created by deaktator on 12/9/16.
   *
   * @tparam K The key type
-  * @tparam A The raw values to audit.  This is the ''natural'' type of a model.
-  *             For instance, in a regression model, the `A` type would be
-  *             something `float` or `double` because regression models produce
-  *             real-valued output.
+  * @tparam A Type of value to audit.
   * @tparam B The final output type.  This is the same as the model output type.
   * @tparam Impl The concrete implementation.
   */
@@ -67,12 +64,12 @@ trait MorphableAuditor[K, A, +B, Impl <: MorphableAuditor[K, A, B, Impl]]
   extends Auditor[K, A, B] {
 
   /**
-    * Attempt to create a new typed auditor with a new `A` type equal to `C`.
-    * @tparam C The new `A` type in the Auditor
-    * @return an [[Auditor]] capable of auditing values of type `C`.  If the
+    * Attempt to create a new typed auditor with a new `A` type equal to `S`.
+    * @tparam S The new `A` type in the Auditor.  `S` stands for submodel.
+    * @return an [[Auditor]] capable of auditing values of type `S`.  If the
     *         auditor could be produced, it will be wrapped in a `Some`.  If no
     *         such auditor could be produced (i.e., the auditor doesn't support
-    *         values of type `C`), a `None` will be returned.
+    *         values of type `S`), a `None` will be returned.
     */
-  def auditor[C: RefInfo]: Option[Auditor[K, C, Impl#AuditOutput[C]]]
+  def auditor[S: RefInfo]: Option[Auditor[K, S, Impl#AuditOutput[S]]]
 }

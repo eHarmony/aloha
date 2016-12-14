@@ -17,7 +17,7 @@ abstract class HierarchicalConstantModel[-A, SN, N, +B](override val modelId: Mo
     * type shows that
     */
   def sub: Model[A, auditor.AuditOutput[SN]]
-  def apply(a: A): B = auditor.success(modelId, constant, childValues = Seq(sub(a)))
+  def apply(a: A): B = auditor.success(modelId, constant, subValues = Seq(sub(a)))
 }
 
 object HierarchicalConstantModel {

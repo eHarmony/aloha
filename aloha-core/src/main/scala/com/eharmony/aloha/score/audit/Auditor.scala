@@ -29,14 +29,14 @@ trait Auditor[K, A, +B] {
     */
   def refInfo: RefInfo[A]
 
-  private[aloha] def failure[C](key: K,
+  private[aloha] def failure[S](key: K,
                                 errorMsgs: => Seq[String],
                                 missingVarNames: => Set[String] = Set.empty,
-                                childValues: Seq[AuditOutput[C]] = Nil): B
+                                subValues: Seq[AuditOutput[S]] = Nil): B
 
-  private[aloha] def success[C](key: K,
+  private[aloha] def success[S](key: K,
                                 valueToAudit: A,
                                 missingVarNames: => Set[String] = Set.empty,
-                                childValues: Seq[AuditOutput[C]] = Nil,
+                                subValues: Seq[AuditOutput[S]] = Nil,
                                 prob: => Option[Double] = None): B
 }
