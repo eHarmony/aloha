@@ -1,3 +1,5 @@
 package com.eharmony.aloha.score.audit
 
-case class Semantics[A]()
+import com.eharmony.aloha.reflect.RefInfo
+
+case class Semantics[A](implicit val refInfo: RefInfo[A])

@@ -5,24 +5,14 @@ import com.eharmony.aloha.id.ModelIdentity;
 import com.eharmony.aloha.score.audit.EitherAuditor.Result;
 import com.eharmony.aloha.score.audit.EitherAuditor.Success;
 import com.eharmony.aloha.score.audit.JavaModelFactory.JavaModelFactoryException;
-import com.google.common.collect.Sets;
 import deaktator.reflect.runtime.manifest.ManifestParser;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
-import scala.Function0;
 import scala.Option;
-import scala.Predef$;
-import scala.collection.JavaConverters;
-import scala.collection.Set$;
-import scala.collection.immutable.Seq$;
-import scala.collection.immutable.Set;
 import scala.reflect.Manifest;
-import scala.util.Try;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 @RunWith(BlockJUnit4ClassRunner.class)
 public class JavaAuditTest {
@@ -71,9 +61,10 @@ public class JavaAuditTest {
     @Test
     public void testTypeInference() throws JavaModelFactoryException {
         final ModelId id = new ModelId(1, "test");
-        final Manifest<Double> m = manifest("java.lang.Double");
-        final OptionAuditor<ModelIdentity, Double> aud = new OptionAuditor<ModelIdentity, Double>(m);
-        final Semantics<String> sem = new Semantics<String>();
+        final Manifest<Double> mD = manifest("java.lang.Double");
+        final Manifest<String> mS = manifest("java.lang.String");
+        final OptionAuditor<ModelIdentity, Double> aud = new OptionAuditor<ModelIdentity, Double>(mD);
+        final Semantics<String> sem = new Semantics<String>(mS);
         final Double constant = 1.234d;
 
         final Option<Double> y =  // *IMPORTANT*: Notice no types are explicitly provided below:
@@ -88,8 +79,9 @@ public class JavaAuditTest {
     public void testEitherAuditor() throws JavaModelFactoryException {
         final ModelId id = new ModelId(1, "test");
         final Manifest<Double> m = manifest("java.lang.Double");
+        final Manifest<String> mS = manifest("java.lang.String");
         final EitherAuditor<ModelIdentity, Double> aud = new EitherAuditor<ModelIdentity, Double>(m);
-        final Semantics<String> sem = new Semantics<String>();
+        final Semantics<String> sem = new Semantics<String>(mS);
         final Double constant = 1.234d;
 
         final Result<ModelIdentity, Double> y =  // *IMPORTANT*: Notice no types are explicitly provided below:
@@ -124,9 +116,10 @@ public class JavaAuditTest {
      */
     private static Model<Object, Option<Float>> getModel(final Float constant) throws JavaModelFactoryException {
         final Manifest<Float> refInfo = manifest("java.lang.Float");
+        final Manifest<Object> refInfoObj = manifest("java.lang.Object");
         final OptionAuditor<ModelIdentity, Float> aud = new OptionAuditor<ModelIdentity, Float>(refInfo);
         final JavaModelFactory factory = new JavaModelFactory(new StdModelFactory());
-        final Semantics<Object> semantics = new Semantics<Object>();
+        final Semantics<Object> semantics = new Semantics<Object>(refInfoObj);
         final ModelId modelId = new ModelId(1, "test");
         return factory.createConstantModel(semantics, aud, modelId, constant);
     }
