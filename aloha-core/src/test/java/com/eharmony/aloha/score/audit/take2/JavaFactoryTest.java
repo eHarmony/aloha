@@ -1,15 +1,16 @@
 package com.eharmony.aloha.score.audit.take2;
 
 import com.eharmony.aloha.id.ModelId;
-import com.eharmony.aloha.score.audit.*;
+import com.eharmony.aloha.score.audit.Semantics;
 import deaktator.reflect.runtime.manifest.ManifestParser;
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import scala.Option;
 import scala.reflect.Manifest;
 import scala.util.Either;
+
+import static org.junit.Assert.*;
 
 /**
  * This test shows some of the successes and failures of this method for defining models.  Since
@@ -23,22 +24,37 @@ import scala.util.Either;
 public class JavaFactoryTest {
     @Test
     public void test1() {
-        final Manifest<Object> mO = manifest("java.lang.Object");
-        final Manifest<Integer> mI = manifest("java.lang.Integer");
-        final Manifest<Option<Integer>> mOI = manifest("scala.Option[java.lang.Integer]");
+        final Integer constant = 1;
+
+        // Create the auditor
+        final Manifest<Integer> refInfoInt = manifest(Integer.class.getCanonicalName());
+        final OptionAuditor<Integer> auditor = new OptionAuditor<>(refInfoInt);
+
+        // Create the semantics
+        final Semantics<Object> semantics = new Semantics<>(manifest(Object.class.getCanonicalName()));
+
+        // Create the RefInfo for the output type: Option<Integer>
+        final Manifest<Option<Integer>> refInfoOptInt = manifest("scala.Option[java.lang.Integer]");
+
         // Creating a model from a factory will work just fine.  Try deleting the variable
         // and reintroducing a local variable.  The types are properly inferred (at least in
         // IntelliJ).
-
-        final Either<String, Model<Object, Option<Integer>>> model =
+        final Either<String, Model<Object, Option<Integer>>> modelAttempt =
             new Factory().createConstantModel(
-                new Semantics<>(mO),      // semantics
-                OptionTC.instance(),      // type constructor
-                new OptionAuditor<>(mI),  // auditor
-                1,               // constant
-                mOI);                     // refInfo of model output type.
+                semantics,
+                OptionTC.instance(),  // type constructor
+                auditor,
+                constant,
+                refInfoOptInt);
 
-        model.right().get();
+        // Assert that the model was successfully created.
+        assertTrue(modelAttempt.isRight());
+
+        // Get the model.  Won't throw because we already checked.
+        final Model<Object, Option<Integer>> model = modelAttempt.right().get();
+
+        // Check that the model works.
+        assertEquals(Option.apply(constant), model.apply(null));
     }
 
     @Test
