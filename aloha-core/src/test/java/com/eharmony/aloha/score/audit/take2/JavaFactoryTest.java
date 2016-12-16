@@ -74,16 +74,18 @@ public class JavaFactoryTest {
         // final HierarchicalConstantModel<TypeCtor, Object, Object, Integer> m =
         //     new HierarchicalConstantModel<>(ModelId.empty(), OptionTC.instance(), 1, audInt, cModel);
 
+        final Integer value = 1;
+
         @SuppressWarnings("unchecked")
         final HierarchicalConstantModel<TypeCtor, Object, Object, Option<Integer>> hcm =
             (HierarchicalConstantModel<TypeCtor, Object, Object, Option<Integer>>)
             (HierarchicalConstantModel<TypeCtor, Object, Object, ?>)
-            new HierarchicalConstantModel<>(ModelId.empty(), OptionTC.instance(), 1, audInt, cModel);
+            new HierarchicalConstantModel<>(ModelId.empty(), OptionTC.instance(), value, audInt, cModel);
 
         @SuppressWarnings("unchecked")
         final Model<Object, Option<Integer>> m = (Model<Object, Option<Integer>>) (Model<Object, ?>) hcm;
 
-        assertEquals(Option.empty(), m.apply(null));
+        assertEquals(Option.apply(value), m.apply(null));
     }
 
     @SuppressWarnings("unchecked")
