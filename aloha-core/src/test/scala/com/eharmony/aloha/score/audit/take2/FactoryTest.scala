@@ -1,6 +1,8 @@
 package com.eharmony.aloha.score.audit.take2
 
+import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.score.audit.Semantics
+import com.eharmony.aloha.score.audit.take2.TypeCtor.Aux
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,8 +22,8 @@ class FactoryTest {
     assertTrue(model.fold(identity, _ => ""), model.isRight)
   }
 
-//  @Test def test2(): Unit = {
-//    val constModel: Model[Any, Aux[Option]#TC[Float]] = ConstantModel(ModelId(), 5f, OptionTC, OptionAuditor[Float])
-//    HierarchicalConstantModel(ModelId(), OptionTC, 5, OptionAuditor[Int], constModel)
-//  }
+  @Test def test2(): Unit = {
+    val constModel = ConstantModel(ModelId(), 5f, OptionTC, OptionAuditor[Float])
+    HierarchicalConstantModel(ModelId(), OptionTC, 5, OptionAuditor[Int])(constModel)
+  }
 }

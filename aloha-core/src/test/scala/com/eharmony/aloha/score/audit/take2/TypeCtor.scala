@@ -10,10 +10,10 @@ import scala.language.higherKinds
   * Created by ryan on 12/15/16.
   */
 trait TypeCtor { self: Singleton =>
-  type TC[A]
+  type TC[+A]
   def refInfo[A: RefInfo]: RefInfo[TC[A]]
 }
 
 object TypeCtor {
-  type Aux[C[_]] = TypeCtor { type TC[A] = C[A] }
+  type Aux[C[+_]] = TypeCtor { type TC[A] = C[A] }
 }
