@@ -2,7 +2,6 @@ package com.eharmony.aloha.score.audit.take2
 
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.score.audit.Semantics
-import com.eharmony.aloha.score.audit.take2.TypeCtor.Aux
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -24,6 +23,23 @@ class FactoryTest {
 
   @Test def test2(): Unit = {
     val constModel = ConstantModel(ModelId(), 5f, OptionTC, OptionAuditor[Float])
-    HierarchicalConstantModel(ModelId(), OptionTC, 5, OptionAuditor[Int])(constModel)
+    
+    // A main design goal is to have type inference work properly so that NO TYPES
+    // NEED to be specified to the models.  These are all determined by the inputs.
+    // In order for type inference to work properly with no help, we need two
+    // parameter lists. Because of this fact, we make a `create` method that has
+    // two parameter lists.  This just instantiates the class and fills in the type
+    // parameters.  We could have two parameter lists in the case class but then the
+    // parameters in the second list aren't part of the Product which is bad.  Also,
+    // we can't name the factory method `apply` because when the byte code is generated,
+    // it would complain about duplicate method names.
+    //
+    // "tightest" type: HierarchicalConstantModel[Aux[Option], Any, Float, Int]
+    val m = HierarchicalConstantModel.create(ModelId(), OptionTC, 7, OptionAuditor[Int])(constModel)
+
+    assertEquals(5, m.productArity) // We want all 5 fields to be picked up.
+
+    val y = m(())
+    assertEquals(Some(7), y)
   }
 }

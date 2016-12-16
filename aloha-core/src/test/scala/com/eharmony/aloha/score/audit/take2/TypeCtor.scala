@@ -6,7 +6,7 @@ import scala.language.higherKinds
 
 /**
   * A wrapper around a type constructor.  Only Scala '''object'''s can extend this because
-  * of the self type.
+  * of the self type.  The goal of this is to try to hide the type constructor from Java.
   * Created by ryan on 12/15/16.
   */
 trait TypeCtor { self: Singleton =>
