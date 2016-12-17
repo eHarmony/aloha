@@ -7,7 +7,18 @@ import com.eharmony.aloha.reflect.RefInfo
   */
 trait Auditor[-K, T <: TypeCtor, A, +B] {
 
+  /**
+    * Change the type of an auditor to one of the same shape, but with a different type
+    * parameter `C` instead of `A`.
+    * @tparam C The new type being audited.
+    * @return
+    */
   private[aloha] def changeType[C: RefInfo]: Auditor[K, T, C, T#TC[C]]
+
+  /**
+    * @return reflection information about the type of values being audited.
+    */
+  def refInfo: RefInfo[A]
 
   private[aloha] def failure[S](key: K,
                                 errorMsgs: => Seq[String],
@@ -20,8 +31,4 @@ trait Auditor[-K, T <: TypeCtor, A, +B] {
                                 subValues: Seq[T#TC[S]] = Nil,
                                 prob: => Option[Double] = None): B
 
-  /**
-    * @return reflection information about the type of values being audited.
-    */
-  def refInfo: RefInfo[A]
 }
