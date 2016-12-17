@@ -9,8 +9,6 @@ trait Auditor[-K, T <: TypeCtor, A, +B] {
 
   private[aloha] def changeType[C: RefInfo]: Auditor[K, T, C, T#TC[C]]
 
-//  private[aloha] def tc: T
-
   private[aloha] def failure[S](key: K,
                                 errorMsgs: => Seq[String],
                                 missingVarNames: => Set[String] = Set.empty,
