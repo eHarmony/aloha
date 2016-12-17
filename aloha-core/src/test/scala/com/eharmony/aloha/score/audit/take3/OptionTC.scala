@@ -8,5 +8,4 @@ import com.eharmony.aloha.reflect.RefInfo
 object OptionTC extends TypeCtor {
   type TC[+A] = Option[A]
   def refInfo[A: RefInfo] = RefInfo[Option[A]]
-  def instance: this.type = this
 }

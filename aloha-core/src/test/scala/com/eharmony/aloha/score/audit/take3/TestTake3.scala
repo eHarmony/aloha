@@ -12,9 +12,9 @@ import org.junit.runners.BlockJUnit4ClassRunner
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class TestTake3 {
   @Test def test1(): Unit = {
-    val cm = ConstantModel(ModelId(), 1, OptionTC, OptionAuditor[Int])
+    val cm = ConstantModel(ModelId(), 1, OptionAuditor[Int])
     val constant = 2f;
-    val hcm = HierarchicalConstantModel(ModelId(), constant, OptionTC, OptionAuditor[Float])(cm)
+    val hcm = HierarchicalConstantModel(ModelId(), constant, OptionAuditor[Float])(cm)
     val hcmModel: Model[Any, Option[Float]] = hcm
 
     assertEquals(Option(constant), hcmModel(None))

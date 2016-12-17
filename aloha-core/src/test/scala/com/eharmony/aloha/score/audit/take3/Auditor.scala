@@ -7,14 +7,14 @@ import com.eharmony.aloha.reflect.RefInfo
   */
 trait Auditor[-K, T <: TypeCtor, A, +B] {
 
-  private[aloha] def failure[S](tc: T,
-                                key: K,
+//  private[aloha] def tc: T
+
+  private[aloha] def failure[S](key: K,
                                 errorMsgs: => Seq[String],
                                 missingVarNames: => Set[String] = Set.empty,
                                 subValues: Seq[T#TC[S]] = Nil): B
 
-  private[aloha] def success[S](tc: T,
-                                key: K,
+  private[aloha] def success[S](key: K,
                                 valueToAudit: A,
                                 missingVarNames: => Set[String] = Set.empty,
                                 subValues: Seq[T#TC[S]] = Nil,
