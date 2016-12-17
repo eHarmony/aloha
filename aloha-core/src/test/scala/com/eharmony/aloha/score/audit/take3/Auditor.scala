@@ -7,6 +7,8 @@ import com.eharmony.aloha.reflect.RefInfo
   */
 trait Auditor[-K, T <: TypeCtor, A, +B] {
 
+  private[aloha] def changeType[C: RefInfo]: Auditor[K, T, C, T#TC[C]]
+
 //  private[aloha] def tc: T
 
   private[aloha] def failure[S](key: K,
