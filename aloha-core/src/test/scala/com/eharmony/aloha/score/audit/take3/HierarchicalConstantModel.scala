@@ -14,6 +14,7 @@ import com.eharmony.aloha.id.ModelIdentity
   * @tparam A
   * @tparam B
   */
+// TODO: fill in comments.
 case class HierarchicalConstantModel[T <: TypeCtor, SN, N, -A, +B <: T#TC[N]](
     modelId: ModelIdentity,
     constant: N,

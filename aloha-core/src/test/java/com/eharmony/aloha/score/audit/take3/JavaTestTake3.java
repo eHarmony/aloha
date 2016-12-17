@@ -21,14 +21,16 @@ public class JavaTestTake3 {
         final OptionAuditor<Integer> cmAud = new OptionAuditor<>(refInfoInt);
 
         final ConstantModel<TypeCtor, Integer, Object, Option<Integer>> cModel =
-            new ConstantModel<>(ModelId.empty(), 1, cmAud);
+                new ConstantModel<>(ModelId.empty(), 1, cmAud);
+
+        final Model<Object, Option<Integer>> submodel = cModel;
 
         final Float constant = 2f;
         final Manifest<Float> refInfoFloat = manifest(Float.class.getCanonicalName());
         final OptionAuditor<Float> aud = new OptionAuditor<>(refInfoFloat);
 
         final HierarchicalConstantModel<TypeCtor, Object, Float, Object, Option<Float>> hcm =
-            new HierarchicalConstantModel<>(ModelId.empty(), constant, cModel, aud);
+            new HierarchicalConstantModel<>(ModelId.empty(), constant, submodel, aud);
 
         final Model<Object, Option<Float>> m = hcm;
 
