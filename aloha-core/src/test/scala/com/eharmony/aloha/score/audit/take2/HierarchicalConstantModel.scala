@@ -5,8 +5,13 @@ import com.eharmony.aloha.id.ModelIdentity
 /**
   * Created by ryan on 12/16/16.
   */
-case class HierarchicalConstantModel[T <: TypeCtor, -A, +SN, N](modelId: ModelIdentity, tc: T, constant: N, auditor: Auditor[ModelIdentity, T, N], sub: Model[A, T#TC[SN]])
-  extends Model[A, T#TC[N]] {
+case class HierarchicalConstantModel[T <: TypeCtor, -A, +SN, N](
+    modelId: ModelIdentity,
+    constant: N,
+    sub: Model[A, T#TC[SN]],
+    tc: T,
+    auditor: Auditor[ModelIdentity, T, N]
+) extends Model[A, T#TC[N]] {
   def apply(a: A) = {
     val sa = sub(a)
     println(s"sub($a) = $sa") // TODO: Remove this.
@@ -15,7 +20,7 @@ case class HierarchicalConstantModel[T <: TypeCtor, -A, +SN, N](modelId: ModelId
 }
 
 object HierarchicalConstantModel {
-  def create[T <: TypeCtor, A, SN, N](modelId: ModelIdentity, tc: T, constant: N, auditor: Auditor[ModelIdentity, T, N])(sub: Model[A, T#TC[SN]]) = {
-    new HierarchicalConstantModel[T, A, SN, N](modelId, tc, constant, auditor, sub)
+  def apply[T <: TypeCtor, A, SN, N](modelId: ModelIdentity, constant: N, tc: T, auditor: Auditor[ModelIdentity, T, N])(sub: Model[A, T#TC[SN]]) = {
+    new HierarchicalConstantModel[T, A, SN, N](modelId, constant, sub, tc, auditor)
   }
 }

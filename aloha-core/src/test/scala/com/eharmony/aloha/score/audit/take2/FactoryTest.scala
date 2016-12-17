@@ -35,7 +35,7 @@ class FactoryTest {
     // it would complain about duplicate method names.
     //
     // "tightest" type: HierarchicalConstantModel[Aux[Option], Any, Float, Int]
-    val m = HierarchicalConstantModel.create(ModelId(), OptionTC, 7, OptionAuditor[Int])(constModel)
+    val m = HierarchicalConstantModel(ModelId(), 7, OptionTC, OptionAuditor[Int])(constModel)
 
     assertEquals(5, m.productArity) // We want all 5 fields to be picked up.
 

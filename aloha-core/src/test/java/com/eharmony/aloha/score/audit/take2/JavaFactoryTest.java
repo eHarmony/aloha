@@ -96,7 +96,7 @@ public class JavaFactoryTest {
         final HierarchicalConstantModel<TypeCtor, Object, Object, Option<Integer>> hcm =
             (HierarchicalConstantModel<TypeCtor, Object, Object, Option<Integer>>)
             (HierarchicalConstantModel<TypeCtor, Object, Object, ?>)
-            new HierarchicalConstantModel<>(ModelId.empty(), OptionTC.instance(), value, audInt, cModel);
+            new HierarchicalConstantModel<>(ModelId.empty(), value, cModel, OptionTC.instance(), audInt);
 
         @SuppressWarnings("unchecked")
         final Model<Object, Option<Integer>> m = (Model<Object, Option<Integer>>) (Model<Object, ?>) hcm;

@@ -59,6 +59,18 @@ public class JavaAuditTest {
     }
 
     @Test
+    public void testInstantiatingConstantModel() {
+        final Manifest<Integer> refInfoInt = manifest(Integer.class.getCanonicalName());
+        final OptionAuditor<ModelIdentity, Integer> aud = new OptionAuditor<>(refInfoInt);
+        final Integer constant= 1;
+        final ConstantModel<Object, Integer, Option<Integer>> constModel =
+            new ConstantModel<>(ModelId.empty(), 1, aud);
+        final Model<Object, Option<Integer>> model = constModel;
+        assertEquals(Option.apply(constant), model.apply(null));
+    }
+
+
+    @Test
     public void testTypeInference() throws JavaModelFactoryException {
         final ModelId id = new ModelId(1, "test");
         final Manifest<Double> mD = manifest("java.lang.Double");

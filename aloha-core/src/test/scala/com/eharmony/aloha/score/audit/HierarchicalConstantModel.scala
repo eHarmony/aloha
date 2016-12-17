@@ -36,10 +36,10 @@ object HierarchicalConstantModel {
     * @return A HierarchicalConstantModel
     */
   def apply[A, SN, N, B](mId: ModelIdentity, v: N, aud: Auditor[ModelIdentity, N, B])
-                        (s: AuditedModel[A, SN, aud.AuditOutput[SN]]): HierarchicalConstantModel[A, SN, N, B] = {
+                        (s: Model[A, aud.AuditOutput[SN]]): HierarchicalConstantModel[A, SN, N, B] = {
     new HierarchicalConstantModel[A, SN, N, B](mId, v) {
       val auditor: aud.type = aud
-      val sub: AuditedModel[A, SN, auditor.AuditOutput[SN]] = s
+      val sub: Model[A, auditor.AuditOutput[SN]] = s
     }
   }
 }
