@@ -7,7 +7,7 @@ import scala.language.higherKinds
 /**
   * Created by ryan on 12/16/16.
   */
-trait TypeCtor {
+trait TypeCtor1 {
   type TC[+A]
   def refInfo[A: RefInfo]: RefInfo[TC[A]]
 }

@@ -5,7 +5,7 @@ import com.eharmony.aloha.reflect.RefInfo
 /**
   * Created by ryan on 12/16/16.
   */
-trait Auditor[-K, T <: TypeCtor, A, +B] {
+trait Auditor[-K, T <: TypeCtor1, A, +B] {
 
   /**
     * Change the type of an auditor to one of the same shape, but with a different type

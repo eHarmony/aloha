@@ -15,7 +15,7 @@ import com.eharmony.aloha.id.ModelIdentity
   * @tparam B
   */
 // TODO: fill in comments.
-case class HierarchicalConstantModel[T <: TypeCtor, SN, N, -A, +B <: T#TC[N]] private(
+case class HierarchicalConstantModel[T <: TypeCtor1, SN, N, -A, +B <: T#TC[N]] private(
     modelId: ModelIdentity,
     constant: N,
     sub: Model[A, T#TC[SN]],
@@ -25,9 +25,9 @@ case class HierarchicalConstantModel[T <: TypeCtor, SN, N, -A, +B <: T#TC[N]] pr
 }
 
 object HierarchicalConstantModel {
-  def apply[T <: TypeCtor, SN, SB <: T#TC[SN], N, A, B <: T#TC[N]](modelId: ModelIdentity, constant: N, auditor: Auditor[ModelIdentity, T, N, B])(sub: AuditedModel[T, SN, A, SB]): HierarchicalConstantModel[T, SN, N, A, B] =
+  def apply[T <: TypeCtor1, SN, SB <: T#TC[SN], N, A, B <: T#TC[N]](modelId: ModelIdentity, constant: N, auditor: Auditor[ModelIdentity, T, N, B])(sub: AuditedModel[T, SN, A, SB]): HierarchicalConstantModel[T, SN, N, A, B] =
     new HierarchicalConstantModel[T, SN, N, A, B](modelId, constant, sub.typeConstructed, auditor)
 
-  def createFromJava[T <: TypeCtor, SN, SB <: T#TC[SN], N, A, B <: T#TC[N]](modelId: ModelIdentity, constant: N, auditor: Auditor[ModelIdentity, T, N, B], sub: AuditedModel[T, SN, A, SB]): HierarchicalConstantModel[T, SN, N, A, B] =
+  def createFromJava[T <: TypeCtor1, SN, SB <: T#TC[SN], N, A, B <: T#TC[N]](modelId: ModelIdentity, constant: N, auditor: Auditor[ModelIdentity, T, N, B], sub: AuditedModel[T, SN, A, SB]): HierarchicalConstantModel[T, SN, N, A, B] =
     apply[T, SN, SB, N, A, B](modelId, constant, auditor)(sub)
 }

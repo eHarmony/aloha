@@ -25,6 +25,9 @@ public class JavaTestTake3 {
     @Test
     public void test1() {
         final Manifest<Integer> refInfoInt = manifest(Integer.class.getCanonicalName());
+
+        // Or alternatively,
+        //   final TypedAuditor<ModelIdentity, OptionTC, Integer, Option<Integer>> cmAud =
         final OptionAuditor<Integer> cmAud = new OptionAuditor<>(refInfoInt);
 
         final ConstantModel<OptionTC, Integer, Object, Option<Integer>> cModel =

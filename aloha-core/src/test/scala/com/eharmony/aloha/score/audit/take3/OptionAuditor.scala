@@ -16,7 +16,7 @@ case class OptionAuditor[A](implicit val refInfo: RefInfo[A]) extends TypedAudit
 }
 
 object OptionAuditor {
-  sealed trait OptionTC extends TypeCtor {
+  sealed trait OptionTC extends TypeCtor1 {
     override type TC[+A] = Option[A]
     override def refInfo[A: RefInfo]: RefInfo[Option[A]] = RefInfo[Option[A]]
   }

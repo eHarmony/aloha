@@ -27,7 +27,7 @@ object EitherAuditor {
   case class Failure[K](key: K, errorMsgs: Seq[String], missingVarNames: Set[String], subValues: Seq[Result[K, Any]]) extends Result[K, Nothing]
   case class Success[K, +V](key: K, valueToAudit: V, missingVarNames: Set[String], subValues: Seq[Result[K, Any]], prob: Option[Double]) extends Result[K, V]
 
-  sealed trait EitherTC extends TypeCtor {
+  sealed trait EitherTC extends TypeCtor1 {
     override type TC[+A] = Result[ModelIdentity, A]
     override def refInfo[A: RefInfo]: RefInfo[Result[ModelIdentity, A]] = RefInfo[Result[ModelIdentity, A]]
   }
