@@ -22,15 +22,15 @@ public class JavaTestTake3 {
         final Manifest<Integer> refInfoInt = manifest(Integer.class.getCanonicalName());
         final OptionAuditor<Integer> cmAud = new OptionAuditor<>(refInfoInt);
 
-        final ConstantModel<TypeCtor, Integer, Object, Option<Integer>> cModel =
+        final ConstantModel<OptionAuditor.OptionTC, Integer, Object, Option<Integer>> cModel =
             new ConstantModel<>(ModelId.empty(), 1, cmAud);
 
         final Float constant = 2f;
         final Manifest<Float> refInfoFloat = manifest(Float.class.getCanonicalName());
         final OptionAuditor<Float> aud = new OptionAuditor<>(refInfoFloat);
 
-        final HierarchicalConstantModel<TypeCtor, Object, Float, Object, Option<Float>> hcm =
-            new HierarchicalConstantModel<>(ModelId.empty(), constant, cModel, aud);
+        final HierarchicalConstantModel<OptionAuditor.OptionTC, Integer, Float, Object, Option<Float>> hcm =
+            HierarchicalConstantModel.createFromJava(ModelId.empty(), constant, aud, cModel);
 
         final Model<Object, Option<Float>> m = hcm;
 
@@ -42,7 +42,7 @@ public class JavaTestTake3 {
         final Manifest<Integer> refInfoInt = manifest(Integer.class.getCanonicalName());
         final OptionAuditor<Integer> cmAud = new OptionAuditor<>(refInfoInt);
 
-        final Model<Object, Option<Integer>> cModel =
+        final ConstantModel<OptionAuditor.OptionTC, Integer, Object, Option<Integer>> cModel =
             new ConstantModel<>(ModelId.empty(), 1, cmAud);
 
         final Float constant = 2f;
@@ -50,7 +50,7 @@ public class JavaTestTake3 {
         final OptionAuditor<Float> aud = new OptionAuditor<>(refInfoFloat);
 
         final Model<Object, Option<Float>> hcm =
-            new HierarchicalConstantModel<>(ModelId.empty(), constant, cModel, aud);
+            HierarchicalConstantModel.createFromJava(ModelId.empty(), constant, aud, cModel);
 
         assertEquals(Option.apply(constant), hcm.apply(null));
     }
@@ -60,17 +60,33 @@ public class JavaTestTake3 {
         final Manifest<Integer> refInfoInt = manifest(Integer.class.getCanonicalName());
         final EitherAuditor<Integer> cmAud = new EitherAuditor<>(refInfoInt);
 
-        final ConstantModel<TypeCtor, Integer, Object, EitherAuditor.Result<ModelIdentity, Integer>> cModel =
+        final ConstantModel<EitherAuditor.EitherTC, Integer, Object, EitherAuditor.Result<ModelIdentity, Integer>> cModel =
                 new ConstantModel<>(ModelId.empty(), 1, cmAud);
 
         final Float constant = 2f;
         final Manifest<Float> refInfoFloat = manifest(Float.class.getCanonicalName());
         final OptionAuditor<Float> aud = new OptionAuditor<>(refInfoFloat);
 
-        final Model<Object, Option<Float>> hcm =
-                new HierarchicalConstantModel<>(ModelId.empty(), constant, cModel, aud);
+        // The following call gives the subsequent error (which is very good).
+//      HierarchicalConstantModel.createFromJava(ModelId.empty(), constant, aud, cModel);
 
-        assertEquals(Option.apply(constant), hcm.apply(null));
+// [error] method createFromJava in class take3.HierarchicalConstantModel<T,SN,N,A,B> cannot be applied to given types;
+// [error]   required: ModelIdentity, N, Auditor<ModelIdentity,T,N,B>, take3.AuditedModel<T,SN,A,SB>
+// [error]   found: ModelId,
+//                  Float,
+//                  take3.OptionAuditor<Float>,
+//                  take3.ConstantModel<
+//                    take3.EitherAuditor.EitherTC,
+//                    Integer,
+//                    Object,
+//                    take3.EitherAuditor.Result<ModelIdentity, Integer>>
+// [error]   reason: inferred type does not conform to equality constraint(s)
+// [error]     inferred: com.eharmony.aloha.score.audit.take3.EitherAuditor.EitherTC
+// [error]     equality constraints(s): com.eharmony.aloha.score.audit.take3.EitherAuditor.EitherTC,
+//                                      com.eharmony.aloha.score.audit.take3.OptionAuditor.OptionTC
+// [error]                 HierarchicalConstantModel.createFromJava(ModelId.empty(), constant, aud, cModel);
+
+//        assertEquals(Option.apply(constant), hcm.apply(null));
     }
 
     @Test
@@ -78,15 +94,15 @@ public class JavaTestTake3 {
         final Manifest<Integer> refInfoInt = manifest(Integer.class.getCanonicalName());
         final EitherAuditor<Integer> cmAud = new EitherAuditor<>(refInfoInt);
 
-        final ConstantModel<TypeCtor, Integer, Object, EitherAuditor.Result<ModelIdentity, Integer>> cModel =
-                new ConstantModel<>(new ModelId(1, "one"), 1, cmAud);
+        final ConstantModel<EitherAuditor.EitherTC, Integer, Object, EitherAuditor.Result<ModelIdentity, Integer>> cModel =
+            new ConstantModel<>(new ModelId(1, "one"), 1, cmAud);
 
         final Float constant = 2f;
         final Manifest<Float> refInfoFloat = manifest(Float.class.getCanonicalName());
         final EitherAuditor<Float> aud = new EitherAuditor<>(refInfoFloat);
 
-        final HierarchicalConstantModel<TypeCtor, Object, Float, Object, EitherAuditor.Result<ModelIdentity, Float>> hcm =
-                new HierarchicalConstantModel<>(new ModelId(2, "two"), constant, cModel, aud);
+        final HierarchicalConstantModel<EitherAuditor.EitherTC, Integer, Float, Object, EitherAuditor.Result<ModelIdentity, Float>> hcm =
+            HierarchicalConstantModel.createFromJava(new ModelId(2, "two"), constant, aud, cModel);
 
         final EitherAuditor.Result<ModelIdentity, Float> res = hcm.apply(null);
         if (res instanceof EitherAuditor.Success) {

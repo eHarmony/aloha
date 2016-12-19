@@ -7,11 +7,7 @@ import scala.language.higherKinds
 /**
   * Created by ryan on 12/16/16.
   */
-trait TypeCtor { self: Singleton =>
+trait TypeCtor {
   type TC[+A]
   def refInfo[A: RefInfo]: RefInfo[TC[A]]
-}
-
-object TypeCtor {
-  type Aux[C[+_]] = TypeCtor { type TC[A] = C[A] }
 }

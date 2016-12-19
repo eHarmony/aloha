@@ -2,12 +2,12 @@ package com.eharmony.aloha.score.audit.take3
 
 import com.eharmony.aloha.id.ModelIdentity
 import com.eharmony.aloha.reflect.RefInfo
-import com.eharmony.aloha.score.audit.take3.EitherAuditor.{Failure, Result, Success}
+import com.eharmony.aloha.score.audit.take3.EitherAuditor.{EitherTC, Failure, Result, Success}
 
 /**
   * Created by ryan on 12/17/16.
   */
-case class EitherAuditor[A](implicit val refInfo: RefInfo[A]) extends TypedAuditor[ModelIdentity, TypeCtor.Aux[({type L[+X] = Result[ModelIdentity, X]})#L], A, Result[ModelIdentity, A]] {
+case class EitherAuditor[A](implicit val refInfo: RefInfo[A]) extends TypedAuditor[ModelIdentity, EitherTC, A, Result[ModelIdentity, A]] {
   /**
     * Change the type of an auditor to one of the same shape, but with a different type
     * parameter `C` instead of `A`.
@@ -26,4 +26,9 @@ object EitherAuditor {
   sealed trait Result[K, +V]
   case class Failure[K](key: K, errorMsgs: Seq[String], missingVarNames: Set[String], subValues: Seq[Result[K, Any]]) extends Result[K, Nothing]
   case class Success[K, +V](key: K, valueToAudit: V, missingVarNames: Set[String], subValues: Seq[Result[K, Any]], prob: Option[Double]) extends Result[K, V]
+
+  sealed trait EitherTC extends TypeCtor {
+    override type TC[+A] = Result[ModelIdentity, A]
+    override def refInfo[A: RefInfo]: RefInfo[Result[ModelIdentity, A]] = RefInfo[Result[ModelIdentity, A]]
+  }
 }
