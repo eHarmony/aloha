@@ -19,7 +19,7 @@ final case class VwSingleFeatureSetJniModel[-A, +B](
                                                      featureFunctions: sci.IndexedSeq[GenAggFunc[A, Iterable[(String, Double)]]],
                                                      defaultNs: List[Int],
                                                      namespaces: List[(String, List[Int])],
-                                                     learnerCreator: VWLearner => VwEvaluator[A, String, (B, Option[Float])],
+                                                     learnerCreator: VWLearner => VwEvaluator[A, String, Either[(Seq[String], Seq[String]), (B, Option[Float])]],
                                                      numMissingThreshold: Option[Int] = None
                                                    )(implicit private[this] val scb: ScoreConverter[B])
   extends VwJniModel[A, B] {

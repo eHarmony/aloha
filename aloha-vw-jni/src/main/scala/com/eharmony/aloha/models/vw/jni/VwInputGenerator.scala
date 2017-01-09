@@ -57,7 +57,7 @@ final case class VwMultiLineInputGenerator[-A](
                                                 numMissingThreshold: Option[Int],
                                                 labelDependentFeatureDefaultNs: List[Int],
                                                 labelDependentFeatureNamespaces: List[(String, List[Int])],
-                                                labelDomainFn: GenAggFunc[A, sci.IndexedSeq[Any]],
+                                                labelDomainFn: GenAggFunc[A, Seq[Any]],
                                                 labelDependentFeatureNames: sci.IndexedSeq[String],
                                                 labelDependentFeatureFunctions: sci.IndexedSeq[GenAggFunc[Any, Iterable[(String, Double)]]],
                                                 numMissingLDFThreshold: Option[Int]
@@ -84,7 +84,8 @@ final case class VwMultiLineInputGenerator[-A](
     if (missingOk) {
       val sharedFeatures = s"shared ${vwRowCreator.unlabeledVwInput(features._1).toString}"
       val labelDependentFeatures = features._2.map(f => labelDependentRowCreator.unlabeledVwInput(f).toString)
-      Right(sharedFeatures +: labelDependentFeatures)
+      if(features._1.exists(f => f.nonEmpty)) Right(sharedFeatures +: labelDependentFeatures)
+      else Right(labelDependentFeatures)
     }
     else Left(missing)
   }

@@ -21,4 +21,9 @@ import scala.language.implicitConversions
 trait OptionLifting {
   implicit def double2Option(a: Double): Option[Double] = Option(a)
   implicit def string2Option(a: String): Option[String] = Option(a)
+  implicit def byte2Option(a: Byte): Option[Byte] = Option(a)
+  implicit def short2Option(a: Short): Option[Short] = Option(a)
+  implicit def int2Option(a: Int): Option[Int] = Option(a)
+  implicit def long2Option(a: Long): Option[Long] = Option(a)
+  implicit def float2Option(a: Float): Option[Float] = Option(a)
 }

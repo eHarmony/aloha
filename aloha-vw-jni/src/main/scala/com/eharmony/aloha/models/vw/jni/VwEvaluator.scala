@@ -5,14 +5,14 @@ package com.eharmony.aloha.models.vw.jni
   */
 sealed trait VwEvaluator[-A, -I, +B] extends ((A, I) => B)
 
-final case class DefaultEvaluator[-I, +B](f: I => B) extends VwEvaluator[Any, I, B] {
+final case class DefaultEvaluator[-A, -I, +B](f: (A, I) => B) extends VwEvaluator[A, I, B] {
 
-  def apply(v1: Any, v2: I): B = f(v2)
+  def apply(v1: A, v2: I): B = f(v1, v2)
 
 }
 
-final case class ContextualEvaluator[-A, -I, C, +B](ctx: A => C, f: (C, I) => B) extends VwEvaluator[A, I, B] {
+final case class ContextualEvaluator[-A, -I, C, +B](ctx: A => C, f: (A, C, I) => B) extends VwEvaluator[A, I, B] {
 
-  def apply(v1: A, v2: I): B = f(ctx(v1), v2)
+  def apply(v1: A, v2: I): B = f(v1, ctx(v1), v2)
 
 }

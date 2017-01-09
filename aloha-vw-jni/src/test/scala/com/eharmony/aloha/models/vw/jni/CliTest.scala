@@ -10,7 +10,8 @@ import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 import org.junit.{BeforeClass, Test}
 import spray.json.{DeserializationException, JsObject, pimpString}
-import vw.learner.{VWIntLearner, VWLearners}
+import vowpalWabbit.learner.{VWLearners, VWMulticlassLearner}
+
 
 object CliTest extends IoCaptureCompanion {
   @BeforeClass def createModel(): Unit = VwJniModelTest.createModel()
@@ -22,7 +23,7 @@ object CliTest extends IoCaptureCompanion {
     tf.deleteOnExit()
     val p = tf.getCanonicalPath
 
-    val vw: VWIntLearner = VWLearners.create(s"--cb 2 --quiet -f $p")
+    val vw: VWMulticlassLearner = VWLearners.create(s"--cb 2 --quiet -f $p")
     val input = Vector("1:2:0.5 | a c",
       "2:1:0.5 | b c")
     for {

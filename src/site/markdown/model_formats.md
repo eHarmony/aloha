@@ -1774,7 +1774,7 @@ needs to be trained on the same VW version that is included in the `aloha-vw-jni
     <td><a href="#aVW_namespaces">namespaces</a></td>
     <td>Object</td>
     <td>N / A</td>
-    <td>true</td>
+    <td>false</td>
     <td>N / A</td>
   </tr>
   <tr>

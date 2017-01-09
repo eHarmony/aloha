@@ -1,0 +1,30 @@
+package com.eharmony.aloha.test.proto;
+
+option java_outer_classname = "ContextActionsProtoBuffs";
+
+message ContextActionsProto {
+
+    message ContextProto {
+        optional int32 f1 = 1;
+        optional int32 f2 = 2;
+    }
+
+    message ActionProto {
+        required double action_id_double = 1;
+        required string action_id_string = 2;
+        required int32 action_id_int = 3;
+        required int64 action_id_long = 4;
+        required float action_id_float = 5;
+        optional float f1 = 6;
+        optional float f2 = 7;
+        optional float f3 = 8;
+    }
+
+    message ActionsProto {
+        repeated ActionProto actions = 1;
+    }
+
+    optional ContextProto context = 1;
+    optional ActionsProto actions = 2;
+
+}

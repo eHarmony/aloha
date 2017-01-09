@@ -14,7 +14,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 import spray.json.DefaultJsonProtocol.{StringJsonFormat, _}
 import spray.json.{DeserializationException, JsonFormat}
-import vw.learner.{VWIntLearner, VWLearners}
+import vowpalWabbit.learner.{VWLearners, VWMulticlassLearner}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.implicitConversions
@@ -31,7 +31,7 @@ object CbVwJniModelTest {
     tf.deleteOnExit()
     val p = tf.getCanonicalPath
 
-    val vw: VWIntLearner = VWLearners.create(s"--cb 2 --quiet -f $p")
+    val vw: VWMulticlassLearner = VWLearners.create(s"--cb 2 --quiet -f $p")
     val input = Vector("1:2:0.5 | a c",
                        "2:1:0.5 | b c")
     for {

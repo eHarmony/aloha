@@ -3,7 +3,7 @@ package com.eharmony.aloha.models.vw.jni
 import java.io._
 import java.{lang => jl}
 
-import com.eharmony.aloha.{ModelSerializationTestHelper, FileLocations}
+import com.eharmony.aloha.{FileLocations, ModelSerializationTestHelper}
 import com.eharmony.aloha.factory.JavaJsonFormats._
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
@@ -26,7 +26,7 @@ import org.junit.runners.BlockJUnit4ClassRunner
 import org.junit.{BeforeClass, Ignore, Test}
 import spray.json.DefaultJsonProtocol._
 import spray.json._
-import vw.learner.{VWFloatLearner, VWLearner, VWLearners}
+import vowpalWabbit.learner.{VWLearner, VWLearners, VWScalarLearner}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.Try
@@ -55,7 +55,7 @@ class VwJniModelTest extends ModelSerializationTestHelper with Logging {
       assertEquals(m.getClass.getCanonicalName, m1.getClass.getCanonicalName)
 
       // Check each item, except the ignored features, are equivalent.
-      m.productIterator.zip(m1.productIterator).zipWithIndex.
+      val x = m.productIterator.zip(m1.productIterator).zipWithIndex.
         filterNot(ignoreFeatureIndices contains _._2).
         foreach { case ((mProp, m1Prop), i) => assertEquals(s"For prop $i:", mProp, m1Prop) }
 
@@ -127,7 +127,7 @@ class VwJniModelTest extends ModelSerializationTestHelper with Logging {
      */
     @Test def testNsDoesntCoverAllFeatureNamesFromJson(): Unit = {
         val m = model[Float](nonCoveringNsJson)
-        val input = m.generateVwInput(missingHeight)
+        val input = m.vwInputGen(missingHeight)
         assertEquals(Right("| height:180"), input)
     }
 
@@ -135,10 +135,15 @@ class VwJniModelTest extends ModelSerializationTestHelper with Logging {
         val accessor = GeneratedAccessor("height_cm", (_:CsvLine).ol("height_cm"))
         val h = GenFunc.f1(accessor)("ind(height_cm * 10)", _.map(h => Seq(("height_mm=" + (h * 10), 1.0))).getOrElse(Nil))
 
+        val evaluator = (l: VWLearner) => {
+          val scalarLearner = l.asInstanceOf[VWScalarLearner]
+          DefaultEvaluator((_: Any, x: String) => Right((scalarLearner.predict(x), None)))
+        }
+
         // Because height_mm feature isn't in any namespace.
 
         try {
-            VwJniModel(
+            VwSingleFeatureSetJniModel(
                 ModelId.empty,
                 "--quiet",
                 Base64StringSource(VwB64Model),
@@ -146,7 +151,7 @@ class VwJniModelTest extends ModelSerializationTestHelper with Logging {
                 Vector(h),
                 Nil,
                 Nil,
-                (_: VWLearner).asInstanceOf[VWFloatLearner].predict,
+                evaluator,
                 None
             )
             fail("should throw IllegalArgumentException")
@@ -161,8 +166,13 @@ class VwJniModelTest extends ModelSerializationTestHelper with Logging {
         val accessor = GeneratedAccessor("height_cm", (_:CsvLine).ol("height_cm"))
         val h = GenFunc.f1(accessor)("ind(height_cm * 10)", _.map(h => Seq(("height_mm=" + (h * 10), 1.0))).getOrElse(Nil))
 
+        val evaluator = (l: VWLearner) => {
+          val scalarLearner = l.asInstanceOf[VWScalarLearner]
+          DefaultEvaluator((_: Any, x: String) => Right((scalarLearner.predict(x), None)))
+        }
+
         try {
-            VwJniModel(
+            VwSingleFeatureSetJniModel(
                 ModelId.empty,
                 "--quiet",
                 Base64StringSource(VwB64Model),
@@ -170,7 +180,7 @@ class VwJniModelTest extends ModelSerializationTestHelper with Logging {
                 Vector(h),
                 Nil,
                 Nil,
-                (_: VWLearner).asInstanceOf[VWFloatLearner].predict,
+                evaluator,
                 None
             )
             fail("should throw IllegalArgumentException")
@@ -182,8 +192,12 @@ class VwJniModelTest extends ModelSerializationTestHelper with Logging {
     }
 
     @Test def testFeaturesSizeLtNamesSize(): Unit = {
+        val evaluator = (l: VWLearner) => {
+          val scalarLearner = l.asInstanceOf[VWScalarLearner]
+          DefaultEvaluator((_: Any, x: String) => Right((scalarLearner.predict(x), None)))
+        }
         try {
-            VwJniModel(
+            VwSingleFeatureSetJniModel(
                 ModelId.empty,
                 "--quiet",
                 Base64StringSource(VwB64Model),
@@ -191,7 +205,7 @@ class VwJniModelTest extends ModelSerializationTestHelper with Logging {
                 Vector(),
                 Nil,
                 Nil,
-                (_: VWLearner).asInstanceOf[VWFloatLearner].predict,
+                evaluator,
                 None
             )
             fail("should throw IllegalArgumentException")
@@ -379,8 +393,8 @@ class VwJniModelTest extends ModelSerializationTestHelper with Logging {
 
     private[this] def model[A : RefInfo : ScoreConverter : JsonReader](modelJson: JsValue) = {
         val m = ModelFactory.defaultFactory.getModel[CsvLine, A](modelJson, Option(semantics)).get
-        assertEquals("VwJniModel", m.getClass.getSimpleName)
-        m.asInstanceOf[VwJniModel[CsvLine, A]]
+        assertEquals("VwSingleFeatureSetJniModel", m.getClass.getSimpleName)
+        m.asInstanceOf[VwSingleFeatureSetJniModel[CsvLine, A]]
     }
 
     /**
@@ -658,7 +672,7 @@ object VwJniModelTest extends Logging {
     // echo "" | vw -t --quiet -i log_0.5.model -p pred; cat pred; rm -f ./pred ./log_0.5.model
     // 0.504197
     private[this] def allocateModel() = {
-        val m: VWFloatLearner = VWLearners.create(s"--quiet --loss_function logistic --link logistic -f $VwModelPath")
+        val m: VWScalarLearner = VWLearners.create(s"--quiet --loss_function logistic --link logistic -f $VwModelPath")
         1 to 100 foreach { _ =>
             m.learn("-1 | ")
             m.learn( "1 | ")

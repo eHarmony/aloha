@@ -8,9 +8,9 @@ import scala.collection.{immutable => sci, mutable => scm}
 /**
   * Created by sahil-goyal on 11/7/16.
   */
-trait VwMultiLineFeatures[A] extends RegressionFeatures[A] {
+trait VwMultiLineFeatures[-A] extends RegressionFeatures[A] {
 
-  val labelDomainFn: GenAggFunc[A, sci.IndexedSeq[Any]]
+  val labelDomainFn: GenAggFunc[A, Seq[Any]]
   val labelDependentFeatureNames: sci.IndexedSeq[String]
   val labelDependentFeatureFunctions: sci.IndexedSeq[GenAggFunc[Any, Iterable[(String, Double)]]]
   val numMissingLDFThreshold: Option[Int]

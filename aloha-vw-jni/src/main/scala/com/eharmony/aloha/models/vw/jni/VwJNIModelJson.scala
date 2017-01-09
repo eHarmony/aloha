@@ -55,7 +55,7 @@ trait VwJniModelJson extends SpecJson {
      * @param vw an object for configuring the VwScorer object that will be embedded in the VwJniModel.
      * @param labelDomain a function to get an IndexedSeq on the list of labels.
      * @param labelType string containing the type of each label.
-     * @param labelDependendentFeatures a map of label dependent features (whose iteration order is the declaration order).
+     * @param labelDependentFeatures a map of label dependent features (whose iteration order is the declaration order).
      * @param namespaces an map of namespace name to sequence of feature names in the namespace.
      * @param numMissingThreshold A threshold dictating how many missing features to allow before making
      *                            the prediction fail.  None means the threshold is &infin;.  If, when mapping
@@ -67,7 +67,7 @@ trait VwJniModelJson extends SpecJson {
     protected[this] case class VwJNIAst(
                                          modelType: String,
                                          modelId: ModelIdentity,
-                                         features: ListMap[String, Spec],
+                                         features: Option[ListMap[String, Spec]] = Some(ListMap.empty),
                                          vw: Vw,
                                          namespaces: Option[ListMap[String, Seq[String]]] = Some(ListMap.empty),
                                          numMissingThreshold: Option[Int] = None,
@@ -77,16 +77,16 @@ trait VwJniModelJson extends SpecJson {
 
                                          // label dependent features parameters
                                          labelDomain: Option[String] = None,
-                                         scoreExtractor: Option[String] = None,
+                                         scoreExtractor: Option[String] = None,  // if not present, then try to coerce it into B
                                          labelType: Option[String] = None,
-                                         labelDependendentFeatures: Option[ListMap[String, Spec]] = None,
+                                         labelDependentFeatures: Option[ListMap[String, Spec]] = None,
                                          numMissingLDFThreshold: Option[Int] = None,
 
                                          // required for --cb_explore and --cb_explore_adf
                                          salt: Option[String] = None
                                        ) {
         {
-            val ldfParams = Seq(labelDomain.isDefined, labelType.isDefined, labelDependendentFeatures.isDefined)
+            val ldfParams = Seq(labelDomain.isDefined, labelType.isDefined, labelDependentFeatures.isDefined)
             require(ldfParams.forall(b => b) || ldfParams.forall(b => !b))
         }
     }
