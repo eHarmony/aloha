@@ -15,7 +15,7 @@ case class EitherAuditor[A](implicit val refInfo: RefInfo[A]) extends TypedAudit
     * @tparam C The new type being audited.
     * @return
     */
-  override private[aloha] def changeType[C: RefInfo] = EitherAuditor[C]
+  override private[aloha] def changeType[C: RefInfo]: Option[EitherAuditor[C]] = Option(EitherAuditor[C])
   override private[aloha] def failure[S](key: ModelIdentity, errorMsgs: => Seq[String], missingVarNames: => Set[String], subValues: Seq[Result[ModelIdentity, S]]): Failure[ModelIdentity] =
     Failure(key, errorMsgs, missingVarNames, subValues)
   override private[aloha] def success[S](key: ModelIdentity, valueToAudit: A, missingVarNames: => Set[String], subValues: Seq[Result[ModelIdentity, S]], prob: => Option[Double]): Success[ModelIdentity, A] =

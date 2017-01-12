@@ -13,7 +13,7 @@ trait Auditor[-K, T <: TypeCtor1, A, +B] {
     * @tparam C The new type being audited.
     * @return
     */
-  private[aloha] def changeType[C: RefInfo]: Auditor[K, T, C, T#TC[C]]
+  private[aloha] def changeType[C: RefInfo]: Option[Auditor[K, T, C, T#TC[C]]]
 
   /**
     * @return reflection information about the type of values being audited.
