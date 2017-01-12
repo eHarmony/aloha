@@ -38,17 +38,46 @@ class Take5Test {
     assertEquals(expected, actual)
   }
 
-  @Test def testFloatModel(): Unit = {
+  @Test def testHierarchicalModelWithIntModel(): Unit = {
     val anyInput = ()
-    val expected = 1.23f
+    val cId = ModelId(1, "const")
+    val cValue = 1
+    val constModel = IntModel(cId, cValue, IntTreeAuditor)
+
+    val hId = ModelId(2, "hier")
+    val hValue = "non-negative"
+    val hierModel = HierarchicalConstantModel(hId, hValue, constModel, StringTreeAuditor)
+
+    val expected = Tree(hId, StringValue(hValue), Seq(Tree(cId, IntValue(cValue))))
+    val actual = hierModel(anyInput)
+    assertEquals(expected, actual)
+  }
+
+
+  @Test def testIntModelOptionAuditor(): Unit = {
+    val anyInput = ()
+    val expected = 123
     val modelId = ModelId(1, "one")
 
-    val auditor = new OptionAuditor[Float]
-    val model = FloatModel(modelId, expected, auditor)
+    val auditor = new OptionAuditor[Int]
+    val model = IntModel(modelId, expected, auditor)
     val actual = model(anyInput)
 
     assertEquals(Option(expected), actual)
   }
+
+  @Test def testIntModelTreeAuditor(): Unit = {
+    val anyInput = ()
+    val expected = 123
+    val modelId = ModelId(1, "one")
+
+    val auditor = IntTreeAuditor
+    val model = IntModel(modelId, expected, auditor)
+    val actual = model(anyInput)
+
+    assertEquals(Tree(modelId, IntValue(expected)), actual)
+  }
+
 
   @Test def testChangeOptionAuditorType(): Unit = {
     val ia = OptionAuditor[Int]()

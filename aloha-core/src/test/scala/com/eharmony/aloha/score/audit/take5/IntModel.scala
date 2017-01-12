@@ -11,15 +11,15 @@ import com.eharmony.aloha.id.ModelIdentity
   * @tparam U
   * @tparam B
   */
-case class FloatModel[U, +B <: U](
+case class IntModel[U, +B <: U](
     modelId: ModelIdentity,
-    value: Float,
-    auditor: Auditor[U, _ >: Float <: Float, B]
-) extends AuditedModel[U, Float, Any, B] {
+    value: Int,
+    auditor: Auditor[U, _ >: Int <: Int, B]
+) extends AuditedModel[U, Int, Any, B] {
   override def apply(v1: Any): B = auditor.success(modelId, value, Set.empty, Nil, None)
 }
 
-object FloatModel {
+object IntModel {
 
   /**
     * A convenience method that is purely syntactic to enable proper type checking in Java.
@@ -35,7 +35,7 @@ object FloatModel {
     * `
     *
     * If instead of including this convenience method, we chose to change the definition of
-    * the `auditor` parameter in the [[FloatModel]] constructor to:
+    * the `auditor` parameter in the [[IntModel]] constructor to:
     *
     * {{{
     * auditor: Auditor[U, _ >: Float, B]
@@ -65,6 +65,6 @@ object FloatModel {
     * @tparam B The output type.
     * @return
     */
-//  def createFromJava[U, N >: Float <: Float, B <: U](modelId: ModelIdentity, value: Float, auditor: Auditor[U, N, B]): FloatModel[U, B] =
-//    FloatModel(modelId, value, auditor)
+  def createFromJava[U, N >: Int <: Int, B <: U](modelId: ModelIdentity, value: Int, auditor: Auditor[U, N, B]): IntModel[U, B] =
+    IntModel(modelId, value, auditor)
 }
