@@ -18,7 +18,7 @@ class Take5Test {
     val modelId = ModelId(1, "one")
     val constantValue = Option(expected)
     val auditor = TreeAuditor.intTreeAuditor
-    val model = ConstantModel(modelId, constantValue, auditor)
+    val model = ConstantModel(modelId, auditor, constantValue)
     val actual = model(anyInput).value.get.value
     assertEquals(expected, actual)
   }
@@ -27,7 +27,7 @@ class Take5Test {
     val anyInput = ()
     val cId = ModelId(1, "const")
     val cValue = 1
-    val constModel = ConstantModel(cId, Option(cValue), TreeAuditor.intTreeAuditor)
+    val constModel = ConstantModel(cId, TreeAuditor.intTreeAuditor, Option(cValue))
 
     val hId = ModelId(2, "hier")
     val hValue = "non-negative"
@@ -36,5 +36,17 @@ class Take5Test {
     val expected = Tree(hId, StringValue(hValue), Seq(Tree(cId, IntValue(cValue))))
     val actual = hierModel(anyInput)
     assertEquals(expected, actual)
+  }
+
+  @Test def testFloatModel(): Unit = {
+    val anyInput = ()
+    val expected = 1.23f
+    val modelId = ModelId(1, "one")
+
+    val auditor = new OptionAuditor[Float]
+    val model = FloatModel(modelId, expected, auditor)
+    val actual = model(anyInput)
+
+    assertEquals(Option(expected), actual)
   }
 }

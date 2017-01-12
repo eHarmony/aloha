@@ -9,10 +9,10 @@ import com.eharmony.aloha.reflect.RefInfo
 /**
   * Created by ryan on 1/9/17.
   */
-trait Auditor[U, A, +B <: U] {
+trait Auditor[U, -N, +B <: U] {
   type OutputType[+X] <: U
 
-  def changeType[C: RefInfo]: Option[Auditor[U, C, OutputType[C]]]
+  def changeType[M: RefInfo]: Option[Auditor[U, M, OutputType[M]]]
 
   private[aloha] def failure(key: ModelIdentity,
                              errorMsgs: => Seq[String],
@@ -20,7 +20,7 @@ trait Auditor[U, A, +B <: U] {
                              subValues: Seq[U]): B
 
   private[aloha] def success(key: ModelIdentity,
-                             valueToAudit: A,
+                             valueToAudit: N,
                              missingVarNames: => Set[String],
                              subValues: Seq[U],
                              prob: => Option[Double]): B
