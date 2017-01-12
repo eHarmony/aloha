@@ -17,8 +17,7 @@ class Take5Test {
     val expected = 1
     val modelId = ModelId(1, "one")
     val constantValue = Option(expected)
-    val auditor = TreeAuditor.intTreeAuditor
-    val model = ConstantModel(modelId, auditor, constantValue)
+    val model = ConstantModel(modelId, IntTreeAuditor, constantValue)
     val actual = model(anyInput).value.get.value
     assertEquals(expected, actual)
   }
@@ -27,11 +26,11 @@ class Take5Test {
     val anyInput = ()
     val cId = ModelId(1, "const")
     val cValue = 1
-    val constModel = ConstantModel(cId, TreeAuditor.intTreeAuditor, Option(cValue))
+    val constModel = ConstantModel(cId, IntTreeAuditor, Option(cValue))
 
     val hId = ModelId(2, "hier")
     val hValue = "non-negative"
-    val hierModel = HierarchicalConstantModel(hId, hValue, constModel, TreeAuditor.stringTreeAuditor)
+    val hierModel = HierarchicalConstantModel(hId, hValue, constModel, StringTreeAuditor)
 
     val expected = Tree(hId, StringValue(hValue), Seq(Tree(cId, IntValue(cValue))))
     val actual = hierModel(anyInput)
@@ -71,8 +70,7 @@ class Take5Test {
     val expected = 123
     val modelId = ModelId(1, "one")
 
-    val auditor = IntTreeAuditor
-    val model = IntModel(modelId, expected, auditor)
+    val model = IntModel(modelId, expected, IntTreeAuditor)
     val actual = model(anyInput)
 
     assertEquals(Tree(modelId, IntValue(expected)), actual)
