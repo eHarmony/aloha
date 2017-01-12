@@ -31,21 +31,25 @@ sealed abstract class TreeAuditor[N, +B <: Value] extends Auditor[TreeType, N, T
 
     aud.asInstanceOf[Option[TreeAuditor[M, Value]]]
   }
-}
 
-object TreeAuditor {
-  type TreeType = Tree[V] forSome { type V <: Value }
-  def intTreeAuditor: TreeAuditor[Int, IntValue] = IntTreeAuditor
-  def stringTreeAuditor: TreeAuditor[String, StringValue] = StringTreeAuditor
-}
-
-object IntTreeAuditor extends TreeAuditor[Int, IntValue] {
   override private[aloha] def failure(key: ModelIdentity,
                                       errorMsgs: => Seq[String],
                                       missingVarNames: => Set[String],
                                       subValues: Seq[TreeType]): Tree[Nothing] =
     tree(key, None, subValues)
+}
 
+object TreeAuditor {
+  /**
+    * `TreeType` is an existential type so that `TreeAuditor`s can be easily constructed in Java.
+    */
+  type TreeType = Tree[V] forSome { type V <: Value }
+
+  def intTreeAuditor: TreeAuditor[Int, IntValue] = IntTreeAuditor
+  def stringTreeAuditor: TreeAuditor[String, StringValue] = StringTreeAuditor
+}
+
+object IntTreeAuditor extends TreeAuditor[Int, IntValue] {
   override private[aloha] def success(key: ModelIdentity,
                                       valueToAudit: Int,
                                       missingVarNames: => Set[String],
@@ -55,12 +59,6 @@ object IntTreeAuditor extends TreeAuditor[Int, IntValue] {
 }
 
 object StringTreeAuditor extends TreeAuditor[String, StringValue] {
-  override private[aloha] def failure(key: ModelIdentity,
-                                      errorMsgs: => Seq[String],
-                                      missingVarNames: => Set[String],
-                                      subValues: Seq[TreeType]): Tree[Nothing] =
-    tree(key, None, subValues)
-
   override private[aloha] def success(key: ModelIdentity,
                                       valueToAudit: String,
                                       missingVarNames: => Set[String],

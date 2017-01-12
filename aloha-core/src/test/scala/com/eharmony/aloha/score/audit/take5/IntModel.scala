@@ -15,7 +15,7 @@ case class IntModel[U, +B <: U](
     modelId: ModelIdentity,
     value: Int,
     auditor: Auditor[U, Int, B]
-) extends AuditedModel[U, Int, Any, B] {
+) extends Model[Any, B] {
   override def apply(v1: Any): B = auditor.success(modelId, value, Set.empty, Nil, None)
 }
 

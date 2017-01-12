@@ -9,7 +9,7 @@ case class ConstantModel[U, N, +B <: U](
     modelId: ModelIdentity,
     auditor: Auditor[U, N, B],
     value: Option[N]
-) extends AuditedModel[U, N, Any, B] {
+) extends Model[Any, B] {
   def apply(ignored: Any): B = (
     value.fold(auditor.failure(modelId, Nil, Set.empty, Nil))
               (auditor.success(modelId, _, Set.empty, Nil, None))
