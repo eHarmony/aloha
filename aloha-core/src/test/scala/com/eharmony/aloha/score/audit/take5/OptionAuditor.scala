@@ -7,10 +7,9 @@ import scala.language.existentials
 /**
   * Created by ryan on 1/12/17.
   */
-class OptionAuditor[A] extends Auditor[Option[_], A, Option[A]] {
-  override type OutputType[+A] = Option[A]
-
-  override def changeType[M: RefInfo] = ???
+case class OptionAuditor[A]() extends Auditor[Option[_], A, Option[A]] {
+  override type OutputType[+B] = Option[B]
+  override def changeType[M: RefInfo]: Option[OptionAuditor[M]] = Option(OptionAuditor[M]())
 
   override private[aloha] def failure(key: ModelIdentity,
                                       errorMsgs: => Seq[String],
