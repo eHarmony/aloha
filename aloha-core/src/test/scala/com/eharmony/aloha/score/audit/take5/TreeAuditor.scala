@@ -54,7 +54,7 @@ object IntTreeAuditor extends TreeAuditor[Int, IntValue] {
                                       valueToAudit: Int,
                                       missingVarNames: => Set[String],
                                       subValues: Seq[TreeType],
-                                      prob: => Option[Double]): Tree[IntValue] =
+                                      prob: => Option[Float]): Tree[IntValue] =
     tree(key, Option(IntValue(valueToAudit)), subValues)
 }
 
@@ -63,7 +63,7 @@ object StringTreeAuditor extends TreeAuditor[String, StringValue] {
                                       valueToAudit: String,
                                       missingVarNames: => Set[String],
                                       subValues: Seq[TreeType],
-                                      prob: => Option[Double]): Tree[StringValue] =
+                                      prob: => Option[Float]): Tree[StringValue] =
     tree(key, Option(StringValue(valueToAudit)), subValues)
 }
 

@@ -17,6 +17,9 @@ case class ConstantModel[U, N, +B <: U](
 }
 
 object ConstantModel {
-  def createFromJava[U, N, B <: U](modelId: ModelIdentity, auditor: Auditor[U, N, B], value: Option[_ <: N]): ConstantModel[U, N, B] =
+  // TODO: Add some run time sanity checking for types since they don't mean anything to Java when N extends AnyVal.
+  def createFromJava[U, N, B <: U](modelId: ModelIdentity, auditor: Auditor[U, N, B], value: Option[_ <: N]): ConstantModel[U, N, B] = {
+
     ConstantModel(modelId, auditor, value)
+  }
 }
