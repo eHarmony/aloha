@@ -6,7 +6,7 @@ import com.eharmony.aloha.id.ModelIdentity
   * Created by ryan on 1/17/17.
   */
 case class IntSubmodelModel[U, S <: U, A, B <: U](modelId: ModelIdentity,
-                                                  submodel: AuditedModel[U, Int, A, S],
+                                                  submodel: Submodel[Int, A, S],
                                                   auditor: Auditor[U, Int, B]) extends Model[A, B] {
   def apply(a: A): B = {
     val (s, oi) = submodel.subValue(a)

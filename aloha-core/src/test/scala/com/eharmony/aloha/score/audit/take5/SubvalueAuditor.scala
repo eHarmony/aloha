@@ -3,22 +3,11 @@ package com.eharmony.aloha.score.audit.take5
 import com.eharmony.aloha.id.ModelIdentity
 
 /**
-  * Created by ryan on 1/17/17.
+  * Created by ryan on 1/18/17.
   */
+case class SubvalueAuditor[U, N, +B <: U](auditor: Auditor[U, N, B])
+   extends Auditor[(U, Option[N]), N, (B, Option[N])] {
 
-trait AuditableFunction[A, N] {
-  def apply[U, B <: U](auditor: Auditor[U, N, B], a: A): B
-}
-
-trait AuditedModel[U, N, A, B <: U] extends Model[A, B]
-                                       with AuditableFunction[A, N] {
-  def auditor: Auditor[U, N, B]
-  def apply(a: A): B = apply(auditor, a)
-  def subValueAuditor: Auditor[(U, Option[N]), N, (B, Option[N])]
-  def subValue(a: A): (B, Option[N]) = apply(subValueAuditor, a)
-}
-
-case class SubValueAuditor[U, N, B <: U](auditor: Auditor[U, N, B]) extends Auditor[(U, Option[N]), N, (B, Option[N])] {
   override private[aloha] def failure(key: ModelIdentity,
                                       errorMsgs: => Seq[String],
                                       missingVarNames: => Set[String],
