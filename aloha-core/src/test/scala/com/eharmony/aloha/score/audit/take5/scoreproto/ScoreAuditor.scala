@@ -3,8 +3,8 @@ package com.eharmony.aloha.score.audit.take5.scoreproto
 import com.eharmony.aloha.id.ModelIdentity
 import com.eharmony.aloha.reflect.RefInfo
 import com.eharmony.aloha.score.Scores.Score
-import com.eharmony.aloha.score.Scores.Score._
 import com.eharmony.aloha.score.Scores.Score.BaseScore.ScoreType
+import com.eharmony.aloha.score.Scores.Score._
 import com.eharmony.aloha.score.audit.take5.Auditor
 
 import scala.collection.JavaConversions.{asJavaIterable, iterableAsScalaIterable}
@@ -20,7 +20,7 @@ object ScoreAuditor {
 
   def apply[N](implicit ri: RefInfo[N]): Option[ScoreAuditor[N]] = {
     ri match {
-      case RefInfo.Nothing => opt(NothingAuditor)
+//      case RefInfo.Nothing => opt(NothingAuditor)
       case RefInfo.Boolean => opt(BooleanAuditor)
       case RefInfo.Byte => opt(ByteAuditor)
       case RefInfo.Short => opt(ShortAuditor)
@@ -33,7 +33,7 @@ object ScoreAuditor {
     }
   }
 
-  def nothingAuditor: ScoreAuditor[Nothing] = NothingAuditor
+//  def nothingAuditor: ScoreAuditor[Nothing] = NothingAuditor
   def booleanAuditor: ScoreAuditor[Boolean] = BooleanAuditor
   def byteAuditor: ScoreAuditor[Byte] = ByteAuditor
   def shortAuditor: ScoreAuditor[Short] = ShortAuditor
@@ -69,7 +69,7 @@ object ScoreAuditor {
       */
     def boxScore(valueToAudit: N): BaseScore.Builder
 
-    override final def changeType[M: RefInfo]: Option[ScoreAuditor[M]] = ScoreAuditor[M]
+//    override final def changeType[M: RefInfo]: Option[ScoreAuditor[M]] = ScoreAuditor[M]
 
     private[aloha] override final def failure(key: ModelIdentity,
                                               errorMsgs: => Seq[String],
@@ -114,10 +114,10 @@ object ScoreAuditor {
     }
   }
 
-  private[this] object NothingAuditor extends ScoreAuditorImpl[Nothing] {
-    override def boxScore(valueToAudit: Nothing): BaseScore.Builder =
-      BaseScore.newBuilder.setType(ScoreType.NONE)
-  }
+//  private[this] object NothingAuditor extends ScoreAuditorImpl[Nothing] {
+//    override def boxScore(valueToAudit: Nothing): BaseScore.Builder =
+//      BaseScore.newBuilder.setType(ScoreType.NONE)
+//  }
 
   private[this] object BooleanAuditor extends ScoreAuditorImpl[Boolean] {
     override def boxScore(valueToAudit: Boolean): BaseScore.Builder =
@@ -125,6 +125,13 @@ object ScoreAuditor {
         BooleanScore.impl,
         BooleanScore.newBuilder.setScore(valueToAudit).build
       )
+
+    private[aloha] def unapply(value: Score): Option[Boolean] = {
+      val v = value.getScore.getExtension(BooleanScore.impl)
+      if (v.hasScore)
+        Some(v.getScore)
+      else None
+    }
   }
 
   private[this] object ByteAuditor extends ScoreAuditorImpl[Byte] {
@@ -133,6 +140,17 @@ object ScoreAuditor {
         IntScore.impl,
         IntScore.newBuilder.setScore(valueToAudit).build
       )
+
+    private[aloha] def unapply(value: Score): Option[Byte] = {
+      val v = value.getScore.getExtension(IntScore.impl)
+      if (v.hasScore) {
+        val sc = v.getScore
+        if (Byte.MinValue <= sc && sc <= Byte.MaxValue)
+          Some(sc.toByte)
+        else None
+      }
+      else None
+    }
   }
 
   private[this] object ShortAuditor extends ScoreAuditorImpl[Short] {
@@ -141,6 +159,17 @@ object ScoreAuditor {
         IntScore.impl,
         IntScore.newBuilder.setScore(valueToAudit).build
       )
+
+    private[aloha] def unapply(value: Score): Option[Short] = {
+      val v = value.getScore.getExtension(IntScore.impl)
+      if (v.hasScore) {
+        val sc = v.getScore
+        if (Short.MinValue <= sc && sc <= Short.MaxValue)
+          Some(sc.toShort)
+        else None
+      }
+      else None
+    }
   }
 
   private[this] object IntAuditor extends ScoreAuditorImpl[Int] {
@@ -149,6 +178,13 @@ object ScoreAuditor {
         IntScore.impl,
         IntScore.newBuilder.setScore(valueToAudit).build
       )
+
+    private[aloha] def unapply(value: Score): Option[Int] = {
+      val v = value.getScore.getExtension(IntScore.impl)
+      if (v.hasScore)
+        Some(v.getScore)
+      else None
+    }
   }
 
   private[this] object LongAuditor extends ScoreAuditorImpl[Long] {
@@ -157,6 +193,13 @@ object ScoreAuditor {
         LongScore.impl,
         LongScore.newBuilder.setScore(valueToAudit).build
       )
+
+    private[aloha] def unapply(value: Score): Option[Long] = {
+      val v = value.getScore.getExtension(LongScore.impl)
+      if (v.hasScore)
+        Some(v.getScore)
+      else None
+    }
   }
 
   private[this] object FloatAuditor extends ScoreAuditorImpl[Float] {
@@ -165,6 +208,13 @@ object ScoreAuditor {
         FloatScore.impl,
         FloatScore.newBuilder.setScore(valueToAudit).build
       )
+
+    private[aloha] def unapply(value: Score) = {
+      val v = value.getScore.getExtension(FloatScore.impl)
+      if (v.hasScore)
+        Some(v.getScore)
+      else None
+    }
   }
 
   private[this] object DoubleAuditor extends ScoreAuditorImpl[Double] {
@@ -173,6 +223,13 @@ object ScoreAuditor {
         DoubleScore.impl,
         DoubleScore.newBuilder.setScore(valueToAudit).build
       )
+
+    private[aloha] def unapply(value: Score) = {
+      val v = value.getScore.getExtension(DoubleScore.impl)
+      if (v.hasScore)
+        Some(v.getScore)
+      else None
+    }
   }
 
   private[this] object StringAuditor extends ScoreAuditorImpl[String] {
@@ -181,5 +238,12 @@ object ScoreAuditor {
         StringScore.impl,
         StringScore.newBuilder.setScore(valueToAudit).build
       )
+
+    private[aloha] def unapply(value: Score) = {
+      val v = value.getScore.getExtension(StringScore.impl)
+      if (v.hasScore)
+        Some(v.getScore)
+      else None
+    }
   }
 }

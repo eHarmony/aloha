@@ -3,21 +3,27 @@ package com.eharmony.aloha.score.audit.take5.scoreproto;
 import com.eharmony.aloha.id.ModelId;
 import com.eharmony.aloha.score.Scores.Score;
 import com.eharmony.aloha.score.audit.take5.ConstantModel;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import scala.Option;
+import scala.collection.immutable.List;
+import scala.collection.immutable.List$;
+
+import static org.junit.Assert.assertEquals;
 
 /**
- * Created by ryan on 1/17/17.
+ * @author rdeak
  */
 @RunWith(BlockJUnit4ClassRunner.class)
 public class JavaScoreAuditorTest {
     @Rule
-    public ExpectedException thrown= ExpectedException.none();
+    public ExpectedException thrown = ExpectedException.none();
 
+    @Ignore
     @Test
     public void testBooleanConstantModel() {
         final Object anyInput = "";
@@ -28,7 +34,11 @@ public class JavaScoreAuditorTest {
                 ConstantModel.createFromJava(id, auditor, constant);
 
         final Score score = model.apply(anyInput);
-        System.out.println(score);
+
+        // Cannot use assertTrue because Java erases auditor's type parameter (which should be Boolean).
+//        assertEquals(true, auditor.unapply(score).get());
+//        assertEquals(id.getId(), score.getScore().getModel().getId());
+//        assertEquals(id.getName(), score.getScore().getModel().getName());
     }
 
     @Test

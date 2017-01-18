@@ -21,16 +21,16 @@ sealed abstract class TreeAuditor[N, +B <: Value] extends Auditor[TreeType, N, T
     )
   }
 
-  override type OutputType[+X] = Tree[Value]
-
-  override def changeType[M: RefInfo]: Option[TreeAuditor[M, Value]] = {
-    val ri = RefInfo[M]
-    val aud = if (ri == RefInfo.Int) Option(IntTreeAuditor)
-              else if (ri == RefInfo.String) Option(StringTreeAuditor)
-              else None
-
-    aud.asInstanceOf[Option[TreeAuditor[M, Value]]]
-  }
+//  override type OutputType[+X] = Tree[Value]
+//
+//  override def changeType[M: RefInfo]: Option[TreeAuditor[M, Value]] = {
+//    val ri = RefInfo[M]
+//    val aud = if (ri == RefInfo.Int) Option(IntTreeAuditor)
+//              else if (ri == RefInfo.String) Option(StringTreeAuditor)
+//              else None
+//
+//    aud.asInstanceOf[Option[TreeAuditor[M, Value]]]
+//  }
 
   override private[aloha] def failure(key: ModelIdentity,
                                       errorMsgs: => Seq[String],
@@ -56,6 +56,13 @@ object IntTreeAuditor extends TreeAuditor[Int, IntValue] {
                                       subValues: Seq[TreeType],
                                       prob: => Option[Float]): Tree[IntValue] =
     tree(key, Option(IntValue(valueToAudit)), subValues)
+
+  private[aloha] def unapply(value: Tree[Value]): Option[Int] = {
+    value.value match {
+      case Some(IntValue(v)) => Some(v)
+      case _ => None
+    }
+  }
 }
 
 object StringTreeAuditor extends TreeAuditor[String, StringValue] {
@@ -65,5 +72,12 @@ object StringTreeAuditor extends TreeAuditor[String, StringValue] {
                                       subValues: Seq[TreeType],
                                       prob: => Option[Float]): Tree[StringValue] =
     tree(key, Option(StringValue(valueToAudit)), subValues)
+
+  private[aloha] def unapply(value: Tree[Value]): Option[String] = {
+    value.value match {
+      case Some(StringValue(v)) => Some(v)
+      case _ => None
+    }
+  }
 }
 
