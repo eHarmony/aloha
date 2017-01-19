@@ -56,7 +56,7 @@ public class JavaTake5Test {
         final ModelId hId = new ModelId(2, "hier");
         final String hValue = "non-negative";
 
-        final HierarchicalConstantModel<Tree<? extends Value>, String, Object, Tree<StringValue>> hierModel =
+        final HierarchicalConstantModel<Tree<? extends Value>, Object, String, Object, Tree<StringValue>> hierModel =
                 HierarchicalConstantModel.createFromJava(hId, hValue, constModel, TreeAuditor.stringTreeAuditor());
 
         final Tree<StringValue> expected = hierarchicalOutput(cId, cValue, hId, hValue);
@@ -76,7 +76,7 @@ public class JavaTake5Test {
         final ModelId hId = new ModelId(2, "hier");
         final String hValue = "non-negative";
 
-        final HierarchicalConstantModel<Tree<? extends Value>, String, Object, Tree<StringValue>> hierModel =
+        final HierarchicalConstantModel<Tree<? extends Value>, Object, String, Object, Tree<StringValue>> hierModel =
                 HierarchicalConstantModel.createFromJava(hId, hValue, constModel, TreeAuditor.stringTreeAuditor());
 
         final Tree<StringValue> expected = hierarchicalOutput(cId, cValue, hId, hValue);

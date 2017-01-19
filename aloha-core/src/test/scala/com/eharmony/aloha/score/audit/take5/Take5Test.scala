@@ -77,33 +77,33 @@ class Take5Test {
   }
 
 
-//  @Test def testChangeOptionAuditorType(): Unit = {
-//    val ia = OptionAuditor[Int]()
-//    val ofa = ia.changeType[Float]
-//    assertEquals(Option(OptionAuditor[Float]()), ofa)
-//  }
-//
-//  @Test def testChangedOptionAuditorAuditsCorrectly(): Unit = {
-//    val f = 1.23f
-//    val ofa = OptionAuditor[Int]().changeType[Float]
-//    assertEquals(Option(f), ofa.flatMap(a => a.success(null, f, null, null, null)))
-//  }
-//
-//  @Test def testChangeTreeAuditorType(): Unit = {
-//    assertEquals(Option(IntTreeAuditor), IntTreeAuditor.changeType[Int])
-//    assertEquals(Option(IntTreeAuditor), StringTreeAuditor.changeType[Int])
-//
-//    assertEquals(Option(StringTreeAuditor), IntTreeAuditor.changeType[String])
-//    assertEquals(Option(StringTreeAuditor), StringTreeAuditor.changeType[String])
-//
-//    assertEquals(None, IntTreeAuditor.changeType[Float])
-//    assertEquals(None, StringTreeAuditor.changeType[Float])
-//  }
-//
-//  @Test def testChangedTreeAuditorAuditsCorrectly(): Unit = {
-//    val id = ModelId(1, "2")
-//    val valueToAudit = 3
-//    val v = StringTreeAuditor.changeType[Int].map(a => a.success(id, valueToAudit, Set.empty, Nil, None))
-//    assertEquals(Option(Tree(id, IntValue(valueToAudit))), v)
-//  }
+  @Test def testChangeOptionAuditorType(): Unit = {
+    val ia = OptionAuditor[Int]()
+    val ofa = ia.changeType[Float]
+    assertEquals(Option(OptionAuditor[Float]()), ofa)
+  }
+
+  @Test def testChangedOptionAuditorAuditsCorrectly(): Unit = {
+    val f = 1.23f
+    val ofa = OptionAuditor[Int]().changeType[Float]
+    assertEquals(Option(f), ofa.flatMap(a => a.success(null, f, null, null, null)))
+  }
+
+  @Test def testChangeTreeAuditorType(): Unit = {
+    assertEquals(Option(IntTreeAuditor), IntTreeAuditor.changeType[Int])
+    assertEquals(Option(IntTreeAuditor), StringTreeAuditor.changeType[Int])
+
+    assertEquals(Option(StringTreeAuditor), IntTreeAuditor.changeType[String])
+    assertEquals(Option(StringTreeAuditor), StringTreeAuditor.changeType[String])
+
+    assertEquals(None, IntTreeAuditor.changeType[Float])
+    assertEquals(None, StringTreeAuditor.changeType[Float])
+  }
+
+  @Test def testChangedTreeAuditorAuditsCorrectly(): Unit = {
+    val id = ModelId(1, "2")
+    val valueToAudit = 3
+    val v = StringTreeAuditor.changeType[Int].map(a => a.success(id, valueToAudit, Set.empty, Nil, None))
+    assertEquals(Option(Tree(id, IntValue(valueToAudit))), v)
+  }
 }

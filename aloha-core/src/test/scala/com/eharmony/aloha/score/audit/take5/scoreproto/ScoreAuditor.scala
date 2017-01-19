@@ -5,14 +5,14 @@ import com.eharmony.aloha.reflect.RefInfo
 import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.aloha.score.Scores.Score.BaseScore.ScoreType
 import com.eharmony.aloha.score.Scores.Score._
-import com.eharmony.aloha.score.audit.take5.Auditor
+import com.eharmony.aloha.score.audit.take5.MorphableAuditor
 
 import scala.collection.JavaConversions.{asJavaIterable, iterableAsScalaIterable}
 
 /**
   * Created by ryan on 1/17/17.
   */
-sealed abstract class ScoreAuditor[N] extends Auditor[Score, N, Score] {
+sealed abstract class ScoreAuditor[N] extends MorphableAuditor[Score, N, Score] {
   type OutputType[+X] = Score
 }
 
@@ -62,14 +62,14 @@ object ScoreAuditor {
       * Convert an audited value of the natural type to a `BaseScore.Builder`.
       * This builder will be augmented with the model ID and possibly a probablity of
       * the score being produced randomly.  This builder will be built prior to return
-      * from the [[Auditor]] API.
+      * from the [[MorphableAuditor]] API.
       *
       * @param valueToAudit a value that is audited
       * @return a BaseScore.Builder based on the value being audited.
       */
     def boxScore(valueToAudit: N): BaseScore.Builder
 
-//    override final def changeType[M: RefInfo]: Option[ScoreAuditor[M]] = ScoreAuditor[M]
+    override final def changeType[M: RefInfo]: Option[ScoreAuditor[M]] = ScoreAuditor[M]
 
     private[aloha] override final def failure(key: ModelIdentity,
                                               errorMsgs: => Seq[String],

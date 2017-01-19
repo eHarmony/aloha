@@ -10,10 +10,9 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import scala.Option;
-import scala.collection.immutable.List;
-import scala.collection.immutable.List$;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author rdeak
@@ -29,16 +28,20 @@ public class JavaScoreAuditorTest {
         final Object anyInput = "";
         final ScoreAuditor<Object> auditor = ScoreAuditor.booleanAuditor();
         final ModelId id = new ModelId(1, "one");
-        final Option<Boolean> constant = Option.apply(true);
+        final boolean value = true;
+        final Option<Boolean> constant = Option.apply(value);
         final ConstantModel<Score, Object, Score> model =
                 ConstantModel.createFromJava(id, auditor, constant);
 
         final Score score = model.apply(anyInput);
 
         // Cannot use assertTrue because Java erases auditor's type parameter (which should be Boolean).
-//        assertEquals(true, auditor.unapply(score).get());
-//        assertEquals(id.getId(), score.getScore().getModel().getId());
-//        assertEquals(id.getName(), score.getScore().getModel().getName());
+        final Score.BooleanScore bs = score.getScore().getExtension(Score.BooleanScore.impl);
+        assertTrue(bs.hasScore());
+        assertEquals(value, bs.getScore());
+
+        assertEquals(id.getId(), score.getScore().getModel().getId());
+        assertEquals(id.getName(), score.getScore().getModel().getName());
     }
 
     @Test

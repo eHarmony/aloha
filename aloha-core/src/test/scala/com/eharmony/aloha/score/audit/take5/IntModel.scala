@@ -11,12 +11,13 @@ import com.eharmony.aloha.id.ModelIdentity
   * @tparam U
   * @tparam B
   */
-case class IntModel[U, +B <: U](
+case class IntModel[U, B <: U](
     modelId: ModelIdentity,
     value: Int,
     auditor: Auditor[U, Int, B]
-) extends Model[Any, B] {
-  override def apply(v1: Any): B = auditor.success(modelId, value, Set.empty, Nil, None)
+) extends SubmodelBase[U, Int, Any, B] {
+  override def subvalue(a: Any): Subvalue[B, Int] =
+    Subvalue(auditor.success(modelId, value, Set.empty, Nil, None), Option(value))
 }
 
 object IntModel {

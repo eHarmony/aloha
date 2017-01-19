@@ -5,12 +5,10 @@ import com.eharmony.aloha.reflect.RefInfo
 import com.eharmony.aloha.score.audit.support.{IntValue, StringValue, Tree, Value}
 import com.eharmony.aloha.score.audit.take5.TreeAuditor.TreeType
 
-import scala.language.existentials
-
 /**
   * Created by ryan on 1/11/17.
   */
-sealed abstract class TreeAuditor[N, +B <: Value] extends Auditor[TreeType, N, Tree[B]] {
+sealed abstract class TreeAuditor[N, +B <: Value] extends MorphableAuditor[TreeType, N, Tree[B]] {
   protected[this] def tree[V <: Value](key: ModelIdentity, value: Option[V], children: Seq[Tree[Value]]): Tree[V] = {
     value.fold[Tree[V]](
       if (children.isEmpty) Tree(key)
@@ -21,16 +19,16 @@ sealed abstract class TreeAuditor[N, +B <: Value] extends Auditor[TreeType, N, T
     )
   }
 
-//  override type OutputType[+X] = Tree[Value]
-//
-//  override def changeType[M: RefInfo]: Option[TreeAuditor[M, Value]] = {
-//    val ri = RefInfo[M]
-//    val aud = if (ri == RefInfo.Int) Option(IntTreeAuditor)
-//              else if (ri == RefInfo.String) Option(StringTreeAuditor)
-//              else None
-//
-//    aud.asInstanceOf[Option[TreeAuditor[M, Value]]]
-//  }
+  override type OutputType[+X] = Tree[Value]
+
+  override def changeType[M: RefInfo]: Option[TreeAuditor[M, Value]] = {
+    val ri = RefInfo[M]
+    val aud = if (ri == RefInfo.Int) Option(IntTreeAuditor)
+              else if (ri == RefInfo.String) Option(StringTreeAuditor)
+              else None
+
+    aud.asInstanceOf[Option[TreeAuditor[M, Value]]]
+  }
 
   override private[aloha] def failure(key: ModelIdentity,
                                       errorMsgs: => Seq[String],
@@ -53,31 +51,17 @@ object IntTreeAuditor extends TreeAuditor[Int, IntValue] {
   override private[aloha] def success(key: ModelIdentity,
                                       valueToAudit: Int,
                                       missingVarNames: => Set[String],
-                                      subValues: Seq[TreeType],
+                                      subvalues: Seq[TreeType],
                                       prob: => Option[Float]): Tree[IntValue] =
-    tree(key, Option(IntValue(valueToAudit)), subValues)
-
-  private[aloha] def unapply(value: Tree[Value]): Option[Int] = {
-    value.value match {
-      case Some(IntValue(v)) => Some(v)
-      case _ => None
-    }
-  }
+    tree(key, Option(IntValue(valueToAudit)), subvalues)
 }
 
 object StringTreeAuditor extends TreeAuditor[String, StringValue] {
   override private[aloha] def success(key: ModelIdentity,
                                       valueToAudit: String,
                                       missingVarNames: => Set[String],
-                                      subValues: Seq[TreeType],
+                                      subvalues: Seq[TreeType],
                                       prob: => Option[Float]): Tree[StringValue] =
-    tree(key, Option(StringValue(valueToAudit)), subValues)
-
-  private[aloha] def unapply(value: Tree[Value]): Option[String] = {
-    value.value match {
-      case Some(StringValue(v)) => Some(v)
-      case _ => None
-    }
-  }
+    tree(key, Option(StringValue(valueToAudit)), subvalues)
 }
 
