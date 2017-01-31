@@ -4,7 +4,6 @@ import com.eharmony.aloha.FileLocations
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.io.vfs.{Vfs, VfsType}
-import com.eharmony.aloha.models.Model
 import com.eharmony.aloha.models.h2o.H2oModel.Features
 import com.eharmony.aloha.models.h2o.json.{DoubleH2oSpec, H2oSpec}
 import com.eharmony.aloha.reflect.RefInfo

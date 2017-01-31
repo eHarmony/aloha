@@ -1,18 +1,17 @@
 package com.eharmony.aloha.models.exploration
 
-import com.eharmony.aloha.factory.ModelFactory
-import com.eharmony.aloha.models.{AnySemanticsWithoutFunctionCreation, ConstantModel}
-import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.StringScoreConverter
+import com.eharmony.aloha.audit.impl.OptionAuditor
+import com.eharmony.aloha.factory.NewModelFactory
+import com.eharmony.aloha.models.AnySemanticsWithoutFunctionCreation
 import org.junit.Assert._
 import org.junit.Test
 import spray.json._
-import spray.json.DefaultJsonProtocol._
 
 /**
   * Created by jmorra on 2/26/16.
   */
 class BootstrapModelParserTest {
-  private[this] val reader = BootstrapModel.Parser.modelJsonReader[Any, String](ModelFactory(ConstantModel.parser), Option(AnySemanticsWithoutFunctionCreation))
+  private[this] val factory = NewModelFactory.defaultFactory(AnySemanticsWithoutFunctionCreation, OptionAuditor[String]())
 
   @Test def goodModel() {
     val js =
@@ -35,11 +34,12 @@ class BootstrapModelParserTest {
         | ],
         | "classLabels": ["a", "b", "c"]
         |}
-      """.stripMargin.parseJson
+      """.stripMargin
 
-    val m = reader.read(js)
+
+    val m = factory.fromString(js).get
     val s = m(null)
-    assertEquals("b", s.get)
+    assertEquals(Option("b"), s)
   }
 
   @Test(expected = classOf[DeserializationException]) def noClassLabels() {
@@ -62,9 +62,9 @@ class BootstrapModelParserTest {
         |   }
         | ]
         |}
-      """.stripMargin.parseJson
+      """.stripMargin
 
-    reader.read(js)
+    factory.fromString(js).get
   }
 
   @Test(expected = classOf[DeserializationException]) def noSalt() {
@@ -87,9 +87,9 @@ class BootstrapModelParserTest {
         | ],
         | "classLabels": ["a", "b", "c"]
         |}
-      """.stripMargin.parseJson
+      """.stripMargin
 
-    reader.read(js)
+    factory.fromString(js).get
   }
 
   @Test(expected = classOf[DeserializationException]) def noPolicies() {
@@ -101,8 +101,8 @@ class BootstrapModelParserTest {
         | "salt": 0,
         | "classLabels": ["a", "b", "c"]
         |}
-      """.stripMargin.parseJson
+      """.stripMargin
 
-    reader.read(js)
+    factory.fromString(js).get
   }
 }

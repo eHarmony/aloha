@@ -1,77 +1,72 @@
 package com.eharmony.aloha.models
 
-import org.junit.runner.RunWith
-import org.junit.internal.runners.JUnit4ClassRunner
-import org.junit.Test
-import org.junit.Assert._
-
-import spray.json._
-import spray.json.DefaultJsonProtocol._
-
-import com.eharmony.aloha.factory.ModelFactory
-import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.IntScoreConverter
+import com.eharmony.aloha.audit.impl.OptionAuditor
+import com.eharmony.aloha.factory.NewModelFactory
 import com.eharmony.aloha.factory.ex.AlohaFactoryException
+import com.eharmony.aloha.semantics.NoSemantics
+import org.junit.Assert._
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.BlockJUnit4ClassRunner
 
-@RunWith(classOf[JUnit4ClassRunner])
+@RunWith(classOf[BlockJUnit4ClassRunner])
 class ConstantModelParserTest {
 
+  private val factory = NewModelFactory.defaultFactory(NoSemantics[String](), OptionAuditor[Int]())
 
-    @Test def testValueOnly() {
-        val js =
-            """
-              |{
-              |  "modelType": "Constant",
-              |  "modelId": {"id": 0, "name": ""},
-              |  "value": 1
-              |}
-            """.stripMargin.parseJson
 
-        val f = ModelFactory(ConstantModel.parser)
-        val m = f.getModel[String, Int](js).get
-        val s = m(null)
-        assertEquals(1, s.get)
-    }
+  @Test def testValueOnly() {
+    val js =
+      """
+        |{
+        |  "modelType": "Constant",
+        |  "modelId": {"id": 0, "name": ""},
+        |  "value": 1
+        |}
+      """.stripMargin
 
-    @Test(expected = classOf[Exception])
-    def testNoOutputSpecified() {
-        val js =
-            """
-              |{
-              |  "modelType": "Constant",
-              |  "modelId": {"id": 0, "name": ""}
-              |}
-            """.stripMargin.parseJson
+    val m = factory.fromString(js).get
+    val s = m(null)
+    assertEquals(Option(1), s)
+  }
 
-        val f = ModelFactory(ConstantModel.parser)
-        val m = f.getModel[String, Int](js)
-        m.get
-    }
+  @Test(expected = classOf[Exception])
+  def testNoOutputSpecified() {
+    val js =
+      """
+        |{
+        |  "modelType": "Constant",
+        |  "modelId": {"id": 0, "name": ""}
+        |}
+      """.stripMargin
 
-    @Test(expected = classOf[Exception])
-    def testNoModelIdSpecified() {
-        val js =
-            """
-              |{
-              |  "modelType": "Constant",
-              |  "value": 1
-              |}
-            """.stripMargin.parseJson
+    val m = factory.fromString(js)
+    m.get
+  }
 
-        val f = ModelFactory(ConstantModel.parser)
-        val m = f.getModel[String, Int](js)
-        m.get
-    }
+  @Test(expected = classOf[Exception])
+  def testNoModelIdSpecified() {
+    val js =
+      """
+        |{
+        |  "modelType": "Constant",
+        |  "value": 1
+        |}
+      """.stripMargin
 
-    @Test(expected = classOf[AlohaFactoryException])
-    def testNothingSpecified() {
-        val js =
-            """
-              |{
-              |}
-            """.stripMargin.parseJson
+    val m = factory.fromString(js)
+    m.get
+  }
 
-        val f = ModelFactory(ConstantModel.parser)
-        val m = f.getModel[String, Int](js)
-        m.get
-    }
+  @Test(expected = classOf[AlohaFactoryException])
+  def testNothingSpecified() {
+    val js =
+      """
+        |{
+        |}
+      """.stripMargin
+
+    val m = factory.fromString(js)
+    m.get
+  }
 }

@@ -9,7 +9,6 @@ import com.eharmony.aloha.id.{ModelId, ModelIdentity}
 import com.eharmony.aloha.io.AlohaReadable
 import com.eharmony.aloha.io.sources.{Base64StringSource, ExternalSource, ModelSource}
 import com.eharmony.aloha.io.vfs.Vfs
-import com.eharmony.aloha.models.BaseModel
 import com.eharmony.aloha.models.h2o.H2oModel.Features
 import com.eharmony.aloha.models.h2o.categories._
 import com.eharmony.aloha.models.h2o.compiler.Compiler

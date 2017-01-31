@@ -1,21 +1,16 @@
 package com.eharmony.aloha.models.conversion;
 
-import com.eharmony.aloha.factory.TypedModelFactory;
+import com.eharmony.aloha.audit.impl.TreeAuditor;
+import com.eharmony.aloha.factory.NewModelFactory;
 import com.eharmony.aloha.models.Model;
-import com.eharmony.aloha.score.Scores;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import scala.util.Try;
-
-import static com.eharmony.aloha.models.conversion.DoubleToLongModelTest.getJavaLongFactory;
-import static com.eharmony.aloha.models.conversion.DoubleToLongModelTest.goodJson;
-import static com.eharmony.aloha.models.conversion.DoubleToLongModelTest.stringInnerModelType;
-import static com.eharmony.aloha.models.conversion.DoubleToLongModelTest.booleanInnerModelType;
-
-import com.eharmony.aloha.score.conversions.RelaxedConversions;
 import spray.json.DeserializationException;
+
+import static com.eharmony.aloha.models.conversion.DoubleToLongModelTest.*;
+import static org.junit.Assert.*;
 
 
 @RunWith(BlockJUnit4ClassRunner.class)
@@ -23,20 +18,22 @@ public class DoubleToLongJavaTest {
 
     @Test
     public void test() {
-        final TypedModelFactory<Object,Long> factory = getJavaLongFactory();
+        final NewModelFactory<TreeAuditor.Tree<?>, Long, Object, TreeAuditor.Tree<Long>> factory = getJavaLongFactory();
         final String json = goodJson();
-        final Try<Model<Object,Long>> modelTry = factory.fromString(json);
+        final Try<Model<Object, TreeAuditor.Tree<Long>>> modelTry = factory.fromString(json);
 
-        final Model<Object, Long> m = modelTry.get();
-        final Scores.Score s = m.score(null);
+        final Model<Object, TreeAuditor.Tree<Long>> m = modelTry.get();
+        final TreeAuditor.Tree<Long> s = m.apply(null);
 
-        assertEquals(1l, RelaxedConversions.asJavaLong(s).longValue());
-        assertFalse(s.hasError());
-        assertEquals(1, s.getSubScoresCount());
-        assertEquals(1.00000001, RelaxedConversions.asJavaDouble(s.getSubScores(0)), 0);
-        assertFalse(s.getSubScores(0).hasError());
-        assertTrue(s.getSubScores(0).hasScore());
-        assertEquals(0, s.getSubScores(0).getSubScoresCount());
+        final TreeAuditor.Tree<Object> sub = s.subvalues().head();
+
+        assertEquals(1l, s.value().get().longValue());
+        assertTrue(s.errorMsgs().isEmpty() && s.missingVarNames().isEmpty());
+        assertEquals(1, s.subvalues().size());
+        assertEquals(1.00000001, (double) sub.value().get(), 0);
+        assertTrue(sub.errorMsgs().isEmpty() && sub.missingVarNames().isEmpty());
+        assertTrue(sub.value().isDefined());
+        assertTrue(sub.subvalues().isEmpty());
     }
 
     @Test

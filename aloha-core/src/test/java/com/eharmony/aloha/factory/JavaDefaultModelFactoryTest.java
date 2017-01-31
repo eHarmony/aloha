@@ -3,16 +3,19 @@ package com.eharmony.aloha.factory;
 import java.io.InputStream;
 import java.io.StringReader;
 
-import java.util.Map;
-import java.util.Iterator;
-import java.util.Collection;
-import java.util.Arrays;
+import java.util.*;
 
+import com.eharmony.aloha.audit.MorphableAuditor;
+import com.eharmony.aloha.audit.impl.TreeAuditor;
 import com.eharmony.aloha.models.conversion.DoubleToLongModel;
 import com.eharmony.aloha.models.exploration.BootstrapModel;
 import com.eharmony.aloha.models.exploration.EpsilonGreedyModel;
+import com.eharmony.aloha.reflect.RefInfo;
+import com.eharmony.aloha.semantics.NoSemantics;
+import com.eharmony.aloha.semantics.Semantics;
 import scala.collection.JavaConversions;
 import scala.collection.immutable.List;
+import scala.reflect.Manifest;
 import scala.util.Try;
 
 import org.junit.Test;
@@ -22,11 +25,6 @@ import static org.junit.Assert.*;
 
 import org.apache.commons.io.input.ReaderInputStream;
 
-import com.fasterxml.classmate.GenericType;
-import com.fasterxml.classmate.ResolvedType;
-import com.fasterxml.classmate.TypeResolver;
-
-import com.eharmony.aloha.interop.DoubleFactoryInfo;
 import com.eharmony.aloha.io.sources.InputStreamReadableSource;
 import com.eharmony.aloha.io.sources.ReaderReadableSource;
 import com.eharmony.aloha.io.sources.ReadableSourceConverters;
@@ -38,13 +36,8 @@ import com.eharmony.aloha.models.reg.RegressionModel;
 import com.eharmony.aloha.models.tree.decision.BasicDecisionTree;
 import com.eharmony.aloha.models.tree.decision.ModelDecisionTree;
 
-import com.eharmony.aloha.score.Scores;
 import com.eharmony.aloha.util.ICList;
 
-
-
-
-import com.eharmony.aloha.score.conversions.StrictConversions;
 
 /**
  * Just a few basic tests to ensure the proper functioning of the
@@ -68,7 +61,7 @@ public class JavaDefaultModelFactoryTest {
      */
     private static final String[] PARSER_NAMES;
 
-    private static final TypedModelFactory<Map<String, Long>, Double> defaultFactory;
+    private static final NewModelFactory<TreeAuditor.Tree<?>, Double, Map<String, Long>, TreeAuditor.Tree<Double>> defaultFactory;
 
     static {
         String[] names = new String[] {
@@ -88,10 +81,12 @@ public class JavaDefaultModelFactoryTest {
         Arrays.sort(names);
         PARSER_NAMES = names;
 
-        final ModelFactory modelFactory = ModelFactory.defaultFactory();
-        final ResolvedType resolvedType = new TypeResolver().resolve(new GenericType<Map<String, Long>>() {});
-        final DoubleFactoryInfo<Map<String, Long>> mapDoubleFactoryInfo = new DoubleFactoryInfo<Map<String, Long>>(resolvedType);
-        defaultFactory = modelFactory.toTypedFactory(mapDoubleFactoryInfo);
+        final Manifest<Map<String, Long>> rIn =
+                (Manifest<Map<String, Long>>) RefInfo.fromString("java.util.Map[java.lang.String, java.lang.Long]").right().get();
+        final Manifest<Double> rOut = (Manifest<Double>) RefInfo.fromString("Double").right().get();
+        final Semantics<Map<String, Long>> semantics = new NoSemantics<>(rIn);
+        final MorphableAuditor<TreeAuditor.Tree<?>, Double, TreeAuditor.Tree<Double>> auditor = new TreeAuditor<>();
+        defaultFactory = NewModelFactory.defaultFactory(semantics, auditor, rOut);
     }
 
 
@@ -100,7 +95,10 @@ public class JavaDefaultModelFactoryTest {
      */
     @Test
     public void testDefaultModelFactoryContainsCorrectModels() {
-        final Collection<String> keys = JavaConversions.asJavaCollection(ModelFactory.defaultFactory().availableParsers().keys());
+        ArrayList<String> keys = new ArrayList<>();
+        for (NewModelParser parser: JavaConversions.asJavaCollection(defaultFactory.parsers())) {
+            keys.add(parser.modelType());
+        }
         final String[] names = keys.toArray(new String[keys.size()]);
         Arrays.sort(names);
         assertArrayEquals(PARSER_NAMES, names);
@@ -108,39 +106,38 @@ public class JavaDefaultModelFactoryTest {
 
     @Test
     public void testErrorModelFromDefaultFactory() {
-        final Model<Map<String, Long>, Double> model = defaultFactory.fromString(ERROR_MODEL_JSON).get();
+        final Model<Map<String, Long>, TreeAuditor.Tree<Double>> model = defaultFactory.fromString(ERROR_MODEL_JSON).get();
 
         assertEquals(ERROR_MODEL_NAME, model.modelId().getName());
         assertEquals(ERROR_MODEL_ID, model.modelId().getId());
 
-        final Scores.Score score = model.score(null);
+        final TreeAuditor.Tree<Double> score = model.apply(null);
 
-        assertFalse(score.hasScore());
-        assertTrue(score.hasError());
-        assertEquals(1, score.getError().getMessagesCount());
-        assertEquals(ERROR_MODEL_MSG, score.getError().getMessages(0));
-        assertEquals(0, score.getError().getMissingFeatures().getNamesCount());
+        assertFalse(score.value().isDefined());
+        assertEquals(1, score.errorMsgs().size());
+        assertEquals(ERROR_MODEL_MSG, score.errorMsgs().apply(0));
+        assertTrue(score.missingVarNames().isEmpty());
     }
 
     @Test
     public void testConstantModelFromDefaultFactory() {
-        final Model<Map<String, Long>, Double> model = defaultFactory.fromString(CONST_MODEL_JSON).get();
+        final Model<Map<String, Long>, TreeAuditor.Tree<Double>> model = defaultFactory.fromString(CONST_MODEL_JSON).get();
 
         assertEquals(CONST_MODEL_NAME, model.modelId().getName());
         assertEquals(CONST_MODEL_ID, model.modelId().getId());
 
-        final Scores.Score score = model.score(null);
-        final Double ds1 = StrictConversions.asJavaDouble(score);
+        final TreeAuditor.Tree<Double> score = model.apply(null);
+        final Double ds1 = score.value().get();
         assertEquals(CONST_MODEL_VAL, ds1, 0);
 
-        final Double ds2 = model.apply(null).get();
+        final Double ds2 = model.apply(null).value().get();
         assertEquals(CONST_MODEL_VAL, ds2, 0);
     }
 
     @Test
     public void testMultipleFromDefaultFactory() {
-        final Model<Map<String, Long>, Double> constModel = defaultFactory.fromString(CONST_MODEL_JSON).get();
-        final Model<Map<String, Long>, Double> errModel = defaultFactory.fromString(ERROR_MODEL_JSON).get();
+        final Model<Map<String, Long>, TreeAuditor.Tree<Double>> constModel = defaultFactory.fromString(CONST_MODEL_JSON).get();
+        final Model<Map<String, Long>, TreeAuditor.Tree<Double>> errModel = defaultFactory.fromString(ERROR_MODEL_JSON).get();
 
         final ICList<ReadableSource> rtl =
                 ICList.<ReadableSource>empty()
@@ -153,14 +150,14 @@ public class JavaDefaultModelFactoryTest {
 
         final List<ReadableSource> readables = rtl.toList();
 
-        final List<Try<Model<Map<String,Long>,Double>>> tryList = defaultFactory.fromMultipleSources(readables);
+        final List<Try<Model<Map<String, Long>, TreeAuditor.Tree<Double>>>> tryList = defaultFactory.fromMultipleSources(readables);
 
-        final Collection<Try<Model<Map<String, Long>, Double>>> tries = JavaConversions.asJavaCollection(tryList);
+        final Collection<Try<Model<Map<String, Long>, TreeAuditor.Tree<Double>>>> tries = JavaConversions.asJavaCollection(tryList);
 
         int i = 0;
-        for (Iterator<Try<Model<Map<String, Long>, Double>>> it = tries.iterator(); it.hasNext(); ++i) {
-            final Model<Map<String, Long>, Double> m = it.next().get();
-            final Model<Map<String, Long>, Double> exp = 0 == i % 2 ? errModel : constModel;
+        for (Iterator<Try<Model<Map<String, Long>, TreeAuditor.Tree<Double>>>> it = tries.iterator(); it.hasNext(); ++i) {
+            final Model<Map<String, Long>, TreeAuditor.Tree<Double>> m = it.next().get();
+            final Model<Map<String, Long>, TreeAuditor.Tree<Double>> exp = 0 == i % 2 ? errModel : constModel;
             assertEquals("on test " + i + ":", exp, m);
         }
     }

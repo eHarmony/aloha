@@ -1,9 +1,6 @@
 package com.eharmony.aloha
 
 import scala.language.existentials
-
-import java.lang.reflect.{Method, Modifier}
-
 import com.eharmony.aloha
 import com.eharmony.aloha.models.Model
 import org.junit.Assert._
@@ -12,6 +9,8 @@ import org.reflections.Reflections
 
 import scala.collection.JavaConversions.asScalaSet
 import scala.util.Try
+
+import java.lang.reflect.{Method, Modifier}
 
 /**
   * Created by ryan on 12/7/15.

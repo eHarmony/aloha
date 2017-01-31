@@ -1,14 +1,11 @@
 package com.eharmony.aloha.models.reg
 
-import com.eharmony.aloha.factory.pimpz.JsValuePimpz
-import com.eharmony.aloha.factory.{ModelParser, ModelParserWithSemantics, ParserProviderCompanion}
+import com.eharmony.aloha.audit.Auditor
+import com.eharmony.aloha.factory._
 import com.eharmony.aloha.id.ModelIdentity
 import com.eharmony.aloha.models.reg.json.{RegressionModelJson, Spec}
-import com.eharmony.aloha.models.{BaseModel, TypeCoercion}
-import com.eharmony.aloha.reflect.RefInfoOps
-import com.eharmony.aloha.score.Scores.Score
-import com.eharmony.aloha.score.basic.ModelOutput
-import com.eharmony.aloha.score.conversions.ScoreConverter
+import com.eharmony.aloha.models.{SubmodelBase, Subvalue}
+import com.eharmony.aloha.reflect.RefInfo
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.semantics.func.GenAggFunc
 import com.eharmony.aloha.util.{EitherHelpers, Logging}
@@ -63,15 +60,16 @@ import scala.collection.{immutable => sci}
  * @tparam B model output type.  Requires a implicit [[com.eharmony.aloha.score.conversions.ScoreConverter]]
  *           to convert from B to com.eharmony.aloha.score.Scores.Score
  */
-case class RegressionModel[-A, +B: ScoreConverter](
+case class RegressionModel[U, -A, +B <: U](
   modelId: ModelIdentity,
   featureNames: sci.IndexedSeq[String],
   featureFunctions: sci.IndexedSeq[GenAggFunc[A, Iterable[(String, Double)]]],
   beta: PolynomialEvaluationAlgo,
-  invLinkFunction: Double => B,
+  invLinkFunction: Double => Double,
   spline: Option[Spline],
-  numMissingThreshold: Option[Int])
-extends BaseModel[A, B]
+  numMissingThreshold: Option[Int],
+  auditor: Auditor[U, Double, B])
+extends SubmodelBase[U, Double, A, B]
    with RegressionFeatures[A]
    with Logging {
 
@@ -84,12 +82,12 @@ extends BaseModel[A, B]
   })
 
   /**
-   * Get the score.
-   * @param a the model input value.
-   * @param audit whether to audit the output.
-   * @return
-   */
-  private[aloha] def getScore(a: A)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = {
+    * Get the score.
+    *
+    * @param a     the model input value.
+    * @return
+    */
+  override def subvalue(a: A): Subvalue[B, Double] = {
     val Features(x, missing, missingOk) = constructFeatures(a)
 
     debug("x\n\t" + featureNames.zip(x).map { case (name, f) => s"$name -> $f" }.mkString("\n\t"))
@@ -105,89 +103,87 @@ extends BaseModel[A, B]
         val mu = invLinkFunction(splinedEta) // Currently, really just a casting operation.
         debug(s"mu: $mu")
 
-        success(mu, missing.values.flatten)
+        success(mu, missing.values.flatten.toSet)
       } else {
-        failure(Seq("Missing too much data in features: " + missing.keys.toIndexedSeq.sorted), missing.values.flatten)
+        failure(Seq("Missing too much data in features: " + missing.keys.toIndexedSeq.sorted), missing.values.flatten.toSet)
       }
 
     out
   }
 }
 
-object RegressionModel extends ParserProviderCompanion with JsValuePimpz with RegressionModelJson {
+object RegressionModel extends ParserProviderCompanion with RegressionModelJson {
+
   import spray.json._
 
-  object Parser extends ModelParserWithSemantics
+  object Parser extends ModelSubmodelParsingPlugin
                    with EitherHelpers
                    with RegFeatureCompiler {
+
     val modelType = "Regression"
 
-    /**
-     *
-     * @param semantics This reader requires semantics to be provided (some).  Otherwise, an error will occur. This
-     *                  is because the regression models create functions for each feature in the model and
-     *                  function creation is performed by the semantics.
-     * @tparam A input type of the model
-     * @tparam B output type of the model
-     * @return
-     */
-    def modelJsonReader[A, B: JsonReader: ScoreConverter](semantics: Semantics[A]): JsonReader[RegressionModel[A, B]] = new JsonReader[RegressionModel[A, B]] {
-      def read(json: JsValue): RegressionModel[A, B] = {
+    override def commonJsonReader[U, N, A, B <: U](
+        factory: SubmodelFactory[U, A],
+        semantics: Semantics[A],
+        auditor: Auditor[U, N, B])
+       (implicit r: RefInfo[N], jf: JsonFormat[N]): Option[JsonReader[RegressionModel[U, A, B]]] = {
 
-        // Get the metadata necessary to create the model.
-        val d = json.convertTo[RegData]
+      if (r != RefInfo[Double])
+        None
+      else {
+        Some(new JsonReader[RegressionModel[U, A, B]] {
+          override def read(json: JsValue): RegressionModel[U, A, B] = {
 
-        // Turn the map of features into a Seq to fix the order for all subsequent operations because they
-        // need a common understanding of the indices for the features.
-        val featureMap: Seq[(String, Spec)] = d.features.toSeq
-        val featureNameToIndex: Map[String, Int] = featureMap.map(_._1).zipWithIndex.toMap
+            val aud = auditor.asInstanceOf[Auditor[U, Double, B]]
 
-        // This is the weight vector.
-        val beta = getBeta(d.features.size, d.weights, higherOrderFeatures(d, featureNameToIndex))
+            // Get the metadata necessary to create the model.
+            val d = json.convertTo[RegData]
 
-        // Get the function that coerces to the output type.
-        implicit val rib = implicitly[ScoreConverter[B]].ri
+            // Turn the map of features into a Seq to fix the order for all subsequent operations because they
+            // need a common understanding of the indices for the features.
+            val featureMap: Seq[(String, Spec)] = d.features.toSeq
+            val featureNameToIndex: Map[String, Int] = featureMap.map(_._1).zipWithIndex.toMap
 
-        val cf = TypeCoercion[Double, B] getOrElse {
-          throw new DeserializationException("Couldn't find conversion function for RegressionModel with output type: " + RefInfoOps.toString(rib))
-        }
+            // This is the weight vector.
+            val beta = getBeta(d.features.size, d.weights, higherOrderFeatures(d, featureNameToIndex))
 
-        val (featureNames, featureFns) = features(featureMap, semantics).fold(f => throw new DeserializationException(f.mkString("\n")), identity).toIndexedSeq.unzip
-        val m = RegressionModel[A, B](d.modelId, featureNames, featureFns, beta, cf, d.spline, d.numMissingThreshold)
-        m
+            val (featureNames, featureFns) = features(featureMap, semantics).fold(f => throw new DeserializationException(f.mkString("\n")), identity).toIndexedSeq.unzip
+
+            val m = RegressionModel(d.modelId, featureNames, featureFns, beta, identity, d.spline, d.numMissingThreshold, aud)
+            m
+          }
+        })
       }
     }
 
     /**
-     * Translate the specification of higher order features to something a
-     * [[com.eharmony.aloha.models.reg.PolynomialEvaluator]].builder can understand.
-     * @param d regression model metadata
-     * @param featureNameToIndex mapping from feature name to index in the vector of features.
-     * @return
-     */
+      * Translate the specification of higher order features to something a
+      * [[com.eharmony.aloha.models.reg.PolynomialEvaluator]].builder can understand.
+      * @param d regression model metadata
+      * @param featureNameToIndex mapping from feature name to index in the vector of features.
+      * @return
+      */
     private[this] def higherOrderFeatures(d: RegData, featureNameToIndex: Map[String, Int]): Seq[(Seq[(String, Int)], Double)] = {
       val hof = d.higherOrderFeatures.getOrElse(Nil).map { h =>
-        {
-          val f = h.features.toSeq.flatMap {
-            case (k, v) =>
-              val kI = featureNameToIndex(k)
-              v.zip(Stream continually kI)
-          }
-          (f, h.wt)
+        val f = h.features.toSeq.flatMap {
+          case (k, v) =>
+            val kI = featureNameToIndex(k)
+            v.zip(Stream continually kI)
         }
+        (f, h.wt)
       }
 
       hof
     }
 
     /**
-     * Construct a polynomial evaluator given the first order weights (in weights field) and the higher order
-     * features.
-     * @param n number of features in the feature (generation) vector.
-     * @param foWeights the weight map for first order weights.
-     * @param higherOrderFeatures the higher order features (order > 1)
-     * @return
-     */
+      * Construct a polynomial evaluator given the first order weights (in weights field) and the higher order
+      * features.
+      * @param n number of features in the feature (generation) vector.
+      * @param foWeights the weight map for first order weights.
+      * @param higherOrderFeatures the higher order features (order > 1)
+      * @return
+      */
     private[this] def getBeta(n: Int, foWeights: Map[String, Double], higherOrderFeatures: TraversableOnce[(TraversableOnce[(String, Int)], Double)]) = {
       val p = PolynomialEvaluator.builder.
         addAllFirstOrder(foWeights, n).
@@ -197,5 +193,87 @@ object RegressionModel extends ParserProviderCompanion with JsValuePimpz with Re
     }
   }
 
-  def parser: ModelParser = Parser
+  def parser: NewModelParser = Parser
+
+
+  //  object Parser extends ModelParserWithSemantics
+//                   with EitherHelpers
+//                   with RegFeatureCompiler {
+//    val modelType = "Regression"
+//
+//    /**
+//     *
+//     * @param semantics This reader requires semantics to be provided (some).  Otherwise, an error will occur. This
+//     *                  is because the regression models create functions for each feature in the model and
+//     *                  function creation is performed by the semantics.
+//     * @tparam A input type of the model
+//     * @tparam B output type of the model
+//     * @return
+//     */
+//    def modelJsonReader[A, B: JsonReader: ScoreConverter](semantics: Semantics[A]): JsonReader[RegressionModel[A, B]] = new JsonReader[RegressionModel[A, B]] {
+//      def read(json: JsValue): RegressionModel[A, B] = {
+//
+//        // Get the metadata necessary to create the model.
+//        val d = json.convertTo[RegData]
+//
+//        // Turn the map of features into a Seq to fix the order for all subsequent operations because they
+//        // need a common understanding of the indices for the features.
+//        val featureMap: Seq[(String, Spec)] = d.features.toSeq
+//        val featureNameToIndex: Map[String, Int] = featureMap.map(_._1).zipWithIndex.toMap
+//
+//        // This is the weight vector.
+//        val beta = getBeta(d.features.size, d.weights, higherOrderFeatures(d, featureNameToIndex))
+//
+//        // Get the function that coerces to the output type.
+//        implicit val rib = implicitly[ScoreConverter[B]].ri
+//
+//        val cf = TypeCoercion[Double, B] getOrElse {
+//          throw new DeserializationException("Couldn't find conversion function for RegressionModel with output type: " + RefInfoOps.toString(rib))
+//        }
+//
+//        val (featureNames, featureFns) = features(featureMap, semantics).fold(f => throw new DeserializationException(f.mkString("\n")), identity).toIndexedSeq.unzip
+//        val m = RegressionModel[A, B](d.modelId, featureNames, featureFns, beta, cf, d.spline, d.numMissingThreshold)
+//        m
+//      }
+//    }
+//
+//    /**
+//     * Translate the specification of higher order features to something a
+//     * [[com.eharmony.aloha.models.reg.PolynomialEvaluator]].builder can understand.
+//     * @param d regression model metadata
+//     * @param featureNameToIndex mapping from feature name to index in the vector of features.
+//     * @return
+//     */
+//    private[this] def higherOrderFeatures(d: RegData, featureNameToIndex: Map[String, Int]): Seq[(Seq[(String, Int)], Double)] = {
+//      val hof = d.higherOrderFeatures.getOrElse(Nil).map { h =>
+//        {
+//          val f = h.features.toSeq.flatMap {
+//            case (k, v) =>
+//              val kI = featureNameToIndex(k)
+//              v.zip(Stream continually kI)
+//          }
+//          (f, h.wt)
+//        }
+//      }
+//
+//      hof
+//    }
+//
+//    /**
+//     * Construct a polynomial evaluator given the first order weights (in weights field) and the higher order
+//     * features.
+//     * @param n number of features in the feature (generation) vector.
+//     * @param foWeights the weight map for first order weights.
+//     * @param higherOrderFeatures the higher order features (order > 1)
+//     * @return
+//     */
+//    private[this] def getBeta(n: Int, foWeights: Map[String, Double], higherOrderFeatures: TraversableOnce[(TraversableOnce[(String, Int)], Double)]) = {
+//      val p = PolynomialEvaluator.builder.
+//        addAllFirstOrder(foWeights, n).
+//        ++=(higherOrderFeatures).
+//        result()
+//      p
+//    }
+//  }
+
 }

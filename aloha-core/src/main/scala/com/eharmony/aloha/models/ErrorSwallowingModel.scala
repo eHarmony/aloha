@@ -1,13 +1,14 @@
 package com.eharmony.aloha.models
 
-import scala.util.Try
 import java.io.{ByteArrayOutputStream, PrintStream}
-import com.eharmony.aloha.score.Scores.Score
-import com.eharmony.aloha.score.basic.ModelOutput
-import com.eharmony.aloha.factory.{ParserProviderCompanion, ModelFactory, ModelParser}
-import com.eharmony.aloha.score.conversions.ScoreConverter
-import com.eharmony.aloha.semantics.{SemanticsUdfException, Semantics}
-import com.eharmony.aloha.factory.ex.AlohaFactoryException
+
+import com.eharmony.aloha.audit.Auditor
+import com.eharmony.aloha.factory._
+import com.eharmony.aloha.id.ModelIdentity
+import com.eharmony.aloha.reflect.RefInfo
+import com.eharmony.aloha.semantics.{Semantics, SemanticsUdfException}
+
+import scala.util.Try
 
 /** A model that swallows exceptions thrown by submodel.
   *
@@ -37,30 +38,62 @@ import com.eharmony.aloha.factory.ex.AlohaFactoryException
   * @tparam A model input type
   * @tparam B model output type
   */
-case class ErrorSwallowingModel[-A, +B](submodel: Model[A, B], recordErrorStackTraces: Boolean = true) extends BaseModel[A, B] {
-    val modelId = submodel.modelId
+// TODO: Determine if thisi should have a Submodel or Model parameter.  How can we use the submodel's auditor?
+case class ErrorSwallowingModel[U, N, -A, +B <: U](
+    submodel: Submodel[N, A, U],
+    auditor: Auditor[U, N, B],
+    recordErrorStackTraces: Boolean = true
+) extends SubmodelBase[U, N, A, B] {
 
-    private[this] type ReturnVal = PartialFunction[Throwable, Try[(ModelOutput[B], Option[Score])]]
+  def modelId: ModelIdentity = submodel.modelId
 
-    private[aloha] def getScore(a: A)(implicit audit: Boolean) = {
-        // Delegate the scoring to the submodel but trap exceptions.
-        val sTry = Try { submodel.getScore(a) }
-
-        // If we shouldn't record stack traces, just work off the original Try.  If we should, then
-        // attempt to map the exception to a failure with a stack trace.  Then be super careful when
-        // performing a final recovery attempt with defaultError.  This method should not allow
-        // Throwables to pass.
-        val s = (if (!recordErrorStackTraces) sTry else sTry recoverWith errorWithTrace).recoverWith { defaultError }.get
-        s
+  override def subvalue(a: A): Subvalue[B, N] = {
+    // Delegate the scoring to the submodel but trap exceptions.
+    val sTry: Try[Subvalue[B, N]] = Try {
+      val s = submodel.subvalue(a)
+      val subs = Seq(s.audited)
+      s.natural.fold(failure(Seq(""), Set.empty, subvalues = subs))(n => success(n, subvalues = subs))
     }
+
+    // If we shouldn't record stack traces, just work off the original Try.  If we should, then
+    // attempt to map the exception to a failure with a stack trace.  Then be super careful when
+    // performing a final recovery attempt with defaultError.  This method should not allow
+    // Throwables to pass.
+
+    val orWithTrace =
+      if (!recordErrorStackTraces)
+        sTry
+      else sTry recoverWith errorWithTrace
+    val s = (orWithTrace recoverWith defaultError).get
+    s
+  }
+
+//    private[aloha] def getScore(a: A)(implicit audit: Boolean) = {
+//        // Delegate the scoring to the submodel but trap exceptions.
+//        val sTry = Try { submodel.getScore(a) }
+//
+//        // If we shouldn't record stack traces, just work off the original Try.  If we should, then
+//        // attempt to map the exception to a failure with a stack trace.  Then be super careful when
+//        // performing a final recovery attempt with defaultError.  This method should not allow
+//        // Throwables to pass.
+//        val s = (if (!recordErrorStackTraces) sTry else sTry recoverWith errorWithTrace).recoverWith { defaultError }.get
+//        s
+//    }
 
     /** Attempt to take the Throwable and convert to the output type with a stack trace.
       *
       */
-    private[models] def errorWithTrace(implicit audit: Boolean): ReturnVal = {
-        case ex: SemanticsUdfException[A] => Try { failure(errors = basicErrorInfo(ex) ++ extendedErrorInfo(ex)) }
-        case ex: Throwable => Try { failure(errors = basicErrorInfo(ex)) }
-    }
+  private[models] val errorWithTrace: PartialFunction[Throwable, Try[Subvalue[B, N]]] = {
+    case ex: SemanticsUdfException[A] =>
+      Try { failure(basicErrorInfo(ex) ++ extendedErrorInfo(ex), Set.empty) }
+    case ex: Throwable =>
+      Try { failure(basicErrorInfo(ex), Set.empty) }
+  }
+
+//  private[models] def errorWithTrace(implicit audit: Boolean): ReturnVal = {
+//        case ex: SemanticsUdfException[A] => Try { failure(errors = basicErrorInfo(ex) ++ extendedErrorInfo(ex)) }
+//        case ex: Throwable => Try { failure(errors = basicErrorInfo(ex)) }
+//    }
 
     private[models] def basicErrorInfo(ex: Throwable) = Seq(errorMsg(ex), getMessageFrom(ex), getStackTrace(ex))
 
@@ -74,14 +107,23 @@ case class ErrorSwallowingModel[-A, +B](submodel: Model[A, B], recordErrorStackT
     /** This needs to be impervious to Throwables so it needs to be coded very carefully.  That is,
       * it doesn't trust the exception class at all.
       */
-    private[models] def defaultError(implicit audit: Boolean): ReturnVal = {
-        case ex: Throwable => Try {
-            // Being super protective here to avoid the getMessage throwing exception (such as
-            // a message that calls toString on an infinite depth tree that would cause a stack
-            // overflow).
-            failure(errors = Seq(errorMsg(ex), getMessageFrom(ex), ErrorSwallowingModel.StackTraceOmitted))
-        }
+    private[models] val defaultError: PartialFunction[Throwable, Try[Subvalue[B, N]]] = {
+      case ex: Throwable => Try {
+        // Being super protective here to avoid the getMessage throwing exception (such as
+        // a message that calls toString on an infinite depth tree that would cause a stack
+        // overflow).
+        failure(Seq(errorMsg(ex), getMessageFrom(ex), ErrorSwallowingModel.StackTraceOmitted), Set.empty)
+      }
     }
+
+  //    private[models] def defaultError(implicit audit: Boolean): ReturnVal = {
+//        case ex: Throwable => Try {
+//            // Being super protective here to avoid the getMessage throwing exception (such as
+//            // a message that calls toString on an infinite depth tree that would cause a stack
+//            // overflow).
+//            failure(errors = Seq(errorMsg(ex), getMessageFrom(ex), ErrorSwallowingModel.StackTraceOmitted))
+//        }
+//    }
 
     private[models] def errorMsg(e: Throwable) = {
         val modelId = (for {
@@ -100,7 +142,7 @@ case class ErrorSwallowingModel[-A, +B](submodel: Model[A, B], recordErrorStackT
             ex.printStackTrace(ps)
             baos.toString
         }.recover {
-            case e => ErrorSwallowingModel.StackTraceOmitted
+            case _: Throwable => ErrorSwallowingModel.StackTraceOmitted
         }.get
 
     private[models] def getMessageFrom(ex: Throwable) =
@@ -110,35 +152,68 @@ case class ErrorSwallowingModel[-A, +B](submodel: Model[A, B], recordErrorStackT
 }
 
 object ErrorSwallowingModel extends ParserProviderCompanion {
-    private[models] val ExMsgThrewMsg = "exception getMessage function threw exception.  Message Omitted."
-    private[models] val StackTraceOmitted = "Stack trace omitted."
+  private[models] val ExMsgThrewMsg = "exception getMessage function threw exception.  Message Omitted."
+  private[models] val StackTraceOmitted = "Stack trace omitted."
 
-    object Parser extends ModelParser {
-        val modelType = "ErrorSwallowingModel"
+  object Parser extends ModelSubmodelParsingPlugin {
+    override val modelType = "ErrorSwallowingModel"
 
-        import spray.json._, DefaultJsonProtocol._
+    import spray.json._
+    import DefaultJsonProtocol._
 
-        protected[this] case class Ast(submodel: JsValue, recordErrorStackTraces: Option[Boolean] = None)
-        protected[this] implicit val astJsonFormat = jsonFormat2(Ast)
+    protected[this] case class Ast(submodel: JsValue, recordErrorStackTraces: Option[Boolean] = None)
+    protected[this] implicit val astJsonFormat = jsonFormat2(Ast)
 
-        def modelJsonReader[A, B](factory: ModelFactory, semantics: Option[Semantics[A]])(implicit jr: JsonReader[B], sc: ScoreConverter[B]) = new JsonReader[ErrorSwallowingModel[A, B]] {
-            def read(json: JsValue): ErrorSwallowingModel[A, B] = {
-                semantics map { sem => {
-                    implicit val riA = sem.refInfoA
-                    implicit val riB = sc.ri
+    override def commonJsonReader[U, N, A, B <: U](
+        factory: SubmodelFactory[U, A],
+        semantics: Semantics[A],
+        auditor: Auditor[U, N, B])
+       (implicit r: RefInfo[N], jf: JsonFormat[N]): Option[JsonReader[ErrorSwallowingModel[U, N, A, B]]] = {
 
-                    val model = for {
-                        ast <- Try { json.convertTo[Ast] }
-                        submodel <- factory.getModel[A, B](ast.submodel, semantics)
-                    } yield ast.recordErrorStackTraces.fold(ErrorSwallowingModel(submodel))(ErrorSwallowingModel(submodel, _))
+      Some(new JsonReader[ErrorSwallowingModel[U, N, A, B]] {
+        override def read(json: JsValue): ErrorSwallowingModel[U, N, A, B] = {
+          val model = for {
+            ast <- Try { json.convertTo[Ast] }
+            submodel <- factory.submodel[N](ast.submodel)
+          } yield (
+            ast.recordErrorStackTraces.fold(ErrorSwallowingModel(submodel, auditor))
+                                           (r => ErrorSwallowingModel(submodel, auditor, r))
+          )
 
-                    model.get
-                }} getOrElse {
-                    throw new AlohaFactoryException("No semantics present.")
-                }
-            }
+          model.get
         }
+      })
     }
+  }
 
-    def parser: ModelParser = Parser
+  def parser: NewModelParser = Parser
+
+
+  //    object Parser extends ModelParser {
+//        val modelType = "ErrorSwallowingModel"
+//
+//        import spray.json._, DefaultJsonProtocol._
+//
+//        protected[this] case class Ast(submodel: JsValue, recordErrorStackTraces: Option[Boolean] = None)
+//        protected[this] implicit val astJsonFormat = jsonFormat2(Ast)
+//
+//        def modelJsonReader[A, B](factory: ModelFactory, semantics: Option[Semantics[A]])(implicit jr: JsonReader[B], sc: ScoreConverter[B]) = new JsonReader[ErrorSwallowingModel[A, B]] {
+//            def read(json: JsValue): ErrorSwallowingModel[A, B] = {
+//                semantics map { sem => {
+//                    implicit val riA = sem.refInfoA
+//                    implicit val riB = sc.ri
+//
+//                    val model = for {
+//                        ast <- Try { json.convertTo[Ast] }
+//                        submodel <- factory.getModel[A, B](ast.submodel, semantics)
+//                    } yield ast.recordErrorStackTraces.fold(ErrorSwallowingModel(submodel))(ErrorSwallowingModel(submodel, _))
+//
+//                    model.get
+//                }} getOrElse {
+//                    throw new AlohaFactoryException("No semantics present.")
+//                }
+//            }
+//        }
+//    }
+
 }

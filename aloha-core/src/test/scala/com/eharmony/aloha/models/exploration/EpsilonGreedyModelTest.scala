@@ -1,16 +1,15 @@
 package com.eharmony.aloha.models.exploration
 
 import com.eharmony.aloha.ModelSerializationTestHelper
-import com.eharmony.aloha.factory.ModelFactory
+import com.eharmony.aloha.audit.impl.TreeAuditor.Tree
+import com.eharmony.aloha.audit.impl.{OptionAuditor, TreeAuditor}
+import com.eharmony.aloha.factory.NewModelFactory
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.models.{AnySemanticsWithoutFunctionCreation, CloserTesterModel, ConstantModel}
-import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits._
 import com.eharmony.aloha.semantics.func.GenFunc0
 import com.mwt.utilities.PRG
 import org.junit.Assert._
 import org.junit.Test
-import spray.json._
-import spray.json.DefaultJsonProtocol._
 
 import scala.collection.{immutable => sci}
 
@@ -18,24 +17,24 @@ import scala.collection.{immutable => sci}
   * Created by jmorra on 2/26/16.
   */
 class EpsilonGreedyModelTest extends ModelSerializationTestHelper {
-  private[this] val reader = EpsilonGreedyModel.Parser.modelJsonReader[Any, String](ModelFactory(ConstantModel.parser), Option(AnySemanticsWithoutFunctionCreation))
+  private[this] val factory = NewModelFactory.defaultFactory(AnySemanticsWithoutFunctionCreation, TreeAuditor[String]())
   private[this] val delta = 0.00001f
   implicit val audit = true
 
   @Test def testSerialization() {
-    val constantPolicy = ConstantModel(Right(1), ModelId(2, "abc"))
-    val m = EpsilonGreedyModel(ModelId(3, "def"), constantPolicy, 0.1f, null, sci.IndexedSeq(1, 2, 3))
+    val constantPolicy = ConstantModel(Option(1), ModelId(2, "abc"), OptionAuditor[Int]())
+    val m = EpsilonGreedyModel(ModelId(3, "def"), constantPolicy, 0.1f, null, sci.IndexedSeq(1, 2, 3), OptionAuditor[Int]())
     val m1 = serializeDeserializeRoundTrip(m)
     assertEquals(m, m1)
 
-    val m2 = EpsilonGreedyModel(ModelId(3, "def"), constantPolicy, 0.1f, null, sci.IndexedSeq("1", "2", "3"))
+    val m2 = EpsilonGreedyModel(ModelId(3, "def"), constantPolicy, 0.1f, null, sci.IndexedSeq("1", "2", "3"), OptionAuditor[String]())
     val m3 = serializeDeserializeRoundTrip(m2)
     assertEquals(m2, m3)
   }
 
   @Test def testClosed() {
-    val sub = new CloserTesterModel[Int]()
-    EpsilonGreedyModel(ModelId.empty, sub, 0.1f, GenFunc0("", (s: String) => 1l), sci.IndexedSeq(1, 2)).close()
+    val sub = new CloserTesterModel(ModelId(), OptionAuditor[Int]())
+    EpsilonGreedyModel(ModelId.empty, sub, 0.1f, GenFunc0("", (s: String) => 1l), sci.IndexedSeq(1, 2), OptionAuditor[Int]()).close()
     assertTrue(sub.isClosed)
   }
 
@@ -51,29 +50,27 @@ class EpsilonGreedyModelTest extends ModelSerializationTestHelper {
     random.uniformUnitInterval()
     val action = random.uniformInt(1, m.classLabels.size)
 
-    val s = m.getScore(null)
-    val score = s._2.get
-    assertEquals(epsilon / m.classLabels.size, score.getScore.getProbability, delta)
-    assertEquals(m.classLabels(action - 1), s._1.right.get)
-    assertEquals("b", s._1.right.get)
+    val s = m(null)
+    assertEquals(epsilon / m.classLabels.size, s.prob.get, delta)
+    assertEquals(Option("b"), s.value)
+    assertEquals(m.classLabels(action - 1), s.value.get)
 
     // The lack of subscores indicates that the default policy was NOT recorded when doing exploration.
-    assertTrue(score.getSubScoresList.isEmpty)
+    assertTrue(s.subvalues.isEmpty)
   }
 
   @Test def policy() {
     val epsilon = 0f
     val m = makeModel(1, epsilon, 0)
-    val s = m.getScore(null)
+    val s = m(null)
 
-    val score = s._2.get
-    assertEquals(1 - epsilon + epsilon / m.classLabels.size, score.getScore.getProbability, delta)
-    assertEquals("a", s._1.right.get)
-    assertEquals(1, score.getSubScoresCount)
-    assertEquals("defaultPolicy", score.getSubScores(0).getScore.getModel.getName)
+    assertEquals(1 - epsilon + epsilon / m.classLabels.size, s.prob.get, delta)
+    assertEquals(Option("a"), s.value)
+    assertEquals(1, s.subvalues.size)
+    assertEquals("defaultPolicy", s.subvalues.head.modelId.getName())
   }
 
-  def makeModel(policyValue: Int, epsilon: Float, salt: Long): EpsilonGreedyModel[Any, String] = {
+  private[this] def makeModel(policyValue: Int, epsilon: Float, salt: Long) = {
     val js =
       s"""
         |{
@@ -88,7 +85,9 @@ class EpsilonGreedyModelTest extends ModelSerializationTestHelper {
         | },
         | "classLabels": ["a", "b", "c"]
         |}
-      """.stripMargin.parseJson
-    reader.read(js)
+      """.stripMargin
+
+    // This cast is unsafe.  But it is correct based on the factory parameter.
+    factory.fromString(js).get.asInstanceOf[EpsilonGreedyModel[Tree[_], String, Any, Tree[String]]]
   }
 }

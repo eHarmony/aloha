@@ -1,15 +1,13 @@
 package com.eharmony.aloha.factory
 
 import java.io.File
-import scala.util.{Failure, Try}
-
-import org.apache.commons.{vfs, vfs2}
-
-import spray.json.JsValue
-import spray.json.pimpString
 
 import com.eharmony.aloha.factory.ex.AlohaFactoryException
 import com.eharmony.aloha.io.StringReadable
+import org.apache.commons.{vfs, vfs2}
+import spray.json.{JsObject, pimpString}
+
+import scala.util.{Failure, Try}
 
 /** Get
   *
@@ -43,7 +41,7 @@ private[factory] sealed trait ImportedModelPlaceholder {
       *
       * @return
       */
-    def resolveFileContents(): Try[JsValue]
+    def resolveFileContents(): Try[JsObject]
 }
 
 private[factory] case class Vfs2ImportedModelPlaceholder(fileDescriptor: String) extends ImportedModelPlaceholder {
@@ -54,7 +52,7 @@ private[factory] case class Vfs2ImportedModelPlaceholder(fileDescriptor: String)
             case f => Failure { new AlohaFactoryException(s"Couldn't resolve VFS2 file: $fileDescriptor", f) }
         }
         json <- Try {
-            StringReadable.fromVfs2(file).parseJson
+            StringReadable.fromVfs2(file).parseJson.asJsObject
         } recoverWith {
             case f => Failure { new AlohaFactoryException(s"Couldn't get JSON for VFS2 file: $file", f) }
         }
@@ -69,7 +67,7 @@ private[factory] case class Vfs1ImportedModelPlaceholder(fileDescriptor: String)
             case f => Failure { new AlohaFactoryException(s"Couldn't resolve VFS1 file: $fileDescriptor", f) }
         }
         json <- Try {
-            StringReadable.fromVfs1(file).parseJson
+            StringReadable.fromVfs1(file).parseJson.asJsObject
         } recoverWith {
             case f => Failure { new AlohaFactoryException(s"Couldn't get JSON for VFS1 file: $file", f) }
         }
@@ -84,7 +82,7 @@ private[factory] case class FileImportedModelPlaceholder(fileDescriptor: String)
             case f => Failure { new AlohaFactoryException(s"Couldn't resolve file: $fileDescriptor", f) }
         }
         json <- Try {
-            StringReadable.fromFile(file).parseJson
+            StringReadable.fromFile(file).parseJson.asJsObject
         } recoverWith {
             case f => Failure { new AlohaFactoryException(s"Couldn't get JSON for file: $file", f) }
         }

@@ -1,15 +1,13 @@
 package com.eharmony.aloha.semantics.compiled.plugin.csv
 
-import com.eharmony.aloha.factory.ModelFactory
-import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.DoubleScoreConverter
+import com.eharmony.aloha.audit.impl.OptionAuditor
+import com.eharmony.aloha.factory.NewModelFactory
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
-import spray.json.DefaultJsonProtocol.DoubleJsonFormat
-import com.eharmony.aloha.score.conversions.rich.RichScore
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -20,7 +18,7 @@ class DumThroAwayTest {
         val plugin = CompiledSemanticsCsvPlugin(Map("profile.user_id" -> CsvTypes.withNameExtended("oi")))
         val imports = Seq("com.eharmony.aloha.feature.BasicFunctions._", "scala.math._")
         val semantics = CompiledSemantics(compiler, plugin, imports)
-        val factory = ModelFactory.defaultFactory.toTypedFactory[CsvLine, Double](semantics)
+        val factory = NewModelFactory.defaultFactory(semantics, OptionAuditor[Double]())
 
         val model = factory.fromResource("fizzbuzz.json").get
 
@@ -66,8 +64,8 @@ class DumThroAwayTest {
             (Some(16), 16.0)
         )
 
-        val results = lines.map { l => (l.oi("profile.user_id"), model.score(l)) }.
-                            map { case (optId, s) => (optId, s.relaxed.asDouble.get) }
+        val results = lines.map { l => (l.oi("profile.user_id"), model(l)) }.
+                            map { case (optId, s) => (optId, s.get) }
 
         assertEquals(expected, results)
     }

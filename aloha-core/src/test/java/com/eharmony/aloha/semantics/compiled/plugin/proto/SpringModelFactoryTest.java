@@ -1,14 +1,8 @@
 package com.eharmony.aloha.semantics.compiled.plugin.proto;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Resource;
-
+import com.eharmony.aloha.io.AlohaReadable;
+import com.eharmony.aloha.models.Model;
+import com.eharmony.aloha.test.proto.TestProtoBuffs.TestProto;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.VFS;
 import org.junit.Test;
@@ -17,14 +11,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
+import scala.Option;
 import scala.util.Try;
 
-import com.eharmony.aloha.io.AlohaReadable;
-import com.eharmony.aloha.models.Model;
-import com.eharmony.aloha.score.Scores.Score;
-import com.eharmony.aloha.score.conversions.StrictConversions;
-import com.eharmony.aloha.test.proto.TestProtoBuffs.TestProto;
+import javax.annotation.Resource;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:spring/model.cfg.xml" })
@@ -59,18 +55,17 @@ public class SpringModelFactoryTest {
 	 * more information on kinds.
 	 */
 	@Resource
-	private AlohaReadable<Try<Model<TestProto, Double>>> modelFactory = null;
+	private AlohaReadable<Try<Model<TestProto, Option<Double>>>> modelFactory = null;
 
 	@Resource
-	private List<Model<TestProto, Double>> models = null;
+	private List<Model<TestProto, Option<Double>>> models = null;
 
 	@Test
 	public void testUsingModelFactoryPulledFromSpringCtxAndCallingFileObject() {
-		final Model<TestProto, Double> model = modelFactory
-				.fromVfs2(modelJson1).get();
+		final Model<TestProto, Option<Double>> model = modelFactory.fromVfs2(modelJson1).get();
 		final TestProto p = PROTOS.get(1);
-		final Score s = model.score(p);
-		final Double d = StrictConversions.asJavaDouble(s);
+		final Option<Double> s = model.apply(p);
+		final Double d = s.get();
 		assertEquals(EXPECTED_1, d, TOLERANCE);
 	}
 
@@ -78,12 +73,11 @@ public class SpringModelFactoryTest {
 	public void testUsingModelPulledFromSpringCtx() {
 		final TestProto p = PROTOS.get(1);
 		LOG.debug("testing proto: " + p);
-		final Score s = models.get(0).score(p);
-		final Double d = StrictConversions.asJavaDouble(s);
+		final Option<Double> s = models.get(0).apply(p);
+		final Double d = s.get();
 		assertEquals(EXPECTED_1, d, TOLERANCE);
 
-		final Double d1 = StrictConversions
-				.asJavaDouble(models.get(1).score(p));
+		final Double d1 = models.get(1).apply(p).get();
 		assertEquals(EXPECTED_1, d1, TOLERANCE);
 	}
 

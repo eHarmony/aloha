@@ -1,15 +1,15 @@
 package com.eharmony.aloha.models
 
+import com.eharmony.aloha.audit.Auditor
+
 import scala.collection.immutable
-import spray.json.{ JsonFormat, JsValue, JsonReader }
+import spray.json.{JsValue, JsonFormat, JsonReader}
 import spray.json.DefaultJsonProtocol._
 import com.eharmony.aloha.id.ModelIdentity
 import com.eharmony.aloha.semantics.func.GenAggFunc
 import com.eharmony.aloha.util.rand.HashedCategoricalDistribution
-import com.eharmony.aloha.factory.{ ModelParserWithSemantics, ModelParser, ParserProviderCompanion }
-import com.eharmony.aloha.score.conversions.ScoreConverter
-import com.eharmony.aloha.score.basic.ModelOutput
-import com.eharmony.aloha.score.Scores.Score
+import com.eharmony.aloha.factory._
+import com.eharmony.aloha.reflect.RefInfo
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.util.Logging
 
@@ -27,12 +27,13 @@ import com.eharmony.aloha.util.Logging
  * @tparam A model input type
  * @tparam B model output type
  */
-case class CategoricalDistibutionModel[-A, +B: ScoreConverter](
+case class CategoricalDistibutionModel[U, N, -A, +B <: U](
   modelId: ModelIdentity,
   features: Seq[GenAggFunc[A, Any]],
   distribution: HashedCategoricalDistribution,
-  labels: immutable.IndexedSeq[B],
-  missingOk: Boolean = false) extends BaseModel[A, B] {
+  labels: immutable.IndexedSeq[N],
+  auditor: Auditor[U, N, B],
+  missingOk: Boolean = false) extends SubmodelBase[U, N, A, B] {
 
   import CategoricalDistibutionModel.missingMsg
 
@@ -45,7 +46,7 @@ case class CategoricalDistibutionModel[-A, +B: ScoreConverter](
    * @return a positive value i if node i should be selected.  May return a negative value in which case processErrorAt
    *         should be called with the value returned.
    */
-  private[aloha] def getScore(a: A)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = {
+  def subvalue(a: A): Subvalue[B, N] = {
     var featuresWithMissing: List[GenAggFunc[A, Any]] = Nil
 
     // Compute the features.  Note that we don't use flatMap because:
@@ -60,9 +61,16 @@ case class CategoricalDistibutionModel[-A, +B: ScoreConverter](
       }
     }
 
-    if (featuresWithMissing.isEmpty) success(labels(distribution(x)))
-    else if (missingOk) success(labels(distribution(x)), missing(featuresWithMissing, a))
-    else failure(missingMsg, missing(featuresWithMissing, a))
+
+    if (missingOk) {
+      val n = labels(distribution(x))
+      if (featuresWithMissing.isEmpty)
+        success(n)
+      else
+        success(n, missing(featuresWithMissing, a))
+    }
+    else
+      failure(missingMsg, missing(featuresWithMissing, a))
   }
 
   /**
@@ -71,8 +79,8 @@ case class CategoricalDistibutionModel[-A, +B: ScoreConverter](
    * @param a model input
    * @return
    */
-  private[this] def missing(featuresWithMissing: List[GenAggFunc[A, Any]], a: A) =
-    featuresWithMissing.flatMap { _ accessorOutputMissing a }.distinct.sorted
+  private[this] def missing(featuresWithMissing: List[GenAggFunc[A, Any]], a: A): Set[String] =
+    featuresWithMissing.flatMap { _ accessorOutputMissing a }.toSet
 
   override def toString = s"CategoricalDistibutionModel($modelId, $features, $distribution, $missingOk)"
 }
@@ -80,36 +88,74 @@ case class CategoricalDistibutionModel[-A, +B: ScoreConverter](
 object CategoricalDistibutionModel extends ParserProviderCompanion {
   private val missingMsg = Seq("Couldn't choose random output due to missing features")
 
-  object Parser extends ModelParserWithSemantics with Logging {
+  object Parser extends ModelSubmodelParsingPlugin with Logging {
     val modelType = "CategoricalDistribution"
 
-    private case class Ast[B: JsonFormat: ScoreConverter](
-      features: Seq[String],
-      probabilities: Seq[Double],
-      labels: immutable.IndexedSeq[B],
-      missingOk: Option[Boolean] = None)
+    private case class Ast[N: JsonFormat](
+        features: Seq[String],
+        probabilities: Seq[Double],
+        labels: immutable.IndexedSeq[N],
+        missingOk: Option[Boolean] = None)
 
-    private implicit def astFormatReader[B: JsonFormat: ScoreConverter] = jsonFormat4(Ast.apply[B])
+    private implicit def astFormatReader[B: JsonFormat] = jsonFormat4(Ast.apply[B])
 
-    def modelJsonReader[A, B: JsonReader: ScoreConverter](semantics: Semantics[A]) = new JsonReader[CategoricalDistibutionModel[A, B]] {
-      def read(json: JsValue) = {
-        implicit val bFormat = jsonReaderToJsonFormat[B]
-        val id = getModelId(json).get
-        val ast = json.convertTo[Ast[B]]
-        val featuresX = ast.features.map(f => semantics.createFunction[Any](f))
-        val features = featuresX.map(_.left.map(e => error("errors: " + e.mkString("\n") + "json: " + json.compactPrint)).right.get)
+    override def commonJsonReader[U, N, A, B <: U](
+        factory: SubmodelFactory[U, A],
+        semantics: Semantics[A],
+        auditor: Auditor[U, N, B])
+       (implicit r: RefInfo[N], jf: JsonFormat[N]): Option[JsonReader[CategoricalDistibutionModel[U, N, A, B]]] = {
 
-        val m = CategoricalDistibutionModel[A, B](
-          id,
-          features,
-          HashedCategoricalDistribution(ast.probabilities: _*),
-          ast.labels,
-          ast.missingOk.getOrElse(false))
+      Some(new JsonReader[CategoricalDistibutionModel[U, N, A, B]] {
+        override def read(json: JsValue): CategoricalDistibutionModel[U, N, A, B] = {
+          val id = getModelId(json).get
+          val ast = json.convertTo[Ast[N]]
+          val featuresX = ast.features.map(f => semantics.createFunction[Any](f))
+          val features = featuresX.map(_.left.map(e => error("errors: " + e.mkString("\n") + "json: " + json.compactPrint)).right.get)
 
-        m
-      }
+          val m = CategoricalDistibutionModel(
+            id,
+            features,
+            HashedCategoricalDistribution(ast.probabilities: _*),
+            ast.labels,
+            auditor,
+            ast.missingOk.getOrElse(false))
+
+          m
+        }
+      })
     }
   }
 
-  def parser: ModelParser = Parser
+  def parser: NewModelParser = Parser
+
+//  object Parser extends ModelParserWithSemantics with Logging {
+//    val modelType = "CategoricalDistribution"
+//
+//    private case class Ast[B: JsonFormat: ScoreConverter](
+//      features: Seq[String],
+//      probabilities: Seq[Double],
+//      labels: immutable.IndexedSeq[B],
+//      missingOk: Option[Boolean] = None)
+//
+//    private implicit def astFormatReader[B: JsonFormat: ScoreConverter] = jsonFormat4(Ast.apply[B])
+//
+//    def modelJsonReader[A, B: JsonReader: ScoreConverter](semantics: Semantics[A]) = new JsonReader[CategoricalDistibutionModel[A, B]] {
+//      def read(json: JsValue) = {
+//        implicit val bFormat = jsonReaderToJsonFormat[B]
+//        val id = getModelId(json).get
+//        val ast = json.convertTo[Ast[B]]
+//        val featuresX = ast.features.map(f => semantics.createFunction[Any](f))
+//        val features = featuresX.map(_.left.map(e => error("errors: " + e.mkString("\n") + "json: " + json.compactPrint)).right.get)
+//
+//        val m = CategoricalDistibutionModel[A, B](
+//          id,
+//          features,
+//          HashedCategoricalDistribution(ast.probabilities: _*),
+//          ast.labels,
+//          ast.missingOk.getOrElse(false))
+//
+//        m
+//      }
+//    }
+//  }
 }

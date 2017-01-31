@@ -13,7 +13,7 @@ import com.eharmony.aloha.io.StringReadable
 import com.eharmony.aloha.io.sources.{Base64StringSource, ExternalSource, ModelSource}
 import com.eharmony.aloha.io.vfs.Vfs
 import com.eharmony.aloha.models.reg.{ConstantDeltaSpline, RegFeatureCompiler, RegressionFeatures}
-import com.eharmony.aloha.models.{BaseModel, TypeCoercion}
+import com.eharmony.aloha.models.TypeCoercion
 import com.eharmony.aloha.reflect._
 import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.aloha.score.basic.ModelOutput

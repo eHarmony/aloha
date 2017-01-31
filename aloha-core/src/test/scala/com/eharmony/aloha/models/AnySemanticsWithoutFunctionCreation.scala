@@ -10,10 +10,10 @@ import scala.util.Try
   * Created by jmorra on 2/29/16.
   */
 object AnySemanticsWithoutFunctionCreation extends Semantics[Any] {
-  def refInfoA = RefInfo[Any]
-  def accessorFunctionNames = Nil
-  def close() {}
-  def createFunction[B: RefInfo](codeSpec: String, default: Option[B]) = {
+  def refInfoA: RefInfo[Any] = RefInfo[Any]
+  def accessorFunctionNames: Seq[Nothing] = Nil
+  def close(): Unit = {}
+  def createFunction[B: RefInfo](codeSpec: String, default: Option[B]): Either[Seq[String], GenFunc0[Any, B]] = {
     val right = Try {
       val long = codeSpec.toLong
       Right(GenFunc0(codeSpec, (a: Any) => long.asInstanceOf[B]))

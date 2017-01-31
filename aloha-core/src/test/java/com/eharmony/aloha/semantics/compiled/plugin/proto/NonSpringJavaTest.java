@@ -1,33 +1,32 @@
 package com.eharmony.aloha.semantics.compiled.plugin.proto;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Properties;
-
+import com.eharmony.aloha.audit.impl.TreeAuditor;
+import com.eharmony.aloha.factory.NewModelFactory;
+import com.eharmony.aloha.factory.NewModelParser;
+import com.eharmony.aloha.factory.ri2jf.StdRefInfoToJsonFormat;
+import com.eharmony.aloha.models.Model;
+import com.eharmony.aloha.models.reg.RegressionModel;
+import com.eharmony.aloha.reflect.RefInfo;
+import com.eharmony.aloha.semantics.compiled.CompiledSemantics;
+import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler;
+import com.eharmony.aloha.test.proto.TestProtoBuffs.TestProto;
+import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
-
+import scala.collection.JavaConversions;
+import scala.reflect.Manifest;
 import scala.util.Try;
 
-import com.eharmony.aloha.factory.ModelFactory;
-import com.eharmony.aloha.factory.ModelParser;
-import com.eharmony.aloha.factory.TypedModelFactory;
-import com.eharmony.aloha.interop.DoubleFactoryInfo;
-import com.eharmony.aloha.interop.IntegerFactoryInfo;
-import com.eharmony.aloha.models.Model;
-import com.eharmony.aloha.models.reg.RegressionModel;
-import com.eharmony.aloha.score.Scores.Score;
-import com.eharmony.aloha.score.conversions.StrictConversions;
-import com.eharmony.aloha.semantics.compiled.CompiledSemantics;
-import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler;
-import com.eharmony.aloha.test.proto.TestProtoBuffs.TestProto;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Properties;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(BlockJUnit4ClassRunner.class)
 public class NonSpringJavaTest {
@@ -80,11 +79,13 @@ public class NonSpringJavaTest {
 
 		// Construct the factory. Can use one factory for many models so long as
 		// the type parameters are the same.
-		final TypedModelFactory<TestProto, Double> modelFactory = getModelFactory();
+		final NewModelFactory<TreeAuditor.Tree<?>, Double, TestProto, TreeAuditor.Tree<Double>> modelFactory = getModelFactory();
 
 		// Construct the model. Can reuse the models. All models should be
 		// thread safe and lock free.
-		final Model<TestProto, Double> model = getModel(modelFactory,
+		final Model<TestProto, TreeAuditor.Tree<Double>> model =
+			getModel(
+				modelFactory,
 				vfs2FileManager.resolveFile(VFS2_MODEL_LOCATION_URL_STRING));
 
 		// Test that the model works.
@@ -98,10 +99,10 @@ public class NonSpringJavaTest {
 	 * @param model
 	 *            a model to test
 	 */
-	private static void testModel(Model<TestProto, Double> model) {
+	private static void testModel(Model<TestProto, TreeAuditor.Tree<Double>> model) {
 		final TestProto p = SpringModelFactoryTest.PROTOS.get(1);
-		final Score s = model.score(p);
-		final Double d = StrictConversions.asJavaDouble(s);
+		final TreeAuditor.Tree<Double> s = model.apply(p);
+		final Double d = s.value().get();
 		assertEquals(SpringModelFactoryTest.EXPECTED_1, d,
 				SpringModelFactoryTest.TOLERANCE);
 	}
@@ -116,16 +117,18 @@ public class NonSpringJavaTest {
 	 *            a file from which to construct a model
 	 * @return a model specified by the file.
 	 */
-	private static Model<TestProto, Double> getModel(
-			TypedModelFactory<TestProto, Double> modelFactory,
-			org.apache.commons.vfs2.FileObject fo2Model) {
+	private static Model<TestProto, TreeAuditor.Tree<Double>> getModel(
+			NewModelFactory<TreeAuditor.Tree<?>, Double, TestProto, TreeAuditor.Tree<Double>> modelFactory,
+			FileObject fo2Model) {
 
 		// THIS CAST IS NECESSARY (even though it might not seem like it):
 		// (Scala compiler bug)
 		// Get an attempt to get the model.
+
+		// TODO: Figure out how to eliminate the need to do this cast.
 		@SuppressWarnings("unchecked")
-		final Try<Model<TestProto, Double>> modelTry = (Try<Model<TestProto, Double>>) modelFactory
-				.fromVfs2(fo2Model);
+		final Try<Model<TestProto, TreeAuditor.Tree<Double>>> modelTry =
+				(Try<Model<TestProto, TreeAuditor.Tree<Double>>>) modelFactory.fromVfs2(fo2Model);
 
 		// modelTry.isSuccess() tells if there is something inside:
 		// - true is good.
@@ -156,7 +159,7 @@ public class NonSpringJavaTest {
 	 * 
 	 * @return a factory used to construct models.
 	 */
-	private static TypedModelFactory<TestProto, Double> getModelFactory() {
+	private static NewModelFactory<TreeAuditor.Tree<?>, Double, TestProto, TreeAuditor.Tree<Double>> getModelFactory() {
 
 		// ================================================================================================
 		// Construct the semantics
@@ -203,9 +206,14 @@ public class NonSpringJavaTest {
 		// able to include all
 		// parsers.
 		// ================================================================================================
-		final ArrayList<ModelParser> parsers = new ArrayList<ModelParser>();
+		final ArrayList<NewModelParser> parsers = new ArrayList<NewModelParser>();
 		parsers.add(RegressionModel.parser());
-		RegressionModel.parser();
+
+
+		// ================================================================================================
+		//  Get a MorphableAuditor
+		// ================================================================================================
+		final TreeAuditor<Double> morphableAuditor = new TreeAuditor<>();
 
 		// ================================================================================================
 		// Create an untyped factory. This isn't much use in Java because it
@@ -214,33 +222,42 @@ public class NonSpringJavaTest {
 		// reflection information
 		// about the data types that the models consume and produce.
 		// ================================================================================================
-		final ModelFactory untypedModelFactory = new ModelFactory(parsers);
+		final Manifest<Double> refInfo = (Manifest<Double>) RefInfo.fromString("java.lang.Double").right().get();
 
-		// ================================================================================================
-		// Create the typed factory. This factory produces models that take
-		// TestProto instances as
-		// input and produces ieee-754 64-bit floats as output.
-		//
-		// In general, calling the score(..) function that returns a proto is
-		// going to be the most
-		// useful in a production setting because it contains type-safe return
-		// values along with an
-		// audit trail and error messages and it logs missing data.
-		// ================================================================================================
-		final TypedModelFactory<TestProto, Double> testProtoToDoubleModelFactory = untypedModelFactory
-				.toTypedFactory(semantics, new DoubleFactoryInfo<TestProto>(
-						TestProto.class));
+		final NewModelFactory<TreeAuditor.Tree<?>, Double, TestProto, TreeAuditor.Tree<Double>> factory =
+			new NewModelFactory<>(
+				semantics,
+				morphableAuditor,
+				JavaConversions.asScalaBuffer(parsers),
+				new StdRefInfoToJsonFormat(),
+				refInfo
+		);
 
-		// ------------------------------------------------------------------------------------------------
-		// This just shows that we can easily construct another factory for
-		// different output types
-		// while reusing the semantics, etc.
-		// ------------------------------------------------------------------------------------------------
-		final TypedModelFactory<TestProto, Integer> testProtoToIntegerModelFactory = untypedModelFactory
-				.toTypedFactory(semantics, new IntegerFactoryInfo<TestProto>(
-						TestProto.class));
+//		// ================================================================================================
+//		// Create the typed factory. This factory produces models that take
+//		// TestProto instances as
+//		// input and produces ieee-754 64-bit floats as output.
+//		//
+//		// In general, calling the score(..) function that returns a proto is
+//		// going to be the most
+//		// useful in a production setting because it contains type-safe return
+//		// values along with an
+//		// audit trail and error messages and it logs missing data.
+//		// ================================================================================================
+//		final TypedModelFactory<TestProto, Double> testProtoToDoubleModelFactory = untypedModelFactory
+//				.toTypedFactory(semantics, new DoubleFactoryInfo<TestProto>(
+//						TestProto.class));
+//
+//		// ------------------------------------------------------------------------------------------------
+//		// This just shows that we can easily construct another factory for
+//		// different output types
+//		// while reusing the semantics, etc.
+//		// ------------------------------------------------------------------------------------------------
+//		final TypedModelFactory<TestProto, Integer> testProtoToIntegerModelFactory = untypedModelFactory
+//				.toTypedFactory(semantics, new IntegerFactoryInfo<TestProto>(
+//						TestProto.class));
 
-		return testProtoToDoubleModelFactory;
+		return factory;
 	}
 
 	private static Properties getTestProps() {

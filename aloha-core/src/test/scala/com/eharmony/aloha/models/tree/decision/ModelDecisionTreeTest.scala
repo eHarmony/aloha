@@ -1,25 +1,18 @@
 package com.eharmony.aloha.models.tree.decision
 
-import java.util.concurrent.atomic.AtomicBoolean
-
 import com.eharmony.aloha.ModelSerializationTestHelper
-import com.eharmony.aloha.factory.{BasicModelParser, ModelFactory, ModelParser, ParserProviderCompanion}
+import com.eharmony.aloha.audit.impl.TreeAuditor.Tree
+import com.eharmony.aloha.audit.impl.{OptionAuditor, TreeAuditor}
+import com.eharmony.aloha.factory._
 import com.eharmony.aloha.id.ModelId
-import com.eharmony.aloha.models.{ErrorModel, BaseModel, ConstantModel, Model}
+import com.eharmony.aloha.models.{CloserTesterModel, ErrorModel, Model}
 import com.eharmony.aloha.reflect.RefInfo
-import com.eharmony.aloha.score.conversions.ScoreConverter
-import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.NothingScoreConverter
-import com.eharmony.aloha.score.conversions.rich.RichScore
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.semantics.func.{GenAggFunc, GenFunc, GeneratedAccessor}
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
-import spray.json._
-import spray.json.DefaultJsonProtocol._
-
-import scala.collection.JavaConversions.asScalaBuffer
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class ModelDecisionTreeTest extends ModelSerializationTestHelper {
@@ -165,8 +158,8 @@ class ModelDecisionTreeTest extends ModelSerializationTestHelper {
     @Test def test_pp() { models.foreach(m => success(m, pp, noneMissing, noErrorMessages, scoreIndicatesSecondInnerModelLeaf) ) }
 
     @Test def testSerialization(): Unit = {
-        val sub = ErrorModel(ModelId(2, "abc"), Seq("def", "ghi"))
-        val m = ModelDecisionTree(ModelId(2, "abc"), root = Leaf(sub), returnBest = true)
+        val sub = ErrorModel(ModelId(2, "abc"), Seq("def", "ghi"), OptionAuditor[Int]())
+        val m = ModelDecisionTree[Option[_], Int, Any, Option[Int]](ModelId(2, "abc"), root = Leaf(sub), returnBest = true, OptionAuditor[Int]())
         val m1 = serializeDeserializeRoundTrip(m)
         assertEquals(m, m1)
     }
@@ -179,54 +172,50 @@ class ModelDecisionTreeTest extends ModelSerializationTestHelper {
         val (modelDecisionTree, submodels) = treeAndCheckerModels()
         assertEquals(7, submodels.size)
         modelDecisionTree.close()
-        assertTrue(submodels.forall(_.closed))
+        assertTrue(submodels.forall(_.isClosed))
     }
 
-    def success(m: ModelContainer[Map[String, Double], Int], x: Map[String, Double], missing: Seq[String], errors: Seq[String], exp: Int) {
-        val s = m.model.score(x)
+    def success(m: ModelContainer[Map[String, Double], Tree[Int]], x: Map[String, Double], missing: Seq[String], errors: Seq[String], exp: Int) {
+        val s = m.model(x)
 
-        assertTrue("Model should produce a score.", s.hasScore)
-        assertEquals("Incorrect score produced", exp, s.relaxed.asInt.get)
-        assertEquals("One subscore should be produced. Found none", 1, s.getSubScoresList.size)
-        assertEquals("Incorrect sub-score produced", exp, s.getSubScoresList.head.relaxed.asInt.get)
+        assertTrue("Model should produce a score.", s.value.isDefined)
+        assertEquals("Incorrect score produced", exp, s.value.get)
+        assertEquals("One subscore should be produced. Found none", 1, s.subvalues.size)
+        assertEquals("Incorrect sub-score produced", exp, s.subvalues.head.value.get.asInstanceOf[Int])
 
         if (missing.nonEmpty || errors.nonEmpty) {
-            assertTrue("An error object should be present.", s.hasError)
-
-            val e = s.getError
+            assertTrue("An error object should be present.", s.missingVarNames.nonEmpty || s.errorMsgs.nonEmpty)
 
             if (missing.nonEmpty)
-                assertTrue("Model should produce an error with missing features.", e.hasMissingFeatures)
+                assertTrue("Model should produce an error with missing features.", s.missingVarNames.nonEmpty)
 
-            assertEquals("Difference in expected missing features: ", missing, e.getMissingFeatures.getNamesList.toSeq)
+            assertEquals("Difference in expected missing features: ", missing.toSet, s.missingVarNames)
 
 
             if (errors.nonEmpty)
-                assertTrue("Model should produce an error with causes.", e.getMessagesCount > 0)
+                assertTrue("Model should produce an error with causes.", s.errorMsgs.nonEmpty)
 
-            assertEquals("Difference in expected error messages: ", errors, e.getMessagesList.toSeq)
+            assertEquals("Difference in expected error messages: ", errors, s.errorMsgs)
         }
     }
 
-    def failure(m: ModelContainer[Map[String, Double], Int], x: Map[String, Double], missing: Seq[String], errors: Seq[String]) {
-        val s = m.model.score(x)
+    def failure(m: ModelContainer[Map[String, Double], Tree[Int]], x: Map[String, Double], missing: Seq[String], errors: Seq[String]) {
+        val s = m.model(x)
 
-        if (s.hasScore)
-            assertFalse("Model should NOT successfully produce a score.  Found: " + s.relaxed.asInt.get, s.hasScore)
+        if (s.value.isDefined)
+            assertFalse("Model should NOT successfully produce a score.  Found: " + s.value.get, s.value.isDefined)
 
-        assertTrue("Model should produce an error.", s.hasError)
-
-        val e = s.getError
+      assertTrue("Model should produce an error.", s.errorMsgs.nonEmpty || s.missingVarNames.nonEmpty)
 
         if (missing.nonEmpty)
-            assertTrue("Model should produce an error with missing features.", e.hasMissingFeatures)
+            assertTrue("Model should produce an error with missing features.", s.missingVarNames.nonEmpty)
 
-        assertEquals("Difference in expected missing features: ", missing, e.getMissingFeatures.getNamesList.toSeq)
+        assertEquals("Difference in expected missing features: ", missing.toSet, s.missingVarNames)
 
         if (errors.nonEmpty)
-            assertTrue("Model should produce an error with causes.", e.getMessagesCount > 0)
+            assertTrue("Model should produce an error with causes.", s.errorMsgs.nonEmpty)
 
-        assertEquals("Difference in expected error messages: ", errors, e.getMessagesList.toSeq)
+        assertEquals("Difference in expected error messages: ", errors, s.errorMsgs)
     }
 
     // Code used to generate data for tests.
@@ -253,187 +242,169 @@ class ModelDecisionTreeTest extends ModelSerializationTestHelper {
 
 object ModelDecisionTreeTest {
 
-    case class CloseCheckerModel(modelId: ModelId) extends BaseModel[Any, Nothing] {
-        private[this] val c = new AtomicBoolean(false)
-        private[this] val Seq(w, wo) = Seq(true, false) map { audit => failure(Seq(getClass.getSimpleName + " always errors"))(audit) }
-        private[aloha] def getScore(a: Any)(implicit audit: Boolean) = if (audit) w else wo
-        override def close(): Unit = c.set(true)
-        def closed = c.get  // always false until close is called, then always true.
+  private[ModelDecisionTreeTest] def treeAndCheckerModels() = {
+
+    // Don't need semantics since no features.  Just reuse any semantics. Only need these 2 parsers.
+    val factory = {
+      val f = NewModelFactory.defaultFactory(semantics, OptionAuditor[Int]())
+      f.copy(parsers = f.parsers ++ Seq())
     }
 
-    object CloseCheckerModel extends ParserProviderCompanion {
-        object Parser extends BasicModelParser {
-            val modelType = "CloseChecker"
-            def modelJsonReader[A, B: JsonReader : ScoreConverter]: JsonReader[CloseCheckerModel] = new JsonReader[CloseCheckerModel] {
-                def read(json: JsValue) = json.convertTo(jsonFormat(CloseCheckerModel(_), "modelId"))
-            }
-        }
-        def parser: ModelParser = Parser
-    }
-
-    private[ModelDecisionTreeTest] def treeAndCheckerModels() = {
-        import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.IntScoreConverter
-        import spray.json.DefaultJsonProtocol.IntJsonFormat
-
-        // Don't need semantics since no features.  Just reuse any semantics. Only need these 2 parsers.
-        val factory = ModelFactory(ModelDecisionTree.parser, CloseCheckerModel.parser).
-                        toTypedFactory[Map[String, Double], Int](semantics)
-
-        val json = s"""
-                      |{
-                      |  "modelType": "ModelDecisionTree",
-                      |  "modelId": { "id": 100, "name": "tree" },
-                      |  "returnBest": true,
-                      |  "missingDataOk": false,
-                      |  "nodes": [
-                      |    {
-                      |      "id": 0,
-                      |      "value": { "modelType": "CloseChecker", "modelId": { "id": 0, "name": "checker" } },
-                      |      "selector": { "selectorType": "linear", "children": [1, 4], "predicates": ["true", "false"] }
-                      |    },
-                      |    {
-                      |      "id": 1,
-                      |      "value": { "modelType": "CloseChecker", "modelId": { "id": 1, "name": "checker" } },
-                      |      "selector": { "selectorType": "linear", "children": [2, 3], "predicates": ["true", "false"] }
-                      |    },
-                      |    { "id": 2, "value": { "modelType": "CloseChecker", "modelId": { "id": 2, "name": "checker" } } },
-                      |    { "id": 3, "value": { "modelType": "CloseChecker", "modelId": { "id": 3, "name": "checker" } } },
-                      |    {
-                      |      "id": 4,
-                      |      "value": { "modelType": "CloseChecker", "modelId": { "id": 4, "name": "checker" } },
-                      |      "selector": { "selectorType": "linear", "children": [5, 6], "predicates": ["true", "false"] }
-                      |    },
-                      |    { "id": 5, "value": { "modelType": "CloseChecker", "modelId": { "id": 5, "name": "checker" } } },
-                      |    { "id": 6, "value": { "modelType": "CloseChecker", "modelId": { "id": 6, "name": "checker" } } }
-                      |  ]
-                      |}
+    val json = s"""
+                  |{
+                  |  "modelType": "ModelDecisionTree",
+                  |  "modelId": { "id": 100, "name": "tree" },
+                  |  "returnBest": true,
+                  |  "missingDataOk": false,
+                  |  "nodes": [
+                  |    {
+                  |      "id": 0,
+                  |      "value": { "modelType": "CloserTester", "modelId": { "id": 0, "name": "checker" } },
+                  |      "selector": { "selectorType": "linear", "children": [1, 4], "predicates": ["true", "false"] }
+                  |    },
+                  |    {
+                  |      "id": 1,
+                  |      "value": { "modelType": "CloserTester", "modelId": { "id": 1, "name": "checker" } },
+                  |      "selector": { "selectorType": "linear", "children": [2, 3], "predicates": ["true", "false"] }
+                  |    },
+                  |    { "id": 2, "value": { "modelType": "CloserTester", "modelId": { "id": 2, "name": "checker" } } },
+                  |    { "id": 3, "value": { "modelType": "CloserTester", "modelId": { "id": 3, "name": "checker" } } },
+                  |    {
+                  |      "id": 4,
+                  |      "value": { "modelType": "CloserTester", "modelId": { "id": 4, "name": "checker" } },
+                  |      "selector": { "selectorType": "linear", "children": [5, 6], "predicates": ["true", "false"] }
+                  |    },
+                  |    { "id": 5, "value": { "modelType": "CloserTester", "modelId": { "id": 5, "name": "checker" } } },
+                  |    { "id": 6, "value": { "modelType": "CloserTester", "modelId": { "id": 6, "name": "checker" } } }
+                  |  ]
+                  |}
                     """.stripMargin.trim
 
-        val attempt = factory.fromString(json)
-        val t = attempt.get.asInstanceOf[ModelDecisionTree[Map[String, Double], Int]]
-        val cs = t.root.dfs().map{ _._1.value }.collect{ case c: CloseCheckerModel => c }.toVector
-        (t, cs)
+    val attempt = factory.fromString(json)
+    val t = attempt.get.asInstanceOf[ModelDecisionTree[Option[_], Int, Map[String, Double], Option[Int]]]
+    val cs = t.root.dfs().
+      map{ case (node, idx) => node.value }.
+      collect{ case c@CloserTesterModel(id, aud, shouldThrowOnClose) => c }.
+      toVector
+
+    (t, cs)
+  }
+
+  case class ModelContainer[A, B](model: Model[A, B], missing1: Boolean, best1: Boolean, missing2: Boolean, best2: Boolean)
+
+  /** This semantics operates on Map[String, Double].  Produces functions that return true when the key exists in
+    * the map and the value associated value is non-negative.  The functions return false when the key exists in
+    * the map but the values
+    */
+  private[this] val semantics: Semantics[Map[String, Double]] = new Semantics[Map[String, Double]] {
+    def refInfoA: RefInfo[Map[String, Double]] = RefInfo[Map[String, Double]]
+    def close(): Unit = {}
+    def accessorFunctionNames: Seq[String] = Nil
+    def createFunction[B: RefInfo](codeSpec: String, default: Option[B]): Either[Seq[String], GenAggFunc[Map[String, Double], B]] = {
+      val cs = codeSpec.trim
+      val ga = GeneratedAccessor(cs, (_: Map[String, Double]).get(cs), Option("""(_: Map[String, Double]).get(cs)"""))
+      val f = GenFunc.f1(ga)("${"+cs+"} >= 0", _ map {_ >= 0})
+      val g = Right(f.asInstanceOf[GenAggFunc[Map[String, Double], B]])
+      g
     }
+  }
 
-    case class ModelContainer[A, B](model: Model[A, B], missing1: Boolean, best1: Boolean, missing2: Boolean, best2: Boolean)
+  private[this] def model(missing1: Boolean, best1: Boolean, missing2: Boolean, best2: Boolean) = {
+    val factory = NewModelFactory.defaultFactory(semantics, TreeAuditor[Int]())
+    val mTry = factory.fromString(json(missing1, best1, missing2, best2)) // So we can see the exception in debugging.
+    val m = mTry.get
+    ModelContainer(m, missing1, best1, missing2, best2)
+  }
 
-    /** This semantics operates on Map[String, Double].  Produces functions that return true when the key exists in
-      * the map and the value associated value is non-negative.  The functions return false when the key exists in
-      * the map but the values
-      */
-    private[this] val semantics: Semantics[Map[String, Double]] = new Semantics[Map[String, Double]] {
-        def refInfoA = RefInfo[Map[String, Double]]
-        def close() {}
-        def accessorFunctionNames: Seq[String] = Nil
-        def createFunction[B: RefInfo](codeSpec: String, default: Option[B]): Either[Seq[String], GenAggFunc[Map[String, Double], B]] = {
-            val cs = codeSpec.trim
-            val ga = GeneratedAccessor(cs, (_: Map[String, Double]).get(cs), Option("""(_: Map[String, Double]).get(cs)"""))
-            val f = GenFunc.f1(ga)("${"+cs+"} >= 0", _ map {_ >= 0})
-            val g = Right(f.asInstanceOf[GenAggFunc[Map[String, Double], B]])
-            g
-        }
-    }
+  private val noneMissing = Seq.empty[String]
+  private val missingFirstFeature = Seq("first_feature")
+  private val missingSecondFeature = Seq("second_feature")
+  private val missingBothFeatures = Seq("first_feature", "second_feature")
 
-    private[this] def model(missing1: Boolean, best1: Boolean, missing2: Boolean, best2: Boolean) = {
-        import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.IntScoreConverter
-        import spray.json.DefaultJsonProtocol.IntJsonFormat
+  private val errorIndicatesMissingDataInPredicateInOuterModel = Seq("Encountered unacceptable missing data in predicate: ${first_feature} >= 0")
+  private val errorIndicatesMissingDataInPredicateInInnerModel = Seq("Encountered unacceptable missing data in predicate: ${second_feature} >= 0")
+  private val errorIndicatesNoPredicateSatisfiedInOuterModel = Seq("No decision tree predicate satisfied. Tried: [GenAggFunc((${first_feature}) => ${first_feature} >= 0)]")
+  private val errorIndicatesNoPredicateSatisfiedInInnerModel = Seq("No decision tree predicate satisfied. Tried: [GenAggFunc((${second_feature}) => ${second_feature} >= 0)]")
+  private val noErrorMessages = Seq.empty[String]
 
-        val f = ModelFactory(ConstantModel.parser, BasicDecisionTree.parser, ModelDecisionTree.parser)
-        val factory = f.toTypedFactory[Map[String, Double], Int](semantics)
-        val mTry = factory.fromString(json(missing1, best1, missing2, best2)) // So we can see the exception in debugging.
-        val m = mTry.get
-        ModelContainer(m, missing1, best1, missing2, best2)
-    }
+  private val scoreIndicatesFirstInnerModelInterior = 11
+  private val scoreIndicatesFirstInnerModelLeaf = 21
+  private val scoreIndicatesSecondInnerModelInterior = 12
+  private val scoreIndicatesSecondInnerModelLeaf = 22
 
-    val noneMissing = Seq.empty[String]
-    val missingFirstFeature = Seq("first_feature")
-    val missingSecondFeature = Seq("second_feature")
-    val missingBothFeatures = Seq("first_feature", "second_feature")
+  private val tttt = model(missing1 = true,  best1 = true,  missing2 = true,  best2 = true)
+  private val tttf = model(missing1 = true,  best1 = true,  missing2 = true,  best2 = false)
+  private val ttft = model(missing1 = true,  best1 = true,  missing2 = false, best2 = true)
+  private val ttff = model(missing1 = true,  best1 = true,  missing2 = false, best2 = false)
+  private val tftt = model(missing1 = true,  best1 = false, missing2 = true,  best2 = true)
+  private val tftf = model(missing1 = true,  best1 = false, missing2 = true,  best2 = false)
+  private val tfft = model(missing1 = true,  best1 = false, missing2 = false, best2 = true)
+  private val tfff = model(missing1 = true,  best1 = false, missing2 = false, best2 = false)
+  private val fttt = model(missing1 = false, best1 = true,  missing2 = true,  best2 = true)
+  private val fttf = model(missing1 = false, best1 = true,  missing2 = true,  best2 = false)
+  private val ftft = model(missing1 = false, best1 = true,  missing2 = false, best2 = true)
+  private val ftff = model(missing1 = false, best1 = true,  missing2 = false, best2 = false)
+  private val fftt = model(missing1 = false, best1 = false, missing2 = true,  best2 = true)
+  private val fftf = model(missing1 = false, best1 = false, missing2 = true,  best2 = false)
+  private val ffft = model(missing1 = false, best1 = false, missing2 = false, best2 = true)
+  private val ffff = model(missing1 = false, best1 = false, missing2 = false, best2 = false)
+  private val models = Seq(tttt, tttf, ttft, ttff, tftt, tftf, tfft, tfff, fttt, fttf, ftft, ftff, fftt, fftf, ffft, ffff)
 
-    val errorIndicatesMissingDataInPredicateInOuterModel = Seq("Encountered unacceptable missing data in predicate: ${first_feature} >= 0")
-    val errorIndicatesMissingDataInPredicateInInnerModel = Seq("Encountered unacceptable missing data in predicate: ${second_feature} >= 0")
-    val errorIndicatesNoPredicateSatisfiedInOuterModel = Seq("No decision tree predicate satisfied. Tried: [GenAggFunc((${first_feature}) => ${first_feature} >= 0)]")
-    val errorIndicatesNoPredicateSatisfiedInInnerModel = Seq("No decision tree predicate satisfied. Tried: [GenAggFunc((${second_feature}) => ${second_feature} >= 0)]")
-    val noErrorMessages = Seq.empty[String]
+  private val ee = Map.empty[String, Double]
+  private val en = Map("second_feature" -> -1.0)
+  private val ep = Map("second_feature" -> 1.0)
+  private val _ne = Map("first_feature" -> -1.0)
+  private val nn = Map("first_feature" -> -1.0, "second_feature" -> -1.0)
+  private val np = Map("first_feature" -> -1.0, "second_feature" -> 1.0)
+  private val pe = Map("first_feature" -> 1.0)
+  private val pn = Map("first_feature" -> 1.0, "second_feature" -> -1.0)
+  private val pp = Map("first_feature" -> 1.0, "second_feature" -> 1.0)
+  private val inputs: Seq[Map[String, Double]] = Seq(ee, en, ep, _ne, nn, np, pe, pn, pp)
 
-    val scoreIndicatesFirstInnerModelInterior = 11
-    val scoreIndicatesFirstInnerModelLeaf = 21
-    val scoreIndicatesSecondInnerModelInterior = 12
-    val scoreIndicatesSecondInnerModelLeaf = 22
-
-    val tttt = model(missing1 = true,  best1 = true,  missing2 = true,  best2 = true)
-    val tttf = model(missing1 = true,  best1 = true,  missing2 = true,  best2 = false)
-    val ttft = model(missing1 = true,  best1 = true,  missing2 = false, best2 = true)
-    val ttff = model(missing1 = true,  best1 = true,  missing2 = false, best2 = false)
-    val tftt = model(missing1 = true,  best1 = false, missing2 = true,  best2 = true)
-    val tftf = model(missing1 = true,  best1 = false, missing2 = true,  best2 = false)
-    val tfft = model(missing1 = true,  best1 = false, missing2 = false, best2 = true)
-    val tfff = model(missing1 = true,  best1 = false, missing2 = false, best2 = false)
-    val fttt = model(missing1 = false, best1 = true,  missing2 = true,  best2 = true)
-    val fttf = model(missing1 = false, best1 = true,  missing2 = true,  best2 = false)
-    val ftft = model(missing1 = false, best1 = true,  missing2 = false, best2 = true)
-    val ftff = model(missing1 = false, best1 = true,  missing2 = false, best2 = false)
-    val fftt = model(missing1 = false, best1 = false, missing2 = true,  best2 = true)
-    val fftf = model(missing1 = false, best1 = false, missing2 = true,  best2 = false)
-    val ffft = model(missing1 = false, best1 = false, missing2 = false, best2 = true)
-    val ffff = model(missing1 = false, best1 = false, missing2 = false, best2 = false)
-    val models = Seq(tttt, tttf, ttft, ttff, tftt, tftf, tfft, tfff, fttt, fttf, ftft, ftff, fftt, fftf, ffft, ffff)
-
-    val ee = Map.empty[String, Double]
-    val en = Map("second_feature" -> -1.0)
-    val ep = Map("second_feature" -> 1.0)
-    val _ne = Map("first_feature" -> -1.0)
-    val nn = Map("first_feature" -> -1.0, "second_feature" -> -1.0)
-    val np = Map("first_feature" -> -1.0, "second_feature" -> 1.0)
-    val pe = Map("first_feature" -> 1.0)
-    val pn = Map("first_feature" -> 1.0, "second_feature" -> -1.0)
-    val pp = Map("first_feature" -> 1.0, "second_feature" -> 1.0)
-    val inputs: Seq[Map[String, Double]] = Seq(ee, en, ep, _ne, nn, np, pe, pn, pp)
-
-    private[this] def json(missing1: Boolean, best1: Boolean, missing2: Boolean, best2: Boolean) =
-        s"""
-          |{
-          |  "modelType": "ModelDecisionTree",
-          |  "modelId": {"id": 0, "name": ""},
-          |  "returnBest": $best1,
-          |  "missingDataOk": $missing1,
-          |  "nodes": [
-          |    {
-          |      "id": 1,
-          |      "value": {
-          |        "modelType": "DecisionTree",
-          |        "modelId": {"id": 1, "name": ""},
-          |        "returnBest": $best2,
-          |        "missingDataOk": $missing2,
-          |        "nodes": [
-          |          {
-          |            "id": 0,
-          |            "value": 11,
-          |            "selector": { "selectorType": "linear", "children": [1], "predicates": ["second_feature"] }
-          |          },
-          |          { "id": 1, "value": 21 }
-          |        ]
-          |      },
-          |      "selector": { "selectorType": "linear", "children": [2], "predicates": ["first_feature"] }
-          |    },
-          |    {
-          |      "id": 2,
-          |      "value": {
-          |        "modelType": "DecisionTree",
-          |        "modelId": {"id": 2, "name": ""},
-          |        "returnBest": $best2,
-          |        "missingDataOk": $missing2,
-          |        "nodes": [
-          |          {
-          |            "id": 0,
-          |            "value": 12,
-          |            "selector": { "selectorType": "linear", "children": [1], "predicates": ["second_feature"] }
-          |          },
-          |          { "id": 1, "value": 22 }
-          |        ]
-          |      }
-          |    }
-          |  ]
-          |}
+  private[this] def json(missing1: Boolean, best1: Boolean, missing2: Boolean, best2: Boolean) =
+    s"""
+       |{
+       |  "modelType": "ModelDecisionTree",
+       |  "modelId": {"id": 0, "name": ""},
+       |  "returnBest": $best1,
+       |  "missingDataOk": $missing1,
+       |  "nodes": [
+       |    {
+       |      "id": 1,
+       |      "value": {
+       |        "modelType": "DecisionTree",
+       |        "modelId": {"id": 1, "name": ""},
+       |        "returnBest": $best2,
+       |        "missingDataOk": $missing2,
+       |        "nodes": [
+       |          {
+       |            "id": 0,
+       |            "value": 11,
+       |            "selector": { "selectorType": "linear", "children": [1], "predicates": ["second_feature"] }
+       |          },
+       |          { "id": 1, "value": 21 }
+       |        ]
+       |      },
+       |      "selector": { "selectorType": "linear", "children": [2], "predicates": ["first_feature"] }
+       |    },
+       |    {
+       |      "id": 2,
+       |      "value": {
+       |        "modelType": "DecisionTree",
+       |        "modelId": {"id": 2, "name": ""},
+       |        "returnBest": $best2,
+       |        "missingDataOk": $missing2,
+       |        "nodes": [
+       |          {
+       |            "id": 0,
+       |            "value": 12,
+       |            "selector": { "selectorType": "linear", "children": [1], "predicates": ["second_feature"] }
+       |          },
+       |          { "id": 1, "value": 22 }
+       |        ]
+       |      }
+       |    }
+       |  ]
+       |}
         """.stripMargin.trim
 }

@@ -1,17 +1,18 @@
 package com.eharmony.aloha.semantics.compiled.plugin.csv
 
-import java.io.{InputStream, OutputStream, File, PrintStream}
+import java.io.{File, InputStream, OutputStream, PrintStream}
 import java.util.regex.Matcher
 
 import com.eharmony.aloha
 import com.eharmony.aloha.annotate.CLI
-import com.eharmony.aloha.factory.ModelFactory
+import com.eharmony.aloha.audit.impl.OptionAuditor
+import com.eharmony.aloha.audit.impl.scoreproto.ScoreAuditor
+import com.eharmony.aloha.factory.NewModelFactory
 import com.eharmony.aloha.io.StringReadable
-import com.eharmony.aloha.models.Model
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import com.eharmony.aloha.score.conversions.ScoreConverter
 import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits._
-import com.eharmony.aloha.semantics.compiled.{CompiledSemanticsPlugin, CompiledSemantics}
+import com.eharmony.aloha.semantics.compiled.{CompiledSemantics, CompiledSemanticsPlugin}
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import com.eharmony.aloha.semantics.compiled.plugin.proto.CompiledSemanticsProtoPlugin
 import com.eharmony.aloha.util.Timing
@@ -20,10 +21,8 @@ import org.apache.commons.codec.binary.Base64
 
 import scala.collection.parallel.immutable.ParVector
 
-// import org.apache.commons.lang3.StringEscapeUtils
 import org.apache.commons.vfs2.{FileObject, VFS}
-import spray.json.{JsonFormat, pimpString}
-import spray.json.DefaultJsonProtocol._
+import spray.json.pimpString
 
 import scala.annotation.tailrec
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -63,7 +62,7 @@ sealed trait CsvInputType extends InputType {
 }
 
 case class FileBasedCsvInputType(csvDef: FileObject) extends CsvInputType {
-    def csvPluginAndLines = {
+    def csvPluginAndLines: (CompiledSemanticsCsvPlugin, CsvLines) = {
         val c = CsvProtocol.getCsvDataRetriever(StringReadable.fromVfs2(csvDef).parseJson)
         (c.plugin, c.csvLines)
     }
@@ -71,11 +70,11 @@ case class FileBasedCsvInputType(csvDef: FileObject) extends CsvInputType {
 
 sealed trait MissingFunction extends (String => Boolean)
 case object EmptyStringMissingFunction extends MissingFunction {
-    def apply(s: String) = s.isEmpty
+    def apply(s: String): Boolean = s.isEmpty
 }
 
 case class RegexMissingFunction(regex: String) extends MissingFunction {
-    def apply(s: String) = s matches regex
+    def apply(s: String): Boolean = s matches regex
 }
 
 case class InlineCsvInputType(
@@ -89,7 +88,7 @@ case class InlineCsvInputType(
         errorOnOptMissingField: Boolean = false,
         errorOnOptMissingEnum: Boolean = false) extends CsvInputType {
 
-    def csvPluginAndLines = {
+    def csvPluginAndLines: (CompiledSemanticsCsvPlugin, CsvLines) = {
         val missingFunction: MissingFunction = if (missing.isEmpty) EmptyStringMissingFunction else RegexMissingFunction(missing)
         val plugin = CompiledSemanticsCsvPlugin(colNamesToTypes.toMap)
 
@@ -106,7 +105,7 @@ case class InlineCsvInputType(
         (plugin, csvLines)
     }
 
-    def validate = {
+    def validate: Either[String, Unit] = {
         lazy val colNameDups = dupKeys(colNamesToTypes) ++ dupKeys(colNameToEnumName) ++ dupKeys(fieldIndices)
         lazy val enumDups = dupKeys(enums)
         lazy val enumClasses = enums.map(_._1).toSet
@@ -134,7 +133,7 @@ private[csv] case class WithNums(constants: Seq[(String, Int)]) extends EnumGen 
 }
 
 private[csv] case class NoNums(constants: Seq[String]) extends EnumGen {
-    def withClassName(canonicalClassName: String) = Enum.withNoNumbers(canonicalClassName, constants:_*)
+    def withClassName(canonicalClassName: String): Enum = Enum.withNoNumbers(canonicalClassName, constants:_*)
 }
 
 /** An enum parser.
@@ -159,7 +158,7 @@ private[csv] object EnumParser extends RegexParsers {
     // Order matters since there is no backtracking.  numbers needs to appear first.
     lazy val root: Parser[EnumGen] = numbers | noNumbers
 
-    def failureMsg(s: String) = parseAll(root, s) match {
+    def failureMsg(s: String): Option[String] = parseAll(root, s) match {
         case f: NoSuccess => Option(f.msg)
         case _ => None
     }
@@ -221,10 +220,12 @@ case class LoadTestOutput(
     closeOut: Boolean,
     in: Iterator[String],
     inputFn: (String => Any),
-    model: Model[Any, Any],
+//    model: Model[Any, Any],
+    model: Any => Option[Any],
     outputSep: String,
     ltConf: LoadTestConfig
 ) extends PredictionOutputFormat with Timing {
+
     def run(): Unit = {
         val input = correctSizedInput()
         val inputSize = input.size
@@ -244,11 +245,11 @@ case class LoadTestOutput(
             pStream.println(report(0, 0, 0, Float.MinPositiveValue, inputSize, models.size))
             pStream.flush()
 
-            val score: (Any) => Int =
-                if (ltConf.useScoreObjects) (a: Any) => if (model.score(a).hasScore) 1 else 0
-                else (a: Any) => model(a).fold(0)(_ => 1)
+            val score = (a: Any) => model(a).fold(0)(_ => 1)
+
 
             while (loops < ltConf.loops) {
+                // TODO: This looks like a bug.  `m` is never used.
                 val (ne, intTime) = time(models.map(m => input.foldLeft(0)((s, x) => s + score(x))).sum)
                 nonEmpty += ne
                 pred += input.size * models.size
@@ -346,7 +347,7 @@ object CsvModelRunnerConfig {
         }
     }
 
-    def updateInlineCsvCol(reportError: String => Unit, c: CsvModelRunnerConfig, cName: String, tpe: CsvTypes.CsvType) =
+    def updateInlineCsvCol(reportError: String => Unit, c: CsvModelRunnerConfig, cName: String, tpe: CsvTypes.CsvType): CsvModelRunnerConfig =
         updateInlineCsv(reportError, "--" + tpe, c){ csv =>
             csv.copy(
                 colNamesToTypes = csv.colNamesToTypes :+ (cName -> tpe),
@@ -354,7 +355,7 @@ object CsvModelRunnerConfig {
             )
         }
 
-    def updateInlineCsvEnum(reportError: String => Unit, c: CsvModelRunnerConfig, cName: String, eName: String, tpe: CsvTypes.CsvType) =
+    def updateInlineCsvEnum(reportError: String => Unit, c: CsvModelRunnerConfig, cName: String, eName: String, tpe: CsvTypes.CsvType): CsvModelRunnerConfig =
         updateInlineCsv(reportError, "--" + tpe, c){ csv =>
             csv.copy(
                 colNameToEnumName = csv.colNameToEnumName :+ (cName -> eName),
@@ -363,7 +364,7 @@ object CsvModelRunnerConfig {
             )
         }
 
-    def updateLoadTest(c: CsvModelRunnerConfig)(transform: LoadTestConfig => LoadTestConfig) = {
+    def updateLoadTest(c: CsvModelRunnerConfig)(transform: LoadTestConfig => LoadTestConfig): CsvModelRunnerConfig = {
         val loadTest = transform(c.loadTest.getOrElse(LoadTestConfig()))
         c.copy(loadTest = Option(loadTest))
     }
@@ -658,10 +659,15 @@ object CsvModelRunnerConfig {
 @CLI(flag = "--modelrunner")
 object CsvModelRunner {
 
+    implicit def optionAuditor[A]: OptionAuditor[A] = OptionAuditor[A]()
+
     def getConf(args: Seq[String]): Option[CsvModelRunnerConfig] =
         CsvModelRunnerConfig.parser.parse(args, CsvModelRunnerConfig())
 
-    def inputAndModel[A](inputType: InputType, outputType: OutputType.Value, imports: Seq[String], cacheDir: Option[File], model: FileObject): ((String) => A, Model[A, Any]) = {
+    def inputAndModel[A](inputType: InputType, outputType: OutputType.Value, protoOutput: Boolean, imports: Seq[String], cacheDir: Option[File], model: FileObject): ((String) => A, A => Option[Any]) = {
+        // s: CompiledSemanticsLike[Any]
+        // fn: (String) => A
+        // refInfo: RefInfo[A]
         val (s, fn, refInfo) = inputType match {
             case t : CsvInputType  =>
                 val (p, csvLines) = t.csvPluginAndLines
@@ -681,29 +687,53 @@ object CsvModelRunner {
 
         implicit val refInfoA: RefInfo[A] = refInfo
 
-        def instantiate[B : RefInfo : ScoreConverter : JsonFormat] =
-            ModelFactory.defaultFactory.toTypedFactory[A, B](s).fromVfs2(model).get
+//        def instantiate[B : RefInfo : ScoreConverter : JsonFormat] =
+//            ModelFactory.defaultFactory.toTypedFactory[A, B](s).fromVfs2(model).get
+
+        // s: CompiledSemanticsLike[Any]
+        // fn: (String) => A
+        // refInfo: RefInfo[A]
+
+
+
+        def instantiate[N](protoOutput: Boolean)
+                          (implicit r: RefInfo[N],
+                           oa: OptionAuditor[N],
+                           sa: ScoreAuditor[N],
+                           sc: ScoreConverter[N]): A => Option[N] = {
+            if (protoOutput) {
+                val m = NewModelFactory.defaultFactory(s, sa).fromVfs2(model).get
+                m.andThen(s => if (s.hasScore) sc.unboxScore(s.getScore) else None)
+            }
+            else {
+                NewModelFactory.defaultFactory(s, oa).fromVfs2(model).get
+            }
+        }
 
         import OutputType._
 
+        val protoOutput: Boolean = false
+
         val m = outputType match {
-            case BooleanType => instantiate[Boolean]
-            case ByteType    => instantiate[Byte]
-            case DoubleType  => instantiate[Double]
-            case FloatType   => instantiate[Float]
-            case IntType     => instantiate[Int]
-            case LongType    => instantiate[Long]
-            case ShortType   => instantiate[Short]
-            case StringType  => instantiate[String]
+            case BooleanType => instantiate[Boolean](protoOutput)
+            case ByteType    => instantiate[Byte](protoOutput)
+            case DoubleType  => instantiate[Double](protoOutput)
+            case FloatType   => instantiate[Float](protoOutput)
+            case IntType     => instantiate[Int](protoOutput)
+            case LongType    => instantiate[Long](protoOutput)
+            case ShortType   => instantiate[Short](protoOutput)
+            case StringType  => instantiate[String](protoOutput)
         }
 
         ((s: String) => fn(s), m)
     }
 
-    def getPredictionOutputFormat(config: Option[CsvModelRunnerConfig]): Option[PredictionOutputFormat] = config map { case conf =>
+    def getPredictionOutputFormat(config: Option[CsvModelRunnerConfig]): Option[PredictionOutputFormat] = config map { conf =>
         val inputType: InputType = conf.inputType.right.get.get
 
-        val (inF, model) = inputAndModel[Any](inputType, conf.outputType, conf.imports, conf.classCacheDir, conf.model.get)
+        val protoOutput = conf.loadTest.map(lt => lt.useScoreObjects).getOrElse(false)
+
+        val (inF, model) = inputAndModel[Any](inputType, conf.outputType, protoOutput, conf.imports, conf.classCacheDir, conf.model.get)
 
         val out: OutputStream = conf.outputFile.fold[OutputStream](System.out)(f => VFS.getManager.resolveFile(f).getContent.getOutputStream())
         val closeOut: Boolean = conf.outputFile.isDefined
@@ -713,7 +743,7 @@ object CsvModelRunner {
 
         conf.loadTest match {
             case Some(lt) =>
-                LoadTestOutput(out, closeOut, in, inF, model.asInstanceOf[Model[Any, Any]], conf.outputSep, lt)
+                LoadTestOutput(out, closeOut, in, inF, model, conf.outputSep, lt)
             case None =>
                 ModelPredictionOutput(
                     out,

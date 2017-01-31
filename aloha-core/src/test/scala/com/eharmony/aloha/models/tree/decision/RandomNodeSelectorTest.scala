@@ -1,18 +1,18 @@
 package com.eharmony.aloha.models.tree.decision
 
-import collection.JavaConversions.asScalaBuffer
-
-import org.junit.runners.BlockJUnit4ClassRunner
-import org.junit.runner.RunWith
-import org.junit.Test
+import com.eharmony.aloha.audit.impl.TreeAuditor
+import com.eharmony.aloha.audit.impl.TreeAuditor.Tree
+import com.eharmony.aloha.factory.NewModelFactory
+import com.eharmony.aloha.reflect.RefInfo
+import com.eharmony.aloha.semantics.Semantics
+import com.eharmony.aloha.semantics.func.{GenAggFunc, GenFunc, GeneratedAccessor}
+import com.eharmony.aloha.util.rand.HashedCategoricalDistribution
 import org.junit.Assert._
-
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.BlockJUnit4ClassRunner
 import spray.json.JsValue
 
-import com.eharmony.aloha.semantics.Semantics
-import com.eharmony.aloha.reflect.RefInfo
-import com.eharmony.aloha.semantics.func.{ GenFunc, GeneratedAccessor, GenAggFunc }
-import com.eharmony.aloha.util.rand.HashedCategoricalDistribution
 import scala.util.Random
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
@@ -48,7 +48,7 @@ class RandomNodeSelectorTest {
       // Compute the number of successes from the decision tree given a success probability of p.
       // This shows that the
       // Should be 0L to avoid possible underflow that could miraculously, yet fallaciously cause
-      val s = (1 to n).foldLeft(0L)((s, x) => s + tree(Map("F" -> x.toDouble)).getOrElse(Int.MinValue))
+      val s = (1 to n).foldLeft(0L)((s, x) => s + tree(Map("F" -> x.toDouble)).value.getOrElse(Int.MinValue))
 
       // Assert that the empirical mean is close to the mean of the Bernoulli distribution.  Note that if
       // the root value (-2^31) is returned even once by the model, this assertion will fail.  Therefore, this
@@ -78,19 +78,18 @@ class RandomNodeSelectorTest {
   @Test def testRandom50Split() { testRandomDSplit(50, StdSampleSize, 0.06) }
 
   @Test def test_returnBest_false__missingOK_false() {
-    val s = intModel(getTreeJson(returnBest = false, missingDataOk = false, 0.5)).score(Map.empty)
-    assertFalse("Score should NOT have a value.", s.hasScore)
-    assertTrue("Score should have an error.", s.hasError)
-    assertEquals("Incorrect list of missing features.", Seq("F"), s.getError.getMissingFeatures.getNamesList.toSeq)
+    val s = intModel(getTreeJson(returnBest = false, missingDataOk = false, 0.5)).apply(Map.empty)
+    assertTrue("Score should NOT have a value.", s.value.isEmpty)
+    assertTrue("Score should have an error.", s.missingVarNames.nonEmpty || s.errorMsgs.nonEmpty)
+    assertEquals("Incorrect list of missing features.", Set("F"), s.missingVarNames)
   }
 
   @Test def test_returnBest_true__missingOK_false() {
-    val s = intModel(getTreeJson(returnBest = true, missingDataOk = false, 0.5)).score(Map.empty)
-    assertTrue("Score should have an error.", s.hasError)
-    assertEquals("Incorrect list of missing features.", Seq("F"), s.getError.getMissingFeatures.getNamesList.toSeq)
-    assertTrue("Score should have a value.", s.hasScore)
-    import com.eharmony.aloha.score.conversions.rich.RichScore
-    assertEquals("Unexpected score returned by the model. Should be the value at the root.", Some(Int.MinValue), s.relaxed.asInt)
+    val s = intModel(getTreeJson(returnBest = true, missingDataOk = false, 0.5)).apply(Map.empty)
+    assertTrue("Score should have an error.", s.errorMsgs.nonEmpty || s.missingVarNames.nonEmpty)
+    assertEquals("Incorrect list of missing features.", Set("F"), s.missingVarNames)
+    assertTrue("Score should have a value.", s.value.isDefined)
+    assertEquals("Unexpected score returned by the model. Should be the value at the root.", Some(Int.MinValue), s.value)
   }
 
   @Test def test_missingOK_true() {
@@ -100,14 +99,12 @@ class RandomNodeSelectorTest {
     val x = Vector(None, Some(1))
     val di = d(x)
     assertEquals("The second branch (index 1) should be selected given the U(0, 1) distribution", 1, di)
-
-    import com.eharmony.aloha.score.conversions.rich.RichScore
     Seq(true, false).foreach { b =>
       {
-        val s = intModel(getTreeJson(b, missingDataOk = true, 0.5)).score(Map.empty)
-        assertFalse("Score should NOT have an error.", s.hasError)
-        assertTrue("Score should have a value.", s.hasScore)
-        assertEquals("Unexpected score returned by the model.", Some(1), s.relaxed.asInt)
+        val s = intModel(getTreeJson(b, missingDataOk = true, 0.5)).apply(Map.empty)
+        assertTrue("Score should NOT have an error.", s.missingVarNames.isEmpty && s.errorMsgs.isEmpty)
+        assertTrue("Score should have a value.", s.value.isDefined)
+        assertEquals("Unexpected score returned by the model.", Some(1), s.value)
       }
     }
   }
@@ -127,23 +124,19 @@ class RandomNodeSelectorTest {
    */
   private[this] def testRandomDSplit(splitDimensionality: Int, numSamples: Int, delta: Double = 0.015)(implicit r: Random = new Random(0)) {
     val m = doubleModel(treeJsonForCategoricalDist(splitDimensionality, numSamples))
-    val z = (1 to numSamples).foldLeft(0.0)((s, x) => s + m(Map("F" -> x.toDouble)).get)
+    val z = (1 to numSamples).foldLeft(0.0)((s, x) => s + m(Map("F" -> x.toDouble)).value.get)
     assertEquals(1.0, z, delta)
   }
 
   private[this] def intModel(json: JsValue) = {
-    import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.IntScoreConverter
-    import spray.json.DefaultJsonProtocol.IntJsonFormat
-    val reader = BasicDecisionTree.Parser.modelJsonReader[Map[String, Double], Int](randomTestSemantics)
-    val m = reader.read(json)
+    val f = NewModelFactory.defaultFactory(randomTestSemantics, TreeAuditor[Int]())
+    val m = f.fromString(json.compactPrint).get.asInstanceOf[ModelDecisionTree[Tree[_], Int, Map[String, Double], Tree[Int]]]
     m
   }
 
   private[this] def doubleModel(json: JsValue) = {
-    import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.DoubleScoreConverter
-    import spray.json.DefaultJsonProtocol.DoubleJsonFormat
-    val reader = BasicDecisionTree.Parser.modelJsonReader[Map[String, Double], Double](randomTestSemantics)
-    val m = reader.read(json)
+    val f = NewModelFactory.defaultFactory(randomTestSemantics, TreeAuditor[Double]())
+    val m = f.fromString(json.compactPrint).get.asInstanceOf[ModelDecisionTree[Tree[_], Double, Map[String, Double], Tree[Double]]]
     m
   }
 

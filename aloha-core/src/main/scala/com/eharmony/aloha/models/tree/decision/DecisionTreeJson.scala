@@ -1,7 +1,7 @@
 package com.eharmony.aloha.models.tree.decision
 
 import com.eharmony.aloha.semantics.Semantics
-import com.eharmony.aloha.factory.pimpz.JsValuePimpz
+import com.eharmony.aloha.factory.jsext.JsValueExtensions
 import com.eharmony.aloha.util.rand.HashedCategoricalDistribution
 import com.eharmony.aloha.factory.ex.AlohaFactoryException
 
@@ -67,7 +67,7 @@ trait DecisionTreeJson {
     }
 
     private[this] implicit val linearNodeSelectorAstJsonFormat = jsonFormat3(LinearNodeSelectorAst)
-    private[this] implicit object NodeSelectorJsonFormat extends JsonFormat[NodeSelectorAst] with JsValuePimpz {
+    private[this] implicit object NodeSelectorJsonFormat extends JsonFormat[NodeSelectorAst] {
         val acceptable = Seq("linear", "random").map("'" + _ + "'").mkString(", ")
         def read(json: JsValue) =
             json("selectorType") map {
