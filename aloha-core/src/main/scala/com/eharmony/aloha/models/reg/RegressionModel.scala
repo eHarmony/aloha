@@ -193,7 +193,7 @@ object RegressionModel extends ParserProviderCompanion with RegressionModelJson 
     }
   }
 
-  def parser: NewModelParser = Parser
+  def parser: ModelParser = Parser
 
 
   //  object Parser extends ModelParserWithSemantics

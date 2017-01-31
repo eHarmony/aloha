@@ -114,7 +114,7 @@ object SegmentationModel extends ParserProviderCompanion {
     }
   }
 
-  def parser: NewModelParser = Parser
+  def parser: ModelParser = Parser
 
 //    object Parser extends ModelParser {
 //        val modelType = "Segmentation"

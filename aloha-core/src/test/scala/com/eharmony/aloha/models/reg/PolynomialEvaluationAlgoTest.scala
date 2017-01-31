@@ -1,7 +1,7 @@
 package com.eharmony.aloha.models.reg
 
 import com.eharmony.aloha.audit.impl.OptionAuditor
-import com.eharmony.aloha.factory.NewModelFactory
+import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.reflect.RefInfo
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.semantics.func.{GenAggFunc, GenFunc, GeneratedAccessor}
@@ -28,7 +28,7 @@ class PolynomialEvaluationAlgoTest {
     }
   }
 
-  private[this] val factory = NewModelFactory.defaultFactory(semantics, OptionAuditor[Double]())
+  private[this] val factory = ModelFactory.defaultFactory(semantics, OptionAuditor[Double]())
 
 
   @Test def testManualPolyEval() {

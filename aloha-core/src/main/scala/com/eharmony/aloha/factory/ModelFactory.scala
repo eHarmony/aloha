@@ -2,7 +2,7 @@ package com.eharmony.aloha.factory
 
 import com.eharmony.aloha
 import com.eharmony.aloha.audit.{Auditor, MorphableAuditor}
-import com.eharmony.aloha.factory.NewModelFactory.{InlineReader, ModelInlineReader, SubmodelInlineReader}
+import com.eharmony.aloha.factory.ModelFactory.{InlineReader, ModelInlineReader, SubmodelInlineReader}
 import com.eharmony.aloha.factory.ex.{AlohaFactoryException, RecursiveModelDefinitionException}
 import com.eharmony.aloha.factory.jsext.JsValueExtensions
 import com.eharmony.aloha.factory.ri2jf.{RefInfoToJsonFormat, StdRefInfoToJsonFormat}
@@ -108,10 +108,10 @@ import scala.util.{Failure, Success, Try}
 //  * parameter that was passed to this factory instance.
   */
 // TODO: Turn this into a trait on just A and B and make U and N inner type params and just a model method.
-case class NewModelFactory[U, N, A, B <: U](
+case class ModelFactory[U, N, A, B <: U](
     semantics: Semantics[A],
     auditor: MorphableAuditor[U, N, B],
-    parsers: Seq[NewModelParser],
+    parsers: Seq[ModelParser],
     refInfoToJsonFormat: RefInfoToJsonFormat)
    (implicit refInfo: RefInfo[N])
    extends ReadableByString[Try[Model[A, B]]]
@@ -291,7 +291,7 @@ case class NewModelFactory[U, N, A, B <: U](
     * @param json JSON to be parsed and translated to a model.
     * @return Returns a VALID model type.
     */
-  private[this] def modelParser(json: JsObject): Try[NewModelParser] = {
+  private[this] def modelParser(json: JsObject): Try[ModelParser] = {
     val parser = json.s("modelType").flatMap(t => availableParsers.get(t))
 
     parser.map(p => Success(p)) getOrElse {
@@ -302,7 +302,7 @@ case class NewModelFactory[U, N, A, B <: U](
   }
 }
 
-object NewModelFactory {
+object ModelFactory {
 
   /** Provides a default factory capable of producing models defined in aloha-core.  The list of models come from
     * the knownModelParsers method.
@@ -313,14 +313,14 @@ object NewModelFactory {
   def defaultFactory[U, N, A, B <: U](
       semantics: Semantics[A],
       auditor: MorphableAuditor[U, N, B]
-  )(implicit refInfo: RefInfo[N]): NewModelFactory[U, N, A, B] = {
-    NewModelFactory(semantics, auditor, knownModelParsers(), new StdRefInfoToJsonFormat)
+  )(implicit refInfo: RefInfo[N]): ModelFactory[U, N, A, B] = {
+    ModelFactory(semantics, auditor, knownModelParsers(), new StdRefInfoToJsonFormat)
   }
 
   /** Get the list of models on the classpath with parsers that can be used by a model factory.
     * @return
     */
-  def knownModelParsers(): Seq[NewModelParser] = {
+  def knownModelParsers(): Seq[ModelParser] = {
     val reflections = new Reflections(aloha.pkgName)
     import scala.collection.JavaConversions.asScalaSet
     val parserProviderCompanions = reflections.getSubTypesOf(classOf[ParserProviderCompanion]).toSeq
@@ -330,7 +330,7 @@ object NewModelFactory {
         Try {
           val c = Class.forName(ppc.getCanonicalName.dropRight(1))
           c.getMethod("parser").invoke(null) match {
-            case mp: NewModelParser => mp
+            case mp: ModelParser => mp
             case _ => throw new IllegalStateException()
           }
         }.toOption
@@ -339,7 +339,7 @@ object NewModelFactory {
   }
 
   private sealed trait InlineReader[U, N, -A, +B <: U, Y] {
-    def jsonReader(parser: NewModelParser): Try[JsonReader[_ <: Y]]
+    def jsonReader(parser: ModelParser): Try[JsonReader[_ <: Y]]
   }
 
   private case class ModelInlineReader[U, N: RefInfo: JsonFormat, A, B <: U](
@@ -347,7 +347,7 @@ object NewModelFactory {
       semantics: Semantics[A],
       auditor: Auditor[U, N, B]
   ) extends InlineReader[U, N, A, B, Model[A, B]] {
-    override def jsonReader(parser: NewModelParser): Try[JsonReader[_ <: Model[A, B]]] = parser match {
+    override def jsonReader(parser: ModelParser): Try[JsonReader[_ <: Model[A, B]]] = parser match {
       case plugin: ModelParsingPlugin =>
         Try { plugin.modelJsonReader(factory, semantics, auditor) } flatMap { jr =>
           jr.
@@ -367,7 +367,7 @@ object NewModelFactory {
       semantics: Semantics[A],
       auditor: Auditor[U, N, B]
   ) extends InlineReader[U, N, A, B, Submodel[N, A, U]] {
-    override def jsonReader(parser: NewModelParser): Try[JsonReader[_ <: Submodel[N, A, U]]] = parser match {
+    override def jsonReader(parser: ModelParser): Try[JsonReader[_ <: Submodel[N, A, U]]] = parser match {
       case plugin: SubmodelParsingPlugin =>
         Try { plugin.submodelJsonReader(factory, semantics, auditor) } flatMap { jr =>
           jr.
@@ -381,9 +381,4 @@ object NewModelFactory {
       case p => Failure(new AlohaFactoryException(s"${p.modelType} cannot be used to parse top level models, only submodels"))
     }
   }
-}
-
-trait SubmodelFactory[U, A] {
-  def submodel[N](json: JsValue)(implicit r: RefInfo[N]): Try[Submodel[N, A, U]]
-  def jsonFormat[N: RefInfo]: Option[JsonFormat[N]]
 }

@@ -1,7 +1,7 @@
 package com.eharmony.aloha.models.conversion;
 
 import com.eharmony.aloha.audit.impl.TreeAuditor;
-import com.eharmony.aloha.factory.NewModelFactory;
+import com.eharmony.aloha.factory.ModelFactory;
 import com.eharmony.aloha.models.Model;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +18,7 @@ public class DoubleToLongJavaTest {
 
     @Test
     public void test() {
-        final NewModelFactory<TreeAuditor.Tree<?>, Long, Object, TreeAuditor.Tree<Long>> factory = getJavaLongFactory();
+        final ModelFactory<TreeAuditor.Tree<?>, Long, Object, TreeAuditor.Tree<Long>> factory = getJavaLongFactory();
         final String json = goodJson();
         final Try<Model<Object, TreeAuditor.Tree<Long>>> modelTry = factory.fromString(json);
 

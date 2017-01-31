@@ -2,15 +2,15 @@ package com.eharmony.aloha.models
 
 import com.eharmony.aloha.ModelSerializationTestHelper
 import com.eharmony.aloha.audit.impl.OptionAuditor
-import com.eharmony.aloha.factory.NewModelFactory
+import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
-import spray.json.{DeserializationException, pimpString}
 import spray.json.DefaultJsonProtocol.StringJsonFormat
+import spray.json.{DeserializationException, pimpString}
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class SegmentationModelTest extends ModelSerializationTestHelper {
@@ -18,7 +18,7 @@ class SegmentationModelTest extends ModelSerializationTestHelper {
     private[this] lazy val Reader = {
         val sem = AnySemanticsWithoutFunctionCreation
         val aud = OptionAuditor[Double]()
-        val f = NewModelFactory.defaultFactory(sem, aud)
+        val f = ModelFactory.defaultFactory(sem, aud)
 
         SegmentationModel.Parser.commonJsonReader(f.submodelFactory, sem, OptionAuditor[String]()).get
 //        SegmentationModel.Parser.modelJsonReader[Any, String](ModelFactory(ConstantModel.parser), Option(AnySemanticsWithoutFunctionCreation))

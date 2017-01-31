@@ -186,7 +186,7 @@ object ErrorSwallowingModel extends ParserProviderCompanion {
     }
   }
 
-  def parser: NewModelParser = Parser
+  def parser: ModelParser = Parser
 
 
   //    object Parser extends ModelParser {

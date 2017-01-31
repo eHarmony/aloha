@@ -38,7 +38,7 @@ object ErrorModel extends ParserProviderCompanion {
     }
   }
 
-  def parser: NewModelParser = Parser
+  def parser: ModelParser = Parser
 
 //    object Parser extends BasicModelParser {
 //        val modelType = "Error"

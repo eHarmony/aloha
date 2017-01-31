@@ -246,7 +246,7 @@ object ModelDecisionTreeTest {
 
     // Don't need semantics since no features.  Just reuse any semantics. Only need these 2 parsers.
     val factory = {
-      val f = NewModelFactory.defaultFactory(semantics, OptionAuditor[Int]())
+      val f = ModelFactory.defaultFactory(semantics, OptionAuditor[Int]())
       f.copy(parsers = f.parsers ++ Seq())
     }
 
@@ -310,7 +310,7 @@ object ModelDecisionTreeTest {
   }
 
   private[this] def model(missing1: Boolean, best1: Boolean, missing2: Boolean, best2: Boolean) = {
-    val factory = NewModelFactory.defaultFactory(semantics, TreeAuditor[Int]())
+    val factory = ModelFactory.defaultFactory(semantics, TreeAuditor[Int]())
     val mTry = factory.fromString(json(missing1, best1, missing2, best2)) // So we can see the exception in debugging.
     val m = mTry.get
     ModelContainer(m, missing1, best1, missing2, best2)

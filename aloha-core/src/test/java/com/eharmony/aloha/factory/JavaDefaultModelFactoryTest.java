@@ -61,7 +61,7 @@ public class JavaDefaultModelFactoryTest {
      */
     private static final String[] PARSER_NAMES;
 
-    private static final NewModelFactory<TreeAuditor.Tree<?>, Double, Map<String, Long>, TreeAuditor.Tree<Double>> defaultFactory;
+    private static final ModelFactory<TreeAuditor.Tree<?>, Double, Map<String, Long>, TreeAuditor.Tree<Double>> defaultFactory;
 
     static {
         String[] names = new String[] {
@@ -86,7 +86,7 @@ public class JavaDefaultModelFactoryTest {
         final Manifest<Double> rOut = (Manifest<Double>) RefInfo.fromString("Double").right().get();
         final Semantics<Map<String, Long>> semantics = new NoSemantics<>(rIn);
         final MorphableAuditor<TreeAuditor.Tree<?>, Double, TreeAuditor.Tree<Double>> auditor = new TreeAuditor<>();
-        defaultFactory = NewModelFactory.defaultFactory(semantics, auditor, rOut);
+        defaultFactory = ModelFactory.defaultFactory(semantics, auditor, rOut);
     }
 
 
@@ -96,7 +96,7 @@ public class JavaDefaultModelFactoryTest {
     @Test
     public void testDefaultModelFactoryContainsCorrectModels() {
         ArrayList<String> keys = new ArrayList<>();
-        for (NewModelParser parser: JavaConversions.asJavaCollection(defaultFactory.parsers())) {
+        for (ModelParser parser: JavaConversions.asJavaCollection(defaultFactory.parsers())) {
             keys.add(parser.modelType());
         }
         final String[] names = keys.toArray(new String[keys.size()]);

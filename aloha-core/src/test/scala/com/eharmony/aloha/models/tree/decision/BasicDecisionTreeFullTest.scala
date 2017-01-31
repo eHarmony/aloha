@@ -2,7 +2,7 @@ package com.eharmony.aloha.models.tree.decision
 
 import com.eharmony.aloha.audit.impl.TreeAuditor
 import com.eharmony.aloha.audit.impl.TreeAuditor.Tree
-import com.eharmony.aloha.factory.NewModelFactory
+import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.reflect._
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.semantics.func.{GenAggFunc, GenFunc, GeneratedAccessor}
@@ -167,7 +167,7 @@ class BasicDecisionTreeFullTest {
     }
   }
 
-  private[this] val f = NewModelFactory.defaultFactory(semantics, TreeAuditor[Double]())
+  private[this] val f = ModelFactory.defaultFactory(semantics, TreeAuditor[Double]())
 
   // getModel[Map[String, Double], Double](json, Option(semantics)).get
   private[this] def getDecisionTree(jsonStr: String) = f.fromString(jsonStr)

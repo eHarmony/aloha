@@ -10,9 +10,9 @@ import org.junit.runners.BlockJUnit4ClassRunner
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class ModelFactoryTest {
   @Test def test1(): Unit = {
-    val defaultFactory = NewModelFactory.defaultFactory(NoSemantics[Any](), OptionAuditor[Any]())
+    val defaultFactory = ModelFactory.defaultFactory(NoSemantics[Any](), OptionAuditor[Any]())
     val parsersInDefault = defaultFactory.parsers.toSet
-    val knownParsers = NewModelFactory.knownModelParsers().toSet
+    val knownParsers = ModelFactory.knownModelParsers().toSet
     assertEquals(knownParsers, parsersInDefault)
   }
 }

@@ -4,7 +4,7 @@ import java.io.File
 
 import com.eharmony.aloha.FileLocations
 import com.eharmony.aloha.audit.impl.OptionAuditor
-import com.eharmony.aloha.factory.NewModelFactory
+import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.models.Model
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
@@ -62,7 +62,7 @@ object FizzBuzzCsvRegModelTest {
   // #3 Create the factory
   // Need to import a spray JsonFormat and a ScoreConverter for the output type of the model (Double).
 //  val factory: TypedModelFactory[CsvLine, Double] = ModelFactory.defaultFactory.toTypedFactory[CsvLine, Double](csvSemantics)
-  val factory = NewModelFactory.defaultFactory(csvSemantics, OptionAuditor[Double]())
+  val factory = ModelFactory.defaultFactory(csvSemantics, OptionAuditor[Double]())
 
 
   // #4 Use the factory to instantiate the model.

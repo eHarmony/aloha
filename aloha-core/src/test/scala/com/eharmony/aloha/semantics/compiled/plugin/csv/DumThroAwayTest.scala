@@ -1,7 +1,7 @@
 package com.eharmony.aloha.semantics.compiled.plugin.csv
 
 import com.eharmony.aloha.audit.impl.OptionAuditor
-import com.eharmony.aloha.factory.NewModelFactory
+import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import org.junit.Assert.assertEquals
@@ -18,7 +18,7 @@ class DumThroAwayTest {
         val plugin = CompiledSemanticsCsvPlugin(Map("profile.user_id" -> CsvTypes.withNameExtended("oi")))
         val imports = Seq("com.eharmony.aloha.feature.BasicFunctions._", "scala.math._")
         val semantics = CompiledSemantics(compiler, plugin, imports)
-        val factory = NewModelFactory.defaultFactory(semantics, OptionAuditor[Double]())
+        val factory = ModelFactory.defaultFactory(semantics, OptionAuditor[Double]())
 
         val model = factory.fromResource("fizzbuzz.json").get
 

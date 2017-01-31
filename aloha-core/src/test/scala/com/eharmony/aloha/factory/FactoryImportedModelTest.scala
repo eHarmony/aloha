@@ -10,7 +10,7 @@ import org.junit.runners.BlockJUnit4ClassRunner
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class FactoryImportedModelTest {
-  private[this] val factory = NewModelFactory.defaultFactory(NoSemantics[Any](), OptionAuditor[Int]())
+  private[this] val factory = ModelFactory.defaultFactory(NoSemantics[Any](), OptionAuditor[Int]())
 
   @Test(expected = classOf[RecursiveModelDefinitionException])
   def test1CycleDetected() {

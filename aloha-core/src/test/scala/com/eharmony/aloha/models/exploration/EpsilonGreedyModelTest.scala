@@ -3,7 +3,7 @@ package com.eharmony.aloha.models.exploration
 import com.eharmony.aloha.ModelSerializationTestHelper
 import com.eharmony.aloha.audit.impl.TreeAuditor.Tree
 import com.eharmony.aloha.audit.impl.{OptionAuditor, TreeAuditor}
-import com.eharmony.aloha.factory.NewModelFactory
+import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.models.{AnySemanticsWithoutFunctionCreation, CloserTesterModel, ConstantModel}
 import com.eharmony.aloha.semantics.func.GenFunc0
@@ -17,7 +17,7 @@ import scala.collection.{immutable => sci}
   * Created by jmorra on 2/26/16.
   */
 class EpsilonGreedyModelTest extends ModelSerializationTestHelper {
-  private[this] val factory = NewModelFactory.defaultFactory(AnySemanticsWithoutFunctionCreation, TreeAuditor[String]())
+  private[this] val factory = ModelFactory.defaultFactory(AnySemanticsWithoutFunctionCreation, TreeAuditor[String]())
   private[this] val delta = 0.00001f
   implicit val audit = true
 

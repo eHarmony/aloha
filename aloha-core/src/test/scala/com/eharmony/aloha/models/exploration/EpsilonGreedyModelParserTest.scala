@@ -1,7 +1,7 @@
 package com.eharmony.aloha.models.exploration
 
 import com.eharmony.aloha.audit.impl.OptionAuditor
-import com.eharmony.aloha.factory.NewModelFactory
+import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.models.AnySemanticsWithoutFunctionCreation
 import org.junit.Assert._
 import org.junit.Test
@@ -11,7 +11,7 @@ import spray.json._
   * Created by jmorra on 2/26/16.
   */
 class EpsilonGreedyModelParserTest {
-  private[this] val factory = NewModelFactory.defaultFactory(AnySemanticsWithoutFunctionCreation, OptionAuditor[String]())
+  private[this] val factory = ModelFactory.defaultFactory(AnySemanticsWithoutFunctionCreation, OptionAuditor[String]())
 
   @Test def goodModel() {
     val js =

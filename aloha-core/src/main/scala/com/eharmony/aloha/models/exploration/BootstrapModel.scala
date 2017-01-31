@@ -139,7 +139,7 @@ object BootstrapModel extends ParserProviderCompanion {
     }
   }
 
-  override def parser: NewModelParser = Parser
+  override def parser: ModelParser = Parser
 
 
 //

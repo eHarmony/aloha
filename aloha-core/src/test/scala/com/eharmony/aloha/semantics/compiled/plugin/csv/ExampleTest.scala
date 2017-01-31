@@ -1,8 +1,10 @@
 package com.eharmony.aloha.semantics.compiled.plugin.csv
 
 
+import java.{lang => jl}
+
 import com.eharmony.aloha.audit.impl.OptionAuditor
-import com.eharmony.aloha.factory.NewModelFactory
+import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.models.Model
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
@@ -10,7 +12,6 @@ import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
-import java.{lang => jl}
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class ExampleTest {
@@ -22,7 +23,7 @@ class ExampleTest {
     val compiler = TwitterEvalCompiler()
     val plugin = CompiledSemanticsCsvPlugin(columnTypes)
     val semantics = CompiledSemantics(compiler, plugin, Seq("com.eharmony.aloha.feature.BasicFunctions._"))
-    val factory = NewModelFactory.defaultFactory(semantics, OptionAuditor[jl.Double]())
+    val factory = ModelFactory.defaultFactory(semantics, OptionAuditor[jl.Double]())
     val url = getClass.getClassLoader.getResource("3001.json")
     val model = factory.fromUrl(url).get
     model

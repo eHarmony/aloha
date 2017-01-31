@@ -2,7 +2,7 @@ package com.eharmony.aloha.models.reg
 
 import com.eharmony.aloha.FileLocations
 import com.eharmony.aloha.audit.impl.{OptionAuditor, TreeAuditor}
-import com.eharmony.aloha.factory.NewModelFactory
+import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.reflect.RefInfo
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
@@ -88,7 +88,7 @@ class RegressionModelCompiledSemanticsTest {
     import concurrent.ExecutionContext.Implicits.global
     val semantics = CompiledSemantics(compiler, plugin, imports)
 
-    val f = NewModelFactory.defaultFactory(semantics, OptionAuditor[Double]())
+    val f = ModelFactory.defaultFactory(semantics, OptionAuditor[Double]())
 
     val m = f.fromString(json).get
 

@@ -2,7 +2,7 @@ package com.eharmony.aloha.models.tree.decision
 
 import com.eharmony.aloha.audit.impl.TreeAuditor
 import com.eharmony.aloha.audit.impl.TreeAuditor.Tree
-import com.eharmony.aloha.factory.NewModelFactory
+import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.reflect.RefInfo
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.semantics.func.{GenAggFunc, GenFunc, GeneratedAccessor}
@@ -129,13 +129,13 @@ class RandomNodeSelectorTest {
   }
 
   private[this] def intModel(json: JsValue) = {
-    val f = NewModelFactory.defaultFactory(randomTestSemantics, TreeAuditor[Int]())
+    val f = ModelFactory.defaultFactory(randomTestSemantics, TreeAuditor[Int]())
     val m = f.fromString(json.compactPrint).get.asInstanceOf[ModelDecisionTree[Tree[_], Int, Map[String, Double], Tree[Int]]]
     m
   }
 
   private[this] def doubleModel(json: JsValue) = {
-    val f = NewModelFactory.defaultFactory(randomTestSemantics, TreeAuditor[Double]())
+    val f = ModelFactory.defaultFactory(randomTestSemantics, TreeAuditor[Double]())
     val m = f.fromString(json.compactPrint).get.asInstanceOf[ModelDecisionTree[Tree[_], Double, Map[String, Double], Tree[Double]]]
     m
   }

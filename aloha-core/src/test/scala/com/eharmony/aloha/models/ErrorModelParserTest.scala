@@ -1,7 +1,7 @@
 package com.eharmony.aloha.models
 
 import com.eharmony.aloha.audit.impl.OptionAuditor
-import com.eharmony.aloha.factory.NewModelFactory
+import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.semantics.NoSemantics
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -10,7 +10,7 @@ import org.junit.runners.BlockJUnit4ClassRunner
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class ErrorModelParserTest {
-    private val factory = NewModelFactory.defaultFactory(NoSemantics[String](), OptionAuditor[Int]())
+    private val factory = ModelFactory.defaultFactory(NoSemantics[String](), OptionAuditor[Int]())
 
   @Test def testErrorsFieldMissing() {
     val js =

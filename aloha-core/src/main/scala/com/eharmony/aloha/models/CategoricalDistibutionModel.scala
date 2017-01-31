@@ -126,7 +126,7 @@ object CategoricalDistibutionModel extends ParserProviderCompanion {
     }
   }
 
-  def parser: NewModelParser = Parser
+  def parser: ModelParser = Parser
 
 //  object Parser extends ModelParserWithSemantics with Logging {
 //    val modelType = "CategoricalDistribution"

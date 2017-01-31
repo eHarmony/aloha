@@ -1,8 +1,8 @@
 package com.eharmony.aloha.semantics.compiled.plugin.proto;
 
 import com.eharmony.aloha.audit.impl.TreeAuditor;
-import com.eharmony.aloha.factory.NewModelFactory;
-import com.eharmony.aloha.factory.NewModelParser;
+import com.eharmony.aloha.factory.ModelFactory;
+import com.eharmony.aloha.factory.ModelParser;
 import com.eharmony.aloha.factory.ri2jf.StdRefInfoToJsonFormat;
 import com.eharmony.aloha.models.Model;
 import com.eharmony.aloha.models.reg.RegressionModel;
@@ -79,7 +79,7 @@ public class NonSpringJavaTest {
 
 		// Construct the factory. Can use one factory for many models so long as
 		// the type parameters are the same.
-		final NewModelFactory<TreeAuditor.Tree<?>, Double, TestProto, TreeAuditor.Tree<Double>> modelFactory = getModelFactory();
+		final ModelFactory<TreeAuditor.Tree<?>, Double, TestProto, TreeAuditor.Tree<Double>> modelFactory = getModelFactory();
 
 		// Construct the model. Can reuse the models. All models should be
 		// thread safe and lock free.
@@ -118,7 +118,7 @@ public class NonSpringJavaTest {
 	 * @return a model specified by the file.
 	 */
 	private static Model<TestProto, TreeAuditor.Tree<Double>> getModel(
-			NewModelFactory<TreeAuditor.Tree<?>, Double, TestProto, TreeAuditor.Tree<Double>> modelFactory,
+			ModelFactory<TreeAuditor.Tree<?>, Double, TestProto, TreeAuditor.Tree<Double>> modelFactory,
 			FileObject fo2Model) {
 
 		// THIS CAST IS NECESSARY (even though it might not seem like it):
@@ -159,7 +159,7 @@ public class NonSpringJavaTest {
 	 * 
 	 * @return a factory used to construct models.
 	 */
-	private static NewModelFactory<TreeAuditor.Tree<?>, Double, TestProto, TreeAuditor.Tree<Double>> getModelFactory() {
+	private static ModelFactory<TreeAuditor.Tree<?>, Double, TestProto, TreeAuditor.Tree<Double>> getModelFactory() {
 
 		// ================================================================================================
 		// Construct the semantics
@@ -206,7 +206,7 @@ public class NonSpringJavaTest {
 		// able to include all
 		// parsers.
 		// ================================================================================================
-		final ArrayList<NewModelParser> parsers = new ArrayList<NewModelParser>();
+		final ArrayList<ModelParser> parsers = new ArrayList<ModelParser>();
 		parsers.add(RegressionModel.parser());
 
 
@@ -224,8 +224,8 @@ public class NonSpringJavaTest {
 		// ================================================================================================
 		final Manifest<Double> refInfo = (Manifest<Double>) RefInfo.fromString("java.lang.Double").right().get();
 
-		final NewModelFactory<TreeAuditor.Tree<?>, Double, TestProto, TreeAuditor.Tree<Double>> factory =
-			new NewModelFactory<>(
+		final ModelFactory<TreeAuditor.Tree<?>, Double, TestProto, TreeAuditor.Tree<Double>> factory =
+			new ModelFactory<>(
 				semantics,
 				morphableAuditor,
 				JavaConversions.asScalaBuffer(parsers),

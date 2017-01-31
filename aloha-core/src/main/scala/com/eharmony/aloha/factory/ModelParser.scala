@@ -12,26 +12,26 @@ import spray.json.DefaultJsonProtocol.{LongJsonFormat, StringJsonFormat}
 /**
   * Created by ryan on 1/26/17.
   */
-sealed trait NewModelParser {
+sealed trait ModelParser {
 
   val modelType: String
 
   private implicit val modelIdFormat = DefaultJsonProtocol.jsonFormat2(ModelId.apply)
 
   protected final def getModelId(json: JsValue): Option[ModelIdentity] =
-    json(NewModelParser.modelIdField).collect{case o: JsObject => o.convertTo[ModelId]}
+    json(ModelParser.modelIdField).collect{case o: JsObject => o.convertTo[ModelId]}
 }
 
-private object NewModelParser {
+private object ModelParser {
   val modelIdField = "modelId"
 }
 
-trait ModelParsingPlugin extends NewModelParser {
+trait ModelParsingPlugin extends ModelParser {
   def modelJsonReader[U, N, A, B <: U](factory: SubmodelFactory[U, A], semantics: Semantics[A], auditor: Auditor[U, N, B])
                                       (implicit r: RefInfo[N], jf: JsonFormat[N]): Option[JsonReader[Model[A, B]]]
 }
 
-trait SubmodelParsingPlugin extends NewModelParser {
+trait SubmodelParsingPlugin extends ModelParser {
   def submodelJsonReader[U, N, A, B <: U](factory: SubmodelFactory[U, A], semantics: Semantics[A], auditor: Auditor[U, N, B])
                                          (implicit r: RefInfo[N], jf: JsonFormat[N]): Option[JsonReader[Submodel[N, A, U]]]
 }

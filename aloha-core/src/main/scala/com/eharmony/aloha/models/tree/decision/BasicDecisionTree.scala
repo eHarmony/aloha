@@ -90,7 +90,7 @@ object BasicDecisionTree extends ParserProviderCompanion {
     }
   }
 
-  def parser: NewModelParser = Parser
+  def parser: ModelParser = Parser
 
 
 //    object Parser

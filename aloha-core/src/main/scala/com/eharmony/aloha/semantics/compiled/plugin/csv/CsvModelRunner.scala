@@ -7,7 +7,7 @@ import com.eharmony.aloha
 import com.eharmony.aloha.annotate.CLI
 import com.eharmony.aloha.audit.impl.OptionAuditor
 import com.eharmony.aloha.audit.impl.scoreproto.ScoreAuditor
-import com.eharmony.aloha.factory.NewModelFactory
+import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.io.StringReadable
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import com.eharmony.aloha.score.conversions.ScoreConverter
@@ -20,7 +20,6 @@ import com.google.protobuf.GeneratedMessage
 import org.apache.commons.codec.binary.Base64
 
 import scala.collection.parallel.immutable.ParVector
-
 import org.apache.commons.vfs2.{FileObject, VFS}
 import spray.json.pimpString
 
@@ -702,11 +701,11 @@ object CsvModelRunner {
                            sa: ScoreAuditor[N],
                            sc: ScoreConverter[N]): A => Option[N] = {
             if (protoOutput) {
-                val m = NewModelFactory.defaultFactory(s, sa).fromVfs2(model).get
+                val m = ModelFactory.defaultFactory(s, sa).fromVfs2(model).get
                 m.andThen(s => if (s.hasScore) sc.unboxScore(s.getScore) else None)
             }
             else {
-                NewModelFactory.defaultFactory(s, oa).fromVfs2(model).get
+                ModelFactory.defaultFactory(s, oa).fromVfs2(model).get
             }
         }
 

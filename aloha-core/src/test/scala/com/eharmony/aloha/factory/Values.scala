@@ -16,7 +16,7 @@ object Values {
               |}
             """.stripMargin.trim
 
-        val mf = NewModelFactory.defaultFactory(NoSemantics[String](), OptionAuditor[Int]())
+        val mf = ModelFactory.defaultFactory(NoSemantics[String](), OptionAuditor[Int]())
         mf.fromString(json).get
     }
 
@@ -30,7 +30,7 @@ object Values {
               |}
             """.stripMargin.trim
 
-        val mf = NewModelFactory.defaultFactory(NoSemantics[String](), OptionAuditor[Int]())
+        val mf = ModelFactory.defaultFactory(NoSemantics[String](), OptionAuditor[Int]())
         val m = mf.fromString(json).get
         m
     }

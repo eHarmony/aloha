@@ -1,7 +1,7 @@
 package com.eharmony.aloha.models.tree.decision
 
 import com.eharmony.aloha.audit.impl.TreeAuditor
-import com.eharmony.aloha.factory.NewModelFactory
+import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.reflect.RefInfo
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.semantics.func.{GenAggFunc, GenFunc, GeneratedAccessor}
@@ -225,5 +225,5 @@ private object NodeTest {
     m
   }
 
-  private val Factory = NewModelFactory.defaultFactory(Semantics, TreeAuditor[Int]())
+  private val Factory = ModelFactory.defaultFactory(Semantics, TreeAuditor[Int]())
 }

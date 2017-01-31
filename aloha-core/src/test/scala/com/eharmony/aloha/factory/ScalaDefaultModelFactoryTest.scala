@@ -90,7 +90,7 @@ object ScalaDefaultModelFactoryTest {
     val ConstModelJson = s"""{"modelType": "Constant", "modelId": {"id": $ConstModelId, "name": "$ConstModelName"}, "value": $ConstModelVal}"""
 
     // Create the model factory.  Notice the implicit reflection information is automatically injected.
-    private val defaultFactory = NewModelFactory.defaultFactory(NoSemantics[Map[String, Long]](), ScoreAuditor.doubleAuditor)
+    private val defaultFactory = ModelFactory.defaultFactory(NoSemantics[Map[String, Long]](), ScoreAuditor.doubleAuditor)
 
     def getInputStream(json: String) = new ReaderInputStream(getReader(json))
     def getReader(json: String) = new StringReader(json)

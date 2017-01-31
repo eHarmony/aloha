@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 import com.eharmony.aloha.audit.Auditor
 import com.eharmony.aloha.ex.SchrodingerException
-import com.eharmony.aloha.factory.{ModelSubmodelParsingPlugin, NewModelParser, ParserProviderCompanion, SubmodelFactory}
+import com.eharmony.aloha.factory.{ModelSubmodelParsingPlugin, ModelParser, ParserProviderCompanion, SubmodelFactory}
 import com.eharmony.aloha.id.ModelIdentity
 import com.eharmony.aloha.reflect.RefInfo
 import com.eharmony.aloha.semantics.Semantics
@@ -54,5 +54,5 @@ object CloserTesterModel extends ParserProviderCompanion {
     }
   }
 
-  def parser: NewModelParser = Parser
+  def parser: ModelParser = Parser
 }

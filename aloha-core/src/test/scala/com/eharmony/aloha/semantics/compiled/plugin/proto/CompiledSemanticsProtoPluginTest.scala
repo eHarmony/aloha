@@ -2,7 +2,7 @@ package com.eharmony.aloha.semantics.compiled.plugin.proto
 
 import com.eharmony.aloha.FileLocations
 import com.eharmony.aloha.audit.impl.OptionAuditor
-import com.eharmony.aloha.factory.NewModelFactory
+import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import com.eharmony.aloha.test.proto.TestProtoBuffs.TestProto
@@ -133,7 +133,7 @@ class CompiledSemanticsProtoPluginTest {
     }
 
     @Test def test_BagOfWords2() {
-        val f = NewModelFactory.defaultFactory(semantics, OptionAuditor[Double]())
+        val f = ModelFactory.defaultFactory(semantics, OptionAuditor[Double]())
 
         val m = f.fromString(
             """

@@ -106,7 +106,7 @@ object EpsilonGreedyModel extends ParserProviderCompanion {
     }
   }
 
-  override def parser: NewModelParser = Parser
+  override def parser: ModelParser = Parser
 
 
   //  object Parser extends ModelParser {

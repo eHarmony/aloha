@@ -2,7 +2,7 @@ package com.eharmony.aloha.models
 
 import com.eharmony.aloha.ModelSerializationTestHelper
 import com.eharmony.aloha.audit.impl.{OptionAuditor, TreeAuditor}
-import com.eharmony.aloha.factory.NewModelFactory
+import com.eharmony.aloha.factory.{ModelFactory, ModelFactory$}
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import com.eharmony.aloha.semantics.Semantics
@@ -27,7 +27,7 @@ class CategoricalDistibutionModelTest extends ModelSerializationTestHelper {
       *
       *   String
       */
-    private lazy val f = NewModelFactory.defaultFactory(MapSemantics.stringMapSemantics[Double], TreeAuditor[String])
+    private lazy val f = ModelFactory.defaultFactory(MapSemantics.stringMapSemantics[Double], TreeAuditor[String])
     private lazy val modelMissingNotOk = f.fromString(json()).get
     private lazy val modelMissingOk = f.fromString(json(missingOk = true)).get
 

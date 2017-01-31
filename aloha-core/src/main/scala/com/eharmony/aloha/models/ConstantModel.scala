@@ -48,7 +48,7 @@ object ConstantModel extends ParserProviderCompanion {
     }
   }
 
-  def parser: NewModelParser = Parser
+  def parser: ModelParser = Parser
 
 //    object Parser extends BasicModelParser {
 //        val modelType = "Constant"

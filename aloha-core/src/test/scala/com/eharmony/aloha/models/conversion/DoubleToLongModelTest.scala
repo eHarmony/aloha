@@ -1,7 +1,11 @@
 package com.eharmony.aloha.models.conversion
 
+import java.{lang => jl}
+
 import com.eharmony.aloha.ModelSerializationTestHelper
+import com.eharmony.aloha.audit.impl.TreeAuditor.Tree
 import com.eharmony.aloha.audit.impl.{OptionAuditor, TreeAuditor}
+import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.models._
 import com.eharmony.aloha.semantics.EmptySemantics
@@ -13,10 +17,6 @@ import spray.json.DeserializationException
 
 import scala.language.implicitConversions
 import scala.util.Try
-import java.{lang => jl}
-
-import com.eharmony.aloha.audit.impl.TreeAuditor.Tree
-import com.eharmony.aloha.factory.NewModelFactory
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class DoubleToLongModelTest extends ModelSerializationTestHelper {
@@ -115,10 +115,10 @@ class DoubleToLongModelTest extends ModelSerializationTestHelper {
 
 object DoubleToLongModelTest {
     private val semantics = EmptySemantics[Any]
-    private val scalaFactory = NewModelFactory.defaultFactory(semantics, TreeAuditor[Long]())
-    private val javaFactory = NewModelFactory.defaultFactory(semantics, TreeAuditor[jl.Long]())
+    private val scalaFactory = ModelFactory.defaultFactory(semantics, TreeAuditor[Long]())
+    private val javaFactory = ModelFactory.defaultFactory(semantics, TreeAuditor[jl.Long]())
 
-    def getScalaLongFactory: NewModelFactory[Tree[_], Long, Any, Tree[Long]] = scalaFactory
+    def getScalaLongFactory: ModelFactory[Tree[_], Long, Any, Tree[Long]] = scalaFactory
     def getJavaLongFactory = javaFactory
 
     private implicit def intToOptLong(a: Int): Option[Long] = Option(a)

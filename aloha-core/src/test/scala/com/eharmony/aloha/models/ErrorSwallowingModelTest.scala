@@ -4,7 +4,7 @@ import com.eharmony.aloha.ModelSerializationTestHelper
 import com.eharmony.aloha.audit.impl.OptionAuditor
 import com.eharmony.aloha.audit.impl.scoreproto.ScoreAuditor
 import com.eharmony.aloha.ex.SchrodingerException
-import com.eharmony.aloha.factory.NewModelFactory
+import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.semantics.{FunctionWithErrorProducingSemantics, SemanticsUdfException}
 import org.junit.Assert._
@@ -54,7 +54,7 @@ class ErrorSwallowingModelTest extends ModelSerializationTestHelper {
         |}
       """.stripMargin
     val semantics = FunctionWithErrorProducingSemantics[Any](new SchrodingerException())
-    val factory = NewModelFactory.defaultFactory(semantics, ScoreAuditor.doubleAuditor)
+    val factory = ModelFactory.defaultFactory(semantics, ScoreAuditor.doubleAuditor)
     val model = factory.fromString(json).get
 
     val s = model(null)
@@ -85,7 +85,7 @@ class ErrorSwallowingModelTest extends ModelSerializationTestHelper {
         |}
       """.stripMargin
     val semantics = FunctionWithErrorProducingSemantics[Any](new Exception("exception here."))
-    val factory = NewModelFactory.defaultFactory(semantics, ScoreAuditor.doubleAuditor)
+    val factory = ModelFactory.defaultFactory(semantics, ScoreAuditor.doubleAuditor)
     val model = factory.fromString(json).get
 
     val s = model(null)
@@ -128,7 +128,7 @@ class ErrorSwallowingModelTest extends ModelSerializationTestHelper {
     )
 
     val semantics = FunctionWithErrorProducingSemantics[Any](ex)
-    val factory = NewModelFactory.defaultFactory(semantics, ScoreAuditor.doubleAuditor)
+    val factory = ModelFactory.defaultFactory(semantics, ScoreAuditor.doubleAuditor)
     val model = factory.fromString(json).get
 
     val s = model(null)
@@ -163,7 +163,7 @@ class ErrorSwallowingModelTest extends ModelSerializationTestHelper {
     val ex = new SemanticsUdfException[Any](null, null, null, null, null, null)
 
     val semantics = FunctionWithErrorProducingSemantics[Any](ex)
-    val factory = NewModelFactory.defaultFactory(semantics, ScoreAuditor.doubleAuditor)
+    val factory = ModelFactory.defaultFactory(semantics, ScoreAuditor.doubleAuditor)
     val model = factory.fromString(json).get
 
     val s = model(null)
