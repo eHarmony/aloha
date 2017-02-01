@@ -85,7 +85,7 @@ public class JavaDefaultModelFactoryTest {
                 (Manifest<Map<String, Long>>) RefInfo.fromString("java.util.Map[java.lang.String, java.lang.Long]").right().get();
         final Manifest<Double> rOut = (Manifest<Double>) RefInfo.fromString("Double").right().get();
         final Semantics<Map<String, Long>> semantics = new NoSemantics<>(rIn);
-        final MorphableAuditor<TreeAuditor.Tree<?>, Double, TreeAuditor.Tree<Double>> auditor = new TreeAuditor<>();
+        final MorphableAuditor<TreeAuditor.Tree<?>, Double, TreeAuditor.Tree<Double>> auditor = new TreeAuditor<>(false, false);
         defaultFactory = ModelFactory.defaultFactory(semantics, auditor, rOut);
     }
 

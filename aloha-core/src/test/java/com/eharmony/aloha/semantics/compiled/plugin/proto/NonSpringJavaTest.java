@@ -213,7 +213,7 @@ public class NonSpringJavaTest {
 		// ================================================================================================
 		//  Get a MorphableAuditor
 		// ================================================================================================
-		final TreeAuditor<Double> morphableAuditor = new TreeAuditor<>();
+		final TreeAuditor<Double> morphableAuditor = new TreeAuditor<>(false, false);
 
 		// ================================================================================================
 		// Create an untyped factory. This isn't much use in Java because it

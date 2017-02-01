@@ -12,13 +12,14 @@ case class OptionAuditor[A]() extends MorphableAuditor[Option[_], A, Option[A]] 
   override def changeType[M: RefInfo] = Some(OptionAuditor[M]())
 
   override def failure(key: ModelIdentity,
-                       errorMsgs: => Seq[String],
-                       missingVarNames: => Set[String],
-                       subvalues: Seq[Option[_]]) = None
+                       errorMsgs: => Seq[String] = Nil,
+                       missingVarNames: => Set[String] = Set.empty,
+                       subvalues: Seq[Option[_]] = Nil) = None
 
   override def success(key: ModelIdentity,
                        valueToAudit: A,
-                       missingVarNames: => Set[String],
-                       subvalues: Seq[Option[_]],
-                       prob: => Option[Float]) = Option(valueToAudit)
+                       errorMsgs: => Seq[String] = Nil,
+                       missingVarNames: => Set[String] = Set.empty,
+                       subvalues: Seq[Option[_]] = Nil,
+                       prob: => Option[Float] = None) = Option(valueToAudit)
 }

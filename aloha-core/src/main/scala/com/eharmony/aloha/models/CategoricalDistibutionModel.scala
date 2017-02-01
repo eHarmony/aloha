@@ -67,7 +67,7 @@ case class CategoricalDistibutionModel[U, N, -A, +B <: U](
       if (featuresWithMissing.isEmpty)
         success(n)
       else
-        success(n, missing(featuresWithMissing, a))
+        success(n, missingVarNames = missing(featuresWithMissing, a))
     }
     else
       failure(missingMsg, missing(featuresWithMissing, a))

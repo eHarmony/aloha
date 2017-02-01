@@ -86,18 +86,24 @@ object ScoreAuditor {
 
     override final def success(key: ModelIdentity,
                                valueToAudit: N,
-                               missingVarNames: => Set[String],
-                               subValues: Seq[Score],
-                               prob: => Option[Float]): Score = {
+                               errorMsgs: => Seq[String] = Nil,
+                               missingVarNames: => Set[String] = Set.empty,
+                               subValues: Seq[Score] = Nil,
+                               prob: => Option[Float] = None): Score = {
       val m = mId(key)
       val b = Score.newBuilder
       if (subValues.nonEmpty)
         b.addAllSubScores(asJavaIterable(subValues))
       val mm = accumulateMissing(missingVarNames, subValues)
-      if (mm.nonEmpty)
-        b.setError(ScoreError.newBuilder.
+      val e = errorMsgs
+      if (mm.nonEmpty || e.nonEmpty) {
+        val eb = ScoreError.newBuilder.
           setMissingFeatures(MissingRequiredFields.newBuilder.addAllNames(asJavaIterable(mm))).
-          setModel(m))
+          setModel(m)
+        if (e.nonEmpty)
+          eb.addAllMessages(e)
+      }
+
       val baseScore = boxScore(valueToAudit).setModel(m)
       b.setScore(prob.fold(baseScore)(baseScore.setProbability))
       b.build

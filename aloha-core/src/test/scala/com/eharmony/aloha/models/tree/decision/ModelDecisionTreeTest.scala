@@ -310,7 +310,8 @@ object ModelDecisionTreeTest {
   }
 
   private[this] def model(missing1: Boolean, best1: Boolean, missing2: Boolean, best2: Boolean) = {
-    val factory = ModelFactory.defaultFactory(semantics, TreeAuditor[Int]())
+    val auditor = TreeAuditor[Int](accumulateErrors = true, accumulateMissingFeatures = true)
+    val factory = ModelFactory.defaultFactory(semantics, auditor)
     val mTry = factory.fromString(json(missing1, best1, missing2, best2)) // So we can see the exception in debugging.
     val m = mTry.get
     ModelContainer(m, missing1, best1, missing2, best2)

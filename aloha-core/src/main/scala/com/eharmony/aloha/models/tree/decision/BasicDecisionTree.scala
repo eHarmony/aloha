@@ -49,7 +49,7 @@ case class BasicDecisionTree[U, N, -A, +B <: U](
     */
   private[this] def scoreFailure(interior: InteriorNodeResult[A, N]): Subvalue[B, N] =
     if (returnBest)
-      success(interior.node.value, interior.missing.toSet)
+      success(interior.node.value, missingVarNames = interior.missing.toSet)
     else failure(interior.errors, interior.missing.toSet)
 }
 

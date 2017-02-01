@@ -87,7 +87,7 @@ case class ModelDecisionTree[U, N, -A, +B <: U](
         val s = interior.node.value.subvalue(a)
         s.fold(
           failure(Seq("problem"), interior.missing.toSet),
-          n => success(n, interior.missing.toSet, Seq(s.audited))
+          n => success(n, missingVarNames = interior.missing.toSet, subvalues = Seq(s.audited))
         )
       }
       else failure(interior.errors, interior.missing.toSet)

@@ -103,7 +103,7 @@ extends SubmodelBase[U, Double, A, B]
         val mu = invLinkFunction(splinedEta) // Currently, really just a casting operation.
         debug(s"mu: $mu")
 
-        success(mu, missing.values.flatten.toSet)
+        success(mu, missingVarNames = missing.values.flatten.toSet)
       } else {
         failure(Seq("Missing too much data in features: " + missing.keys.toIndexedSeq.sorted), missing.values.flatten.toSet)
       }
