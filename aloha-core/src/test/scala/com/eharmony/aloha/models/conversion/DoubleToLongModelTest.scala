@@ -89,7 +89,7 @@ class DoubleToLongModelTest extends ModelSerializationTestHelper {
     assertEquals(1.00000001, sub.value.get, 0)
     assertTrue(sub.missingVarNames.isEmpty)
     assertTrue(sub.errorMsgs.isEmpty)
-    assertTrue(s.subvalues.isEmpty)
+    assertTrue(sub.subvalues.isEmpty)
   }
 
   @Test def testStringInnerModel() {

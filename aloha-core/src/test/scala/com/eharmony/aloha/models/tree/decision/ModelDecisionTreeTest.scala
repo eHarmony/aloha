@@ -215,7 +215,19 @@ class ModelDecisionTreeTest extends ModelSerializationTestHelper {
         if (errors.nonEmpty)
             assertTrue("Model should produce an error with causes.", s.errorMsgs.nonEmpty)
 
-        assertEquals("Difference in expected error messages: ", errors, s.errorMsgs)
+      assertEquals("Difference in expected number of error messages: ", 2, s.errorMsgs.size)
+
+      // The first message is one of the following three errors.
+      assertTrue(
+        s.errorMsgs.head,
+        Set(
+          "Problem evaluating submodel ModelId(1,inner decision tree 1) at internal node in model decision tree.",
+          "Problem evaluating submodel ModelId(2,inner decision tree 2) at leaf node in model decision tree.",
+          "Could not get to leaf node in model decision tree ModelId(0,outer model decision tree) and returnBest == false."
+        ) contains s.errorMsgs.head
+      )
+
+      assertEquals("Difference in expected error messages: ", errors, s.errorMsgs.tail)
     }
 
     // Code used to generate data for tests.
@@ -245,10 +257,12 @@ object ModelDecisionTreeTest {
   private[ModelDecisionTreeTest] def treeAndCheckerModels() = {
 
     // Don't need semantics since no features.  Just reuse any semantics. Only need these 2 parsers.
-    val factory = {
-      val f = ModelFactory.defaultFactory(semantics, OptionAuditor[Int]())
-      f.copy(parsers = f.parsers ++ Seq())
-    }
+    val factory = ModelFactory.defaultFactory(semantics, OptionAuditor[Int]())
+
+//    val factory = {
+//      val f = ModelFactory.defaultFactory(semantics, OptionAuditor[Int]())
+//      f.copy(parsers = f.parsers ++ Seq())
+//    }
 
     val json = s"""
                   |{
@@ -326,6 +340,7 @@ object ModelDecisionTreeTest {
   private val errorIndicatesMissingDataInPredicateInInnerModel = Seq("Encountered unacceptable missing data in predicate: ${second_feature} >= 0")
   private val errorIndicatesNoPredicateSatisfiedInOuterModel = Seq("No decision tree predicate satisfied. Tried: [GenAggFunc((${first_feature}) => ${first_feature} >= 0)]")
   private val errorIndicatesNoPredicateSatisfiedInInnerModel = Seq("No decision tree predicate satisfied. Tried: [GenAggFunc((${second_feature}) => ${second_feature} >= 0)]")
+
   private val noErrorMessages = Seq.empty[String]
 
   private val scoreIndicatesFirstInnerModelInterior = 11
@@ -366,7 +381,7 @@ object ModelDecisionTreeTest {
     s"""
        |{
        |  "modelType": "ModelDecisionTree",
-       |  "modelId": {"id": 0, "name": ""},
+       |  "modelId": {"id": 0, "name": "outer model decision tree"},
        |  "returnBest": $best1,
        |  "missingDataOk": $missing1,
        |  "nodes": [
@@ -374,7 +389,7 @@ object ModelDecisionTreeTest {
        |      "id": 1,
        |      "value": {
        |        "modelType": "DecisionTree",
-       |        "modelId": {"id": 1, "name": ""},
+       |        "modelId": {"id": 1, "name": "inner decision tree 1"},
        |        "returnBest": $best2,
        |        "missingDataOk": $missing2,
        |        "nodes": [
@@ -392,7 +407,7 @@ object ModelDecisionTreeTest {
        |      "id": 2,
        |      "value": {
        |        "modelType": "DecisionTree",
-       |        "modelId": {"id": 2, "name": ""},
+       |        "modelId": {"id": 2, "name": "inner decision tree 2"},
        |        "returnBest": $best2,
        |        "missingDataOk": $missing2,
        |        "nodes": [

@@ -63,9 +63,14 @@ case class ModelDecisionTree[U, N, -A, +B <: U](
    */
   protected[this] def processLeaf(a: A, m: Leaf[Submodel[N, A, U]]): Subvalue[B, N] = {
     val s = m.value.subvalue(a)
-    s.natural.fold(failure(Seq(s"Inner model ${m.value.modelId} failed."), Set.empty, Seq(s.audited))){ n =>
-      success(n, subvalues = Seq(s.audited))
-    }
+
+    s.fold(
+      failure(
+        Seq(s"Problem evaluating submodel ${m.value.modelId} at leaf node in model decision tree."),
+        Set.empty,
+        Seq(s.audited)),
+      n => success(n, subvalues = Seq(s.audited))
+    )
   }
 
   /*
@@ -86,11 +91,17 @@ case class ModelDecisionTree[U, N, -A, +B <: U](
       if (returnBest) {
         val s = interior.node.value.subvalue(a)
         s.fold(
-          failure(Seq("problem"), interior.missing.toSet),
+          failure(
+            Seq(s"Problem evaluating submodel ${interior.node.value.modelId} at internal node in model decision tree."),
+            interior.missing.toSet,
+            Seq(s.audited)),
           n => success(n, missingVarNames = interior.missing.toSet, subvalues = Seq(s.audited))
         )
       }
-      else failure(interior.errors, interior.missing.toSet)
+      else
+        failure(
+          s"Could not get to leaf node in model decision tree ${modelId} and returnBest == false." +: interior.errors,
+          interior.missing.toSet)
 
     o
   }

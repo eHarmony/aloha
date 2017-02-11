@@ -75,7 +75,8 @@ public class JavaDefaultModelFactoryTest {
                 DoubleToLongModel.parser().modelType(),
                 ErrorSwallowingModel.parser().modelType(),
                 EpsilonGreedyModel.parser().modelType(),
-                BootstrapModel.parser().modelType()
+                BootstrapModel.parser().modelType(),
+                CloserTesterModel.parser().modelType()
         };
 
         Arrays.sort(names);

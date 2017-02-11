@@ -4,7 +4,8 @@ import java.io.File
 import java.net.{URL, URLClassLoader}
 import java.util.Properties
 
-import com.eharmony.aloha.factory.{ModelParser, ModelParserWithSemantics, ParserProviderCompanion}
+import com.eharmony.aloha.audit.Auditor
+import com.eharmony.aloha.factory.{ModelParser, ModelSubmodelParsingPlugin, ParserProviderCompanion, SubmodelFactory}
 import com.eharmony.aloha.id.{ModelId, ModelIdentity}
 import com.eharmony.aloha.io.AlohaReadable
 import com.eharmony.aloha.io.sources.{Base64StringSource, ExternalSource, ModelSource}
@@ -13,10 +14,8 @@ import com.eharmony.aloha.models.h2o.H2oModel.Features
 import com.eharmony.aloha.models.h2o.categories._
 import com.eharmony.aloha.models.h2o.compiler.Compiler
 import com.eharmony.aloha.models.h2o.json.{H2oAst, H2oSpec}
+import com.eharmony.aloha.models.{SubmodelBase, Subvalue}
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
-import com.eharmony.aloha.score.Scores.Score
-import com.eharmony.aloha.score.basic.ModelOutput
-import com.eharmony.aloha.score.conversions.ScoreConverter
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
@@ -37,13 +36,14 @@ import scala.util.{Failure, Success, Try}
 /**
  * Created by deak on 9/30/15.
  */
-final case class H2oModel[-A, +B : ScoreConverter](
+final case class H2oModel[U, N: RefInfo, -A, +B <: U](
     modelId: ModelIdentity,
     h2OModel: GenModel,
     featureNames: sci.IndexedSeq[String],
     featureFunctions: sci.IndexedSeq[FeatureFunction[A]],
+    auditor: Auditor[U, N, B],
     numMissingThreshold: Option[Int] = None)
-  extends BaseModel[A, B]
+  extends SubmodelBase[U, N, A, B]
      with Logging {
 
   // Because H2O's RowData object is essentially a Map of String to Object, we unapply the wrapper
@@ -54,32 +54,35 @@ final case class H2oModel[-A, +B : ScoreConverter](
     case StringFeatureFunction(f) => f
   }
 
-  @transient private[this] lazy val h2OPredictor: (RowData) => Either[IllConditioned, B] = {
-    val retrieval = H2oModelCategory.predictor[B](new EasyPredictModelWrapper(h2OModel))(implicitly[ScoreConverter[B]].ri)
-    H2oModel.mapRetrievalError[B](retrieval)(implicitly[ScoreConverter[B]].ri).get
+  @transient private[this] lazy val h2OPredictor: (RowData) => Either[IllConditioned, N] = {
+    val retrieval = H2oModelCategory.predictor[N](new EasyPredictModelWrapper(h2OModel))
+    H2oModel.mapRetrievalError[N](retrieval).get
   }
 
   // Force initialization of lazy vals.
   require(lazyAnyRefFF != null)
   require(h2OPredictor != null)
 
-  override private[aloha] def getScore(a: A)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = {
+  override def subvalue(a: A): Subvalue[B, N] = {
     val f = constructFeatures(a)
     if (!f.missingOk)
       failureDueToMissing(f.missing)
     else
       try {
         predict(f)
-      } catch {
+      }
+      catch {
         // We know about this specifically from the H2o documentation.
         case e: PredictUnknownCategoricalLevelException                => handleBadCategorical(e, f)
         case e: IllegalArgumentException if isCategoricalMissing(e, f) => handleMissingCategorical(e, f)
       }
   }
 
-  protected[this] def predict(f: Features[RowData])(implicit audit: Boolean) =
-    h2OPredictor(f.features).fold(ill => failure(Seq(ill.errorMsg), getMissingVariables(f.missing)),
-                                  s   => success(s))
+  protected[this] def predict(f: Features[RowData]): Subvalue[B, N] = {
+    h2OPredictor(f.features).
+      fold(ill => failure(Seq(ill.errorMsg), getMissingVariables(f.missing)),
+           s   => success(s))
+  }
 
   /**
     */
@@ -110,10 +113,9 @@ final case class H2oModel[-A, +B : ScoreConverter](
     * Report a problem presumably resulting from a missing categorical variable.
     * @param t the error to be reported.
     * @param f the feature values
-    * @param audit whether to audit the score
     * @return
     */
-  protected[this] def handleMissingCategorical(t: IllegalArgumentException, f: Features[RowData])(implicit audit: Boolean) = {
+  protected[this] def handleMissingCategorical(t: IllegalArgumentException, f: Features[RowData]) = {
     val missing = featureFunctions.view.zipWithIndex.collect {
       case (StringFeatureFunction(sff), i) if f.missing.contains(sff.specification) => featureNames(i)
     }
@@ -122,17 +124,18 @@ final case class H2oModel[-A, +B : ScoreConverter](
     val stackError = t.getStackTrace.headOption.fold(List.empty[String])(s =>
       List("See: " + s.getClassName + "." + s.getMethodName + "(" + s.getFileName + ":" + s.getLineNumber + ")"))
 
-    failure(prefix :: stackError, f.missing.keys)
+    // TODO: Check this: f.missing.keySet
+    failure(prefix :: stackError, f.missing.keySet)
   }
 
-  protected[this] def handleBadCategorical(e: PredictUnknownCategoricalLevelException, f: Features[RowData])(implicit audit: Boolean) =
+  protected[this] def handleBadCategorical(e: PredictUnknownCategoricalLevelException, f: Features[RowData]) =
     failure(Seq(s"unknown categorical value ${e.getUnknownLevel} for variable: ${e.getColumnName}"), getMissingVariables(f.missing))
 
   // TODO: Extract to trait.
-  protected[this] def getMissingVariables(missing: Map[String, Seq[String]]): Seq[String] =
-    missing.unzip._2.foldLeft(Set.empty[String])(_ ++ _).toIndexedSeq.sorted
+  protected[this] def getMissingVariables(missing: Map[String, Seq[String]]): Set[String] =
+    missing.values.flatten.toSet
 
-  protected[this] def failureDueToMissing(missing: Map[String, Seq[String]])(implicit audit: Boolean) =
+  protected[this] def failureDueToMissing(missing: Map[String, Seq[String]]) =
     failure(Seq(s"Too many features with missing variables: ${missing.count(_._2.nonEmpty)}"), getMissingVariables(missing))
 
   protected[h2o] def constructFeatures(a: A): Features[RowData] = {
@@ -203,35 +206,72 @@ object H2oModel extends ParserProviderCompanion
 
   override def parser: ModelParser = Parser
 
-  object Parser extends ModelParserWithSemantics with EitherHelpers { self =>
+  object Parser extends ModelSubmodelParsingPlugin
+                   with EitherHelpers { self =>
+
     val modelType = "H2o"
 
-    override def modelJsonReader[A, B](semantics: Semantics[A])(implicit jrB: JsonReader[B], scB: ScoreConverter[B]): JsonReader[H2oModel[A, B]] = new JsonReader[H2oModel[A, B]] {
-      override def read(json: JsValue): H2oModel[A, B] = {
-        val h2o = json.convertTo[H2oAst]
-        val classCacheDir = getClassCacheDir(semantics)
-
-        features(h2o.features.toSeq, semantics) match {
-          case Left(errors) => throw new DeserializationException(errors.mkString("errors: ", "\n        ", ""))
-          case Right(featureMap) =>
-            val (names, functions) = featureMap.toIndexedSeq.unzip
-            val genModel = getGenModelFromFile(h2o.modelSource, classCacheDir)
-            H2oModel[A, B](h2o.modelId,
-              genModel,
-              names,
-              functions,
-              h2o.numMissingThreshold)
-        }
+    private[this] def features[A](featureMap: Seq[(String, H2oSpec)], semantics: Semantics[A]) =
+      mapSeq(featureMap) { case (k, s) =>
+        s.compile(semantics).
+          left.map(Seq(s"Error processing spec '${s.spec}'") ++ _).
+          right.map(v => (k, v))
       }
 
-      // TODO: Copied from RegressionModel.  Refactor for reuse.
-      private[this] def features[A](featureMap: Seq[(String, H2oSpec)], semantics: Semantics[A]) =
-        mapSeq(featureMap) { case (k, s) =>
-          s.compile(semantics).
-            left.map(Seq(s"Error processing spec '${s.spec}'") ++ _).
-            right.map(v => (k, v))
+    override def commonJsonReader[U, N, A, B <: U](
+        factory: SubmodelFactory[U, A],
+        semantics: Semantics[A],
+        auditor: Auditor[U, N, B])
+       (implicit r: RefInfo[N], jf: JsonFormat[N]): Option[JsonReader[H2oModel[U, N, A, B]]] = {
+
+      Some(new JsonReader[H2oModel[U, N, A, B]] {
+        override def read(json: JsValue): H2oModel[U, N, A, B] = {
+          val h2o = json.convertTo[H2oAst]
+          val classCacheDir = getClassCacheDir(semantics)
+
+          features(h2o.features.toSeq, semantics) match {
+            case Left(errors) => throw new DeserializationException(errors.mkString("errors: ", "\n        ", ""))
+            case Right(featureMap) =>
+              val (names, functions) = featureMap.toIndexedSeq.unzip
+              val genModel = getGenModelFromFile(h2o.modelSource, classCacheDir)
+              H2oModel(h2o.modelId,
+                genModel,
+                names,
+                functions,
+                auditor,
+                h2o.numMissingThreshold)
+          }
         }
+      })
     }
+
+
+    //    override def modelJsonReader[A, B](semantics: Semantics[A])(implicit jrB: JsonReader[B], scB: ScoreConverter[B]): JsonReader[H2oModel[A, B]] = new JsonReader[H2oModel[A, B]] {
+//      override def read(json: JsValue): H2oModel[A, B] = {
+//        val h2o = json.convertTo[H2oAst]
+//        val classCacheDir = getClassCacheDir(semantics)
+//
+//        features(h2o.features.toSeq, semantics) match {
+//          case Left(errors) => throw new DeserializationException(errors.mkString("errors: ", "\n        ", ""))
+//          case Right(featureMap) =>
+//            val (names, functions) = featureMap.toIndexedSeq.unzip
+//            val genModel = getGenModelFromFile(h2o.modelSource, classCacheDir)
+//            H2oModel[A, B](h2o.modelId,
+//              genModel,
+//              names,
+//              functions,
+//              h2o.numMissingThreshold)
+//        }
+//      }
+//
+//      // TODO: Copied from RegressionModel.  Refactor for reuse.
+//      private[this] def features[A](featureMap: Seq[(String, H2oSpec)], semantics: Semantics[A]) =
+//        mapSeq(featureMap) { case (k, s) =>
+//          s.compile(semantics).
+//            left.map(Seq(s"Error processing spec '${s.spec}'") ++ _).
+//            right.map(v => (k, v))
+//        }
+//    }
   }
 
   protected[h2o] def getClassCacheDir[A](semantics: Semantics[A]): Option[File] = {
@@ -244,10 +284,10 @@ object H2oModel extends ParserProviderCompanion
     }
   }
 
-  protected[h2o] def mapRetrievalError[B: RefInfo](retrieval: Either[PredictionFuncRetrievalError, RowData => Either[IllConditioned, B]]) = retrieval match {
+  protected[h2o] def mapRetrievalError[N: RefInfo](retrieval: Either[PredictionFuncRetrievalError, RowData => Either[IllConditioned, N]]) = retrieval match {
     case Right(f) => Success(f)
-    case Left(UnsupportedModelCategory(category)) => Failure(new UnsupportedOperationException(s"In model ${classOf[H2oModel[_, _]].getCanonicalName}: ModelCategory ${category.name} non supported."))
-    case Left(TypeCoercionNotFound(category)) => Failure(new IllegalArgumentException(s"In model ${classOf[H2oModel[_, _]].getCanonicalName}: Could not ${category.name} model to Aloha output type: ${RefInfoOps.toString[B]}."))
+    case Left(UnsupportedModelCategory(category)) => Failure(new UnsupportedOperationException(s"In model ${classOf[H2oModel[_, _, _, _]].getCanonicalName}: ModelCategory ${category.name} non supported."))
+    case Left(TypeCoercionNotFound(category)) => Failure(new IllegalArgumentException(s"In model ${classOf[H2oModel[_, _, _, _]].getCanonicalName}: Could not ${category.name} model to Aloha output type: ${RefInfoOps.toString[N]}."))
   }
 
   private[h2o] def getJar(collectFn: URL => Boolean): Array[File] =
@@ -276,11 +316,9 @@ object H2oModel extends ParserProviderCompanion
 
   private[this] lazy val currentClassLoader = Thread.currentThread().getContextClassLoader
 
-  protected[h2o] def getGenModel[B, C](
-    input: => C,
-    f: AlohaReadable[Try[GenModel]] => C => Try[GenModel],
-    classCacheDir: Option[File]
-  ) = {
+  protected[h2o] def getGenModel[B, C](input: => C,
+                                       f: AlohaReadable[Try[GenModel]] => C => Try[GenModel],
+                                       classCacheDir: Option[File]) = {
     // It turns out that running Aloha under some environments has class loader issues.  Specifically when compiling an
     // H2O model within Jetty this has proven to fail.  Because Jetty has its own classloader the h2o-genmodel jar is
     // not available in the System's classloader, however, it is available in the thread's local classloader.
@@ -292,10 +330,7 @@ object H2oModel extends ParserProviderCompanion
     f(compiler)(input)
   }
 
-  private[this] def getGenModelFromFile[B](
-    modelSource: ModelSource,
-    classCacheDir: Option[File]
-  )(implicit scb: ScoreConverter[B]): GenModel = {
+  private[this] def getGenModelFromFile[B](modelSource: ModelSource, classCacheDir: Option[File]): GenModel = {
     val sourceFile = new java.io.File(modelSource.localVfs.descriptor)
     val p = getGenModel(sourceFile, _.fromFile, classCacheDir).get
     if (modelSource.shouldDelete)
@@ -305,12 +340,12 @@ object H2oModel extends ParserProviderCompanion
 
   @throws(classOf[IllegalArgumentException])
   private[eharmony] def json(spec: Vfs,
-    model: Vfs,
-    id: ModelId,
-    responseColumn: Option[String] = None,
-    externalModel: Boolean = false,
-    numMissingThreshold: Option[Int] = None,
-    notes: Option[Seq[String]] = None): JsValue = {
+                             model: Vfs,
+                             id: ModelId,
+                             responseColumn: Option[String] = None,
+                             externalModel: Boolean = false,
+                             numMissingThreshold: Option[Int] = None,
+                             notes: Option[Seq[String]] = None): JsValue = {
     val modelSource = getModelSource(model, externalModel)
     val features = getFeatures(spec, responseColumn)
     json(spec.toString, features, modelSource, id, numMissingThreshold, notes)

@@ -80,7 +80,8 @@ class BootstrapModelTest extends ModelSerializationTestHelper {
     val s = m(null)
     assertEquals(0.25f, s.prob.get, delta)
     assertEquals("b", s.value.get)
-    assertEquals(1, s.subvalues)
+    assertEquals(1, s.subvalues.size)
+    assertEquals(0, s.subvalues.head.subvalues.size)
     assertEquals("model: 2", s.subvalues.head.modelId.getName())
   }
 

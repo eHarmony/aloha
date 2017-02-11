@@ -1,18 +1,17 @@
 package com.eharmony.aloha.models.h2o
 
 import com.eharmony.aloha
+import com.eharmony.aloha.audit.impl.OptionAuditor
 import com.eharmony.aloha.factory.ModelFactory
-import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits._
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
-import com.eharmony.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine, CsvLines, CsvTypes}
+import com.eharmony.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLines, CsvTypes}
 import com.eharmony.aloha.util.io.TestWithIoCapture
 import org.apache.commons.vfs2.VFS
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
-import spray.json.DefaultJsonProtocol._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -135,7 +134,7 @@ class CliTest extends TestWithIoCapture {
       csvPlugin,
       Seq("com.eharmony.aloha.feature.BasicFunctions._"))
 
-    val factory = ModelFactory.defaultFactory.toTypedFactory[CsvLine, Double](semantics)
+    val factory = ModelFactory.defaultFactory(semantics, OptionAuditor[Double]())
     val model = factory.fromString(modelJson).get
     val csvLines = CsvLines(indices = (0 to 7 map (i => (i.toString, i))).toMap,
                             fs = ",")

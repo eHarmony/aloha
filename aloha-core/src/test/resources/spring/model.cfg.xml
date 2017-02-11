@@ -88,29 +88,29 @@ mixins, cake pattern, etc.
     </bean>
 
     <!-- *************************************************************************************************** -->
+    <!--                                        CREATE AUDITOR HERE ...                                      -->
+    <!-- *************************************************************************************************** -->
+
+    <bean id="optionAuditor" class="com.eharmony.aloha.audit.impl.OptionAuditor" />
+
+    <!-- *************************************************************************************************** -->
+    <!--                                        CREATE RefInfo HERE ...                                      -->
+    <!-- *************************************************************************************************** -->
+
+    <!--
+      If the natural output type is something other than a basic type exposed by the typed RefInfo static
+      methods, you can always use RefInfo.fromString and then try to do a `right().get()` on the result.
+    -->
+    <bean id="doubleRefInfo" class="com.eharmony.aloha.reflect.RefInfo" factory-method="Double" />
+
+    <!-- *************************************************************************************************** -->
     <!--                                        CREATE FACTORY HERE ...                                      -->
     <!-- *************************************************************************************************** -->
-    <!-- OK to use the java.lang.Class-based ctor b/c the type is not parametrized. -->
-    <bean id="doubleFactoryInfo" class="com.eharmony.aloha.interop.DoubleFactoryInfo">
-        <constructor-arg index="0" type="java.lang.Class" ref="modelInputTypeProtoClass" />
-    </bean>
 
-    <!-- Create a java.lang.Iterable of parsers.  Dictates the types of models that can be produced by the factory. -->
-    <bean id="parsers" class="java.util.ArrayList">
-        <constructor-arg>
-            <list>
-                <bean class="com.eharmony.aloha.models.reg.RegressionModel" factory-method="parser"/>
-            </list>
-        </constructor-arg>
-    </bean>
-
-    <bean id="untypedModelFactory" class="com.eharmony.aloha.factory.ModelFactory">
-        <constructor-arg index="0" ref="parsers" />
-    </bean>
-
-    <bean id="modelFactory" factory-bean="untypedModelFactory" factory-method="toTypedFactory">
-        <constructor-arg index="0" type="com.eharmony.aloha.semantics.Semantics" ref="semantics" />
-        <constructor-arg index="1" type="com.eharmony.aloha.interop.FactoryInfo" ref="doubleFactoryInfo" />
+    <bean id="modelFactory" class="com.eharmony.aloha.factory.ModelFactory" factory-method="defaultFactory">
+        <constructor-arg index="0" ref="semantics" />
+        <constructor-arg index="1" ref="optionAuditor" />
+        <constructor-arg index="2" ref="doubleRefInfo" />
     </bean>
 
     <!-- *************************************************************************************************** -->

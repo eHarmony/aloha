@@ -130,13 +130,13 @@ class RandomNodeSelectorTest {
 
   private[this] def intModel(json: JsValue) = {
     val f = ModelFactory.defaultFactory(randomTestSemantics, TreeAuditor[Int]())
-    val m = f.fromString(json.compactPrint).get.asInstanceOf[ModelDecisionTree[Tree[_], Int, Map[String, Double], Tree[Int]]]
+    val m = f.fromString(json.compactPrint).get.asInstanceOf[BasicDecisionTree[Tree[_], Int, Map[String, Double], Tree[Int]]]
     m
   }
 
   private[this] def doubleModel(json: JsValue) = {
     val f = ModelFactory.defaultFactory(randomTestSemantics, TreeAuditor[Double]())
-    val m = f.fromString(json.compactPrint).get.asInstanceOf[ModelDecisionTree[Tree[_], Double, Map[String, Double], Tree[Double]]]
+    val m = f.fromString(json.compactPrint).get.asInstanceOf[BasicDecisionTree[Tree[_], Double, Map[String, Double], Tree[Double]]]
     m
   }
 

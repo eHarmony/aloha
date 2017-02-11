@@ -3,6 +3,7 @@ package com.eharmony.aloha.models
 import com.eharmony.aloha.audit.Auditor
 import com.eharmony.aloha.factory._
 import com.eharmony.aloha.factory.ex.AlohaFactoryException
+import com.eharmony.aloha.factory.ri2ord.RefInfoToOrdering
 import com.eharmony.aloha.id.ModelIdentity
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import com.eharmony.aloha.semantics.Semantics
@@ -68,22 +69,18 @@ object SegmentationModel extends ParserProviderCompanion {
     protected[this] implicit def astJsonFormat[N: JsonFormat]: JsonFormat[Ast[N]] =
       jsonFormat(Ast.apply[N], "subModel", "subModelOutputType", "thresholds", "labels")
 
-    // TODO: Remove commented code after getting SBT build working.
-    //        protected[this] implicit def astJsonFormat[B: JsonFormat: ScoreConverter] = jsonFormat(Ast.apply[B], "subModel", "subModelOutputType", "thresholds", "labels")
-    //    protected[this] def astJsonFormat[B: JsonFormat: ScoreConverter] =
-    //      jsonFormat(Ast.apply[B], "subModel", "subModelOutputType", "thresholds", "labels")
-
-    def riFromString(riStr: String): Try[RefInfo[_]] =
+    protected[this] def riFromString(riStr: String): Try[RefInfo[_]] =
       RefInfo.fromString(riStr).fold(
-        err => Failure(new AlohaFactoryException(s"Couldn't Create RefInfo from string '$riStr'.\n$err")),
+        err => Failure(new DeserializationException(s"Unsupported sub-model output type: '$riStr'")),
         ri => Success(ri)
       )
 
-    // TODO: Create a generic mapping from RefInfo to Ordering like the RefInfoToJsonFormat conversion.
-    def getOrdering[SN: RefInfo]: Try[Ordering[SN]] =
-      Failure(new AlohaFactoryException(s"Couldn't find Ordering[${RefInfoOps.toString[SN]}]."))
+    protected[this] def getOrdering[SN: RefInfo]: Try[Ordering[SN]] =
+      RefInfoToOrdering[SN].map(o => Success(o)).getOrElse {
+        Failure(new AlohaFactoryException(s"Couldn't find Ordering[${RefInfoOps.toString[SN]}]."))
+      }
 
-    def getJsonFormat[SN: RefInfo, A, U](factory: SubmodelFactory[U, A]): Try[JsonFormat[SN]] =
+    protected[this] def getJsonFormat[SN: RefInfo, A, U](factory: SubmodelFactory[U, A]): Try[JsonFormat[SN]] =
       factory.jsonFormat[SN].
         map { Success.apply }.
         getOrElse { Failure(new AlohaFactoryException(s"Could find JsonFormat[${RefInfoOps.toString[SN]}].")) }

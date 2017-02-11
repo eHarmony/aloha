@@ -160,6 +160,7 @@ class CsvModelRunnerTest {
       "-p", "com.eharmony.aloha.test.proto.Testing.UserProto",
       "--imports", "scala.math._,com.eharmony.aloha.feature.BasicFunctions._",
       "--input-file", "res:fizz_buzzs.proto",
+      "--output-type", "Double",
       "--output-file", tmpFile,
       "res:fizzbuzz_proto.json"
     )
@@ -169,7 +170,7 @@ class CsvModelRunnerTest {
     val actual = scala.io.Source.
                     fromInputStream(VFS.getManager.resolveFile(tmpFile).getContent.getInputStream).
                     getLines().
-                    map(_.toInt).
+                    map(_.toDouble).
                     toSeq
     assertEquals(expected, actual)
   }
@@ -186,6 +187,7 @@ class CsvModelRunnerTest {
       "-p", "com.eharmony.aloha.test.proto.Testing.UserProto",
       "--imports", "scala.math._,com.eharmony.aloha.feature.BasicFunctions._",
       "--input-file", "res:fizz_buzzs.proto",
+      "--output-type", "Double",
       "--output-file", tmpFile,
       "--lt-loops", loops.toString,
       "--lt-threads", threads.toString,

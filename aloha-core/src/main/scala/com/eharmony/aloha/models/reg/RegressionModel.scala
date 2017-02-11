@@ -11,6 +11,7 @@ import com.eharmony.aloha.semantics.func.GenAggFunc
 import com.eharmony.aloha.util.{EitherHelpers, Logging}
 
 import scala.collection.{immutable => sci}
+import java.{lang => jl}
 
 /**
  * A regression model capable of doing not only linear regression but polynomial regression in general.
@@ -128,7 +129,7 @@ object RegressionModel extends ParserProviderCompanion with RegressionModelJson 
         auditor: Auditor[U, N, B])
        (implicit r: RefInfo[N], jf: JsonFormat[N]): Option[JsonReader[RegressionModel[U, A, B]]] = {
 
-      if (r != RefInfo[Double])
+      if (r != RefInfo[Double] && r != RefInfo[jl.Double])
         None
       else {
         Some(new JsonReader[RegressionModel[U, A, B]] {

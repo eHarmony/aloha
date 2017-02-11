@@ -2,28 +2,27 @@ package com.eharmony.aloha.models.vw.jni
 
 import java.io._
 
+import com.eharmony.aloha.AlohaException
+import com.eharmony.aloha.audit.Auditor
 import com.eharmony.aloha.dataset.SparseFeatureExtractorFunction
 import com.eharmony.aloha.dataset.json.SparseSpec.SparseSpecOps
 import com.eharmony.aloha.dataset.vw.json.VwJsonLike
 import com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator
 import com.eharmony.aloha.dataset.vw.unlabeled.json.VwUnlabeledJson
-import com.eharmony.aloha.factory.{ModelParser, ModelParserWithSemantics, ParserProviderCompanion}
+import com.eharmony.aloha.factory.{ModelParser, ModelSubmodelParsingPlugin, ParserProviderCompanion, SubmodelFactory}
 import com.eharmony.aloha.id.{ModelId, ModelIdentity}
 import com.eharmony.aloha.io.StringReadable
 import com.eharmony.aloha.io.sources.{Base64StringSource, ExternalSource, ModelSource}
 import com.eharmony.aloha.io.vfs.Vfs
-import com.eharmony.aloha.models.reg.{ConstantDeltaSpline, RegFeatureCompiler, RegressionFeatures}
-import com.eharmony.aloha.models.TypeCoercion
+import com.eharmony.aloha.models.reg.{ConstantDeltaSpline, RegFeatureCompiler, RegressionFeatures, Spline}
+import com.eharmony.aloha.models.{SubmodelBase, Subvalue, TypeCoercion}
 import com.eharmony.aloha.reflect._
-import com.eharmony.aloha.score.Scores.Score
-import com.eharmony.aloha.score.basic.ModelOutput
-import com.eharmony.aloha.score.conversions.ScoreConverter
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.semantics.func.GenAggFunc
 import com.eharmony.aloha.util.{EitherHelpers, Logging, SimpleTypeSeq}
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.io.IOUtils
-import spray.json.{DeserializationException, JsValue, JsonReader, pimpAny, pimpString}
+import spray.json.{DeserializationException, JsValue, JsonFormat, JsonReader, pimpAny, pimpString}
 import vw.learner.{VWFloatLearner, VWIntLearner, VWLearner, VWLearners}
 
 import scala.collection.immutable.ListMap
@@ -47,12 +46,11 @@ import scala.util.{Failure, Success, Try}
  * @param numMissingThreshold A threshold dictating how many missing features to allow before making the
  *                            prediction fail.  See ''com.eharmony.aloha.models.reg.RegressionFeatures.numMissingThreshold''
  *                            in aloha-core.
- * @param scb a score converter
  * @tparam A model input type
  * @tparam B model output type
  * @author R M Deak
  */
-final case class VwJniModel[-A, +B](
+final case class VwJniModel[U, N, -A, +B <: U](
     modelId: ModelIdentity,
     vwParams: String,
     modelSource: ModelSource,
@@ -60,9 +58,10 @@ final case class VwJniModel[-A, +B](
     featureFunctions: sci.IndexedSeq[GenAggFunc[A, Iterable[(String, Double)]]],
     defaultNs: List[Int],
     namespaces: List[(String, List[Int])],
-    learnerCreator: VWLearner => String => B,
-    numMissingThreshold: Option[Int] = None)(implicit private[this] val scb: ScoreConverter[B])
-  extends BaseModel[A, B]
+    learnerCreator: VWLearner => String => N,
+    auditor: Auditor[U, N, B],
+    numMissingThreshold: Option[Int] = None)
+  extends SubmodelBase[U, N, A, B]
      with RegressionFeatures[A]
      with Logging {
 
@@ -82,7 +81,7 @@ final case class VwJniModel[-A, +B](
   /**
    * This is the function responsible to scoring, using VW.
    */
-  @transient private[this] lazy val learnerEvaluator: String => B = learnerCreator(vwLearner)
+  @transient private[this] lazy val learnerEvaluator: String => N = learnerCreator(vwLearner)
 
   {
     require(
@@ -101,16 +100,12 @@ final case class VwJniModel[-A, +B](
     require(learnerEvaluator != null)
   }
 
-  /** Produce a score.
-    * @param a an input to the model representing covariate data.
-    * @param audit Whether the second field of the result Tuple2 should be Some (true) or None (false)
-    * @return a Tuple2 whose first field represents a simple version of the score, the second field (that should be
-    *         a Some instance if audit is true) is a more involved reporting of the score including errors and all
-    *         sub-model scores.
-    */
-  override private[aloha] def getScore(a: A)(implicit audit: Boolean): (ModelOutput[B], Option[Score]) = {
+  override def subvalue(a: A): Subvalue[B, N] = {
     generateVwInput(a) match {
-      case Left(missing) => failure(Seq(s"Too many features with missing variables: ${missing.count(_._2.nonEmpty)}"), getMissingVariables(missing))
+      case Left(missing) =>
+        failure(
+          Seq(s"Too many features with missing variables: ${missing.count(_._2.nonEmpty)}"),
+          getMissingVariables(missing).toSet)
       case Right(vwIn) =>
         Try { learnerEvaluator(vwIn) } match {
           case Success(y) => success(y)
@@ -142,7 +137,55 @@ final case class VwJniModel[-A, +B](
   }
 }
 
-object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Logging {
+object VwJniModel
+ extends ParserProviderCompanion
+    with VwJniModelJson
+    with Logging {
+
+  /**
+    * LearnerCreator is designed to avoid gotchas that lead to serialization exceptions.  This class avoids
+    * creating the type coercion function until the apply function is called.  Additionally, the binary VW
+    * model isn't turned into an actual VWLearner here.  This class is designed to take a VWLearner that is
+    * deserialized and adapt it so that it works with Aloha.
+    *
+    *
+    * @param labels labels for contextual bandits
+    * @param spline an optional spline for regression models
+    * @param vwParams the command line parameters with which VW is to be invoked.
+    * @param rin reflection information necessary to create the type coercion
+    * @tparam N the natural type of the VwJniModel instance.
+    */
+  private[this] case class LearnerCreator[N](labels: Option[SimpleTypeSeq], spline: Option[Spline], vwParams: String)
+                                            (implicit rin: RefInfo[N]) extends (VWLearner => String => N) {
+
+    private[this] def convFn[A: RefInfo, B: RefInfo] = {
+      TypeCoercion[A, B] getOrElse {
+        throw new AlohaException(s"Couldn't find a conversion to from ${RefInfoOps.toString[A]} to ${RefInfoOps.toString[B]}.")
+      }
+    }
+
+    private[this] def toLabelFn: Int => N = {
+      labels map { ls =>
+        val tc = convFn(ls.refInfo, rin)
+        (i: Int) => tc(ls.values(i - 1))
+      } getOrElse {
+        convFn[Int, N]
+      }
+    }
+
+    override def apply(vwLearner: VWLearner): String => N = vwLearner match {
+      case l: VWIntLearner =>
+        val toLabel = toLabelFn
+        (s: String) => toLabel(l.predict(s))
+      case l: VWFloatLearner =>
+        val doubleCf = convFn[Double, N]
+        val doubleCfSpline = spline.map(_.andThen(doubleCf)).getOrElse(doubleCf)
+        (x: String) => doubleCfSpline(l.predict(x))
+      case l: VWLearner =>
+        throw new UnsupportedOperationException(s"Unsupported learner type ${l.getClass.getCanonicalName} produced by arguments: $vwParams")
+      case d => throw new IllegalStateException(s"${d.getClass.getCanonicalName} is not a VWLearner.")
+    }
+  }
 
   /**
    * A regular expression to check whether an initial regressor is present in the VW parameters.
@@ -153,69 +196,59 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
 
   override def parser: ModelParser = Parser
 
-  object Parser extends ModelParserWithSemantics
+  object Parser extends ModelSubmodelParsingPlugin
                    with EitherHelpers
                    with RegFeatureCompiler { self =>
 
     val modelType = "VwJNI"
 
-    override def modelJsonReader[A, B](semantics: Semantics[A])(implicit jrB: JsonReader[B], scB: ScoreConverter[B]): JsonReader[VwJniModel[A, B]] = new JsonReader[VwJniModel[A, B]] {
-      override def read(json: JsValue): VwJniModel[A, B] = {
-        val vw = json.convertTo[VwJNIAst]
+    override def commonJsonReader[U, N, A, B <: U](
+        factory: SubmodelFactory[U, A],
+        semantics: Semantics[A],
+        auditor: Auditor[U, N, B])
+       (implicit r: RefInfo[N], jf: JsonFormat[N]): Option[JsonReader[VwJniModel[U, N, A, B]]] = {
 
-        features(vw.features.toSeq, semantics) match {
-          case Left(errors) => throw new DeserializationException(errors.mkString("errors: ", "\n        ", ""))
-          case Right(featureMap) =>
-            val (names, functions) = featureMap.toIndexedSeq.unzip
+      Some(new JsonReader[VwJniModel[U, N, A, B]] {
+        override def read(json: JsValue): VwJniModel[U, N, A, B] = {
 
-            val indices = featureMap.unzip._1.view.zipWithIndex.toMap
-            val nssRaw = vw.namespaces.getOrElse(sci.ListMap.empty)
-            val nss = nssRaw.map { case (ns, fs) =>
-              val fi = fs.flatMap { f =>
-                val oInd = indices.get(f)
-                if (oInd.isEmpty) info(s"Ignoring feature '$f' in namespace '$ns'.  Not in the feature list.")
-                oInd
+          val vw = json.convertTo[VwJNIAst]
+
+          features(vw.features.toSeq, semantics) match {
+            case Left(errors) => throw new DeserializationException(errors.mkString("errors: ", "\n        ", ""))
+            case Right(featureMap) =>
+              val (names, functions) = featureMap.toIndexedSeq.unzip
+
+              val indices = featureMap.unzip._1.view.zipWithIndex.toMap
+              val nssRaw = vw.namespaces.getOrElse(sci.ListMap.empty)
+              val nss = nssRaw.map { case (ns, fs) =>
+                val fi = fs.flatMap { f =>
+                  val oInd = indices.get(f)
+                  if (oInd.isEmpty) info(s"Ignoring feature '$f' in namespace '$ns'.  Not in the feature list.")
+                  oInd
+                }.toList
+                (ns, fi)
               }.toList
-              (ns, fi)
-            }.toList
 
-            val vwParams = vw.vw.params.fold("")(_.fold(_.mkString(" "), x => x)).trim
+              val vwParams = vw.vw.params.fold("")(_.fold(_.mkString(" "), x => x)).trim
 
-            val defaultNs = (indices.keySet -- (Set.empty[String] /: nssRaw)(_ ++ _._2)).flatMap(indices.get).toList
+              val defaultNs = (indices.keySet -- (Set.empty[String] /: nssRaw)(_ ++ _._2)).flatMap(indices.get).toList
 
-            // We have to create these conversion functions and reference elements in the
-            // vw object outside of the learnerCreator or else we have serialization issues.
-            // Also we cannot create conversion functions for the array types because Aloha
-            // doesn't handle array typed data yet.  As a result we'll just throw an example
-            // at model instantiation if the user supplies a VW model which output an array type.
+              val learnerCreator = LearnerCreator[N](vw.classLabels, vw.spline, vwParams)
 
-            val intCf = vw.classLabels.fold(getConversionFunction[Int, B])(l => getConversionFunction(l.values)(l.refInfo, scB))
-            val doubleCf = getConversionFunction[Double, B]
-            val doubleCfSpline = vw.spline.map(_.andThen(doubleCf)).getOrElse(doubleCf)
-            val learnerCreator = (vwLearner: VWLearner) => {
-              vwLearner match {
-                case l: VWIntLearner   => (x: String) => intCf(l.predict(x))
-                case l: VWFloatLearner => (x: String) => doubleCfSpline(l.predict(x))
-                case l: VWLearner      => throw new UnsupportedOperationException(s"Unsupported learner type ${l.getClass.getCanonicalName} produced by arguments: $vwParams")
-                case d                 => throw new IllegalStateException(s"${d.getClass.getCanonicalName} is not a VWLeaner.")
-              }
-            }
-
-
-
-            VwJniModel(
-              vw.modelId,
-              vwParams,
-              vw.vw.modelSource,
-              names,
-              functions,
-              defaultNs,
-              nss,
-              learnerCreator,
-              vw.numMissingThreshold)
+              VwJniModel(
+                vw.modelId,
+                vwParams,
+                vw.vw.modelSource,
+                names,
+                functions,
+                defaultNs,
+                nss,
+                learnerCreator,
+                auditor,
+                vw.numMissingThreshold)
+          }
         }
-      }
-
+      })
     }
   }
 
@@ -247,17 +280,6 @@ object VwJniModel extends ParserProviderCompanion with VwJniModelJson with Loggi
       throw new IllegalArgumentException(s"For model $modelId, initial regressor (-i) vw parameter supplied and model provided.")
 
     initialRegressorParam + vwParams
-  }
-
-  def getConversionFunction[C : RefInfo, B : ScoreConverter](implicit riC: RefInfo[C], scB: ScoreConverter[B]) = {
-    TypeCoercion[C, B](riC, scB.ri) getOrElse {
-      throw new DeserializationException(s"Couldn't find conversion function to ${RefInfoOps.toString(scB.ri)}")
-    }
-  }
-
-  def getConversionFunction[C : RefInfo, B : ScoreConverter](labels: Vector[C]): Int => B = {
-    val cb = getConversionFunction[C, B]
-    (i: Int) => cb(labels(i - 1))
   }
 
   private[jni] def readBinaryVwModelToB64String(in: InputStream, close: Boolean = true): String = {

@@ -53,18 +53,18 @@ class SegmentationModelTest extends ModelSerializationTestHelper {
             fail()
         }
         catch {
-            case e: DeserializationException => assertEquals(s"Unsupported sub-model output type: $t", e.getMessage)
+            case e: DeserializationException => assertEquals(s"Unsupported sub-model output type: '$t'", e.getMessage)
         }
     }
 
-    private[this] def simpleTest[A: Manifest](f: Int => A) {
+    private[this] def simpleTest[A: RefInfo](f: Int => A) {
         val xs = (1 to 5).map(f)
         val thresh = Seq(2, 4).map(f)
         val ys = Seq(0 -> 2, 1 -> 2, 2 -> 1)
         test(ys, xs, thresh)
     }
 
-    private[this] def test[A: Manifest](expected: Seq[(Int, Int)], xs: Seq[A], cuts: Seq[A]) {
+    private[this] def test[A: RefInfo](expected: Seq[(Int, Int)], xs: Seq[A], cuts: Seq[A]) {
         assertEquals("number of examples should match the number of results", xs.size, expected.map(_._2).sum)
         val ys = expected.flatMap{ case(i, n) => Seq.fill(n)(s"index $i") }
 

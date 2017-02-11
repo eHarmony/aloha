@@ -41,14 +41,11 @@ object CloserTesterModel extends ParserProviderCompanion {
 
       Some(new JsonReader[CloserTesterModel[U, N, B]] {
         override def read(json: JsValue): CloserTesterModel[U, N, B] = {
-          val model = for {
-            jsV <- json(shouldThrowField)
-            mId <- getModelId(json)
-            v = jsV.convertTo[Option[Boolean]]
-            m = new CloserTesterModel(mId, auditor, v getOrElse false)
-          } yield m
-
-          model getOrElse { throw new DeserializationException("") }
+          val model = getModelId(json) map { id =>
+            val shouldThrow = json(shouldThrowField).flatMap(st => st.convertTo[Option[Boolean]]) getOrElse false
+            new CloserTesterModel(id, auditor, shouldThrow)
+          }
+          model getOrElse { throw new DeserializationException("Couldn't get model ID for CloserTester model.") }
         }
       })
     }
