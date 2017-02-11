@@ -356,9 +356,6 @@ object VwJniModel
     //   val vwParams = Option(vwArgs).filter(_.trim.nonEmpty).map(args => Right(StringEscapeUtils.escapeJson(args)))
     val vwParams = vwArgs.filter(_.trim.nonEmpty).map(args => Right(escape(args)))
 
-    // TODO: Figure out what to do about these VW arguments.
-//    val params = vwArgs.getOrElse("").trim
-
     val vwObj = if (externalModel)
       Vw(ExternalSource(model), vwParams)
     else {

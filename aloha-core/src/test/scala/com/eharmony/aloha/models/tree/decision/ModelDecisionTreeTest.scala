@@ -259,11 +259,6 @@ object ModelDecisionTreeTest {
     // Don't need semantics since no features.  Just reuse any semantics. Only need these 2 parsers.
     val factory = ModelFactory.defaultFactory(semantics, OptionAuditor[Int]())
 
-//    val factory = {
-//      val f = ModelFactory.defaultFactory(semantics, OptionAuditor[Int]())
-//      f.copy(parsers = f.parsers ++ Seq())
-//    }
-
     val json = s"""
                   |{
                   |  "modelType": "ModelDecisionTree",

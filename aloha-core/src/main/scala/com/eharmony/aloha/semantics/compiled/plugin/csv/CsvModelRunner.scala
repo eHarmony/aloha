@@ -684,17 +684,6 @@ object CsvModelRunner {
                 )
         }
 
-        implicit val refInfoA: RefInfo[A] = refInfo
-
-//        def instantiate[B : RefInfo : ScoreConverter : JsonFormat] =
-//            ModelFactory.defaultFactory.toTypedFactory[A, B](s).fromVfs2(model).get
-
-        // s: CompiledSemanticsLike[Any]
-        // fn: (String) => A
-        // refInfo: RefInfo[A]
-
-
-
         def instantiate[N](protoOutput: Boolean)
                           (implicit r: RefInfo[N],
                            oa: OptionAuditor[N],

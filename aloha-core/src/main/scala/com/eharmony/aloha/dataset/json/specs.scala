@@ -35,12 +35,6 @@ object SparseSpec extends DefaultJsonProtocol {
     implicit class SparseSpecOps(val spec: Spec[Sparse]) extends AnyVal {
         def toModelSpec = com.eharmony.aloha.models.reg.json.Spec(spec.spec, spec.defVal.map(_.toSeq))
     }
-//    val modelSpecWriter = new RootJsonWriter[SparseSpec] {
-//        override def write(ss: SparseSpec) = {
-//            import spray.json.pimpAny
-//            ss.defVal.map(d => JsObject("spec" -> ss.name.toJson, "defVal" -> d.toJson)) getOrElse ss.name.toJson
-//        }
-//    }
 }
 
 final case class DenseSpec(name: String, spec: String, defVal: Option[Dense] = None) extends Spec[Dense]

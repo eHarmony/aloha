@@ -233,30 +233,6 @@ public class NonSpringJavaTest {
 				refInfo
 		);
 
-//		// ================================================================================================
-//		// Create the typed factory. This factory produces models that take
-//		// TestProto instances as
-//		// input and produces ieee-754 64-bit floats as output.
-//		//
-//		// In general, calling the score(..) function that returns a proto is
-//		// going to be the most
-//		// useful in a production setting because it contains type-safe return
-//		// values along with an
-//		// audit trail and error messages and it logs missing data.
-//		// ================================================================================================
-//		final TypedModelFactory<TestProto, Double> testProtoToDoubleModelFactory = untypedModelFactory
-//				.toTypedFactory(semantics, new DoubleFactoryInfo<TestProto>(
-//						TestProto.class));
-//
-//		// ------------------------------------------------------------------------------------------------
-//		// This just shows that we can easily construct another factory for
-//		// different output types
-//		// while reusing the semantics, etc.
-//		// ------------------------------------------------------------------------------------------------
-//		final TypedModelFactory<TestProto, Integer> testProtoToIntegerModelFactory = untypedModelFactory
-//				.toTypedFactory(semantics, new IntegerFactoryInfo<TestProto>(
-//						TestProto.class));
-
 		return factory;
 	}
 

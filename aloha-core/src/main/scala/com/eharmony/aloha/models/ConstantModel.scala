@@ -21,8 +21,6 @@ case class ConstantModel[U, N, +B <: U](
 }
 
 object ConstantModel extends ParserProviderCompanion {
-//  def apply[B: ScoreConverter](b: B): ConstantModel[B] = ConstantModel(ModelOutput(b), ModelId())
-
   object Parser extends ModelSubmodelParsingPlugin {
     val modelType = "Constant"
     private val valueField = "value"
@@ -49,22 +47,4 @@ object ConstantModel extends ParserProviderCompanion {
   }
 
   def parser: ModelParser = Parser
-
-//    object Parser extends BasicModelParser {
-//        val modelType = "Constant"
-//        private val valueField = "value"
-//
-//      def modelJsonReader[A, B: JsonReader : ScoreConverter]: JsonReader[ConstantModel[B]] = new JsonReader[ConstantModel[B]] {
-//            def read(json: JsValue) = {
-//                val model = for {
-//                    jsV <- json(valueField)
-//                    mId <- getModelId(json)
-//                    v = jsV.convertTo[B]
-//                    m = new ConstantModel[B](ModelOutput(v), mId)
-//                } yield m
-//
-//                model getOrElse { throw new DeserializationException("") }
-//            }
-//        }
-//    }
 }

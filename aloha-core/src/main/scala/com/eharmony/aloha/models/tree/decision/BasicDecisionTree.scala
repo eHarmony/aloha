@@ -91,39 +91,5 @@ object BasicDecisionTree extends ParserProviderCompanion {
   }
 
   def parser: ModelParser = Parser
-
-
-//    object Parser
-//        extends ModelParserWithSemantics
-//        with EitherHelpers
-//        with DecisionTreeJson {
-//
-//        import spray.json._
-//
-//        val modelType = "DecisionTree"
-//
-//        private[this] def dtBuilder[A, B: ScoreConverter](mId: ModelIdentity, t: Node[A, B], returnBest: Boolean) =
-//            BasicDecisionTree(mId, t, returnBest)
-//
-//        /**
-//          *
-//          * @param semantics This reader requires semantics to be provided (some).  Otherwise, an error will occur. This
-//          *                  is because the regression models create functions for each feature in the model and
-//          *                  function creation is performed by the semantics.
-//          * @tparam A input type of the model
-//          * @tparam B output type of the model
-//          * @return
-//          */
-//        def modelJsonReader[A, B: JsonReader: ScoreConverter](semantics: Semantics[A]): JsonReader[BasicDecisionTree[A, B]] = new JsonReader[BasicDecisionTree[A, B]] {
-//            def read(json: JsValue) = {
-//                val dtAst = json.convertTo(decisionTreeAstJsonFormat[B])
-//                val mId = getModelId(json)
-//                val t = Tree[NodeAst[B], immutable.IndexedSeq, Node[A, B]](
-//                            dtAst.nodes, root, id, childIds, treeBuilder[A, B](semantics, dtAst.missingDataOk))
-//                val dt = dtBuilder[A, B](mId.get, t, dtAst.returnBest)
-//                dt
-//            }
-//        }
-//    }
 }
 

@@ -289,10 +289,6 @@ object H2oModelTest {
 
   private def ProtoFactory[N: RefInfo]: ModelFactory[Tree[_], N, Abalone, Tree[N]] = ModelFactory.defaultFactory(protoSemantics, TreeAuditor[N]())
 
-
-  //  def ProtoFactory[N: RefInfo: JsonReader: ScoreConverter] =
-//    ModelFactory.defaultFactory(toTypedFactory[Abalone, B](protoSemantics)
-
   /**
     * Recreate the h2o model results
     */

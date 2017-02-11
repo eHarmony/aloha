@@ -244,34 +244,6 @@ object H2oModel extends ParserProviderCompanion
         }
       })
     }
-
-
-    //    override def modelJsonReader[A, B](semantics: Semantics[A])(implicit jrB: JsonReader[B], scB: ScoreConverter[B]): JsonReader[H2oModel[A, B]] = new JsonReader[H2oModel[A, B]] {
-//      override def read(json: JsValue): H2oModel[A, B] = {
-//        val h2o = json.convertTo[H2oAst]
-//        val classCacheDir = getClassCacheDir(semantics)
-//
-//        features(h2o.features.toSeq, semantics) match {
-//          case Left(errors) => throw new DeserializationException(errors.mkString("errors: ", "\n        ", ""))
-//          case Right(featureMap) =>
-//            val (names, functions) = featureMap.toIndexedSeq.unzip
-//            val genModel = getGenModelFromFile(h2o.modelSource, classCacheDir)
-//            H2oModel[A, B](h2o.modelId,
-//              genModel,
-//              names,
-//              functions,
-//              h2o.numMissingThreshold)
-//        }
-//      }
-//
-//      // TODO: Copied from RegressionModel.  Refactor for reuse.
-//      private[this] def features[A](featureMap: Seq[(String, H2oSpec)], semantics: Semantics[A]) =
-//        mapSeq(featureMap) { case (k, s) =>
-//          s.compile(semantics).
-//            left.map(Seq(s"Error processing spec '${s.spec}'") ++ _).
-//            right.map(v => (k, v))
-//        }
-//    }
   }
 
   protected[h2o] def getClassCacheDir[A](semantics: Semantics[A]): Option[File] = {

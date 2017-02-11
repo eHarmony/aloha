@@ -61,7 +61,6 @@ object FizzBuzzCsvRegModelTest {
 
   // #3 Create the factory
   // Need to import a spray JsonFormat and a ScoreConverter for the output type of the model (Double).
-//  val factory: TypedModelFactory[CsvLine, Double] = ModelFactory.defaultFactory.toTypedFactory[CsvLine, Double](csvSemantics)
   val factory = ModelFactory.defaultFactory(csvSemantics, OptionAuditor[Double]())
 
 

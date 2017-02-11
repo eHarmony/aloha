@@ -39,20 +39,4 @@ object ErrorModel extends ParserProviderCompanion {
   }
 
   def parser: ModelParser = Parser
-
-//    object Parser extends BasicModelParser {
-//        val modelType = "Error"
-//        private[this] val errorField = "errors"
-//        def modelJsonReader[A, B: JsonReader : ScoreConverter]: JsonReader[ErrorModel] = new JsonReader[ErrorModel] {
-//            def read(json: JsValue) = {
-//                val model = for {
-//                    errors <- json.sa(errorField) orElse { Option(Seq("Error with unspecified reason.")) }
-//                    mId <- getModelId(json)
-//                } yield ErrorModel(mId, errors)
-//
-//                model getOrElse { throw new DeserializationException("")}
-//            }
-//        }
-//    }
-
 }

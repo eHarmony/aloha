@@ -127,35 +127,4 @@ object CategoricalDistibutionModel extends ParserProviderCompanion {
   }
 
   def parser: ModelParser = Parser
-
-//  object Parser extends ModelParserWithSemantics with Logging {
-//    val modelType = "CategoricalDistribution"
-//
-//    private case class Ast[B: JsonFormat: ScoreConverter](
-//      features: Seq[String],
-//      probabilities: Seq[Double],
-//      labels: immutable.IndexedSeq[B],
-//      missingOk: Option[Boolean] = None)
-//
-//    private implicit def astFormatReader[B: JsonFormat: ScoreConverter] = jsonFormat4(Ast.apply[B])
-//
-//    def modelJsonReader[A, B: JsonReader: ScoreConverter](semantics: Semantics[A]) = new JsonReader[CategoricalDistibutionModel[A, B]] {
-//      def read(json: JsValue) = {
-//        implicit val bFormat = jsonReaderToJsonFormat[B]
-//        val id = getModelId(json).get
-//        val ast = json.convertTo[Ast[B]]
-//        val featuresX = ast.features.map(f => semantics.createFunction[Any](f))
-//        val features = featuresX.map(_.left.map(e => error("errors: " + e.mkString("\n") + "json: " + json.compactPrint)).right.get)
-//
-//        val m = CategoricalDistibutionModel[A, B](
-//          id,
-//          features,
-//          HashedCategoricalDistribution(ast.probabilities: _*),
-//          ast.labels,
-//          ast.missingOk.getOrElse(false))
-//
-//        m
-//      }
-//    }
-//  }
 }
