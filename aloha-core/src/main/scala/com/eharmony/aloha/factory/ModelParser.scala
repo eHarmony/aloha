@@ -1,65 +1,55 @@
 package com.eharmony.aloha.factory
 
-
-import spray.json._
+import com.eharmony.aloha.audit.Auditor
+import com.eharmony.aloha.factory.jsext.JsValueExtensions
+import com.eharmony.aloha.id.{ModelId, ModelIdentity}
+import com.eharmony.aloha.models.{Model, Submodel}
+import com.eharmony.aloha.reflect.RefInfo
+import com.eharmony.aloha.semantics.Semantics
+import spray.json.{DefaultJsonProtocol, JsObject, JsValue, JsonFormat, JsonReader}
 import spray.json.DefaultJsonProtocol.{LongJsonFormat, StringJsonFormat}
 
-import com.eharmony.aloha.id.{ModelIdentity, ModelId}
-import com.eharmony.aloha.models.Model
-import com.eharmony.aloha.factory.pimpz.JsValuePimpz
-import com.eharmony.aloha.score.conversions.ScoreConverter
-import com.eharmony.aloha.semantics.Semantics
-import com.eharmony.aloha.reflect.RefInfo
-import com.eharmony.aloha.factory.ex.AlohaFactoryException
-
 /**
-  * '''NOTE''': If the covariance annotation on M were removed we could change the signature of modelJsonReader from
-  * {{{ def modelJsonReader[A, B: JsonReader: ScoreConverter, C >: M[A, B]]: JsonReader[C] }}}
-  * to
-  * {{{ def modelJsonReader[A, B: JsonReader: ScoreConverter]: JsonReader[M[A, B]] }}}
+  * Created by ryan on 1/26/17.
   */
-trait ModelParser extends JsValuePimpz {
-    private implicit val modelIdFormat = DefaultJsonProtocol.jsonFormat2(ModelId.apply)
+sealed trait ModelParser {
 
-    val modelType: String
+  val modelType: String
 
-    protected[this] final def jsonReaderToJsonFormat[A](implicit jr: JsonReader[A]): JsonFormat[A] = jr match {
-        case jf: JsonFormat[A] => jf
-        case _ => new JsonFormat[A] {
-            def write(a: A): JsValue = throw new UnsupportedOperationException("write not supported")
-            def read(json: JsValue): A = jr.read(json)
-        }
-    }
+  private implicit val modelIdFormat = DefaultJsonProtocol.jsonFormat2(ModelId.apply)
 
-    /**
-      * @param factory ModelFactory[Model[_, _] ]
-      * @tparam A model input type
-      * @tparam B model input type
-      * @return
-      */
-    def modelJsonReader[A, B: JsonReader: ScoreConverter](factory: ModelFactory, semantics: Option[Semantics[A]]): JsonReader[_ <: Model[A, B]]
-
-    protected final def getModelId(json: JsValue): Option[ModelIdentity] =
-        json(ModelParser.modelIdField).collect{case o: JsObject => o.convertTo[ModelId]}
-
-    final def getParser[A: RefInfo, B: RefInfo: JsonReader: ScoreConverter](factory: ModelFactory, semantics: Option[Semantics[A]]) = new Parser[JsValue, Model[A, B]] {
-        def parse(json: JsValue): Model[A, B] = json.convertTo(modelJsonReader[A, B](factory, semantics))
-    }
-}
-
-trait BasicModelParser extends ModelParser {
-    def modelJsonReader[A, B: JsonReader: ScoreConverter]: JsonReader[_ <: Model[A, B]]
-    final def modelJsonReader[A, B: JsonReader: ScoreConverter](factory: ModelFactory, semantics: Option[Semantics[A]]): JsonReader[_ <: Model[A, B]] =
-        modelJsonReader[A, B]
-}
-
-trait ModelParserWithSemantics extends ModelParser {
-    def modelJsonReader[A, B: JsonReader: ScoreConverter](semantics: Semantics[A]): JsonReader[_ <: Model[A, B]]
-    final def modelJsonReader[A, B: JsonReader: ScoreConverter](factory: ModelFactory, semantics: Option[Semantics[A]]): JsonReader[_ <: Model[A, B]] = {
-        semantics.map(s => modelJsonReader[A, B](s)).getOrElse { throw new AlohaFactoryException(this.toString + "(ModelParserWithSemantics): No semantics provided") }
-    }
+  protected final def getModelId(json: JsValue): Option[ModelIdentity] =
+    json(ModelParser.modelIdField).collect{case o: JsObject => o.convertTo[ModelId]}
 }
 
 private object ModelParser {
-    val modelIdField = "modelId"
+  val modelIdField = "modelId"
 }
+
+trait ModelParsingPlugin extends ModelParser {
+  def modelJsonReader[U, N, A, B <: U](factory: SubmodelFactory[U, A], semantics: Semantics[A], auditor: Auditor[U, N, B])
+                                      (implicit r: RefInfo[N], jf: JsonFormat[N]): Option[JsonReader[Model[A, B]]]
+}
+
+trait SubmodelParsingPlugin extends ModelParser {
+  def submodelJsonReader[U, N, A, B <: U](factory: SubmodelFactory[U, A], semantics: Semantics[A], auditor: Auditor[U, N, B])
+                                         (implicit r: RefInfo[N], jf: JsonFormat[N]): Option[JsonReader[Submodel[N, A, U]]]
+}
+
+trait ModelSubmodelParsingPlugin extends ModelParsingPlugin with SubmodelParsingPlugin {
+  def commonJsonReader[U, N, A, B <: U](factory: SubmodelFactory[U, A], semantics: Semantics[A], auditor: Auditor[U, N, B])
+                                       (implicit r: RefInfo[N], jf: JsonFormat[N]): Option[JsonReader[_ <: Model[A, B] with Submodel[_, A, B]]]
+
+  final override def modelJsonReader[U, N, A, B <: U](factory: SubmodelFactory[U, A], semantics: Semantics[A], auditor: Auditor[U, N, B])
+                                                     (implicit r: RefInfo[N], jf: JsonFormat[N]): Option[JsonReader[Model[A, B]]] = {
+    val reader = commonJsonReader(factory, semantics, auditor)
+    reader.map(jr => jr.asInstanceOf[JsonReader[Model[A, B]]])
+  }
+
+  final def submodelJsonReader[U, N, A, B <: U](factory: SubmodelFactory[U, A], semantics: Semantics[A], auditor: Auditor[U, N, B])
+                                               (implicit r: RefInfo[N], jf: JsonFormat[N]): Option[JsonReader[Submodel[N, A, U]]] = {
+    val reader = commonJsonReader(factory, semantics, auditor)
+    reader.map(jr => jr.asInstanceOf[JsonReader[Submodel[N, A, U]]])
+  }
+}
+

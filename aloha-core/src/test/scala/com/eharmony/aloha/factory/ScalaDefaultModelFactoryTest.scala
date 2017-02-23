@@ -2,23 +2,17 @@ package com.eharmony.aloha.factory
 
 import java.io.StringReader
 
-import org.junit.runner.RunWith
-import org.junit.runners.BlockJUnit4ClassRunner
-import org.junit.Test
-import org.junit.Assert._
-
-import org.apache.commons.io.input.ReaderInputStream
-
-import spray.json.DefaultJsonProtocol.DoubleJsonFormat
-
-import com.eharmony.aloha.score.conversions.rich.RichScore
-import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.DoubleScoreConverter
-
-import com.eharmony.aloha.io.sources.{ReadableSource, ReaderReadableSource, InputStreamReadableSource, StringReadableSource}
+import com.eharmony.aloha.audit.impl.TreeAuditor
 import com.eharmony.aloha.io.sources.ReadableSourceConverters.Implicits._
 import com.eharmony.aloha.io.sources.ReadableSourceConverters.StringImplicits.stringToStringReadableConverter
-
+import com.eharmony.aloha.io.sources.{InputStreamReadableSource, ReadableSource, ReaderReadableSource, StringReadableSource}
+import com.eharmony.aloha.semantics.NoSemantics
 import com.eharmony.aloha.util.ICList
+import org.apache.commons.io.input.ReaderInputStream
+import org.junit.Assert._
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.BlockJUnit4ClassRunner
 
 /**
  * This is the scala counterpart of the com.eharmony.aloha.factory.JavaDefaultModelFactoryTest.  This is mainly
@@ -35,13 +29,22 @@ class ScalaDefaultModelFactoryTest {
         assertEquals(ErrorModelName, model.modelId.getName())
         assertEquals(ErrorModelId, model.modelId.getId())
 
-        val score = model.score(null)
+        val score = model(null)
 
-        assertFalse(score.hasScore)
-        assertTrue(score.hasError)
-        assertEquals(1, score.getError.getMessagesCount)
-        assertEquals(ErrorModelMsg, score.getError.getMessages(0))
-        assertEquals(0, score.getError.getMissingFeatures.getNamesCount)
+        assertTrue(score.value.isEmpty)
+//        assertFalse(score.hasScore)
+
+//        assertTrue(score.errorMsgs.nonEmpty || score.missingVarNames.nonEmpty)
+//        assertTrue(score.hasError)
+
+        assertEquals(1, score.errorMsgs.size)
+//        assertEquals(1, score.getError.getMessagesCount)
+
+        assertEquals(ErrorModelMsg, score.errorMsgs.head)
+//        assertEquals(ErrorModelMsg, score.getError.getMessages(0))
+
+        assertTrue(score.missingVarNames.isEmpty)
+//        assertEquals(0, score.getError.getMissingFeatures.getNamesCount)
     }
 
     @Test def testConstantModelFromDefaultFactory() {
@@ -50,12 +53,11 @@ class ScalaDefaultModelFactoryTest {
         assertEquals(ConstModelName, model.modelId.getName())
         assertEquals(ConstModelId, model.modelId.getId())
 
-        val score = model.score(null)
-        val ds1 = score.relaxed.asDouble.get
-        assertEquals(ConstModelVal, ds1, 0)
+        val score = model(null)
 
-        val ds2 = model.apply(null).get
-        assertEquals(ConstModelVal, ds2, 0)
+        val ds1 = score.value.get
+//        val ds1 = score.relaxed.asDouble.get
+        assertEquals(ConstModelVal, ds1, 0)
     }
 
     @Test def testMultipleFromDefaultFactory() {
@@ -77,12 +79,13 @@ class ScalaDefaultModelFactoryTest {
         // of ReadableTypeList.
         val tries = defaultFactory.fromMultipleSources(rtl.list)
 
+
         // Test the models are as expected.
-        tries.zipWithIndex foreach { case (t, i) => {
+        tries.zipWithIndex foreach { case (t, i) =>
             val m = t.get
             val exp = if (0 == i % 2) errModel else constModel
             assertEquals("on test " + i + ":", exp, m)
-        }}
+        }
     }
 }
 
@@ -98,7 +101,7 @@ object ScalaDefaultModelFactoryTest {
     val ConstModelJson = s"""{"modelType": "Constant", "modelId": {"id": $ConstModelId, "name": "$ConstModelName"}, "value": $ConstModelVal}"""
 
     // Create the model factory.  Notice the implicit reflection information is automatically injected.
-    val defaultFactory = ModelFactory.defaultFactory.toTypedFactory[Map[String, Long], Double]
+    private val defaultFactory = ModelFactory.defaultFactory(NoSemantics[Map[String, Long]](), TreeAuditor[Double]())
 
     def getInputStream(json: String) = new ReaderInputStream(getReader(json))
     def getReader(json: String) = new StringReader(json)

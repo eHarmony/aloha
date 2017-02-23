@@ -3,20 +3,18 @@ package com.eharmony.aloha.models.vw.jni
 import java.io._
 import java.{lang => jl}
 
-import com.eharmony.aloha.{ModelSerializationTestHelper, FileLocations}
-import com.eharmony.aloha.factory.JavaJsonFormats._
+import com.eharmony.aloha.audit.impl.OptionAuditor
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.io.sources.Base64StringSource
-import com.eharmony.aloha.models.TypeCoercion
+import com.eharmony.aloha.models.{Model, TypeCoercion}
 import com.eharmony.aloha.reflect.RefInfo
-import com.eharmony.aloha.score.conversions.ScoreConverter
-import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits._
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import com.eharmony.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine, CsvLines, CsvTypes}
 import com.eharmony.aloha.semantics.func.{GenFunc, GeneratedAccessor}
 import com.eharmony.aloha.util.Logging
+import com.eharmony.aloha.{FileLocations, ModelSerializationTestHelper}
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.io.IOUtils
 import org.apache.commons.vfs2
@@ -24,7 +22,6 @@ import org.junit.Assert._
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 import org.junit.{BeforeClass, Ignore, Test}
-import spray.json.DefaultJsonProtocol._
 import spray.json._
 import vw.learner.{VWFloatLearner, VWLearner, VWLearners}
 
@@ -147,6 +144,7 @@ class VwJniModelTest extends ModelSerializationTestHelper with Logging {
                 Nil,
                 Nil,
                 (_: VWLearner).asInstanceOf[VWFloatLearner].predict,
+                OptionAuditor[Float](),
                 None
             )
             fail("should throw IllegalArgumentException")
@@ -171,6 +169,7 @@ class VwJniModelTest extends ModelSerializationTestHelper with Logging {
                 Nil,
                 Nil,
                 (_: VWLearner).asInstanceOf[VWFloatLearner].predict,
+                OptionAuditor[Float](),
                 None
             )
             fail("should throw IllegalArgumentException")
@@ -192,6 +191,7 @@ class VwJniModelTest extends ModelSerializationTestHelper with Logging {
                 Nil,
                 Nil,
                 (_: VWLearner).asInstanceOf[VWFloatLearner].predict,
+                OptionAuditor[Float](),
                 None
             )
             fail("should throw IllegalArgumentException")
@@ -214,7 +214,8 @@ class VwJniModelTest extends ModelSerializationTestHelper with Logging {
         Try { VWLearners.create[VWLearner](s"--quiet -i $badModel") }
     }
 
-    def getParams(m: VwJniModel[_, _]) = VwJniModel.updatedVwModelParams(VwJniModel.localModelFile(m.modelSource), m.vwParams, m.modelId)
+    private[this] def getParams(m: VwJniModel[_, _, _, _]): String =
+      VwJniModel.updatedVwModelParams(VwJniModel.localModelFile(m.modelSource), m.vwParams, m.modelId)
 
     @Test def testResUrlDoesntCopyToLocal(): Unit = {
         val resUrl = url("res:" + VwModelBaseName)
@@ -377,17 +378,18 @@ class VwJniModelTest extends ModelSerializationTestHelper with Logging {
         }
     }
 
-    private[this] def model[A : RefInfo : ScoreConverter : JsonReader](modelJson: JsValue) = {
-        val m = ModelFactory.defaultFactory.getModel[CsvLine, A](modelJson, Option(semantics)).get
-        assertEquals("VwJniModel", m.getClass.getSimpleName)
-        m.asInstanceOf[VwJniModel[CsvLine, A]]
+    private[this] def model[A : RefInfo](modelJson: JsValue) = {
+      val factory = ModelFactory.defaultFactory(semantics, OptionAuditor[A]())
+      val m: Model[CsvLine, Option[A]] = factory.fromString(modelJson.compactPrint).get
+      assertEquals("VwJniModel", m.getClass.getSimpleName)
+      m.asInstanceOf[VwJniModel[Option[_], A, CsvLine, Option[A]]]
     }
 
     /**
      * Tests that the output equals the expected output value.  This ensures that the
      * @tparam A The output type.
      */
-    private[this] def testOutputType[A : RefInfo : ScoreConverter : JsonReader](): Unit = {
+    private[this] def testOutputType[A : RefInfo](): Unit = {
         val tc = TypeCoercion[Double, Option[A]].get
         val m = model[A](typeTestJson)
         val y = m(missingHeight)

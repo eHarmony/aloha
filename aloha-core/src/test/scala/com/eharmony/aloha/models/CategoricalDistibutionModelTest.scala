@@ -1,25 +1,19 @@
 package com.eharmony.aloha.models
 
 import com.eharmony.aloha.ModelSerializationTestHelper
-import com.eharmony.aloha.id.ModelId
-import com.eharmony.aloha.util.rand.HashedCategoricalDistribution
-
-import scala.collection.JavaConversions.asScalaBuffer
-import scala.collection.{immutable => sci}
-
-import org.junit.runners.BlockJUnit4ClassRunner
-import org.junit.runner.RunWith
-import org.junit.Test
-import org.junit.Assert._
-
-import spray.json.DefaultJsonProtocol.StringJsonFormat
-
-import com.eharmony.aloha.semantics.Semantics
-import com.eharmony.aloha.reflect.{RefInfoOps, RefInfo}
-import com.eharmony.aloha.semantics.func.{GenAggFunc, GeneratedAccessor, GenFunc}
+import com.eharmony.aloha.audit.impl.{OptionAuditor, TreeAuditor}
 import com.eharmony.aloha.factory.ModelFactory
-import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.StringScoreConverter
-import com.eharmony.aloha.score.conversions.rich.RichScore
+import com.eharmony.aloha.id.ModelId
+import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
+import com.eharmony.aloha.semantics.Semantics
+import com.eharmony.aloha.semantics.func.{GenAggFunc, GenFunc, GeneratedAccessor}
+import com.eharmony.aloha.util.rand.HashedCategoricalDistribution
+import org.junit.Assert._
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.BlockJUnit4ClassRunner
+
+import scala.collection.{immutable => sci}
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class CategoricalDistibutionModelTest extends ModelSerializationTestHelper {
@@ -33,50 +27,51 @@ class CategoricalDistibutionModelTest extends ModelSerializationTestHelper {
       *
       *   String
       */
-    lazy val f = ModelFactory(CategoricalDistibutionModel.parser).toTypedFactory[Map[String, Double], String](MapSemantics.stringMapSemantics[Double])
-    lazy val modelMissingNotOk = f.fromString(json(missingOk = false)).get
-    lazy val modelMissingOk = f.fromString(json(missingOk = true)).get
+    private lazy val f = ModelFactory.defaultFactory(MapSemantics.stringMapSemantics[Double], TreeAuditor[String]())
+    private lazy val modelMissingNotOk = f.fromString(json()).get
+    private lazy val modelMissingOk = f.fromString(json(missingOk = true)).get
 
     /**
       * Test missing feature: "key_one"
       */
     @Test def testMissingKeyOneWhenMissingNotOk() {
-        val s = modelMissingNotOk.score(Map("key_two" -> 2, "5" -> 5))
-        assertFalse("Should not have score.", s.hasScore)
-        assertTrue("Should have error.", s.hasError)
-        assertTrue("Should have missing features.", s.getError.hasMissingFeatures)
-        assertEquals("Should have missing features.", Seq("key_one"), s.getError.getMissingFeatures.getNamesList.toSeq)
-        assertEquals("Wrong number of error messages.", 1, s.getError.getMessagesCount)
-        assertEquals("Bad error message.", "Couldn't choose random output due to missing features", s.getError.getMessages(0))
+        val s = modelMissingNotOk(Map("key_two" -> 2, "5" -> 5))
+        assertTrue("Should not have score.", s.value.isEmpty)
+        assertTrue("Should have error.", s.errorMsgs.nonEmpty || s.missingVarNames.nonEmpty)
+        assertTrue("Should have missing features.", s.missingVarNames.nonEmpty)
+        assertEquals("Should have missing features.", Set("key_one"), s.missingVarNames)
+        assertEquals("Wrong number of error messages.", 1, s.errorMsgs.size)
+        assertEquals("Bad error message.", "Couldn't choose random output due to missing features", s.errorMsgs.head)
     }
 
     @Test def testMissingKeyOneAndTwoWhenMissingNotOk() {
-        val s = modelMissingNotOk.score(Map("5" -> 5))
-        assertFalse("Should not have score.", s.hasScore)
-        assertTrue("Should have error.", s.hasError)
-        assertTrue("Should have missing features.", s.getError.hasMissingFeatures)
-        assertEquals("Should have missing features.", Seq("key_one", "key_two"), s.getError.getMissingFeatures.getNamesList.toSeq.sorted)
-        assertEquals("Wrong number of error messages.", 1, s.getError.getMessagesCount)
-        assertEquals("Bad error message.", "Couldn't choose random output due to missing features", s.getError.getMessages(0))
+        val s = modelMissingNotOk(Map("5" -> 5))
+        assertTrue("Should not have score.", s.value.isEmpty)
+        assertTrue("Should have error.", s.errorMsgs.nonEmpty || s.missingVarNames.nonEmpty)
+        assertTrue("Should have missing features.", s.missingVarNames.nonEmpty)
+        assertEquals("Should have missing features.", Seq("key_one", "key_two"), s.missingVarNames.toSeq.sorted)
+        assertEquals("Wrong number of error messages.", 1, s.errorMsgs.size)
+        assertEquals("Bad error message.", "Couldn't choose random output due to missing features", s.errorMsgs.head)
     }
 
     @Test def testMissingKeyOneWhenMissingOk() {
-        val s = modelMissingOk.score(Map("key_two" -> 2, "5" -> 5))
-        assertTrue("Should have score.", s.hasScore)
-        assertEquals("Should have score.", "label_one", s.strict.asString.get.right.get)
-        assertTrue("Should have error.", s.hasError)
-        assertTrue("Should have missing features.", s.getError.hasMissingFeatures)
-        assertEquals("Should have missing features.", Seq("key_one"), s.getError.getMissingFeatures.getNamesList.toSeq)
-        assertEquals("Wrong number of error messages.", 0, s.getError.getMessagesCount)
+        val s = modelMissingOk(Map("key_two" -> 2, "5" -> 5))
+        assertTrue("Should have score.", s.value.isDefined)
+        assertEquals("Should have score.", "label_one", s.value.get)
+        assertTrue("Should have error.", s.errorMsgs.nonEmpty || s.missingVarNames.nonEmpty)
+        assertTrue("Should have missing features.", s.missingVarNames.nonEmpty)
+        assertEquals("Should have missing features.", Set("key_one"), s.missingVarNames)
+        assertEquals("Wrong number of error messages.", 0, s.errorMsgs.size)
     }
 
     @Test def testSerialization(): Unit = {
-        val m = CategoricalDistibutionModel[Any, String](
-                  modelId = ModelId(2, "abc"),
-                  features = Seq(GenFunc.f0("", Identity())),
-                  distribution = HashedCategoricalDistribution(1,2,3,4),
-                  labels = sci.IndexedSeq("a", "b", "c", "d"),
-                  missingOk = true)
+        val m = CategoricalDistibutionModel(
+            modelId = ModelId(2, "abc"),
+            features = Seq(GenFunc.f0("", Identity[Any]())),
+            distribution = HashedCategoricalDistribution(1,2,3,4),
+            labels = sci.IndexedSeq("a", "b", "c", "d"),
+            auditor =  OptionAuditor[String](),
+            missingOk = true)
 
         val m1 = serializeDeserializeRoundTrip(m)
         assertEquals(m, m1)
@@ -86,11 +81,11 @@ class CategoricalDistibutionModelTest extends ModelSerializationTestHelper {
 object CategoricalDistibutionModelTest {
 
     case class Identity[A]() extends (A => A) {
-        def apply(a: A) = a
+        def apply(a: A): A = a
     }
 
     class MapSemantics[K: RefInfo, V: RefInfo](f: String => K) extends Semantics[Map[K, V]] {
-        def refInfoA = RefInfoOps.wrap[K, V].in[Map]
+        def refInfoA: RefInfo[Map[K, V]] = RefInfoOps.wrap[K, V].in[Map]
         def accessorFunctionNames = Nil
         def close() {}
         def createFunction[B: RefInfo](codeSpec: String, default: Option[B] = None): Either[Seq[String], GenAggFunc[Map[K, V], B]] = {
@@ -116,15 +111,15 @@ object CategoricalDistibutionModelTest {
         def stringMapSemantics[V: RefInfo] = new MapSemantics[String, V](identity)
     }
 
-    def json(missingOk: Boolean = false) =
+    def json(missingOk: Boolean = false): String =
         s"""
-          |{
-          |  "modelType": "CategoricalDistribution",
-          |  "modelId": {"id": 0, "name": ""},
-          |  "features": [ "key_one", "key_two", "5" ],
-          |  "probabilities": [ 0.25, 0.75 ],
-          |  "labels": [ "label_one", "label_two" ],
-          |  "missingOk": $missingOk
-          |}
+           |{
+           |  "modelType": "CategoricalDistribution",
+           |  "modelId": {"id": 0, "name": ""},
+           |  "features": [ "key_one", "key_two", "5" ],
+           |  "probabilities": [ 0.25, 0.75 ],
+           |  "labels": [ "label_one", "label_two" ],
+           |  "missingOk": $missingOk
+           |}
         """.stripMargin.trim
 }

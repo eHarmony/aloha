@@ -44,9 +44,6 @@ extends VwRowCreator[A](featuresFunction, defaultNamespace, namespaces, normaliz
                 append(" ")
             ).append(t).     // VW input format [Tag].
               append(if (0 == iv.length()) "|" else iv)
-
-//              append("|").   // There must be NO leading space b/c the tag must touch the pipe.
-//              append(iv)     // Features.
         }
 
         if (lineOpt.isEmpty) debug("Label information is missing. Creating a line with no label.")

@@ -3,7 +3,8 @@ package com.eharmony.aloha.models.reg
 import java.io.File
 
 import com.eharmony.aloha.FileLocations
-import com.eharmony.aloha.factory.{ModelFactory, TypedModelFactory}
+import com.eharmony.aloha.audit.impl.OptionAuditor
+import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.models.Model
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
@@ -60,13 +61,11 @@ object FizzBuzzCsvRegModelTest {
 
   // #3 Create the factory
   // Need to import a spray JsonFormat and a ScoreConverter for the output type of the model (Double).
-  import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.DoubleScoreConverter
-  import spray.json.DefaultJsonProtocol.DoubleJsonFormat
-  val factory: TypedModelFactory[CsvLine, Double] = ModelFactory.defaultFactory.toTypedFactory[CsvLine, Double](csvSemantics)
+  val factory = ModelFactory.defaultFactory(csvSemantics, OptionAuditor[Double]())
 
 
   // #4 Use the factory to instantiate the model.
-  val modelTry: Try[Model[CsvLine, Double]] = factory.fromResource("fizzbuzz.json")
+  val modelTry: Try[Model[CsvLine, Option[Double]]] = factory.fromResource("fizzbuzz.json")
   val model = modelTry.get
 
 
@@ -108,11 +107,7 @@ class FizzBuzzCsvRegModelTest {
   @Test def testFizzBuzzOneAtATime(): Unit = {
     data.foreach { case (i, s) =>
       val in = csvLines(s)
-
       val scoreOpt: Option[Double] = model(in)
-      model.score(in)
-      model.scoreAsEither(in)
-
       assertEquals(s"$i", expected(i), scoreOpt.get, 0)
     }
   }

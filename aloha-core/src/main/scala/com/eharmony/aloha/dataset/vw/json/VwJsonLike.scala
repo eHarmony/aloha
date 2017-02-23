@@ -24,11 +24,9 @@ extends CovariateJson[Sparse]
         val fMap = features.view.zipWithIndex.map{case(k, v) => (k.name, v)}.toMap
 
         // Mapping from namespace name to sequence of feature indices.
-//        val nss = namespaces.getOrElse(Seq.empty).map(ns => (ns.name, ns.features.flatMap(fMap.get).toIndexedSeq)).toIndexedSeq
         val nss = namespaces.getOrElse(Seq.empty).map(ns => (ns.name, ns.features.flatMap(fMap.get).toList)).toList
 
         // default (unnamed) namespace mapping.  These are the indices not in any namespace.  Sorted.
-//        val default = nss.foldLeft(features.indices.toSet)((ind, ns) => ind -- ns._2).toIndexedSeq.sorted
         val default = nss.foldLeft(features.indices.toSet)((ind, ns) => ind -- ns._2).toList.sorted
         (default, nss)
     }

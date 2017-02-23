@@ -39,9 +39,6 @@ extends VwRowCreator[A](featuresFunction, defaultNamespace, namespaces, normaliz
                 append(VwRowCreator.LabelDecimalFormatter.format(c)).append(":").
                 append(VwRowCreator.LabelDecimalFormatter.format(p)).
                 append(if (0 == iv.length()) " |" else s" $iv")
-
-//                append("|").
-//                append(iv)
         }
 
         if (lineOpt.isEmpty) debug("Contextual Bandit label information is missing. Creating a line with no label.")

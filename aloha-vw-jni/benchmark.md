@@ -65,7 +65,7 @@ import java.io.File
 
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.models.Model
-import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits._
+import com.eharmony.aloha.score.proto.conversions.ScoreConverter.Implicits._
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import com.eharmony.aloha.semantics.compiled.plugin.proto.CompiledSemanticsProtoPlugin
