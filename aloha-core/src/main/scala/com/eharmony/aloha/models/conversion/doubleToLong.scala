@@ -1,22 +1,17 @@
 package com.eharmony.aloha.models.conversion
 
-import java.{ lang => jl }
+import java.{lang => jl}
 
-import com.eharmony.aloha.util.Logging
-
-import spray.json.{ JsValue, JsonReader }
-import spray.json.DefaultJsonProtocol._
-
-import com.eharmony.aloha.id.{ ModelId, ModelIdentity }
+import com.eharmony.aloha.audit.Auditor
+import com.eharmony.aloha.factory._
 import com.eharmony.aloha.id.ModelIdentityJson.modelIdJsonFormat
-
-import com.eharmony.aloha.score.conversions.ScoreConverter
-import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.DoubleScoreConverter
-import com.eharmony.aloha.factory.{ ModelFactory, ModelParser, ParserProviderCompanion }
+import com.eharmony.aloha.id.{ModelId, ModelIdentity}
+import com.eharmony.aloha.models.Submodel
+import com.eharmony.aloha.reflect.RefInfo
 import com.eharmony.aloha.semantics.Semantics
-import com.eharmony.aloha.reflect.{ RefInfoOps, RefInfo }
-import com.eharmony.aloha.factory.ex.AlohaFactoryException
-import com.eharmony.aloha.models.Model
+import com.eharmony.aloha.util.Logging
+import spray.json.DefaultJsonProtocol._
+import spray.json.{JsValue, JsonFormat, JsonReader, RootJsonFormat}
 
 /**
  * A model that converts from Scala Doubles to Scala Longs by scaling, translating, then rounding.
@@ -27,25 +22,27 @@ import com.eharmony.aloha.models.Model
  * @param round whether to round (true) or floor (false)
  * @tparam A model input type
  */
-case class DoubleToLongModel[-A](modelId: ModelIdentity,
-  submodel: Model[A, Double],
-  scale: Double = 1,
-  translation: Double = 0,
-  clampLower: Long = Long.MinValue,
-  clampUpper: Long = Long.MaxValue,
-  round: Boolean = false)
-  extends ConversionModel[A, Double, Long] with Logging {
+case class DoubleToLongModel[U, -A, +B <: U](
+    modelId: ModelIdentity,
+    submodel: Submodel[Double, A, U],
+    auditor: Auditor[U, Long, B],
+    scale: Double = 1,
+    translation: Double = 0,
+    clampLower: Long = Long.MinValue,
+    clampUpper: Long = Long.MaxValue,
+    round: Boolean = false
+) extends ConversionModel[U, Double, Long, A, B]
+     with Logging {
 
   require(clampLower <= clampUpper, s"clampLower ($clampLower) must be less than or equal to clampUpper ($clampUpper)")
-
-  override val scoreConverter = com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.LongScoreConverter
 
   if (scale == 0) warn(s"model ${modelId.getId()} will allows return a constant ${rounder(scale)}.")
 
   private[this] val rounder = if (round) (_: Double).round
-  else (_: Double).toLong
+                              else (_: Double).toLong
 
-  val conversion = (x: Double) => math.max(clampLower, math.min(rounder(scale * x + translation), clampUpper))
+  val conversion: Double => Long =
+    x => math.max(clampLower, math.min(rounder(scale * x + translation), clampUpper))
 }
 
 /**
@@ -57,87 +54,82 @@ case class DoubleToLongModel[-A](modelId: ModelIdentity,
  * @param round whether to round (true) or floor (false)
  * @tparam A model input type
  */
-case class DoubleToJavaLongModel[-A](modelId: ModelIdentity,
-  submodel: Model[A, Double],
-  scale: Double = 1,
-  translation: Double = 0,
-  clampLower: Long = Long.MinValue,
-  clampUpper: Long = Long.MaxValue,
-  round: Boolean = false)
-  extends ConversionModel[A, Double, jl.Long] with Logging {
+case class DoubleToJavaLongModel[U, -A, +B <: U](
+    modelId: ModelIdentity,
+    submodel: Submodel[Double, A, U],
+    auditor: Auditor[U, jl.Long, B],
+    scale: Double = 1,
+    translation: Double = 0,
+    clampLower: Long = Long.MinValue,
+    clampUpper: Long = Long.MaxValue,
+    round: Boolean = false
+) extends ConversionModel[U, Double, jl.Long, A, B]
+  with Logging {
 
   require(clampLower <= clampUpper, s"clampLower ($clampLower) must be less than or equal to clampUpper ($clampUpper)")
-
-  override val scoreConverter = com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.JavaLongScoreConverter
 
   if (scale == 0) warn(s"model ${modelId.getId()} will allows return a constant ${rounder(scale)}.")
 
   private[this] val rounder = if (round) (_: Double).round
-  else (_: Double).toLong
+                              else (_: Double).toLong
 
-  val conversion = (x: Double) => jl.Long.valueOf(math.max(clampLower, math.min(rounder(scale * x + translation), clampUpper)))
+  val conversion: Double => jl.Long =
+    x => jl.Long.valueOf(math.max(clampLower, math.min(rounder(scale * x + translation), clampUpper)))
 }
 
 object DoubleToLongModel extends ParserProviderCompanion {
-  object Parser extends ModelParser {
 
-    case class DoubleToLongAst(modelId: ModelId,
-      submodel: JsValue,
-      scale: Option[Double],
-      translation: Option[Double],
-      clampLower: Option[Long],
-      clampUpper: Option[Long],
-      round: Option[Boolean])
-
-    implicit val doubleToLongAstFormat = jsonFormat7(DoubleToLongAst)
-
+  object Parser extends ModelSubmodelParsingPlugin {
     val modelType = "DoubleToLong"
 
-    /**
-     * Need semantics
-     * need to create submodel of specific type
-     *
-     * @param factory ModelFactory[Model[_, _] ]
-     * @tparam A model input type
-     * @tparam B model input type
-     * @return
-     */
-    def modelJsonReader[A, B: JsonReader: ScoreConverter](factory: ModelFactory, semantics: Option[Semantics[A]]) = new JsonReader[ConversionModel[A, Double, B]] {
-      def read(json: JsValue) = {
-        if (semantics.isEmpty) {
-          throw new AlohaFactoryException("No semantics provided.  Need semantics to produce submodel.")
-        }
+    case class DoubleToLongAst(
+        modelId: ModelId,
+        submodel: JsValue,
+        scale: Option[Double],
+        translation: Option[Double],
+        clampLower: Option[Long],
+        clampUpper: Option[Long],
+        round: Option[Boolean])
 
-        val riB = implicitly[ScoreConverter[B]].ri
+    implicit val doubleToLongAstFormat: RootJsonFormat[DoubleToLongAst] = jsonFormat7(DoubleToLongAst)
 
-        if (riB != RefInfo[Long] && riB != RefInfo[jl.Long]) {
-          throw new AlohaFactoryException(s"DoubleToLong model can only return scala.Long or java.lang.Long. Found ${RefInfoOps.toString(riB)} in JSON:\n$json")
-        }
+    override def commonJsonReader[U, N, A, B <: U](
+        factory: SubmodelFactory[U, A],
+        semantics: Semantics[A],
+        auditor: Auditor[U, N, B])
+       (implicit r: RefInfo[N], jf: JsonFormat[N]): Option[JsonReader[ConversionModel[U, Double, N, A, B]]] = {
 
-        // Get the values but just the JSON for the submodel.
-        val ast = json.convertTo[DoubleToLongAst]
+      if (r != RefInfo[Long] && r != RefInfo[jl.Long])
+        None
+      else {
+        Some(new JsonReader[ConversionModel[U, Double, N, A, B]] {
+          override def read(json: JsValue): ConversionModel[U, Double, N, A, B] = {
 
-        implicit val riA = semantics.get.refInfoA
+            val ast = json.convertTo[DoubleToLongAst]
 
-        val submodelTry = factory.getModel[A, Double](ast.submodel, semantics)
+            val submodelTry = factory.submodel[Double](ast.submodel)
 
-        val modelTry =
-          submodelTry.map(sm => {
-            val scale = ast.scale.getOrElse(1.0)
-            val translation = ast.translation.getOrElse(0.0)
-            val round = ast.round.getOrElse(false)
-            val clampLower = ast.clampLower.getOrElse(Long.MinValue)
-            val clampUpper = ast.clampUpper.getOrElse(Long.MaxValue)
+            val modelTry =
+              submodelTry.map(sm => {
+                val scale = ast.scale.getOrElse(1.0)
+                val translation = ast.translation.getOrElse(0.0)
+                val round = ast.round.getOrElse(false)
+                val clampLower = ast.clampLower.getOrElse(Long.MinValue)
+                val clampUpper = ast.clampUpper.getOrElse(Long.MaxValue)
 
-            // This is all-encompassing because we checked above that the type is either java or scala.
-            if (riB == RefInfo[Long]) {
-              DoubleToLongModel(ast.modelId, sm, scale, translation, clampLower, clampUpper, round).asInstanceOf[ConversionModel[A, Double, B]]
-            } else {
-              DoubleToJavaLongModel(ast.modelId, sm, scale, translation, clampLower, clampUpper, round).asInstanceOf[ConversionModel[A, Double, B]]
-            }
-          })
+                // This is all-encompassing because we checked above that the type is either java or scala.
+                if (r == RefInfo[Long]) {
+                  val aud = auditor.asInstanceOf[Auditor[U, Long, B]]
+                  DoubleToLongModel(ast.modelId, sm, aud, scale, translation, clampLower, clampUpper, round).asInstanceOf[ConversionModel[U, Double, N, A, B]]
+                } else {
+                  val aud = auditor.asInstanceOf[Auditor[U, jl.Long, B]]
+                  DoubleToJavaLongModel(ast.modelId, sm, aud, scale, translation, clampLower, clampUpper, round).asInstanceOf[ConversionModel[U, Double, N, A, B]]
+                }
+              })
 
-        modelTry.get
+            modelTry.get
+          }
+        })
       }
     }
   }

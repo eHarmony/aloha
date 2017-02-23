@@ -1,12 +1,12 @@
 package com.eharmony.aloha.factory
 
-import spray.json.DefaultJsonProtocol.IntJsonFormat
-import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.IntScoreConverter
-import com.eharmony.aloha.models.{ConstantModel, ErrorModel}
+import com.eharmony.aloha.audit.impl.OptionAuditor
+import com.eharmony.aloha.models.Model
+import com.eharmony.aloha.semantics.NoSemantics
 
 
 object Values {
-    def errorModelInfo1 = {
+    def errorModel1: Model[String, Option[Int]] = {
         val json =
             """
               |{
@@ -16,13 +16,11 @@ object Values {
               |}
             """.stripMargin.trim
 
-        val mf = ModelFactory(ErrorModel.parser).toTypedFactory[String, Int]
-        mf.modelAndInfo.fromString(json).get
+        val mf = ModelFactory.defaultFactory(NoSemantics[String](), OptionAuditor[Int]())
+        mf.fromString(json).get
     }
 
-    def errorModel1 = errorModelInfo1.model
-
-    def constantModelInfo1 = {
+    def constantModel1: Model[String, Option[Int]] = {
         val json =
             """
               |{
@@ -32,8 +30,8 @@ object Values {
               |}
             """.stripMargin.trim
 
-        val mf = ModelFactory(ConstantModel.parser).toTypedFactory[String, Int]
-        val m = mf.modelAndInfo.fromString(json).get
+        val mf = ModelFactory.defaultFactory(NoSemantics[String](), OptionAuditor[Int]())
+        val m = mf.fromString(json).get
         m
     }
 }

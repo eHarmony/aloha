@@ -3,16 +3,16 @@ package com.eharmony.aloha.models.vw.jni
 import java.io.File
 
 import com.eharmony.aloha.FileLocations
+import com.eharmony.aloha.audit.impl.OptionAuditor
 import com.eharmony.aloha.factory.ModelFactory
-import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.StringScoreConverter
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
-import com.eharmony.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine, CsvLines}
+import com.eharmony.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLines}
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
-import spray.json.DefaultJsonProtocol.{StringJsonFormat, _}
+import spray.json.DefaultJsonProtocol._
 import spray.json.{DeserializationException, JsonFormat}
 import vw.learner.{VWIntLearner, VWLearners}
 
@@ -41,16 +41,10 @@ object CbVwJniModelTest {
     p
   }
 
-  /**
-   * Semantics where no features are pulled from the context.
-   */
-  private[jni] lazy val factory = {
-    val semantics = CompiledSemantics(TwitterEvalCompiler(classCacheDir = Option(FileLocations.testGeneratedClasses)),
-                                      CompiledSemanticsCsvPlugin(),
-                                      Seq("com.eharmony.aloha.feature.BasicFunctions._"))
-
-    ModelFactory.defaultFactory.toTypedFactory[CsvLine, String](semantics)
-  }
+  private[jni] lazy val semantics =
+    CompiledSemantics(TwitterEvalCompiler(classCacheDir = Option(FileLocations.testGeneratedClasses)),
+      CompiledSemanticsCsvPlugin(),
+      Seq("com.eharmony.aloha.feature.BasicFunctions._"))
 
   private[jni] val emptyLine = CsvLines(Map.empty).apply("")
 }
@@ -60,39 +54,50 @@ class CbVwJniModelTest {
   import CbVwJniModelTest._
 
   @Test def testWithLongLabels(): Unit = {
+    val factory = ModelFactory.defaultFactory(semantics, OptionAuditor[Long]())
     val model = factory.fromString(json(Seq(0L, 1L))).get
     val pred = model(emptyLine).get
-    assertEquals("1", pred)
+    assertEquals("long", pred.getClass.getSimpleName)
+    assertEquals(1L, pred)
   }
 
   @Test def testWithDoubleLabels(): Unit = {
+    val factory = ModelFactory.defaultFactory(semantics, OptionAuditor[Double]())
     val model = factory.fromString(json(Seq(0d, 1d))).get
     val pred = model(emptyLine).get
-    assertEquals("1.0", pred)
+    assertEquals("double", pred.getClass.getSimpleName)
+    assertEquals(1d, pred, 0)
   }
 
   @Test def testWithBooleanLabels(): Unit = {
-    val model = factory.fromString(json(Seq(false, true))).get
+    val factory = ModelFactory.defaultFactory(semantics, OptionAuditor[Boolean]())
+    val jsonStr = json(Seq(false, true))
+    val modelTry = factory.fromString(jsonStr)
+    val model = modelTry.get
     val pred = model(emptyLine).get
-    assertEquals("true", pred)
+    assertEquals(true, pred)
   }
 
   @Test def testWithStringLabels(): Unit = {
+    val factory = ModelFactory.defaultFactory(semantics, OptionAuditor[String]())
     val model = factory.fromString(json(Seq("Career", "Family"))).get
     val pred = model(emptyLine).get
     assertEquals("Family", pred)
   }
 
   @Test def testWithoutLabels(): Unit = {
+    val factory = ModelFactory.defaultFactory(semantics, OptionAuditor[Int]())
     val model = factory.fromString(json).get
     val pred = model(emptyLine).get
-    assertEquals("2", pred)
+    assertEquals(2, pred)
   }
 
   /**
    * Test that repeated labels in classLabels array causes a ''scala.util.Failure'' at model creation time.
    */
   @Test def testRepeatedLabels(): Unit = {
+    val factory = ModelFactory.defaultFactory(semantics, OptionAuditor[Boolean]())
+
     factory.fromString(json(Seq(false, false))) match {
       case Failure(e: DeserializationException) if e.getMessage == "Couldn't produce SimpleTypeSeq for array: [false,false]" =>
       case d => fail(s"Should throw exception. Found: $d")

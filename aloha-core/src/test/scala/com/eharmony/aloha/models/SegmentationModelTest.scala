@@ -1,35 +1,39 @@
 package com.eharmony.aloha.models
 
 import com.eharmony.aloha.ModelSerializationTestHelper
+import com.eharmony.aloha.audit.impl.OptionAuditor
+import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
-import org.junit.runners.BlockJUnit4ClassRunner
-import org.junit.runner.RunWith
-import org.junit.Test
+import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import org.junit.Assert._
-
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.BlockJUnit4ClassRunner
 import spray.json.DefaultJsonProtocol.StringJsonFormat
 import spray.json.{DeserializationException, pimpString}
-
-import com.eharmony.aloha.factory.ModelFactory
-import com.eharmony.aloha.reflect.{RefInfoOps, RefInfo}
-import com.eharmony.aloha.score.conversions.rich.RichScore
-import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits.{IntScoreConverter, StringScoreConverter}
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class SegmentationModelTest extends ModelSerializationTestHelper {
     private[this] val PossibleLabels = Seq.range(0, 100).map("index " + _)
-    private[this] val Reader = SegmentationModel.Parser.modelJsonReader[Any, String](ModelFactory(ConstantModel.parser), Option(AnySemanticsWithoutFunctionCreation))
+    private[this] lazy val Reader = {
+        val sem = AnySemanticsWithoutFunctionCreation
+        val aud = OptionAuditor[Double]()
+        val f = ModelFactory.defaultFactory(sem, aud)
+
+        SegmentationModel.Parser.commonJsonReader(f.submodelFactory, sem, OptionAuditor[String]()).get
+//        SegmentationModel.Parser.modelJsonReader[Any, String](ModelFactory(ConstantModel.parser), Option(AnySemanticsWithoutFunctionCreation))
+    }
 
     @Test def testSerialization(): Unit = {
-        val sub = ErrorModel(ModelId(2, "abc"), Seq("def", "ghi"))
-        val m = SegmentationModel(ModelId(3, "jkl"), sub, Vector(1, 2), Vector("1", "2", "3"))
+        val sub = ErrorModel(ModelId(2, "abc"), Seq("def", "ghi"), OptionAuditor[Double]())
+        val m = SegmentationModel(ModelId(3, "jkl"), sub, Vector(1, 2), Vector("1", "2", "3"), OptionAuditor[String]())
         val m1 = serializeDeserializeRoundTrip(m)
         assertEquals(m, m1)
     }
 
     @Test def testSubmodelClosed(): Unit = {
-        val sub = new CloserTesterModel[Int]()
-        SegmentationModel(ModelId.empty, sub, Vector(1, 2), Vector(1, 2, 3)).close()
+        val sub = CloserTesterModel(ModelId(), OptionAuditor[Int]())
+        SegmentationModel(ModelId.empty, sub, Vector(1, 2), Vector(1, 2, 3), OptionAuditor[Int]()).close()
         assertTrue(sub.isClosed)
     }
 
@@ -49,24 +53,24 @@ class SegmentationModelTest extends ModelSerializationTestHelper {
             fail()
         }
         catch {
-            case e: DeserializationException => assertEquals(s"Unsupported sub-model output type: $t", e.getMessage)
+            case e: DeserializationException => assertEquals(s"Unsupported sub-model output type: '$t'", e.getMessage)
         }
     }
 
-    private[this] def simpleTest[A: Manifest](f: Int => A) {
+    private[this] def simpleTest[A: RefInfo](f: Int => A) {
         val xs = (1 to 5).map(f)
         val thresh = Seq(2, 4).map(f)
         val ys = Seq(0 -> 2, 1 -> 2, 2 -> 1)
         test(ys, xs, thresh)
     }
 
-    private[this] def test[A: Manifest](expected: Seq[(Int, Int)], xs: Seq[A], cuts: Seq[A]) {
+    private[this] def test[A: RefInfo](expected: Seq[(Int, Int)], xs: Seq[A], cuts: Seq[A]) {
         assertEquals("number of examples should match the number of results", xs.size, expected.map(_._2).sum)
         val ys = expected.flatMap{ case(i, n) => Seq.fill(n)(s"index $i") }
 
         // Create a model and score the null value (since the model is input-invariant).  Check that it's the output
         // is as expected.
-        (xs zip ys).foreach{ case(x, y) => assertEquals(s"For $x:", Option(y), model(x, cuts).score(null).relaxed.asString) }
+        (xs zip ys).foreach{ case(x, y) => assertEquals(s"For $x:", Option(y), model(x, cuts).apply(null)) }
     }
 
     private[this] def model[A: RefInfo](subModelValue: A, thresholds: Seq[A]) = {
