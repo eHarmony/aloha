@@ -160,8 +160,8 @@ lazy val filteredTask = Def.task {
 // ===========================================================================
 
 lazy val root = project.in(file("."))
-  .aggregate(core, vwJni, h2o, cli)
-  .dependsOn(core, vwJni, h2o, cli)
+  .aggregate(core, vwJni, h2o, cli, csAvro)
+  .dependsOn(core, vwJni, h2o, cli, csAvro)
   .settings(commonSettings: _*)
   .settings(versionDependentSettings: _*)
   .settings(dependencyOverrides ++= Dependencies.overrideDeps)
@@ -202,6 +202,15 @@ lazy val cli = project.in(file("aloha-cli"))
   .settings(versionDependentSettings: _*)
   .settings(editSourceSettings: _*)
   .settings(libraryDependencies ++= Dependencies.cliDeps)
+  .settings(dependencyOverrides ++= Dependencies.overrideDeps)
+
+lazy val csAvro = project.in(file("aloha-cs-avro"))
+  .settings(name := "aloha-cs-avro")
+  .dependsOn(core % "test->test;compile->compile", core)
+  .settings(commonSettings: _*)
+  .settings(versionDependentSettings: _*)
+  .settings(editSourceSettings: _*)
+  .settings(libraryDependencies ++= Dependencies.csAvroDeps)
   .settings(dependencyOverrides ++= Dependencies.overrideDeps)
 
 

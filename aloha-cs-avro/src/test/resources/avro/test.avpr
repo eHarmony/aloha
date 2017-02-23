@@ -1,0 +1,99 @@
+{
+  "namespace": "a.b.c",
+  "protocol": "Test",
+  "doc": "For testing that Avro semantics works like Protocol Buffer semantics.",
+
+  "types": [
+    {
+      "name": "Class6",
+      "type": "record",
+      "fields": [
+        { "name": "opt_int_7", "type": ["null", "int"] },
+        { "name": "req_int_7", "type": "int" },
+        { "name": "rep_int_7", "type": { "type": "array", "items": "int" } }
+      ]
+    },
+    {
+      "name": "Class5",
+      "type": "record",
+      "fields": [
+        { "name": "opt_int_6", "type": ["null", "int"] },
+        { "name": "req_int_6", "type": "int" },
+        { "name": "rep_int_6", "type": { "type": "array", "items": "int" } },
+        { "name": "opt_c6", "type": ["null", "Class6"] },
+        { "name": "req_c6", "type": "Class6" },
+        { "name": "rep_c6", "type": { "type": "array", "items": "Class6" } }
+      ]
+    },
+    {
+      "name": "Class4",
+      "type": "record",
+      "fields": [
+        { "name": "opt_int_5", "type": ["null", "int"] },
+        { "name": "req_int_5", "type": "int" },
+        { "name": "rep_int_5", "type": { "type": "array", "items": "int" } },
+        { "name": "opt_c5", "type": ["null", "Class5"] },
+        { "name": "req_c5", "type": "Class5" },
+        { "name": "rep_c5", "type": { "type": "array", "items": "Class5" } }
+      ]
+    },
+    {
+      "name": "Class3",
+      "type": "record",
+      "fields": [
+        { "name": "opt_int_4", "type": ["null", "int"] },
+        { "name": "req_int_4", "type": "int" },
+        { "name": "rep_int_4", "type": { "type": "array", "items": "int" } },
+        { "name": "opt_c4", "type": ["null", "Class4"] },
+        { "name": "req_c4", "type": "Class4" },
+        { "name": "rep_c4", "type": { "type": "array", "items": "Class4" } }
+      ]
+    },
+    {
+      "name": "Class2",
+      "type": "record",
+      "fields": [
+        { "name": "opt_int_3", "type": ["null", "int"] },
+        { "name": "req_int_3", "type": "int" },
+        { "name": "rep_int_3", "type": { "type": "array", "items": "int" } },
+        { "name": "opt_c3", "type": ["null", "Class3"] },
+        { "name": "req_c3", "type": "Class3" },
+        { "name": "rep_c3", "type": { "type": "array", "items": "Class3" } }
+      ]
+    },
+    {
+      "name": "Class1",
+      "type": "record",
+      "fields": [
+        { "name": "opt_int_2", "type": ["null", "int"] },
+        { "name": "req_int_2", "type": "int" },
+        { "name": "rep_int_2", "type": { "type": "array", "items": "int" } },
+        { "name": "opt_c2", "type": ["null", "Class2"] },
+        { "name": "req_c2", "type": "Class2" },
+        { "name": "rep_c2", "type": { "type": "array", "items": "Class2" } }
+      ]
+    },
+    {
+      "name": "Test",
+      "type": "record",
+      "fields": [
+        { "name": "opt_int_1", "type": ["null", "int"] },
+        { "name": "req_int_1", "type": "int" },
+        { "name": "rep_int_1", "type": { "type": "array", "items": "int" } },
+        { "name": "opt_c1", "type": ["null", "Class1"] },
+        { "name": "req_c1", "type": "Class1" },
+        { "name": "rep_c1", "type": { "type": "array", "items": "Class1" } },
+        { "name": "req_str_1", "type": "string" },
+        { "name": "orep_int_1", "type": ["null", { "type": "array", "items": "int" }] },
+        { "name": "orep_oint_1", "type": ["null", { "type": "array", "items": ["null", "int"] }] },
+
+        { "name": "ob", "type": ["null", "boolean"] },
+        { "name": "os", "type": ["null", "string"] },
+        { "name": "oi", "type": ["null", "int"] },
+        { "name": "ol", "type": ["null", "long"] },
+        { "name": "of", "type": ["null", "float"] },
+        { "name": "od", "type": ["null", "double"] }
+      ]
+    }
+  ]
+}

@@ -64,6 +64,7 @@ object Dependencies {
   val springCore = "org.springframework" % "spring-core" % springVersion % "test"
   val springTest = "org.springframework" % "spring-test" % springVersion % "test"
 
+  val avro = "org.apache.avro" % "avro" % "1.8.1" excludeAll(ExclusionRule("org.slf4j", "slf4j-api"))
 
   lazy val coreDeps = Seq(
     alohaProto, classMate, commonsCodec, commonsIo, mwt,
@@ -73,6 +74,10 @@ object Dependencies {
     // Test Deps.
     junit, junitInterface, mallet % "test",
     springBeans, springCore, springCtx, springCtxSupport, springTest
+  )
+
+  lazy val csAvroDeps = Seq(
+    avro, junit, slf4jApi
   )
 
   lazy val vwJniDeps = Seq(
