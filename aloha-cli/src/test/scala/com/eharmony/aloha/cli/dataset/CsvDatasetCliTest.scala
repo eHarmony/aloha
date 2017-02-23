@@ -26,8 +26,8 @@ class CsvDatasetCliTest extends CliTestHelpers {
 
         val args = Array[String](
             "-i", inFile,
-            "-s", "res:com/eharmony/aloha/dataset/cli/csv_spec2.js",
-            "-c", "res:com/eharmony/aloha/dataset/cli/csv_types1.js",
+            "-s", "res:com/eharmony/aloha/cli/dataset/csv_spec2.js",
+            "-c", "res:com/eharmony/aloha/cli/dataset/csv_types1.js",
             "--cachedir", FileLocations.testGeneratedClasses.getCanonicalPath,
             "--csv", outFile
         )
@@ -53,8 +53,8 @@ class CsvDatasetCliTest extends CliTestHelpers {
 
         val args = Array[String](
             "-i", inFile,
-            "-s", "res:com/eharmony/aloha/dataset/cli/csv_spec2.js",
-            "-c", "res:com/eharmony/aloha/dataset/cli/csv_types1.js",
+            "-s", "res:com/eharmony/aloha/cli/dataset/csv_spec2.js",
+            "-c", "res:com/eharmony/aloha/cli/dataset/csv_types1.js",
             "--cachedir", FileLocations.testGeneratedClasses.getCanonicalPath,
             "--csv-headers",
             "--csv", outFile
@@ -81,8 +81,8 @@ class CsvDatasetCliTest extends CliTestHelpers {
 
         val args = Array[String](
             "-i", inFile,
-            "-s", "res:com/eharmony/aloha/dataset/cli/csv_spec3.js",
-            "-c", "res:com/eharmony/aloha/dataset/cli/csv_types1.js",
+            "-s", "res:com/eharmony/aloha/cli/dataset/csv_spec3.js",
+            "-c", "res:com/eharmony/aloha/cli/dataset/csv_types1.js",
             "--cachedir", FileLocations.testGeneratedClasses.getCanonicalPath,
             "--csv-headers",
             "--csv", outFile
@@ -124,7 +124,7 @@ class CsvDatasetCliTest extends CliTestHelpers {
         val args = Array[String](
             "-i", inFile,
             "-p", "com.eharmony.aloha.test.proto.Testing.UserProto",
-            "-s", "res:com/eharmony/aloha/dataset/cli/csv_spec4.js",
+            "-s", "res:com/eharmony/aloha/cli/dataset/csv_spec4.js",
             "--cachedir", FileLocations.testGeneratedClasses.getCanonicalPath,
             "--csv-headers",
             "--csv", outFile

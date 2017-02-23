@@ -28,8 +28,8 @@ class DatasetCliTest extends CliTestHelpers {
 
         val args = Array[String](
             "-i", inFile,
-            "-s", "res:com/eharmony/aloha/dataset/cli/csv_spec1.js",
-            "-c", "res:com/eharmony/aloha/dataset/cli/csv_types1.js",
+            "-s", "res:com/eharmony/aloha/cli/dataset/csv_spec1.js",
+            "-c", "res:com/eharmony/aloha/cli/dataset/csv_types1.js",
             "--cachedir", FileLocations.testGeneratedClasses.getCanonicalPath,
             "--vw", outFile
         )
@@ -48,7 +48,7 @@ class DatasetCliTest extends CliTestHelpers {
 
         val args = Array[String](
             "-i", "res:fizz_buzzs.proto",
-            "-s", "res:com/eharmony/aloha/dataset/cli/proto_spec1.js",
+            "-s", "res:com/eharmony/aloha/cli/dataset/proto_spec1.js",
             "-p", "com.eharmony.aloha.test.proto.Testing.UserProto",
             "--cachedir", FileLocations.testGeneratedClasses.getCanonicalPath,
             "--vw", outFile
@@ -68,7 +68,7 @@ class DatasetCliTest extends CliTestHelpers {
 
         val args = Array[String](
             "-i", "res:fizz_buzzs.proto",
-            "-s", "res:com/eharmony/aloha/dataset/cli/proto_spec2.json",
+            "-s", "res:com/eharmony/aloha/cli/dataset/proto_spec2.json",
             "-p", "com.eharmony.aloha.test.proto.Testing.UserProto",
             "--cachedir", FileLocations.testGeneratedClasses.getCanonicalPath,
             "--vw_labeled", outFile
@@ -95,8 +95,8 @@ class DatasetCliTest extends CliTestHelpers {
 
         val args = Array[String](
             "-i", inFile,
-            "-s", "res:com/eharmony/aloha/dataset/cli/csv_spec2.js",
-            "-c", "res:com/eharmony/aloha/dataset/cli/csv_types1.js",
+            "-s", "res:com/eharmony/aloha/cli/dataset/csv_spec2.js",
+            "-c", "res:com/eharmony/aloha/cli/dataset/csv_types1.js",
             "--cachedir", FileLocations.testGeneratedClasses.getCanonicalPath,
             "--csv", outFile
         )
@@ -122,8 +122,8 @@ class DatasetCliTest extends CliTestHelpers {
 
         val args = Array[String](
             "-i", inFile,
-            "-s", "res:com/eharmony/aloha/dataset/cli/csv_spec2.js",
-            "-c", "res:com/eharmony/aloha/dataset/cli/csv_types1.js",
+            "-s", "res:com/eharmony/aloha/cli/dataset/csv_spec2.js",
+            "-c", "res:com/eharmony/aloha/cli/dataset/csv_types1.js",
             "--cachedir", FileLocations.testGeneratedClasses.getCanonicalPath,
             "--csv-headers",
             "--csv", outFile
@@ -150,8 +150,8 @@ class DatasetCliTest extends CliTestHelpers {
 
         val args = Array[String](
             "-i", inFile,
-            "-s", "res:com/eharmony/aloha/dataset/cli/csv_spec3.js",
-            "-c", "res:com/eharmony/aloha/dataset/cli/csv_types1.js",
+            "-s", "res:com/eharmony/aloha/cli/dataset/csv_spec3.js",
+            "-c", "res:com/eharmony/aloha/cli/dataset/csv_types1.js",
             "--cachedir", FileLocations.testGeneratedClasses.getCanonicalPath,
             "--csv-headers",
             "--csv", outFile
