@@ -4,7 +4,6 @@ import java.io.File
 
 import com.eharmony.aloha.audit.impl.OptionAuditor
 import com.eharmony.aloha.factory.ModelFactory
-import com.eharmony.aloha.models.reg.RegressionModel
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
@@ -16,7 +15,7 @@ import org.apache.avro.util.Utf8
 import org.apache.commons.io.IOUtils
 import org.apache.commons.vfs2.VFS
 import org.junit.Assert._
-import org.junit.Test
+import org.junit.{Ignore, Test}
 
 import scala.collection.JavaConversions.{asJavaIterable, asScalaIterator, collectionAsScalaIterable, iterableAsScalaIterable}
 
@@ -196,6 +195,24 @@ class AvroIsLikeProtoTest {
   @Test def testOptionalFloat(): Unit = testType[Float]("of", floatVal)
   @Test def testOptionalDouble(): Unit = testType[Double]("od", doubleVal)
 
+  @Ignore @Test def dereferenceReq(): Unit = {
+    val x = new GenericData.Record(genRecords.last, true)
+    x.put("orep_int_1", asJavaIterable(Iterable(1, 2)))
+    val spec = "${orep_int_1[0]} == 1"
+    val checkOpt = semantics.createFunction[Boolean](spec, Some(false))
+    val check = checkOpt.right.get
+    val res = check(x)
+    assertTrue(res)
+  }
+
+  @Ignore @Test def dereferenceOpt(): Unit = {
+    val x = new GenericData.Record(genRecords.last, true)
+    x.put("orep_oint_1", asJavaIterable(Iterable(1, null)))
+    val spec = "${orep_oint_1[0]} == Some(1) && ${orep_oint_1[1]} == None"
+    val check = semantics.createFunction[Boolean](spec, Some(false)).right.get
+    val res = check(x)
+    assertTrue(res)
+  }
 
   // This stuff that follows isn't really necessary.
 
