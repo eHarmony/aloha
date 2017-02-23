@@ -1,13 +1,13 @@
 //package com.eharmony.aloha.models.ensemble.maxima;
 //
-//import com.eharmony.aloha.score.conversions.rich.RichScoreLike;
-//import com.eharmony.aloha.score.conversions.rich.RichScoreOps;
-//import com.eharmony.aloha.score.order.ScoreComparator;
+//import com.eharmony.aloha.score.proto.conversions.rich.RichScoreLike;
+//import com.eharmony.aloha.score.proto.conversions.rich.RichScoreOps;
+//import com.eharmony.aloha.score.proto.order.ScoreComparator;
 //import org.junit.Test;
 //import static org.junit.Assert.*;
 //
 //import com.eharmony.aloha.score.Scores.Score;
-//import com.eharmony.aloha.score.conversions.StrictConversions;
+//import com.eharmony.aloha.score.proto.conversions.StrictConversions;
 //import scala.collection.JavaConversions;
 //
 //import java.util.Arrays;

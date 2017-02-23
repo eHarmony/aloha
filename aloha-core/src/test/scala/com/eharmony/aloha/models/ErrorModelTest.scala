@@ -1,11 +1,9 @@
 package com.eharmony.aloha.models
 
 import com.eharmony.aloha.ModelSerializationTestHelper
-import com.eharmony.aloha.audit.impl.OptionAuditor
-import com.eharmony.aloha.audit.impl.scoreproto.ScoreAuditor
+import com.eharmony.aloha.audit.impl.{OptionAuditor, TreeAuditor}
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
-import com.eharmony.aloha.score.Scores.Score
 import com.eharmony.aloha.semantics.NoSemantics
 import org.junit.Assert.{assertEquals, assertNotNull, assertTrue}
 import org.junit.Test
@@ -18,9 +16,10 @@ class ErrorModelTest extends ModelSerializationTestHelper {
   private val factory = ModelFactory.defaultFactory(NoSemantics[Unit](), OptionAuditor[Byte]())
 
   @Test def test1() {
-    val em = ErrorModel(ModelId(), Seq("There should be a valid user ID.  Couldn't find one...", "blah blah"), ScoreAuditor.byteAuditor)
-    val s: Score = em(null)
+    val em = ErrorModel(ModelId(), Seq("There should be a valid user ID.  Couldn't find one...", "blah blah"), TreeAuditor[Byte]())
+    val s = em(null)
     assertNotNull(s)
+    assertTrue(s.value.isEmpty)
   }
 
   @Test def testEmptyErrors() {

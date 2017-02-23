@@ -2,7 +2,7 @@
 //
 //import scala.collection.GenTraversableOnce
 //import com.eharmony.aloha.score.Scores.Score
-//import com.eharmony.aloha.score.conversions.ScoreConverter
+//import com.eharmony.aloha.score.proto.conversions.ScoreConverter
 //import com.eharmony.aloha.score.basic.ModelOutput
 //
 //

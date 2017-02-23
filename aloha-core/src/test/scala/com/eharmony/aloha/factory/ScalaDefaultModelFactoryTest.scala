@@ -2,11 +2,10 @@ package com.eharmony.aloha.factory
 
 import java.io.StringReader
 
-import com.eharmony.aloha.audit.impl.scoreproto.ScoreAuditor
+import com.eharmony.aloha.audit.impl.TreeAuditor
 import com.eharmony.aloha.io.sources.ReadableSourceConverters.Implicits._
 import com.eharmony.aloha.io.sources.ReadableSourceConverters.StringImplicits.stringToStringReadableConverter
 import com.eharmony.aloha.io.sources.{InputStreamReadableSource, ReadableSource, ReaderReadableSource, StringReadableSource}
-import com.eharmony.aloha.score.conversions.rich.RichScore
 import com.eharmony.aloha.semantics.NoSemantics
 import com.eharmony.aloha.util.ICList
 import org.apache.commons.io.input.ReaderInputStream
@@ -32,11 +31,20 @@ class ScalaDefaultModelFactoryTest {
 
         val score = model(null)
 
-        assertFalse(score.hasScore)
-        assertTrue(score.hasError)
-        assertEquals(1, score.getError.getMessagesCount)
-        assertEquals(ErrorModelMsg, score.getError.getMessages(0))
-        assertEquals(0, score.getError.getMissingFeatures.getNamesCount)
+        assertTrue(score.value.isEmpty)
+//        assertFalse(score.hasScore)
+
+//        assertTrue(score.errorMsgs.nonEmpty || score.missingVarNames.nonEmpty)
+//        assertTrue(score.hasError)
+
+        assertEquals(1, score.errorMsgs.size)
+//        assertEquals(1, score.getError.getMessagesCount)
+
+        assertEquals(ErrorModelMsg, score.errorMsgs.head)
+//        assertEquals(ErrorModelMsg, score.getError.getMessages(0))
+
+        assertTrue(score.missingVarNames.isEmpty)
+//        assertEquals(0, score.getError.getMissingFeatures.getNamesCount)
     }
 
     @Test def testConstantModelFromDefaultFactory() {
@@ -46,7 +54,9 @@ class ScalaDefaultModelFactoryTest {
         assertEquals(ConstModelId, model.modelId.getId())
 
         val score = model(null)
-        val ds1 = score.relaxed.asDouble.get
+
+        val ds1 = score.value.get
+//        val ds1 = score.relaxed.asDouble.get
         assertEquals(ConstModelVal, ds1, 0)
     }
 
@@ -69,6 +79,7 @@ class ScalaDefaultModelFactoryTest {
         // of ReadableTypeList.
         val tries = defaultFactory.fromMultipleSources(rtl.list)
 
+
         // Test the models are as expected.
         tries.zipWithIndex foreach { case (t, i) =>
             val m = t.get
@@ -90,7 +101,7 @@ object ScalaDefaultModelFactoryTest {
     val ConstModelJson = s"""{"modelType": "Constant", "modelId": {"id": $ConstModelId, "name": "$ConstModelName"}, "value": $ConstModelVal}"""
 
     // Create the model factory.  Notice the implicit reflection information is automatically injected.
-    private val defaultFactory = ModelFactory.defaultFactory(NoSemantics[Map[String, Long]](), ScoreAuditor.doubleAuditor)
+    private val defaultFactory = ModelFactory.defaultFactory(NoSemantics[Map[String, Long]](), TreeAuditor[Double]())
 
     def getInputStream(json: String) = new ReaderInputStream(getReader(json))
     def getReader(json: String) = new StringReader(json)

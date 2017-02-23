@@ -10,9 +10,9 @@
 //import com.eharmony.aloha.id.ModelId
 //import com.eharmony.aloha.models.ConstantModel
 //import com.eharmony.aloha.models.ensemble.tie.TakeFirstTieBreaker
-//import com.eharmony.aloha.score.conversions.ScoreConverter
-//import com.eharmony.aloha.score.conversions.rich.RichScore
-//import com.eharmony.aloha.score.conversions.ScoreConverter.Implicits._
+//import com.eharmony.aloha.score.proto.conversions.ScoreConverter
+//import com.eharmony.aloha.score.proto.conversions.rich.RichScore
+//import com.eharmony.aloha.score.proto.conversions.ScoreConverter.Implicits._
 //import com.eharmony.aloha.score.Scores.Score
 //import com.eharmony.aloha.score.basic.ModelOutput
 //

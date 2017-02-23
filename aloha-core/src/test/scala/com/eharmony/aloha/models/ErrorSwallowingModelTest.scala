@@ -1,8 +1,7 @@
 package com.eharmony.aloha.models
 
 import com.eharmony.aloha.ModelSerializationTestHelper
-import com.eharmony.aloha.audit.impl.OptionAuditor
-import com.eharmony.aloha.audit.impl.scoreproto.ScoreAuditor
+import com.eharmony.aloha.audit.impl.{OptionAuditor, TreeAuditor}
 import com.eharmony.aloha.ex.SchrodingerException
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
@@ -54,19 +53,19 @@ class ErrorSwallowingModelTest extends ModelSerializationTestHelper {
         |}
       """.stripMargin
     val semantics = FunctionWithErrorProducingSemantics[Any](new SchrodingerException())
-    val factory = ModelFactory.defaultFactory(semantics, ScoreAuditor.doubleAuditor)
+    val factory = ModelFactory.defaultFactory(semantics, TreeAuditor[Double]())
     val model = factory.fromString(json).get
 
     val s = model(null)
 
-    assertFalse("No score should exist", s.hasScore)
-    assertTrue("No subscores should exist", s.getSubScoresCount == 0)
-    assertEquals("model id", 0, s.getError.getModel.getId)
-    assertEquals("model name", "", s.getError.getModel.getName)
-    assertEquals("Error count", 3, s.getError.getMessagesCount)
-    assertEquals("1st error", "com.eharmony.aloha.ex.SchrodingerException thrown in model 0.", s.getError.getMessages(0))
-    assertEquals("2nd error", "exception getMessage function threw exception.  Message Omitted.", s.getError.getMessages(1))
-    assertEquals("3rd error", "Stack trace omitted.", s.getError.getMessages(2))
+    assertTrue("No score should exist", s.value.isEmpty)
+    assertTrue("No subscores should exist", s.subvalues.isEmpty)
+    assertEquals("model id", 0, s.modelId.getId())
+    assertEquals("model name", "", s.modelId.getName())
+    assertEquals("Error count", 3, s.errorMsgs.size)
+    assertEquals("1st error", "com.eharmony.aloha.ex.SchrodingerException thrown in model 0.", s.errorMsgs.head)
+    assertEquals("2nd error", "exception getMessage function threw exception.  Message Omitted.", s.errorMsgs(1))
+    assertEquals("3rd error", "Stack trace omitted.", s.errorMsgs(2))
   }
 
   @Test def testBasicException() {
@@ -85,18 +84,18 @@ class ErrorSwallowingModelTest extends ModelSerializationTestHelper {
         |}
       """.stripMargin
     val semantics = FunctionWithErrorProducingSemantics[Any](new Exception("exception here."))
-    val factory = ModelFactory.defaultFactory(semantics, ScoreAuditor.doubleAuditor)
+    val factory = ModelFactory.defaultFactory(semantics, TreeAuditor[Double]())
     val model = factory.fromString(json).get
 
     val s = model(null)
 
-    assertFalse("No score should exist", s.hasScore)
-    assertTrue("No subscores should exist", s.getSubScoresCount == 0)
-    assertEquals("model id", 0, s.getError.getModel.getId)
-    assertEquals("model name", "", s.getError.getModel.getName)
-    assertEquals("Error count", 3, s.getError.getMessagesCount)
-    assertEquals("1st error", "java.lang.Exception thrown in model 0.", s.getError.getMessages(0))
-    assertEquals("2nd error", "exception here.", s.getError.getMessages(1))
+    assertTrue("No score should exist", s.value.isEmpty)
+    assertTrue("No subscores should exist", s.subvalues.isEmpty)
+    assertEquals("model id", 0, s.modelId.getId())
+    assertEquals("model name", "", s.modelId.getName())
+    assertEquals("Error count", 3, s.errorMsgs.size)
+    assertEquals("1st error", "java.lang.Exception thrown in model 0.", s.errorMsgs.head)
+    assertEquals("2nd error", "exception here.", s.errorMsgs(1))
   }
 
   @Test def testSemanticsUDFException() {
@@ -128,20 +127,20 @@ class ErrorSwallowingModelTest extends ModelSerializationTestHelper {
     )
 
     val semantics = FunctionWithErrorProducingSemantics[Any](ex)
-    val factory = ModelFactory.defaultFactory(semantics, ScoreAuditor.doubleAuditor)
+    val factory = ModelFactory.defaultFactory(semantics, TreeAuditor[Double]())
     val model = factory.fromString(json).get
 
     val s = model(null)
 
-    assertFalse("No score should exist", s.hasScore)
-    assertTrue("No subscores should exist", s.getSubScoresCount == 0)
-    assertEquals("model id", 0, s.getError.getModel.getId)
-    assertEquals("model name", "", s.getError.getModel.getName)
-    assertEquals("Error count", 6, s.getError.getMessagesCount)
-    assertEquals("1st error", "com.eharmony.aloha.semantics.SemanticsUdfException thrown in model 0.", s.getError.getMessages(0))
-    assertEquals("4th error", "specification in error: ind(${profile.user_id} < 10)", s.getError.getMessages(3))
-    assertEquals("5th error", "accessors in error: profile.user_id", s.getError.getMessages(4))
-    assertEquals("6th error", "accessors missing output: ", s.getError.getMessages(5))
+    assertTrue("No score should exist", s.value.isEmpty)
+    assertTrue("No subscores should exist", s.subvalues.isEmpty)
+    assertEquals("model id", 0, s.modelId.getId())
+    assertEquals("model name", "", s.modelId.getName())
+    assertEquals("Error count", 6, s.errorMsgs.size)
+    assertEquals("1st error", "com.eharmony.aloha.semantics.SemanticsUdfException thrown in model 0.", s.errorMsgs.head)
+    assertEquals("4th error", "specification in error: ind(${profile.user_id} < 10)", s.errorMsgs(3))
+    assertEquals("5th error", "accessors in error: profile.user_id", s.errorMsgs(4))
+    assertEquals("6th error", "accessors missing output: ", s.errorMsgs(5))
   }
 
   @Test def testSemanticsUDFExceptionWithAllNull() {
@@ -163,19 +162,19 @@ class ErrorSwallowingModelTest extends ModelSerializationTestHelper {
     val ex = new SemanticsUdfException[Any](null, null, null, null, null, null)
 
     val semantics = FunctionWithErrorProducingSemantics[Any](ex)
-    val factory = ModelFactory.defaultFactory(semantics, ScoreAuditor.doubleAuditor)
+    val factory = ModelFactory.defaultFactory(semantics, TreeAuditor[Double]())
     val model = factory.fromString(json).get
 
     val s = model(null)
 
-    assertFalse("No score should exist", s.hasScore)
-    assertTrue("No subscores should exist", s.getSubScoresCount == 0)
-    assertEquals("model id", 0, s.getError.getModel.getId)
-    assertEquals("model name", "", s.getError.getModel.getName)
-    assertEquals("Error count", 6, s.getError.getMessagesCount)
-    assertEquals("1st error", "com.eharmony.aloha.semantics.SemanticsUdfException thrown in model 0.", s.getError.getMessages(0))
-    assertEquals("4th error", "no specification provided", s.getError.getMessages(3))
-    assertEquals("5th error", "no accessorsInErr provided", s.getError.getMessages(4))
-    assertEquals("6th error", "no accessorsMissingOutput provided", s.getError.getMessages(5))
+    assertTrue("No score should exist", s.value.isEmpty)
+    assertTrue("No subscores should exist", s.subvalues.isEmpty)
+    assertEquals("model id", 0, s.modelId.getId())
+    assertEquals("model name", "", s.modelId.getName())
+    assertEquals("Error count", 6, s.errorMsgs.size)
+    assertEquals("1st error", "com.eharmony.aloha.semantics.SemanticsUdfException thrown in model 0.", s.errorMsgs.head)
+    assertEquals("4th error", "no specification provided", s.errorMsgs(3))
+    assertEquals("5th error", "no accessorsInErr provided", s.errorMsgs(4))
+    assertEquals("6th error", "no accessorsMissingOutput provided", s.errorMsgs(5))
   }
 }

@@ -6,7 +6,7 @@
 //import com.eharmony.aloha.models.ensemble.tie.TieBreaker
 //import com.eharmony.aloha.id.ModelIdentity
 //import com.eharmony.aloha.models.ensemble.{Ensemble, EnsembleCombiner}
-//import com.eharmony.aloha.score.conversions.ScoreConverter
+//import com.eharmony.aloha.score.proto.conversions.ScoreConverter
 //
 //case class ArgMax[-A, B, +C](
 //        subModels: GenTraversableOnce[Model[A, B]],

@@ -58,7 +58,7 @@ import java.{lang => jl}
  * @param numMissingThreshold if provided, we check whether the threshold is exceeded.  If so, return an error instead
  *                            of the computed score.  This is for missing data situations.
  * @tparam A model input type
- * @tparam B model output type.  Requires a implicit [[com.eharmony.aloha.score.conversions.ScoreConverter]]
+ * @tparam B model output type.  Requires a implicit [[com.eharmony.aloha.score.proto.conversions.ScoreConverter]]
  *           to convert from B to com.eharmony.aloha.score.Scores.Score
  */
 case class RegressionModel[U, -A, +B <: U](
