@@ -21,7 +21,7 @@ case class AvroSchema(rootSchema: avro.Schema, schema: avro.Schema) extends Sche
     }
   }
 
-  protected[this] def extract(name: String, index: Int, fieldSchema: avro.Schema, nullable: Boolean): Result = {
+  protected[avro] def extract(name: String, index: Int, fieldSchema: avro.Schema, nullable: Boolean): Result = {
     fieldSchema.getType match {
       case ARRAY   => arrayField(name, index, fieldSchema, nullable)
       case BOOLEAN => Right(BooleanField(name, index, nullable))
@@ -43,11 +43,11 @@ case class AvroSchema(rootSchema: avro.Schema, schema: avro.Schema) extends Sche
     }
   }
 
-  protected[this] def recordField(name: String, index: Int, fieldSchema: avro.Schema, nullable: Boolean): Result = {
+  protected[avro] def recordField(name: String, index: Int, fieldSchema: avro.Schema, nullable: Boolean): Result = {
     Right(RecordField(name, index, AvroSchema(rootSchema, fieldSchema), RefInfo[GenericRecord], nullable))
   }
 
-  protected[this] def arrayField(name: String, index: Int, fieldSchema: avro.Schema, nullable: Boolean): Result = {
+  protected[avro] def arrayField(name: String, index: Int, fieldSchema: avro.Schema, nullable: Boolean): Result = {
     val elementType = extract("", 0, fieldSchema.getElementType, nullable = false)
     elementType.fold(
       e  => Left(FieldRetrievalError("ARRAY field creation failed.  Error getting element type: " + e.error)),
@@ -62,7 +62,7 @@ case class AvroSchema(rootSchema: avro.Schema, schema: avro.Schema) extends Sche
     * @param fieldSchema a field schema used for the analysis.
     * @return
     */
-  protected[this] def unionField(name: String, index: Int, fieldSchema: avro.Schema, reqField: Boolean): Result = {
+  protected[avro] def unionField(name: String, index: Int, fieldSchema: avro.Schema, reqField: Boolean): Result = {
     val union = fieldSchema.getTypes
 
     // If there's only one item in the union, treat the union as if it didn't exist.

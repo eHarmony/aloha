@@ -16,74 +16,72 @@ import com.eharmony.aloha.semantics.compiled.plugin.schemabased.schema._
   * This is probably slower but should be safer.
   */
 private[avro] object AvroCodeGenerators extends CodeGenerators {
-  def castCode(fd: FieldDesc): String = {
-    def fieldTypeString(fd: FieldDesc): String = {
-      val typeStr = fd match {
-        case f: RecordField => RefInfoOps.toString(f.refInfo)
-        case f: StringField => "org.apache.avro.util.Utf8"  // Special, b/c it's mutable (unlike String)!!!
-        case f: IntField => "Int"
-        case f: LongField => "Long"
-        case f: FloatField => "Float"
-        case f: DoubleField => "Double"
-        case f: BooleanField => "Boolean"
-        case f: ListField => "java.util.List[" + fieldTypeString(f.elementType) + "]" // OK, Avro implements List.
-        case f: EnumField => throw new IllegalStateException("enum not supported")
-      }
+  private[this] val faithful = (_: FieldDesc).nullable
+  private[this] def forced(nullable: Boolean) = (_: FieldDesc) => nullable
 
-      if (fd.nullable)
-        s"Option[$typeStr]"
-      else typeStr
-    }
+  def faithfulNullableStrategy: Stream[FieldDesc => Boolean] =
+    Stream.continually(faithful)
 
-    s".asInstanceOf[${fieldTypeString(fd)}]"
+  def optionalThenFaithfulNullableStrategy(i: Int, subsequent: Boolean): Stream[FieldDesc => Boolean] = {
+    val f = forced(subsequent) // variable b/c of call by name
+    forced(true) #:: Stream.fill(i)(faithful) ++ Stream.continually(f)
   }
 
-  def isStringField(fa: FieldAccessor) = fa.field.isInstanceOf[StringField]
+  def fieldTypeString(fd: FieldDesc, nullableStrategy: Seq[FieldDesc => Boolean]): String = {
+    val typeStr = fd match {
+      case f: RecordField => RefInfoOps.toString(f.refInfo)
+      case f: StringField => "org.apache.avro.util.Utf8"  // Special, b/c it's mutable (unlike String)!!!
+      case f: IntField => "Int"
+      case f: LongField => "Long"
+      case f: FloatField => "Float"
+      case f: DoubleField => "Double"
+      case f: BooleanField => "Boolean"
+      case f: ListField => "java.util.List[" + fieldTypeString(f.elementType, nullableStrategy.tail) + "]" // OK, Avro implements List.
+      case f: EnumField => throw new IllegalStateException("enum not supported")
+    }
 
-  def accountForString(code: String, fa: FieldAccessor, map: Boolean = false) =
-    if (isStringField(fa))
+    if (nullableStrategy.head(fd))
+      s"Option[$typeStr]"
+    else typeStr
+  }
+
+  def castCode(fd: FieldDesc, nullableStrategy: Seq[FieldDesc => Boolean] = faithfulNullableStrategy): String =
+    s".asInstanceOf[${fieldTypeString(fd, nullableStrategy)}]"
+
+  def isStringField(f: FieldDesc): Boolean = f.isInstanceOf[StringField]
+
+  def accountForString(code: String, f: FieldDesc, map: Boolean = false): String =
+    if (isStringField(f))
       if (map)
         s"$code.map(_.toString)"
       else s"$code.toString"
     else code
 
-  implicit object RequiredCodeGenerator extends AccessorCodeGenerator[Required] {
-    override def generateGet(r: Required) =
-      accountForString(s"""get("${r.field.name}")${castCode(r.field)}""", r)
-  }
-
-  implicit object DerefReqCodeGenerator extends AccessorCodeGenerator[DerefReq] {
-    override def generateGet(d: DerefReq) =
-      accountForString(s"""get("${d.field.name}")${castCode(d.field)}.get(${d.index})""", d)
-  }
-
-  implicit object OptionalCodeGenerator extends AccessorCodeGenerator[Optional] {
-    override def generateGet(o: Optional) = s"""get("${o.field.name}")"""
-  }
-
-  implicit object DerefOptCodeGenerator extends AccessorCodeGenerator[DerefOpt] {
-    override def generateGet(d: DerefOpt) = s"""get("${d.field.name}")"""
-  }
-
   implicit object reqCodeGenerator extends AccessorCodeGenerator[Req] {
-    override def generateGet(r: Req) = r match {
-      case r: Required => RequiredCodeGenerator.generateGet(r)
-      case r: DerefReq => DerefReqCodeGenerator.generateGet(r)
-    }
-  }
-
-  implicit object OptCodeGenerator extends AccessorCodeGenerator[Opt] {
-    override def generateGet(o: Opt) = o match {
-      case o: Required => RequiredCodeGenerator.generateGet(o)
-      case o: DerefReq => DerefReqCodeGenerator.generateGet(o)
-      case o: Optional => OptionalCodeGenerator.generateGet(o)
-      case o: DerefOpt => DerefOptCodeGenerator.generateGet(o)
+    override def generateGet(r: Req): String = r match {
+      case Required(f) =>
+        accountForString(s"""get("${f.name}")${castCode(f)}""", f)
+      case ReqDerefReq(f, i) =>
+        accountForString(s"""get("${f.name}")${castCode(f)}.get($i)""", f)
     }
   }
 
   implicit object optionalCodeGen extends ContainerCodeGen[Opt] with UnitCodeGen[Opt] {
     def unit(req: Seq[Req], i: Int, fa: Opt): String = {
-      accountForString(s"Option(${reqPrefix(i, req)}.${generateGet(fa)})${castCode(fa.field)}", fa, map = true)
+      fa match {
+        case Optional(f) =>
+          accountForString(s"""${indent(i)}Option(${reqPrefix(i, req)}.get("${f.name}"))${castCode(fa.field)}""", f, map = true)
+        case ReqDerefOpt(f, j) =>
+          gen(req, i, f, j)
+        case OptDerefOpt(f, j) =>
+          gen(req, i, f, j)
+      }
+    }
+
+    def gen(req: Seq[Req], i: Int, f: ListField, j: Int): String = {
+      val ns = optionalThenFaithfulNullableStrategy(0, subsequent = false)
+      val v = accountForString(s"Option(l.get($j)", f.elementType) + ")"
+      s"""${indent(i)}Option(${reqPrefix(i, req)}.get("${f.name}"))${castCode(f, ns)}.flatMap{ case l if l.size > $j => $v; case _ => None }"""
     }
   }
 

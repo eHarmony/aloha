@@ -94,7 +94,11 @@ trait SchemaBasedSemanticsPlugin[A] { self: CompiledSemanticsPlugin[A] =>
 
     // Make sure that we have the implicit function imported for converting a Java List to a Scala Buffer.
     val finalLines =
-      if (repeated.nonEmpty) Seq(functionParamList + "{", "  import scala.collection.JavaConversions.asScalaBuffer;") ++ lines ++ Seq("}")
+      if (repeated.nonEmpty)
+        Seq(
+          functionParamList + "{",
+          "  import scala.collection.JavaConversions.asScalaBuffer;"
+        ) ++ lines ++ Seq("}")
       else Seq(functionParamList) ++ lines
 
     if (optional) OptionalAccessorCode(finalLines) else RequiredAccessorCode(finalLines)
@@ -135,17 +139,19 @@ trait SchemaBasedSemanticsPlugin[A] { self: CompiledSemanticsPlugin[A] =>
     ("Problem found at: '" + problem + "'. " + addlMsg).trim.failNel
   }
 
-  private[schemabased] def dereferencedRepeatedField(field: FieldDesc, index: Int): Dereference =
-    if (dereferenceAsOptional) DerefOpt(field, index)
-    else DerefReq(field, index)
+  private[schemabased] def dereferencedRepeatedField(field: ListField, index: Int): Dereference =
+    if (field.nullable)
+      OptDerefOpt(field, index)
+    else if (dereferenceAsOptional || field.elementType.nullable)
+      ReqDerefOpt(field, index)
+    else ReqDerefReq(field, index)
 
   private[schemabased] def convertLeadingFieldAccessors(fa: List[FieldAccessor]) =
     if (dereferenceAsOptional) fa
     else fa map {
-      case d: DerefReq => d.toOpt
+      case d: ReqDerefReq => d.toOpt
       case f => f
     }
-
 
   private[schemabased] def directlyAccessedField(fd: FieldDesc, fas: List[FieldAccessor]): List[FieldAccessor] = {
     fd match {
