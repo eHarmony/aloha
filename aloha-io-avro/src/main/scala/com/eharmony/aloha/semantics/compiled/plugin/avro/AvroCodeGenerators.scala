@@ -30,7 +30,7 @@ private[avro] object AvroCodeGenerators extends CodeGenerators {
   def fieldTypeString(fd: FieldDesc, nullableStrategy: Seq[FieldDesc => Boolean]): String = {
     val typeStr = fd match {
       case f: RecordField => RefInfoOps.toString(f.refInfo)
-      case f: StringField => "org.apache.avro.util.Utf8"  // Special, b/c it's mutable (unlike String)!!!
+      case f: StringField => "java.lang.CharSequence"  // org.apache.avro.util.Utf8 Special, b/c it's mutable (unlike String)!!!
       case f: IntField => "Int"
       case f: LongField => "Long"
       case f: FloatField => "Float"

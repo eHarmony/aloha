@@ -21,6 +21,16 @@ sealed trait RefInfoOps[RefInfoType[_]] {
   def typeParams[A](implicit a: RefInfoType[A]): List[RefInfoType[_]]
 
   /**
+    * Attempt to determine if `possibleIterable` is an `Iterable[A]`.
+    * @param a RefInfo instance of element type
+    * @param possibleIterable a possible Iterable
+    * @tparam A element type
+    * @tparam Iter possible iterable type.
+    * @return true if `possibleIterable` is definitely a `Iterable[A]`.  May have false negatives.
+    */
+  def isIterable[A, Iter](implicit a: RefInfoType[A], possibleIterable: RefInfoType[Iter]): Boolean
+
+  /**
    * Is Sub a subtype of Super
    * @param sub RefInfo instance of type A
    * @param sup RefInfo instance of type A
@@ -157,6 +167,36 @@ sealed trait RefInfoOps[RefInfoType[_]] {
 object RefInfoOps extends RefInfoOps[RefInfo] with EitherHelpers {
 
   def typeParams[A](implicit a: RefInfo[A]): List[RefInfo[_]] = a.typeArguments
+
+  /**
+    * Attempt to determine if `possibleIterable` is an `Iterable[A]`.
+    *
+    * Covers only simple one type variable instances in Predef.  This is kind of a stopgap solution because the
+    * subtype operator `<:<` doesn't really work well for Manifests.  This is an issue because currently, Aloha uses
+    * Manifests rather than `TypeTag`s for type checking.  Comments in ClassManifestDeprecatedApis says:
+    *
+    * "''this part is wrong for punting unless the rhs has no type arguments, but it's better
+    * than a blindfolded pinata swing.''"
+    *
+    * @param a RefInfo instance of element type
+    * @param possibleIterable a possible Iterable
+    * @tparam A element type
+    * @tparam Iter possible iterable type.
+    * @return true if `possibleIterable` is definitely a `Iterable[A]`.  May have false negatives.
+    */
+  def isIterable[A, Iter](implicit a: RefInfo[A], possibleIterable: RefInfo[Iter]): Boolean = {
+    List(a) == possibleIterable.typeArguments &&
+      (Array[Class[_]](
+        classOf[Iterable[_]],
+        classOf[IndexedSeq[_]],
+        classOf[List[_]],
+        classOf[Seq[_]],
+        classOf[Vector[_]],
+        classOf[Set[_]],
+        classOf[Stream[_]]
+      ) contains possibleIterable.runtimeClass)
+  }
+
 
   /**
    * Is Sub a subtype of Super
