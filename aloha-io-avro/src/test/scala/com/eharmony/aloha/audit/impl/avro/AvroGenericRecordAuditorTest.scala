@@ -91,6 +91,10 @@ class AvroGenericRecordAuditorTest extends ModelSerializationTestHelper {
   }
 
   @Test def testSerializability(): Unit = {
+    val a0 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[Short].get)
+    a0.success(M1, 1.toShort)
+    a0.failure(M1)
+
     val a1 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[Boolean].get)
     a1.success(M1, false)
     a1.failure(M1)
@@ -122,6 +126,10 @@ class AvroGenericRecordAuditorTest extends ModelSerializationTestHelper {
     val a8 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[Stream[Boolean]].get)
     a8.success(M2, Stream(true, false))
     a8.failure(M2)
+
+    val a9 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[Iterable[Short]].get)
+    a9.success(M2, Iterable(1.toShort, 2.toShort))
+    a9.failure(M2)
   }
 
   /**
