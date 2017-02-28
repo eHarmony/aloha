@@ -11,7 +11,7 @@ sealed trait Dereference extends FieldAccessor {
 }
 
 sealed trait Opt extends FieldAccessor
-sealed trait Req extends FieldAccessor // Opt
+sealed trait Req extends FieldAccessor
 
 case class Optional(field: FieldDesc) extends Opt
 case class Required(field: FieldDesc) extends Req
