@@ -72,7 +72,7 @@ trait SchemaBasedSemanticsPlugin[A] { self: CompiledSemanticsPlugin[A] =>
     val afms = afmi.zip(afm) map { case (i, (r, o)) => cg.containerCodeGen(r, o, i, FLAT_MAP) }
 
     // Generate the 0 or 1 mapped elements appearing after the repeated element.
-    val ami = Seq.range(0, am.size) map { _ + bfms.size + bms.size + rep.size + afm.size + 1 }
+    val ami = 0 until am.size map { _ + bfms.size + bms.size + rep.size + afm.size + 1 }
     val ams = ami.zip(am) map { case (i, (r, o)) => cg.containerCodeGen(r, o, i, if (ar.nonEmpty) MAP else NONE) }
 
     // Generate the required elements appearing after the repeated element.
