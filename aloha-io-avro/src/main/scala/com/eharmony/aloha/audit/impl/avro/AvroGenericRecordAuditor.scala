@@ -85,7 +85,7 @@ object AvroGenericRecordAuditor extends Serializable {
   }
 
   /**
-    * Cast `auditor` to `ScoreAuditor[N]` and wrap in an Option.
+    * Cast `auditor` to `AvroGenericRecordAuditor[N]` and wrap in an Option.
     * '''NOTE''': ''I hate this method'' but I don't want to require an implicit
     * [[AvroGenericRecordAuditor]] as a parameter in the apply method because [[Impl]]'s
     * `changeType` method would then need the same implicit to be included.  A determination
