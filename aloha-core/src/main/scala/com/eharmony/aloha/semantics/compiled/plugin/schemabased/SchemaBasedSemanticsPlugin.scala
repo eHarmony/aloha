@@ -64,11 +64,11 @@ trait SchemaBasedSemanticsPlugin[A] { self: CompiledSemanticsPlugin[A] =>
     val bms = bm map { case (r, o) => cg.containerCodeGen(r, o, bfms.size + 1, MAP) }
 
     // Generate the 0 or 1 repeated elements.
-    val mapList = Seq(afm, am.toSeq, ar).foldLeft(false)(_ || _.size > 0)
+    val mapList = Seq(afm, am.toSeq, ar).exists(s => s.nonEmpty)
     val rep = repeated map { r => cg.containerCodeGen(br, r, bfms.size + bms.size + 1, if (mapList) MAP else NONE) }
 
     // Generate any mapped elements appearing after the repeated element.
-    val afmi = Seq.range(0, afm.size) map { _ + bfms.size + bms.size + rep.size + 1 }
+    val afmi = afm.indices map { _ + bfms.size + bms.size + rep.size + 1 }
     val afms = afmi.zip(afm) map { case (i, (r, o)) => cg.containerCodeGen(r, o, i, FLAT_MAP) }
 
     // Generate the 0 or 1 mapped elements appearing after the repeated element.
@@ -77,7 +77,7 @@ trait SchemaBasedSemanticsPlugin[A] { self: CompiledSemanticsPlugin[A] =>
 
     // Generate the required elements appearing after the repeated element.
     val ari = bfms.size + bms.size + rep.size + afm.size + ams.size + 1
-    val ars = Option(ar.nonEmpty).filter(identity).map(_ => cg.NoSuffixCodeGen.unit(ar, ari))
+    val ars = Option(ar.nonEmpty) collect { case true => cg.NoSuffixCodeGen.unit(ar, ari) }
 
     // Assemble all the generated lines of code.  Determine the appropriate number of right parentheses
     // (number of generated lines minus 1) and add to the last line.  Finally, if the code produces optional
@@ -126,7 +126,10 @@ trait SchemaBasedSemanticsPlugin[A] { self: CompiledSemanticsPlugin[A] =>
 
 
   private[schemabased] def partition(fa: List[FieldAccessor]): FieldAccessorPartition = {
-    def g(l: List[FieldAccessor], before: List[FieldAccessor], repeated: Option[Repeated], after: List[FieldAccessor]): FieldAccessorPartition = l match {
+    @tailrec def g(l: List[FieldAccessor],
+                   before: List[FieldAccessor],
+                   repeated: Option[Repeated],
+                   after: List[FieldAccessor]): FieldAccessorPartition = l match {
       case Nil => (before, repeated, after)
       case (h: Repeated) :: t => (t.reverse, Some(h), after)
       case h :: t => g(t, before, repeated, h :: after)
@@ -167,11 +170,11 @@ trait SchemaBasedSemanticsPlugin[A] { self: CompiledSemanticsPlugin[A] =>
 
 
   private[schemabased] def getFieldAccessorPartition(descriptors: List[FieldDesc], tokens: List[Token]): ValidationNel[String, FieldAccessorPartition] = {
-    def g(d: List[FieldDesc],
-          remaining: List[Token],
-          consumed: List[Token],
-          numLists: Int,
-          fa: List[FieldAccessor]): ValidationNel[String, FieldAccessorPartition] = d match {
+    @tailrec def g(d: List[FieldDesc],
+                   remaining: List[Token],
+                   consumed: List[Token],
+                   numLists: Int,
+                   fa: List[FieldAccessor]): ValidationNel[String, FieldAccessorPartition] = d match {
       case Nil => partition(fa).success
       case dh :: dt => remaining match {
         case (f: Field) :: (i: Index) :: t =>
