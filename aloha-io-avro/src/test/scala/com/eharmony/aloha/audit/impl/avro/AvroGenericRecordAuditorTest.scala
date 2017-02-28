@@ -1,7 +1,10 @@
 package com.eharmony.aloha.audit.impl.avro
 
 import java.io.File
+import java.{lang => jl, util => ju}
 
+import com.eharmony.aloha.ModelSerializationTestHelper
+import com.eharmony.aloha.audit.MorphableAuditor
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import org.apache.avro.Schema
@@ -14,18 +17,25 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 
-import scala.collection.JavaConversions.asScalaIterator
+import scala.collection.JavaConversions.{asScalaBuffer, asScalaIterator}
 import scala.util.Random
 
 /**
-  * Created by deak on 2/27/17.
+  * Test that auditors are instantiated correctly and correctly audit values.
+  *
+  * '''Note''': This test and things like it really would be done better with a property-based
+  * testing framework like ScalaCheck.
+  *
+  * Created by ryan on 2/27/17.
   */
 @RunWith(classOf[BlockJUnit4ClassRunner])
-class AvroGenericRecordAuditorTest {
+class AvroGenericRecordAuditorTest extends ModelSerializationTestHelper {
   import AvroGenericRecordAuditorTest._
 
+  private[this] implicit val rand = new Random(0)
+
   private[this] lazy val schema = {
-    val is = VFS.getManager.resolveFile("res:com/eharmony/aloha/audit/impl/avro/generic_record_auditor.avsc").getContent.getInputStream
+    val is = VFS.getManager.resolveFile(SchemaVfsUrl).getContent.getInputStream
     try {
       new Schema.Parser().parse(is)
     }
@@ -34,9 +44,15 @@ class AvroGenericRecordAuditorTest {
     }
   }
 
-
   @Test def testAuditing(): Unit = {
-    test(rawBools, rawBytes)
+    test(RawBools, RawBytes)
+    test(RawShorts, RawInts)
+    test(RawLongs, RawFloats)
+    test(RawDoubles, RawStrings)
+    test(Iterables, IndexedSeqs)
+    test(Seqs, Vectors)
+    test(Sets, Streams)
+    test(Lists, RawFloats)
   }
 
   @Test def testInstantiation(): Unit = {
@@ -50,8 +66,154 @@ class AvroGenericRecordAuditorTest {
     instantiate[String]()
   }
 
+  @Test def testMissingValues(): Unit = {
+    val missing = Set("one", "two")
+    val aud = AvroGenericRecordAuditor[Boolean].get
+    val s = aud.success(M1, true, Nil, missing, Nil, None)
+    val sMissing = asScalaBuffer(s.get(MissingVarNamesField).asInstanceOf[ju.List[CharSequence]]).map(_.toString).toSet
+    assertEquals(missing, sMissing)
+
+    val f = aud.failure(M1, Nil, missing, Nil)
+    val fMissing = asScalaBuffer(f.get(MissingVarNamesField).asInstanceOf[ju.List[CharSequence]]).map(_.toString).toSet
+    assertEquals(missing, fMissing)
+  }
+
+  @Test def testErrors(): Unit = {
+    val errors = Seq("one", "two")
+    val aud = AvroGenericRecordAuditor[Boolean].get
+    val s = aud.success(M1, true, errors, Set.empty, Nil, None)
+    val sMissing = asScalaBuffer(s.get(ErrorMsgsField).asInstanceOf[ju.List[CharSequence]]).map(_.toString)
+    assertEquals(errors, sMissing)
+
+    val f = aud.failure(M1, errors, Set.empty, Nil)
+    val fMissing = asScalaBuffer(f.get(ErrorMsgsField).asInstanceOf[ju.List[CharSequence]]).map(_.toString)
+    assertEquals(errors, fMissing)
+  }
+
+  @Test def testSerializability(): Unit = {
+    val a1 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[Boolean].get)
+    a1.success(M1, false)
+    a1.failure(M1)
+
+    val a2 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[Iterable[Boolean]].get)
+    a2.success(M2, Iterable(true, false))
+    a2.failure(M2)
+
+    val a3 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[IndexedSeq[Boolean]].get)
+    a3.success(M2, IndexedSeq(true, false))
+    a3.failure(M2)
+
+    val a4 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[List[Boolean]].get)
+    a4.success(M2, List(true, false))
+    a4.failure(M2)
+
+    val a5 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[Seq[Boolean]].get)
+    a5.success(M2, Seq(true, false))
+    a5.failure(M2)
+
+    val a6 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[Vector[Boolean]].get)
+    a6.success(M2, Vector(true, false))
+    a6.failure(M2)
+
+    val a7 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[Set[Boolean]].get)
+    a7.success(M2, Set(true, false))
+    a7.failure(M2)
+
+    val a8 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[Stream[Boolean]].get)
+    a8.success(M2, Stream(true, false))
+    a8.failure(M2)
+  }
+
   /**
-    * Check that the auditor works
+    * Convenience method for `checkCastIter` where `f` is the identity function.
+    * @param exp the expected result
+    * @param any a value extracted from a `GenericRecord` via `get`.  This value is non-null
+    *            at this point.
+    * @tparam A type of the expected value.
+    * @tparam Elem element type of the collection extracted from the GenericRecord.
+    */
+  private[this] def checkIter[A: RefInfo, Elem](exp: A, any: AnyRef): Unit =
+    checkCastIter[A, Elem, Elem](exp, any)(identity[Elem])
+
+  /**
+    * Check that the value `any` is an Iterable containing the desired element type with the
+    * correct elements in the correct order.
+    *
+    * This function takes into account the proper ordering of the elements in any, by assuming the
+    * elements are ordered as in the case of a sequence.  If `A` represents a set, the value extracted
+    * from the GenericRecord will be turned into a set.
+    *
+    * Prior to comparison, each element is transformed via the function, `f`.
+    * @param exp the expected result
+    * @param any a value extracted from a `GenericRecord` via `get`.  This value is non-null
+    *            at this point.  It's not necessary that the value extracted from the record
+    *            is non-null.  The null case is caught elsewhere in the tests.
+    * @param f a function to apply to each element of the collect represented by `any`.
+    * @tparam A type of the expected value.
+    * @tparam Elem element type of the collection extracted from the GenericRecord.
+    * @tparam C expected element type of the collection represented by `A`.
+    */
+  private[this] def checkCastIter[A: RefInfo, Elem, C](exp: A, any: AnyRef)(f: Elem => C): Unit = {
+    // This isn't strictly necessary and should never fail because of the checks in `checkValue`,
+    // but it doesn't hurt.  If this fails, there is a bug in this test, not necessarily the code
+    // under test.
+    assertNotNull("any should not be null.", any)
+
+    val isSet = RefInfo[A].runtimeClass == classOf[Set[_]]
+    val seq = asScalaBuffer(any.asInstanceOf[ju.List[Elem]]).map(f)
+    val iter =
+      if (!isSet)
+        seq
+      else seq.toSet
+    assertEquals(exp, iter)
+  }
+
+  /**
+    * Check that the value field in a given record in the audit trail is as expected.
+    * @param shouldBePresent Whether the value is expected to be present in the extractedVal
+    * @param exp the expected value
+    * @param key an identifier used for error reporting
+    * @param extractedVal a value that was extracted from a GenericRecord.get and wrapped in an Option.
+    * @tparam A Type of the value.
+    */
+  private[this] def checkValue[A: RefInfo](shouldBePresent: Boolean, exp: A,
+                                           key: String, extractedVal: Option[AnyRef]): Unit = {
+
+    if (shouldBePresent) {
+      assertTrue(s"$key should be present", extractedVal.isDefined)
+
+      // IMPORTANT: This value is an AnyRef because the return value of GenericRecord.get is Object.
+      //            This comes in below when we cast to the scala AnyVal types.  AnyVal DOES NOT
+      //            extend AnyRef.  This is intentionally left here to show that we can do this and
+      //            unboxing works automatically.  This validates that we can do the casting to
+      //            AnyVal types in the auditor code.
+      val v: AnyRef = extractedVal.get
+      RefInfo[A] match {
+        case RefInfo.Boolean => assertEquals(exp, v.asInstanceOf[Boolean])
+        case RefInfo.Byte => assertEquals(exp, v.asInstanceOf[Int].toByte)
+        case RefInfo.Short => assertEquals(exp, v.asInstanceOf[Int].toShort)
+        case RefInfo.Int => assertEquals(exp, v.asInstanceOf[Int])
+        case RefInfo.Long => assertEquals(exp, v.asInstanceOf[Long])
+        case RefInfo.Float => assertEquals(exp.asInstanceOf[Float], v.asInstanceOf[Float], 0f)
+        case RefInfo.Double => assertEquals(exp.asInstanceOf[Double], v.asInstanceOf[Double], 0d)
+        case RefInfo.String  => assertEquals(exp, v.asInstanceOf[CharSequence].toString)
+
+        case r if RefInfoOps.isIterable(RefInfo.Boolean, r) => checkIter[A, Boolean](exp, v)
+        case r if RefInfoOps.isIterable(RefInfo.Byte, r) => checkCastIter[A, Int, Byte](exp, v)(_.toByte)
+        case r if RefInfoOps.isIterable(RefInfo.Short, r) => checkCastIter[A, Int, Short](exp, v)(_.toShort)
+        case r if RefInfoOps.isIterable(RefInfo.Int, r) => checkIter[A, Int](exp, v)
+        case r if RefInfoOps.isIterable(RefInfo.Long, r) => checkIter[A, Long](exp, v)
+        case r if RefInfoOps.isIterable(RefInfo.Float, r) => checkIter[A, Float](exp, v)
+        case r if RefInfoOps.isIterable(RefInfo.Double, r) => checkIter[A, Double](exp, v)
+        case r if RefInfoOps.isIterable(RefInfo.String, r) => checkCastIter[A, CharSequence, String](exp, v)(_.toString)
+        case t => fail(s"unrecognized type: ${RefInfoOps.toString(t)}")
+      }
+    }
+    else assertTrue(s"$key shouldn't be present.", extractedVal.isEmpty)
+  }
+
+  /**
+    * Check that the auditor works.
     * @param a top level value to be audited
     * @param b second level value to be audited
     * @param s1 whether the auditing at the top level should be a success (true) or failure (false)
@@ -59,24 +221,80 @@ class AvroGenericRecordAuditorTest {
     * @param inc2 whether to include the second level score in the tree of scores
     * @param p1 the probability of the top level
     * @param p2 the probability of the second level
-    * @param r the record to check
+    * @param record the record to check
     * @tparam A type of top level data
     * @tparam B type of second level data
     */
-  private[this] def check[A: RefInfo, B: RefInfo](a: A, b: B, s1: Boolean, s2: Boolean, inc2: Boolean,
-                                                  p1: Option[Float], p2: Option[Float], r: GenericRecord): Unit = {
-
+  private[this] def check[A: RefInfo, B: RefInfo](a: A, b: B, s1: Boolean, s2: Boolean,
+                                                  inc2: Boolean, p1: Option[Float], p2: Option[Float],
+                                                  record: GenericRecord): Unit = {
     // Serialize and deserialize r to check r against schema.
-    serializeRoundTrip(schema, r).head
+    val r = serializeRoundTrip(schema, record).head
 
-    // TODO: do additional checks
-    //    assertEquals("", r.toString)
+    // Get the subvalue and check that it is present when expected
+    val subval = extractSubvalue(r)
+    assertEquals("A subvalue should be present", inc2, subval.isDefined)
+
+    // Check that the model IDs are as expected
+    assertEquals(Option(M1), modelId(record))
+    assertEquals(Option(M2).filter(_ => inc2), subval.flatMap(modelId))
+
+    // Check that probabilities are properly recorded.
+    checkProb(s1, p1, record)
+    subval.foreach(sv => checkProb(s2, p2, sv))
+
+    // Check that the values are as expected.
+    checkValue(s1, a, ValueField, Option(r.get(ValueField)))
+    checkValue(inc2 && s2, b, s"subvalue $ValueField", subval.flatMap(s => Option(s.get(ValueField))))
+  }
+
+  /**
+    * Get the first subvalue which is a GenericRecord.  A `None` will be returned if the proper
+    * type is not found.
+    * @param r a record to check for a subvalue
+    * @return
+    */
+  private[this] def extractSubvalue(r: GenericRecord): Option[GenericRecord] = {
+    // Check types.  Don't just assume and cast.
+    Option(r.get(SubvaluesField)) match {
+      case Some(lst: ju.List[_]) => asScalaBuffer(lst) collectFirst { case r: GenericRecord => r }
+      case _ => None
+    }
+  }
+
+  /**
+    * Check that probabilities are recorded correctly.  If a success is recorded, then a probability
+    * may or not be present.  If a failure is recorded, no probability value should be present.  In other words
+    * a probability must exist when `success && pr.isDefined` and must not exist otherwise.
+    * @param success whether the auditor recorded a success
+    * @param pr an optional probability.
+    * @param r a record to check for the existence of the probability.
+    */
+  private[this] def checkProb(success: Boolean, pr: Option[Float], r: GenericRecord): Unit = {
+    val recordProb = Option(r.get(ProbField)).collect{ case p: jl.Float => p.floatValue }
+    (success, pr) match {
+      case (true, Some(p)) => assertEquals(p, recordProb.get, 0)
+      case _ => assertEquals(None, recordProb)
+    }
+  }
+
+  /**
+    * Get a ModelId from the GenericRecord.  If any of the data is missing, return `None`.
+    * @param r a record from which a ModelId is to be extracted.
+    * @return
+    */
+  private[this] def modelId(r: GenericRecord): Option[ModelId] = {
+    for {
+      mid <- Option(r.get(ModelIdField)) collect { case x: GenericRecord => x }
+      id <- Option(mid.get(ModelIdIdField)) collect { case x: jl.Long => x.longValue }
+      name <- Option(mid.get(ModelIdNameField)) collect { case x: CharSequence => x.toString }
+    } yield ModelId(id, name)
   }
 
   /**
     * Serializing round-trip ensures that the data adheres to the schema.
-    * @param schema
-    * @param records
+    * @param schema an Avro schema used to validate the data
+    * @param records records to serialize.
     * @return
     */
   private[this] def serializeRoundTrip(schema: Schema, records: GenericRecord*): Seq[GenericRecord] = {
@@ -100,43 +318,66 @@ class AvroGenericRecordAuditorTest {
     deserializedRecords
   }
 
-  private[this] def test[A: RefInfo, B: RefInfo](_1: Seq[A], _2: Seq[B], seed: Long = 0L): Unit = {
-    val m1 = ModelId(1, "one")
-    val m2 = ModelId(2, "two")
-
+  /**
+    * Test that data is properly audited for given types `A` and `B`.  `A` represents the top-level
+    * values in the audit trail and `B` represents the values at the second level of the audit trail.
+    * '''Note''': Not testing whether errorMsgs and missingVarNames
+    * @param as values of `A` to audit at the top level of the audit trail.
+    * @param bs values of `B` to audit at the second level of the audit trail.
+    * @param rand an RNG used to create probabilities
+    * @tparam A type of the top-level values being audited.
+    * @tparam B type of the second-level values being audited.
+    */
+  private[this] def test[A: RefInfo, B: RefInfo](as: Seq[A], bs: Seq[B])(implicit rand: Random): Unit = {
+    // Create auditors for the top-level and second-level types.  This mimic how the auditors will be
+    // created inside and outside the factory.  That's why changeType is used.  These statements will throw
+    // NoSuchElementExceptions if the auditor for either type A or B doesn't exist.
     val a1 = AvroGenericRecordAuditor[A].get
     val a2 = a1.changeType[B].get
-    val r = new Random(seed)
 
+    // Loop over a bunch of different test cases.
+    //  a: a value of A to be audited at the top level of the audit trail.
+    //  b: a value of B to be audited at the second level of the audit trail.
+    //  s1: whether the top level auditor should emit a success (true) or failure (false)
+    //  s2: whether the second level auditor should emit a success (true) or failure (false)
+    //  inc2: whether the second level value should be included in the audit trail.
+    //  p1: A probability to be optionally inserted in the case of successes in the top-level auditor
+    //  p2: A probability to be optionally inserted in the case of successes in the second-level auditor
+    //  subvalues: the values to include the in the audit trail
+    //  r: a GenericRecord representing the audit trail.
     for {
-      a <- _1
-      b <- _2
+      a <- as
+      b <- bs
       s1 <- Seq(true, false)
       s2 <- Seq(true, false)
       inc2 <- Seq(true, false)
-      p1 = Option(r.nextFloat()).filter(p => p > 0.5f)
-      p2 = Option(r.nextFloat()).filter(p => p < 0.5f)
-    } {
-
-      val subs =
-        if (inc2) {
-          List(
-            if (s2)
-              a2.success(m2, b, Nil, Set.empty, Nil, p2)
-            else a2.failure(m2, Nil, Set.empty, Nil)
-          )
-        }
-        else Nil
-
-      val r =
-        if (s1)
-          a1.success(m1, a, Nil, Set.empty, subs, p1)
-        else a1.failure(m1, Nil, Set.empty, subs)
-
-      check(a, b, s1, s2, inc2, p1, p2, r)
-    }
+      p1 = Option(rand.nextFloat()).filter(p => p > 0.5f)
+      p2 = Option(rand.nextFloat()).filter(p => p < 0.5f)
+      subvalues = createSubvalues(a2, b, inc2, s2, p2)
+      r = createRecord(a1, a, subvalues, s1, p1)
+    } check(a, b, s1, s2, inc2, p1, p2, r)
   }
 
+  private[this] def createRecord[A](aud: AvroGenericRecordAuditor[A], a: A,
+                                    subvalues: Seq[GenericRecord], success: Boolean,
+                                    prob: Option[Float]): GenericRecord = {
+    if (success)
+      aud.success(M1, a, Nil, Set.empty, subvalues, prob)
+    else aud.failure(M1, Nil, Set.empty, subvalues)
+  }
+
+  private[this] def createSubvalues[B](aud: MorphableAuditor[GenericRecord, B, GenericRecord],
+                                       value: B, includeSubValues: Boolean,
+                                       success: Boolean, prob: Option[Float]) = {
+    if (includeSubValues) {
+      List(
+        if (success)
+          aud.success(M2, value, Nil, Set.empty, Nil, prob)
+        else aud.failure(M2, Nil, Set.empty, Nil)
+      )
+    }
+    else Nil
+  }
 
   private[this] def instantiate[A: RefInfo](): Unit = {
     val auditors = Map(
@@ -157,19 +398,33 @@ class AvroGenericRecordAuditorTest {
 }
 
 object AvroGenericRecordAuditorTest {
-  val rawBools = Seq(true, false)
-  val rawBytes = Seq(1.toByte, 127.toByte)
-  val rawShorts = Seq(2.toShort, Short.MaxValue)
-  val rawInts = Seq(3, Int.MaxValue)
-  val rawLongs = Seq(4L, Long.MaxValue)
-  val rawFloats = Seq(5f, Float.MinPositiveValue)
-  val rawDoubles = Seq(6d, 1e200)
-  val rawStrings = Seq("Nothing", "Something")
+  val ValueField = "value"
+  val SubvaluesField = "subvalues"
+  val ModelIdField = "model"
+  val ModelIdIdField = "id"
+  val ModelIdNameField = "name"
+  val ErrorMsgsField = "errorMsgs"
+  val MissingVarNamesField = "missingVarNames"
+  val ProbField = "prob"
+
+  val SchemaVfsUrl = "res:com/eharmony/aloha/audit/impl/avro/generic_record_auditor.avsc"
+
+  val RawBools = Seq(true, false)
+  val RawBytes = Seq(1.toByte, 127.toByte)
+  val RawShorts = Seq(2.toShort, Short.MaxValue)
+  val RawInts = Seq(3, Int.MaxValue)
+  val RawLongs = Seq(4L, Long.MaxValue)
+  val RawFloats = Seq(5f, Float.MinPositiveValue)
+  val RawDoubles = Seq(6d, 1e200)
+  val RawStrings = Seq("Nothing", "Something")
   val Iterables = Seq(Iterable(2), Iterable(3, 4))
-  val IndexedSeqs = Seq(IndexedSeq(12), Iterable(13, 14))
+  val IndexedSeqs = Seq(IndexedSeq(12), IndexedSeq(13, 14))
   val Seqs = Seq(Seq(112.toByte), Seq(113.toByte, 114.toByte))
-  val Vectors = Seq(Vector(1112f), Vector(1113f, 1113f))
-  val Sets = Seq(Set(11112d), Set(11113d, 11113d))
-  val Streams = Seq(Stream(111112L), Set(111113L, 111113L))
+  val Vectors = Seq(Vector(1112f), Vector(1113f, 1114f))
+  val Sets = Seq(Set(11112d), Set(11113d, 11114d))
+  val Streams = Seq(Stream(111112L), Stream(111113L, 111114L))
   val Lists = Seq(List(1111112.toString), List(1111113.toString, 1111114.toString))
+
+  val M1 = ModelId(1, "one")
+  val M2 = ModelId(2, "two")
 }
