@@ -5,20 +5,26 @@
 # =================================================================================================
 #
 # Example of usage from the aloha root directory:
-# 
+#
+#   # Compile the code and test code.  Test code for protobuf java classes.
+#   sbt compile test:compile
+#
+#   # create cachedir
+#   mkdir -p /tmp/aloha-cache-dir
+#
 #   # This is two base64-encoded protos
 #   (echo "CAESBEFsYW4YASUAALhBKg0IARABGQAAAAAAAPA/Kg0IAhACGQAAAAAAAABA"
 #    echo "CAESBEthdGUYAioNCAMQAxkAAAAAAAAIQA==") \
 #   |\
 #   $PWD/aloha-cli/bin/aloha-cli \
-#     -cp $PWD/aloha-core/target/aloha-core-1.1.2-SNAPSHOT-tests.jar:$PWD/aloha-cli/target/aloha-cli-1.1.2-SNAPSHOT-jar-with-dependencies.jar \
+#     -cp "$PWD/aloha-io-proto/target/scala-2.11/test-classes:$PWD/aloha-core/target/scala-2.11/test-classes" \
 #     --dataset \
-#     --cachedir $PWD/aloha-core/target/test-classes/generated \
-#     -s $PWD/aloha-core/src/test/resources/com/eharmony/aloha/dataset/cli/proto_spec1.js \
+#     --cachedir /tmp/aloha-cache-dir \
+#       -s $(find $PWD -name 'proto_spec1.js' | head -n1)       \
 #     -p com.eharmony.aloha.test.proto.Testing.UserProto \
 #     --vw -
 #
-# Prints to STDOUT: 
+# Prints to STDOUT:
 #
 #   | name=Alan gender=MALE bmi:23 num_photos:2
 #   | name=Kate gender=FEMALE bmi=UNK num_photos
@@ -40,17 +46,20 @@ function requote() {
 
 usage() {
 (cat <<EOM
-usage: aloha-cli -cp /path/to/some.jar:/path/to/other.jar:... [args to CLI] 
+usage: aloha-cli -cp /path/to/some.jar:/path/to/other.jar:... [args to CLI]
 EOM
 ) >&2
 }
 
-CP=""
+# Find classpath file.  If it doesn't exist, get the classpath from SBT
+# and create the file and use it.  For now, just can SBT every time.
+# VERY SLOW
+CP=$(sbt "export runtime:fullClasspath" | tail -n1)
 
 if [[ "$#" -lt 2 ]]; then
     usage; exit 2
 elif [[ "$1" == '-cp' ]]; then
-    CP=$2
+    CP=$CP:$2
     shift 2
 else
     usage; exit 3
