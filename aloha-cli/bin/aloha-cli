@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 
-# Record the directory of aloha-cli
+# Record the Aloha root directory and aloha-cli directory.
+OLD_PWD=$PWD
 cd ${0%/*}/..
 CLI_PWD=$PWD
-cd - 1>/dev/null
+cd ..
+ALOHA_PWD=$PWD
+cd $OLD_PWD
 
 # =================================================================================================
 #  aloha-cli                                                                 R. M. Deak 2015-06-25
@@ -65,7 +68,9 @@ elif [[ "$1" == '-cp' ]]; then
         CP=$(cat $CLI_PWD/.classpath)
     else
         # VERY SLOW: up to 5 - 10 secs.
+        cd $ALOHA_PWD
         sbt "export runtime:fullClasspath" | tail -n1 > $CLI_PWD/.classpath
+        cd $OLD_PWD
         CP=$(cat $CLI_PWD/.classpath)
     fi
 
