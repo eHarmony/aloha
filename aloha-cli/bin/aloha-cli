@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# Record the directory of aloha-cli
+cd ${0%/*}/..
+CLI_PWD=$PWD
+cd - 1>/dev/null
+
 # =================================================================================================
 #  aloha-cli                                                                 R. M. Deak 2015-06-25
 # =================================================================================================
@@ -51,14 +56,19 @@ EOM
 ) >&2
 }
 
-# Find classpath file.  If it doesn't exist, get the classpath from SBT
-# and create the file and use it.  For now, just can SBT every time.
-# VERY SLOW
-CP=$(sbt "export runtime:fullClasspath" | tail -n1)
-
 if [[ "$#" -lt 2 ]]; then
     usage; exit 2
 elif [[ "$1" == '-cp' ]]; then
+    # Find classpath file.  If it doesn't exist, get the classpath from SBT
+    # and create the file and use it.
+    if [[ -f "$CLI_PWD/.classpath" ]]; then
+        CP=$(cat $CLI_PWD/.classpath)
+    else
+        # VERY SLOW: up to 5 - 10 secs.
+        sbt "export runtime:fullClasspath" | tail -n1 > $CLI_PWD/.classpath
+        CP=$(cat $CLI_PWD/.classpath)
+    fi
+
     CP=$CP:$2
     shift 2
 else
