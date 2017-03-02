@@ -9,10 +9,15 @@ import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import scala.collection.JavaConversions.seqAsJavaList
 
 /**
-  * An auditor for encoding information in a tree structure as an Avro `org.apache.avro.generic.GenericRecord`.
+  * An auditor for encoding information in a tree structure as a
+  * `com.eharmony.aloha.audit.impl.avro.Score` which exposes a
+  * `org.apache.avro.generic.GenericRecord` interface.
   *
-  * See the resources in [[com.eharmony.aloha.audit.impl.avro]] for the Avro schema.
+  * See the resources in '''aloha-avro-score''' for the Avro schema.
   *
+  * '''NOTE''': `java.util.List` instances contained in these auditors instances don't
+  * allow many list operations that mutate the lists and should be considered immutable.
+  * 
   * Created by ryan on 2/26/17.
   *
   * @tparam N the natural output type of a model whose data is to be audited.
