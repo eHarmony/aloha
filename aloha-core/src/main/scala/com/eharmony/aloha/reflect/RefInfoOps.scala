@@ -10,7 +10,7 @@ import com.eharmony.aloha.semantics.func.GenAggFunc
 import scala.reflect.ManifestFactory
 
 import com.eharmony.aloha.util.EitherHelpers
-
+import scala.collection.{immutable => sci}
 /**
  * A facade layer on top of the scala reflection APIs to avoid bugs currently in the reflection implementation.
  * For more information, see [[https://issues.scala-lang.org/browse/SI-7555 SI-7555]].
@@ -19,6 +19,26 @@ import com.eharmony.aloha.util.EitherHelpers
 sealed trait RefInfoOps[RefInfoType[_]] {
 
   def typeParams[A](implicit a: RefInfoType[A]): List[RefInfoType[_]]
+
+  /**
+    * Attempt to determine if `possibleIterable` is a `scala.collection.immutable.Iterable[A]` but not
+    * a `scala.collection.Map`.
+    *
+    * This is kind of a stopgap solution because the subtype operator `<:<` doesn't really work well
+    * for Manifests.  This is an issue because currently, Aloha uses Manifests rather than
+    * `TypeTag`s for type checking.  Comments in ClassManifestDeprecatedApis says:
+    *
+    * "''this part is wrong for punting unless the rhs has no type arguments, but it's better
+    * than a blindfolded pinata swing.''"
+    *
+    * @param a RefInfo instance of element type
+    * @param possibleIterable a possible Iterable
+    * @tparam A element type
+    * @tparam Iter possible iterable type.
+    * @return true if `possibleIterable` is a `scala.collection.immutable.Iterable[A]`
+    *         but not a `scala.collection.Map[_, _]`.
+    */
+  def isImmutableIterableButNotMap[A, Iter](implicit a: RefInfoType[A], possibleIterable: RefInfoType[Iter]): Boolean
 
   /**
    * Is Sub a subtype of Super
@@ -157,6 +177,43 @@ sealed trait RefInfoOps[RefInfoType[_]] {
 object RefInfoOps extends RefInfoOps[RefInfo] with EitherHelpers {
 
   def typeParams[A](implicit a: RefInfo[A]): List[RefInfo[_]] = a.typeArguments
+
+  /**
+    * Attempt to determine if `possibleIterable` is a `scala.collection.immutable.Iterable[A]` but not
+    * a `scala.collection.Map`.
+    *
+    * This is kind of a stopgap solution because the subtype operator `<:<` doesn't really work well
+    * for Manifests.  This is an issue because currently, Aloha uses Manifests rather than
+    * `TypeTag`s for type checking.  Comments in ClassManifestDeprecatedApis says:
+    *
+    * "''this part is wrong for punting unless the rhs has no type arguments, but it's better
+    * than a blindfolded pinata swing.''"
+    *
+    * This implementation covers many simple cases in the intersection of scala 2.10
+    * and 2.11 instances.  See test for coverage.
+    *
+    * @param a RefInfo instance of element type
+    * @param possibleIterable a possible Iterable
+    * @tparam A element type
+    * @tparam Iter possible iterable type.
+    * @return true if `possibleIterable` is a `scala.collection.immutable.Iterable[A]`
+    *         but not a `scala.collection.Map[_, _]`.
+    */
+  def isImmutableIterableButNotMap[A, Iter](implicit a: RefInfo[A], possibleIterable: RefInfo[Iter]): Boolean = {
+    classOf[scala.collection.immutable.Iterable[_]].isAssignableFrom(possibleIterable.runtimeClass) &&
+    !classOf[scala.collection.Map[_, _]].isAssignableFrom(possibleIterable.runtimeClass) &&
+    (List(a) == possibleIterable.typeArguments ||
+      (possibleIterable.typeArguments.isEmpty && (
+        ((a == RefInfo.Int || a == RefInfo.JavaInteger) &&
+          (possibleIterable == RefInfo[sci.BitSet] ||
+           possibleIterable == RefInfo[sci.BitSet.BitSet1] ||
+           possibleIterable == RefInfo[sci.BitSet.BitSet2] ||
+           possibleIterable == RefInfo[sci.BitSet.BitSetN] ||
+           possibleIterable == RefInfo[sci.Range])) ||
+        ((a == RefInfo.Char || a == RefInfo.JavaCharacter) &&
+           possibleIterable == RefInfo[sci.WrappedString]))))
+  }
+
 
   /**
    * Is Sub a subtype of Super

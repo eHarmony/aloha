@@ -1,5 +1,3 @@
-import sbt.inc.IncOptions
-
 name := "aloha"
 homepage := Some(url("https://github.com/eharmony/aloha"))
 licenses := Seq("MIT License" -> url("http://opensource.org/licenses/MIT"))
@@ -160,8 +158,8 @@ lazy val filteredTask = Def.task {
 // ===========================================================================
 
 lazy val root = project.in(file("."))
-  .aggregate(core, vwJni, h2o, ioProto, cli)
-  .dependsOn(core, vwJni, h2o, ioProto, cli)
+  .aggregate(core, vwJni, h2o, cli, ioProto, avroScoreJava, ioAvro)
+  .dependsOn(core, vwJni, h2o, cli, ioProto, avroScoreJava, ioAvro)
   .settings(commonSettings: _*)
   .settings(versionDependentSettings: _*)
   .settings(dependencyOverrides ++= Dependencies.overrideDeps)
@@ -212,6 +210,29 @@ lazy val cli = project.in(file("aloha-cli"))
   .settings(editSourceSettings: _*)
   .settings(libraryDependencies ++= Dependencies.cliDeps)
   .settings(dependencyOverrides ++= Dependencies.overrideDeps)
+
+// Avro definitions only
+lazy val avroScoreJava = project.in(file("aloha-avro-score-java"))
+  .settings(
+    name := "aloha-avro-score-java",
+    organization := "com.eharmony",
+    crossPaths := false,
+    resolvers ++= Seq(
+      Resolver.sonatypeRepo("releases"),
+      Resolver.sonatypeRepo("snapshots")
+    ),
+    libraryDependencies := Dependencies.avroScoreJavaDeps
+  )
+
+lazy val ioAvro = project.in(file("aloha-io-avro"))
+  .settings(name := "aloha-io-avro")
+  .dependsOn(core % "test->test;compile->compile", core, avroScoreJava)
+  .settings(commonSettings: _*)
+  .settings(versionDependentSettings: _*)
+  .settings(editSourceSettings: _*)
+  .settings(libraryDependencies ++= Dependencies.ioAvroDeps)
+  .settings(dependencyOverrides ++= Dependencies.overrideDeps)
+
 
 
 // ===========================================================================

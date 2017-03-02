@@ -17,6 +17,7 @@ object Dependencies {
   val vwJniVersion = "8.1.0"
   val h2oVersion = "3.8.2.3"
   val guavaVersion = "16.0.1"
+  val avroVersion = "1.8.1"
 
   val scalazCore = "org.scalaz" %% "scalaz-core" % scalazVersion
   val runtimeManifest = "com.github.deaktator" %% "scala-runtime-manifest" % "1.0.0"
@@ -65,6 +66,9 @@ object Dependencies {
   val springTest = "org.springframework" % "spring-test" % springVersion % "test"
 
 
+  val avro = "org.apache.avro" % "avro" % avroVersion
+  val avroNoSlf4j = avro excludeAll(ExclusionRule("org.slf4j", "slf4j-api"))
+
   lazy val coreDeps = Seq(
     classMate, commonsCodec, commonsIo, mwt, reflections,
     runtimeManifest, scalazCore, scopt, slf4jApi, sprayJson,
@@ -74,6 +78,10 @@ object Dependencies {
     junit, junitInterface, mallet % "test",
     springBeans, springCore, springCtx, springCtxSupport, springTest
   )
+
+  lazy val ioAvroDeps = Seq(avroNoSlf4j, junit, slf4jApi)
+
+  lazy val avroScoreJavaDeps = Seq(avro)
 
   lazy val vwJniDeps = Seq(
     vwJni, commonsCodec, scopt,
@@ -96,6 +104,6 @@ object Dependencies {
   )
 
   lazy val overrideDeps = Set(
-    guava, parserCombinators, scalaXml, commonsLogging, log4j
+    guava, parserCombinators, scalaXml, commonsLogging, log4j, slf4jApi
   )
 }

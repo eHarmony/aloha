@@ -1,0 +1,21 @@
+@namespace("com.eharmony.aloha.audit.impl.avro")
+protocol AlohaScoreProtocol {
+  record ModelId {
+    union { null, long } id = null;
+    union { null, string } name = null;
+  }
+
+  record Score {
+    union { null, ModelId } model = null;
+
+    union {
+      null, boolean, int, long, float, double, string,
+      array<union{boolean, int, long, float, double, string}>
+    } value = null;
+
+    union { array<Score>, null } subvalues = [];
+    union { array<string>, null } errorMsgs = [];
+    union { array<string>, null } missingVarNames = [];
+    union { null, float } prob = null;
+  }
+}
