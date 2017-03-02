@@ -5,6 +5,9 @@ import org.junit.{Ignore, Test}
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 import com.eharmony.aloha.feature.MapImplicitRegressionConversion._
+
+import com.eharmony.aloha.util.hashing.MurmurHash3
+
 import scala.{collection => sc}
 
 
@@ -28,11 +31,39 @@ class SkipGramsTest {
   val s2 = "Insurgents killed in ongoing fighting"
   val s3 = "5 of us walked the 8 street with 8 dwarfs"
 
+  val s1Hash = Seq(126075915, 515500153, -396237494, -797340276, -243956657, 126075915, 992691106, 393316680)
+  val s2Hash = Seq(20532734, 1484921003, -709633187, -49958258, -1420263381)
+  val s3Hash = Seq(2100358791, -1698111023, 301784327, 1640444393, 126075915, 2046920067, -567488318, -63834616, 2046920067, 1373084603)
+
   val allTests = Seq(s1, s2, s3)
 
   @Test def test2SkipTrigrams(): Unit = {
     assertEquals(insurgent2skip3Grams, SkipGrams.skipGrams(s2, 3, 2).coerce)
   }
+
+  @Test def testHashes(): Unit = {
+    val actual = allTests.map(str => str.split(" ").map(MurmurHash3.stringHash).toList).toList
+    val expected = List(s1Hash, s2Hash, s3Hash)
+    (expected zip actual).zipWithIndex foreach { case ((e, a), i) =>
+      assertEquals(s"For test $i:", e, a)
+    }
+  }
+
+  @Test def testMaxElementsBagOfWords(): Unit = {
+    val maxElements = Option(2)
+    val actual1 = SkipGrams.bag(s1, maxElements = maxElements)
+    val expected1 = Map("=red" -> 1d, "=over" -> 1d)
+    assertEquals(expected1, actual1)
+
+    val actual2 = SkipGrams.bag(s2, maxElements = maxElements)
+    val expected2 = Map("=Insurgents" -> 1d, "=fighting" -> 1d)
+    assertEquals(expected2, actual2)
+
+    val actual3 = SkipGrams.bag(s3, maxElements = maxElements)
+    val expected3 = Map("=with" -> 1d, "=of" -> 1d)
+    assertEquals(expected3, actual3)
+  }
+
 
   @Test def testBagOfWords(): Unit = {
     allTests foreach { s =>
