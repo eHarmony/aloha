@@ -69,14 +69,22 @@ object AvroGenericRecordAuditor extends Serializable {
 
       // TODO: Should a String really be inserted to the record or a CharSequence like a avro.util.Utf8?
       case RefInfo.String => opt(IdentityAuditor[String]())
-      case r if RefInfoOps.isIterable(RefInfo.Boolean, r) => opt(IdentityArrayAuditor[Boolean]())
-      case r if RefInfoOps.isIterable(RefInfo.Byte, r) => opt(IdentitySubTypeArrayAuditor[Byte, Int])
-      case r if RefInfoOps.isIterable(RefInfo.Short, r) => opt(IdentitySubTypeArrayAuditor[Short, Int])
-      case r if RefInfoOps.isIterable(RefInfo.Int, r) => opt(IdentityArrayAuditor[Int]())
-      case r if RefInfoOps.isIterable(RefInfo.Long, r) => opt(IdentityArrayAuditor[Long]())
-      case r if RefInfoOps.isIterable(RefInfo.Float, r) => opt(IdentityArrayAuditor[Float]())
-      case r if RefInfoOps.isIterable(RefInfo.Double, r) => opt(IdentityArrayAuditor[Double]())
-      case r if RefInfoOps.isIterable(RefInfo.String, r) => opt(IdentityArrayAuditor[String]())
+      case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Boolean, r) =>
+        opt(IdentityArrayAuditor[Boolean]())
+      case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Byte, r) =>
+        opt(IdentitySubTypeArrayAuditor[Byte, Int])
+      case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Short, r) =>
+        opt(IdentitySubTypeArrayAuditor[Short, Int])
+      case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Int, r) =>
+        opt(IdentityArrayAuditor[Int]())
+      case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Long, r) =>
+        opt(IdentityArrayAuditor[Long]())
+      case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Float, r) =>
+        opt(IdentityArrayAuditor[Float]())
+      case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Double, r) =>
+        opt(IdentityArrayAuditor[Double]())
+      case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.String, r) =>
+        opt(IdentityArrayAuditor[String]())
 
       case _ => None
     }

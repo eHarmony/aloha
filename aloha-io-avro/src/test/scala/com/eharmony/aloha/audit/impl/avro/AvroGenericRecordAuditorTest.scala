@@ -19,6 +19,7 @@ import org.junit.runners.BlockJUnit4ClassRunner
 
 import scala.collection.JavaConversions.{asScalaBuffer, asScalaIterator}
 import scala.util.Random
+import scala.collection.{immutable => sci}
 
 /**
   * Test that auditors are instantiated correctly and correctly audit values.
@@ -99,20 +100,20 @@ class AvroGenericRecordAuditorTest extends ModelSerializationTestHelper {
     a1.success(M1, false)
     a1.failure(M1)
 
-    val a2 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[Iterable[Boolean]].get)
-    a2.success(M2, Iterable(true, false))
+    val a2 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[sci.Iterable[Boolean]].get)
+    a2.success(M2, sci.Iterable(true, false))
     a2.failure(M2)
 
-    val a3 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[IndexedSeq[Boolean]].get)
-    a3.success(M2, IndexedSeq(true, false))
+    val a3 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[sci.IndexedSeq[Boolean]].get)
+    a3.success(M2, sci.IndexedSeq(true, false))
     a3.failure(M2)
 
     val a4 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[List[Boolean]].get)
     a4.success(M2, List(true, false))
     a4.failure(M2)
 
-    val a5 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[Seq[Boolean]].get)
-    a5.success(M2, Seq(true, false))
+    val a5 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[sci.Seq[Boolean]].get)
+    a5.success(M2, sci.Seq(true, false))
     a5.failure(M2)
 
     val a6 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[Vector[Boolean]].get)
@@ -127,8 +128,8 @@ class AvroGenericRecordAuditorTest extends ModelSerializationTestHelper {
     a8.success(M2, Stream(true, false))
     a8.failure(M2)
 
-    val a9 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[Iterable[Short]].get)
-    a9.success(M2, Iterable(1.toShort, 2.toShort))
+    val a9 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[sci.Iterable[Short]].get)
+    a9.success(M2, sci.Iterable(1.toShort, 2.toShort))
     a9.failure(M2)
   }
 
@@ -206,14 +207,22 @@ class AvroGenericRecordAuditorTest extends ModelSerializationTestHelper {
         case RefInfo.Double => assertEquals(exp.asInstanceOf[Double], v.asInstanceOf[Double], 0d)
         case RefInfo.String  => assertEquals(exp, v.asInstanceOf[CharSequence].toString)
 
-        case r if RefInfoOps.isIterable(RefInfo.Boolean, r) => checkIter[A, Boolean](exp, v)
-        case r if RefInfoOps.isIterable(RefInfo.Byte, r) => checkCastIter[A, Int, Byte](exp, v)(_.toByte)
-        case r if RefInfoOps.isIterable(RefInfo.Short, r) => checkCastIter[A, Int, Short](exp, v)(_.toShort)
-        case r if RefInfoOps.isIterable(RefInfo.Int, r) => checkIter[A, Int](exp, v)
-        case r if RefInfoOps.isIterable(RefInfo.Long, r) => checkIter[A, Long](exp, v)
-        case r if RefInfoOps.isIterable(RefInfo.Float, r) => checkIter[A, Float](exp, v)
-        case r if RefInfoOps.isIterable(RefInfo.Double, r) => checkIter[A, Double](exp, v)
-        case r if RefInfoOps.isIterable(RefInfo.String, r) => checkCastIter[A, CharSequence, String](exp, v)(_.toString)
+        case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Boolean, r) =>
+          checkIter[A, Boolean](exp, v)
+        case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Byte, r) =>
+          checkCastIter[A, Int, Byte](exp, v)(_.toByte)
+        case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Short, r) =>
+          checkCastIter[A, Int, Short](exp, v)(_.toShort)
+        case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Int, r) =>
+          checkIter[A, Int](exp, v)
+        case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Long, r) =>
+          checkIter[A, Long](exp, v)
+        case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Float, r) =>
+          checkIter[A, Float](exp, v)
+        case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Double, r) =>
+          checkIter[A, Double](exp, v)
+        case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.String, r) =>
+          checkCastIter[A, CharSequence, String](exp, v)(_.toString)
         case t => fail(s"unrecognized type: ${RefInfoOps.toString(t)}")
       }
     }
@@ -390,18 +399,24 @@ class AvroGenericRecordAuditorTest extends ModelSerializationTestHelper {
   private[this] def instantiate[A: RefInfo](): Unit = {
     val auditors = Map(
       RefInfo[A] -> AvroGenericRecordAuditor[A],
-      RefInfo[Iterable[A]] -> AvroGenericRecordAuditor[Iterable[A]],
-      RefInfo[IndexedSeq[A]] -> AvroGenericRecordAuditor[IndexedSeq[A]],
       RefInfo[List[A]] -> AvroGenericRecordAuditor[List[A]],
-      RefInfo[Seq[A]] -> AvroGenericRecordAuditor[Seq[A]],
       RefInfo[Vector[A]] -> AvroGenericRecordAuditor[Vector[A]],
       RefInfo[Set[A]] -> AvroGenericRecordAuditor[Set[A]],
-      RefInfo[Stream[A]] -> AvroGenericRecordAuditor[Stream[A]]
+      RefInfo[Stream[A]] -> AvroGenericRecordAuditor[Stream[A]],
+      RefInfo[sci.IndexedSeq[A]] -> AvroGenericRecordAuditor[sci.IndexedSeq[A]],
+      RefInfo[sci.Iterable[A]] -> AvroGenericRecordAuditor[sci.Iterable[A]],
+      RefInfo[sci.Seq[A]] -> AvroGenericRecordAuditor[sci.Seq[A]],
+
+      // Fails
+      RefInfo[Iterable[A]] -> AvroGenericRecordAuditor[Iterable[A]],
+      RefInfo[IndexedSeq[A]] -> AvroGenericRecordAuditor[IndexedSeq[A]],
+      RefInfo[Seq[A]] -> AvroGenericRecordAuditor[Seq[A]]
     )
 
-    val fails = auditors.collect{ case (ri, None) => RefInfoOps.toString(ri) }.toList
+    val fails = auditors.collect { case (ri, None) => ri }.toSet
 
-    assertEquals("found failures:", Nil, fails)
+    val expected = Set(RefInfo[IndexedSeq[A]], RefInfo[Iterable[A]], RefInfo[Seq[A]])
+    assertEquals("found failures:", expected, fails)
   }
 }
 
@@ -425,9 +440,9 @@ object AvroGenericRecordAuditorTest {
   val RawFloats = Seq(5f, Float.MinPositiveValue)
   val RawDoubles = Seq(6d, 1e200)
   val RawStrings = Seq("Nothing", "Something")
-  val Iterables = Seq(Iterable(2), Iterable(3, 4))
-  val IndexedSeqs = Seq(IndexedSeq(12), IndexedSeq(13, 14))
-  val Seqs = Seq(Seq(112.toByte), Seq(113.toByte, 114.toByte))
+  val Iterables = Seq(sci.Iterable(2), sci.Iterable(3, 4))
+  val IndexedSeqs = Seq(sci.IndexedSeq(12), sci.IndexedSeq(13, 14))
+  val Seqs = Seq(sci.Seq(112.toByte), sci.Seq(113.toByte, 114.toByte))
   val Vectors = Seq(Vector(1112f), Vector(1113f, 1114f))
   val Sets = Seq(Set(11112d), Set(11113d, 11114d))
   val Streams = Seq(Stream(111112L), Stream(111113L, 111114L))
