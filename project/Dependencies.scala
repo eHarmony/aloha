@@ -81,8 +81,7 @@ object Dependencies {
 
   lazy val ioAvroDeps = Seq(avroNoSlf4j, junit, slf4jApi)
 
-  lazy val avroScoreDeps = Seq(avro)
-
+  lazy val avroScoreJavaDeps = Seq(avro)
 
   lazy val vwJniDeps = Seq(
     vwJni, commonsCodec, scopt,

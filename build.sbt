@@ -158,8 +158,8 @@ lazy val filteredTask = Def.task {
 // ===========================================================================
 
 lazy val root = project.in(file("."))
-  .aggregate(core, vwJni, h2o, cli, ioProto, avroScore, ioAvro)
-  .dependsOn(core, vwJni, h2o, cli, ioProto, avroScore, ioAvro)
+  .aggregate(core, vwJni, h2o, cli, ioProto, avroScoreJava, ioAvro)
+  .dependsOn(core, vwJni, h2o, cli, ioProto, avroScoreJava, ioAvro)
   .settings(commonSettings: _*)
   .settings(versionDependentSettings: _*)
   .settings(dependencyOverrides ++= Dependencies.overrideDeps)
@@ -212,21 +212,21 @@ lazy val cli = project.in(file("aloha-cli"))
   .settings(dependencyOverrides ++= Dependencies.overrideDeps)
 
 // Avro definitions only
-lazy val avroScore = project.in(file("aloha-avro-score"))
+lazy val avroScoreJava = project.in(file("aloha-avro-score-java"))
   .settings(
-    name := "aloha-avro-score",
+    name := "aloha-avro-score-java",
     organization := "com.eharmony",
     crossPaths := false,
     resolvers ++= Seq(
       Resolver.sonatypeRepo("releases"),
       Resolver.sonatypeRepo("snapshots")
     ),
-    libraryDependencies := Dependencies.avroScoreDeps
+    libraryDependencies := Dependencies.avroScoreJavaDeps
   )
 
 lazy val ioAvro = project.in(file("aloha-io-avro"))
   .settings(name := "aloha-io-avro")
-  .dependsOn(core % "test->test;compile->compile", core, avroScore)
+  .dependsOn(core % "test->test;compile->compile", core, avroScoreJava)
   .settings(commonSettings: _*)
   .settings(versionDependentSettings: _*)
   .settings(editSourceSettings: _*)
