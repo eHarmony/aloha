@@ -311,25 +311,25 @@ object H2oModel extends ParserProviderCompanion
   }
 
   @throws(classOf[IllegalArgumentException])
-  private[eharmony] def json(spec: Vfs,
-                             model: Vfs,
-                             id: ModelId,
-                             responseColumn: Option[String] = None,
-                             externalModel: Boolean = false,
-                             numMissingThreshold: Option[Int] = None,
-                             notes: Option[Seq[String]] = None): JsValue = {
+  def json(spec: Vfs,
+           model: Vfs,
+           id: ModelId,
+           responseColumn: Option[String] = None,
+           externalModel: Boolean = false,
+           numMissingThreshold: Option[Int] = None,
+           notes: Option[Seq[String]] = None): JsValue = {
     val modelSource = getModelSource(model, externalModel)
     val features = getFeatures(spec, responseColumn)
     json(spec.toString, features, modelSource, id, numMissingThreshold, notes)
   }
 
   @throws(classOf[IllegalArgumentException])
-  private[eharmony] def json(spec: String,
-    model: String,
-    id: ModelId,
-    responseColumn: Option[String],
-    numMissingThreshold: Option[Int],
-    notes: Option[Seq[String]]): JsValue = {
+  def json(spec: String,
+           model: String,
+           id: ModelId,
+           responseColumn: Option[String],
+           numMissingThreshold: Option[Int],
+           notes: Option[Seq[String]]): JsValue = {
     val modelSource = getLocalSource(model.getBytes)
     val features = getFeatures(spec.parseJson.asJsObject, responseColumn)
     json(spec, features, modelSource, id, numMissingThreshold, notes)
@@ -345,13 +345,12 @@ object H2oModel extends ParserProviderCompanion
     * @return
     */
   @throws(classOf[IllegalArgumentException])
-  private[eharmony] def json(
-    spec: String,
-    features: Option[ListMap[String, H2oSpec]],
-    modelSource: ModelSource,
-    id: ModelId,
-    numMissingThreshold: Option[Int],
-    notes: Option[Seq[String]]): JsValue = {
+  def json(spec: String,
+           features: Option[ListMap[String, H2oSpec]],
+           modelSource: ModelSource,
+           id: ModelId,
+           numMissingThreshold: Option[Int],
+           notes: Option[Seq[String]]): JsValue = {
     val notesList = notes filter {_.nonEmpty}
 
     features.map { fs =>
