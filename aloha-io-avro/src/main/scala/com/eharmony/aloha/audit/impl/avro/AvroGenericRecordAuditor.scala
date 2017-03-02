@@ -32,8 +32,6 @@ object AvroGenericRecordAuditor extends Serializable {
     */
   private[this] val SchemaResourceLocation = "com/eharmony/aloha/audit/impl/avro/generic_record_auditor.avsc"
 
-  // TODO: Should the schemas be inside AvroGenericRecordAuditor instead of in the companion object?
-
   /**
     * `org.apache.avro.Schema` doesn't extend Serializable so this needs to be transient.
     */
@@ -111,15 +109,9 @@ object AvroGenericRecordAuditor extends Serializable {
 
       val r = new GenericData.Record(AuditorSchema)
       r.put("model", mId(key))
-
-      // TODO: Should these be null if iterables are empty?
-      // TODO: Should there be an option to accumlate errors and missing variables from submodels?
       r.put("errorMsgs", seqAsJavaList(errorMsgs))
       r.put("subvalues", seqAsJavaList(subValues))
-
-      // TODO: Should we care about ordering here?
-      r.put("missingVarNames", seqAsJavaList(missingVarNames.toVector.sorted))
-
+      r.put("missingVarNames", seqAsJavaList(missingVarNames.toVector))
       r
     }
 
@@ -133,15 +125,9 @@ object AvroGenericRecordAuditor extends Serializable {
       r.put("model", mId(key))
       r.put("value", convertToWire(valueToAudit))
       prob.foreach(p => r.put("prob", p))
-
-      // TODO: Should these be null if iterables are empty?
-      // TODO: Should there be an option to accumlate errors and missing variables from submodels?
       r.put("errorMsgs", seqAsJavaList(errorMsgs))
       r.put("subvalues", seqAsJavaList(subValues))
-
-      // TODO: Should we care about ordering here?
-      r.put("missingVarNames", seqAsJavaList(missingVarNames.toVector.sorted))
-
+      r.put("missingVarNames", seqAsJavaList(missingVarNames.toVector))
       r
     }
 

@@ -138,7 +138,13 @@ trait SchemaBasedSemanticsPlugin[A] { self: CompiledSemanticsPlugin[A] =>
   }
 
   private[schemabased] def err(consumed: List[Token], addlMsg: String = ""): ValidationNel[String, Nothing] = {
-    val problem = consumed.reverse.map({ case Field(f) => f; case Index(i) => "[" + i + "]" }).mkString(".").replaceAll("""\.\[""", "[")
+    val problem =
+      consumed.
+        reverse.
+        map { case Field(f) => f; case Index(i) => "[" + i + "]" }.
+        mkString(".").
+        replaceAll("""\.\[""", "[")
+
     ("Problem found at: '" + problem + "'. " + addlMsg).trim.failNel
   }
 
