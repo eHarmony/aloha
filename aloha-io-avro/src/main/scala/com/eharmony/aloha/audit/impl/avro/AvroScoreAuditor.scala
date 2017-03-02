@@ -1,14 +1,12 @@
 package com.eharmony.aloha.audit.impl.avro
 
+import java.{lang => jl, util => ju}
+
 import com.eharmony.aloha.audit.MorphableAuditor
 import com.eharmony.aloha.id.ModelIdentity
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
-import org.apache.avro.Schema
-import org.apache.avro.Schema.Type.RECORD
-import org.apache.avro.generic.{GenericData, GenericRecord}
-import org.apache.commons.io.IOUtils
-import java.{util => ju}
-import scala.collection.JavaConversions.{seqAsJavaList, collectionAsScalaIterable}
+
+import scala.collection.JavaConversions.seqAsJavaList
 
 /**
   * An auditor for encoding information in a tree structure as an Avro `org.apache.avro.generic.GenericRecord`.
@@ -19,45 +17,12 @@ import scala.collection.JavaConversions.{seqAsJavaList, collectionAsScalaIterabl
   *
   * @tparam N the natural output type of a model whose data is to be audited.
   */
-sealed abstract class AvroGenericRecordAuditor[N]
-  extends MorphableAuditor[GenericRecord, N, GenericRecord]
+sealed abstract class AvroScoreAuditor[N]
+  extends MorphableAuditor[Score, N, Score]
      with Serializable
 
-object AvroGenericRecordAuditor extends Serializable {
-  /**
-    * '''NOTE''': The class loader is used to locate the Avro schema specification rather than
-    * Apache VFS 1 or 2.  This is done because issues can arise when users initialize both
-    * VFS 1 and 2.  Since the choice of auditor shouldn't affect the user's choice or VFS
-    * version elsewhere in Aloha, we don't use VFS.
-    */
-  private[this] val SchemaResourceLocation = "com/eharmony/aloha/audit/impl/avro/generic_record_auditor.avsc"
-
-  /**
-    * `org.apache.avro.Schema` doesn't extend Serializable so this needs to be transient.
-    */
-  @transient private[this] lazy val AuditorSchema: Schema = {
-    val parser = new Schema.Parser()
-    val is = getClass.getClassLoader.getResourceAsStream(SchemaResourceLocation)
-    try {
-      parser.parse(is)
-    }
-    finally {
-      IOUtils.closeQuietly(is)
-    }
-  }
-
-  /**
-    * `org.apache.avro.Schema` doesn't extend Serializable so this needs to be transient.
-    */
-  @transient private[this] lazy val ModelIdSchema: Schema = {
-    // the `.get` at the end blows up (on purpose).
-    collectionAsScalaIterable(AuditorSchema.getField("model").schema().getTypes).toSeq.find(s => s.getType == RECORD).get
-  }
-
-  // Force the retrieval of the lazy vals at creation time.  They are only lazy to avoid serializing.
-  require(AuditorSchema != null && ModelIdSchema != null)
-
-  def apply[N](implicit ri: RefInfo[N]): Option[AvroGenericRecordAuditor[N]] = {
+object AvroScoreAuditor extends Serializable {
+  def apply[N](implicit ri: RefInfo[N]): Option[AvroScoreAuditor[N]] = {
     ri match {
       case RefInfo.Boolean => opt(IdentityAuditor[Boolean]())
       case RefInfo.Byte => opt(IdentitySubTypeAuditor[Byte, Int])
@@ -93,7 +58,7 @@ object AvroGenericRecordAuditor extends Serializable {
   /**
     * Cast `auditor` to `AvroGenericRecordAuditor[N]` and wrap in an Option.
     * '''NOTE''': ''I hate this method'' but I don't want to require an implicit
-    * [[AvroGenericRecordAuditor]] as a parameter in the apply method because [[Impl]]'s
+    * [[AvroScoreAuditor]] as a parameter in the apply method because [[Impl]]'s
     * `changeType` method would then need the same implicit to be included.  A determination
     * should be made as to the feasibility of this strategy.
     *
@@ -101,54 +66,43 @@ object AvroGenericRecordAuditor extends Serializable {
     * @tparam N type of auditor to be returned
     * @return
     */
-  private[this] def opt[N](auditor: AvroGenericRecordAuditor[_]): Option[AvroGenericRecordAuditor[N]] =
-    Option(auditor.asInstanceOf[AvroGenericRecordAuditor[N]])
+  private[this] def opt[N](auditor: AvroScoreAuditor[_]): Option[AvroScoreAuditor[N]] =
+    Option(auditor.asInstanceOf[AvroScoreAuditor[N]])
 
-  private[this] sealed trait Impl[N] extends AvroGenericRecordAuditor[N] {
+  private[this] sealed trait Impl[N] extends AvroScoreAuditor[N] {
 
-    override final def changeType[M: RefInfo]: Option[AvroGenericRecordAuditor[M]] = AvroGenericRecordAuditor[M]
+    override final def changeType[M: RefInfo]: Option[AvroScoreAuditor[M]] = AvroScoreAuditor[M]
 
     protected[this] def convertToWire(value: N): Any
 
     override final def failure(key: ModelIdentity,
                                errorMsgs: => Seq[String],
                                missingVarNames: => Set[String],
-                               subValues: Seq[GenericRecord]): GenericRecord = {
-
-      val r = new GenericData.Record(AuditorSchema)
-      r.put("model", mId(key))
-      r.put("errorMsgs", seqAsJavaList(errorMsgs))
-      r.put("subvalues", seqAsJavaList(subValues))
-      r.put("missingVarNames", seqAsJavaList(missingVarNames.toVector))
-      r
+                               subValues: Seq[Score]): Score = {
+      new Score(
+        new ModelId(key.getId(), key.getName()),
+        null,
+        seqAsJavaList(subValues),
+        seqAsJavaList(errorMsgs),
+        seqAsJavaList(missingVarNames.toVector),
+        null
+      )
     }
 
     override final def success(key: ModelIdentity,
                                valueToAudit: N,
                                errorMsgs: => Seq[String] = Nil,
                                missingVarNames: => Set[String] = Set.empty,
-                               subValues: Seq[GenericRecord] = Nil,
-                               prob: => Option[Float] = None): GenericRecord = {
-      val r = new GenericData.Record(AuditorSchema)
-      r.put("model", mId(key))
-      r.put("value", convertToWire(valueToAudit))
-      prob.foreach(p => r.put("prob", p))
-      r.put("errorMsgs", seqAsJavaList(errorMsgs))
-      r.put("subvalues", seqAsJavaList(subValues))
-      r.put("missingVarNames", seqAsJavaList(missingVarNames.toVector))
-      r
-    }
-
-    /**
-      * Create a GenericRecord for the model ID.
-      * @param modelId a model ID
-      * @return
-      */
-    private[this] def mId(modelId: ModelIdentity) = {
-      val mId = new GenericData.Record(ModelIdSchema)
-      mId.put("id", modelId.getId())
-      mId.put("name", modelId.getName())
-      mId
+                               subValues: Seq[Score] = Nil,
+                               prob: => Option[Float] = None): Score = {
+      new Score(
+        new ModelId(key.getId(), key.getName()),
+        convertToWire(valueToAudit),
+        seqAsJavaList(subValues),
+        seqAsJavaList(errorMsgs),
+        seqAsJavaList(missingVarNames.toVector),
+        prob.map(jl.Float.valueOf).orNull
+      )
     }
   }
 

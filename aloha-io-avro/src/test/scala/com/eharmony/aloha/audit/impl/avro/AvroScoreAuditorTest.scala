@@ -5,13 +5,10 @@ import java.{lang => jl, util => ju}
 
 import com.eharmony.aloha.ModelSerializationTestHelper
 import com.eharmony.aloha.audit.MorphableAuditor
-import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import org.apache.avro.Schema
 import org.apache.avro.file.{DataFileReader, DataFileWriter}
 import org.apache.avro.generic.{GenericDatumReader, GenericDatumWriter, GenericRecord}
-import org.apache.commons.io.IOUtils
-import org.apache.commons.vfs2.VFS
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -30,20 +27,12 @@ import scala.collection.{immutable => sci}
   * Created by ryan on 2/27/17.
   */
 @RunWith(classOf[BlockJUnit4ClassRunner])
-class AvroGenericRecordAuditorTest extends ModelSerializationTestHelper {
-  import AvroGenericRecordAuditorTest._
+class AvroScoreAuditorTest extends ModelSerializationTestHelper {
+  import AvroScoreAuditorTest._
 
   private[this] implicit val rand = new Random(0)
 
-  private[this] lazy val schema = {
-    val is = VFS.getManager.resolveFile(SchemaVfsUrl).getContent.getInputStream
-    try {
-      new Schema.Parser().parse(is)
-    }
-    finally {
-      IOUtils.closeQuietly(is)
-    }
-  }
+  private[this] lazy val schema = Score.getClassSchema
 
   @Test def testAuditing(): Unit = {
     test(RawBools, RawBytes)
@@ -69,7 +58,7 @@ class AvroGenericRecordAuditorTest extends ModelSerializationTestHelper {
 
   @Test def testMissingValues(): Unit = {
     val missing = Set("one", "two")
-    val aud = AvroGenericRecordAuditor[Boolean].get
+    val aud = AvroScoreAuditor[Boolean].get
     val s = aud.success(M1, true, Nil, missing, Nil, None)
     val sMissing = asScalaBuffer(s.get(MissingVarNamesField).asInstanceOf[ju.List[CharSequence]]).map(_.toString).toSet
     assertEquals(missing, sMissing)
@@ -81,7 +70,7 @@ class AvroGenericRecordAuditorTest extends ModelSerializationTestHelper {
 
   @Test def testErrors(): Unit = {
     val errors = Seq("one", "two")
-    val aud = AvroGenericRecordAuditor[Boolean].get
+    val aud = AvroScoreAuditor[Boolean].get
     val s = aud.success(M1, true, errors, Set.empty, Nil, None)
     val sMissing = asScalaBuffer(s.get(ErrorMsgsField).asInstanceOf[ju.List[CharSequence]]).map(_.toString)
     assertEquals(errors, sMissing)
@@ -92,43 +81,43 @@ class AvroGenericRecordAuditorTest extends ModelSerializationTestHelper {
   }
 
   @Test def testSerializability(): Unit = {
-    val a0 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[Short].get)
+    val a0 = serializeDeserializeRoundTrip(AvroScoreAuditor[Short].get)
     a0.success(M1, 1.toShort)
     a0.failure(M1)
 
-    val a1 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[Boolean].get)
+    val a1 = serializeDeserializeRoundTrip(AvroScoreAuditor[Boolean].get)
     a1.success(M1, false)
     a1.failure(M1)
 
-    val a2 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[sci.Iterable[Boolean]].get)
+    val a2 = serializeDeserializeRoundTrip(AvroScoreAuditor[sci.Iterable[Boolean]].get)
     a2.success(M2, sci.Iterable(true, false))
     a2.failure(M2)
 
-    val a3 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[sci.IndexedSeq[Boolean]].get)
+    val a3 = serializeDeserializeRoundTrip(AvroScoreAuditor[sci.IndexedSeq[Boolean]].get)
     a3.success(M2, sci.IndexedSeq(true, false))
     a3.failure(M2)
 
-    val a4 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[List[Boolean]].get)
+    val a4 = serializeDeserializeRoundTrip(AvroScoreAuditor[List[Boolean]].get)
     a4.success(M2, List(true, false))
     a4.failure(M2)
 
-    val a5 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[sci.Seq[Boolean]].get)
+    val a5 = serializeDeserializeRoundTrip(AvroScoreAuditor[sci.Seq[Boolean]].get)
     a5.success(M2, sci.Seq(true, false))
     a5.failure(M2)
 
-    val a6 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[Vector[Boolean]].get)
+    val a6 = serializeDeserializeRoundTrip(AvroScoreAuditor[Vector[Boolean]].get)
     a6.success(M2, Vector(true, false))
     a6.failure(M2)
 
-    val a7 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[Set[Boolean]].get)
+    val a7 = serializeDeserializeRoundTrip(AvroScoreAuditor[Set[Boolean]].get)
     a7.success(M2, Set(true, false))
     a7.failure(M2)
 
-    val a8 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[Stream[Boolean]].get)
+    val a8 = serializeDeserializeRoundTrip(AvroScoreAuditor[Stream[Boolean]].get)
     a8.success(M2, Stream(true, false))
     a8.failure(M2)
 
-    val a9 = serializeDeserializeRoundTrip(AvroGenericRecordAuditor[sci.Iterable[Short]].get)
+    val a9 = serializeDeserializeRoundTrip(AvroScoreAuditor[sci.Iterable[Short]].get)
     a9.success(M2, sci.Iterable(1.toShort, 2.toShort))
     a9.failure(M2)
   }
@@ -300,12 +289,12 @@ class AvroGenericRecordAuditorTest extends ModelSerializationTestHelper {
     * @param r a record from which a ModelId is to be extracted.
     * @return
     */
-  private[this] def modelId(r: GenericRecord): Option[ModelId] = {
+  private[this] def modelId(r: GenericRecord)= {
     for {
       mid <- Option(r.get(ModelIdField)) collect { case x: GenericRecord => x }
       id <- Option(mid.get(ModelIdIdField)) collect { case x: jl.Long => x.longValue }
       name <- Option(mid.get(ModelIdNameField)) collect { case x: CharSequence => x.toString }
-    } yield ModelId(id, name)
+    } yield com.eharmony.aloha.id.ModelId(id, name)
   }
 
   /**
@@ -349,7 +338,7 @@ class AvroGenericRecordAuditorTest extends ModelSerializationTestHelper {
     // Create auditors for the top-level and second-level types.  This mimic how the auditors will be
     // created inside and outside the factory.  That's why changeType is used.  These statements will throw
     // NoSuchElementExceptions if the auditor for either type A or B doesn't exist.
-    val a1 = AvroGenericRecordAuditor[A].get
+    val a1 = AvroScoreAuditor[A].get
     val a2 = a1.changeType[B].get
 
     // Loop over a bunch of different test cases.
@@ -375,15 +364,15 @@ class AvroGenericRecordAuditorTest extends ModelSerializationTestHelper {
     } check(a, b, s1, s2, inc2, p1, p2, r)
   }
 
-  private[this] def createRecord[A](aud: AvroGenericRecordAuditor[A], a: A,
-                                    subvalues: Seq[GenericRecord], success: Boolean,
+  private[this] def createRecord[A](aud: AvroScoreAuditor[A], a: A,
+                                    subvalues: Seq[Score], success: Boolean,
                                     prob: Option[Float]): GenericRecord = {
     if (success)
       aud.success(M1, a, Nil, Set.empty, subvalues, prob)
     else aud.failure(M1, Nil, Set.empty, subvalues)
   }
 
-  private[this] def createSubvalues[B](aud: MorphableAuditor[GenericRecord, B, GenericRecord],
+  private[this] def createSubvalues[B](aud: MorphableAuditor[Score, B, Score],
                                        value: B, includeSubValues: Boolean,
                                        success: Boolean, prob: Option[Float]) = {
     if (includeSubValues) {
@@ -398,19 +387,19 @@ class AvroGenericRecordAuditorTest extends ModelSerializationTestHelper {
 
   private[this] def instantiate[A: RefInfo](): Unit = {
     val auditors = Map(
-      RefInfo[A] -> AvroGenericRecordAuditor[A],
-      RefInfo[List[A]] -> AvroGenericRecordAuditor[List[A]],
-      RefInfo[Vector[A]] -> AvroGenericRecordAuditor[Vector[A]],
-      RefInfo[Set[A]] -> AvroGenericRecordAuditor[Set[A]],
-      RefInfo[Stream[A]] -> AvroGenericRecordAuditor[Stream[A]],
-      RefInfo[sci.IndexedSeq[A]] -> AvroGenericRecordAuditor[sci.IndexedSeq[A]],
-      RefInfo[sci.Iterable[A]] -> AvroGenericRecordAuditor[sci.Iterable[A]],
-      RefInfo[sci.Seq[A]] -> AvroGenericRecordAuditor[sci.Seq[A]],
+      RefInfo[A] -> AvroScoreAuditor[A],
+      RefInfo[List[A]] -> AvroScoreAuditor[List[A]],
+      RefInfo[Vector[A]] -> AvroScoreAuditor[Vector[A]],
+      RefInfo[Set[A]] -> AvroScoreAuditor[Set[A]],
+      RefInfo[Stream[A]] -> AvroScoreAuditor[Stream[A]],
+      RefInfo[sci.IndexedSeq[A]] -> AvroScoreAuditor[sci.IndexedSeq[A]],
+      RefInfo[sci.Iterable[A]] -> AvroScoreAuditor[sci.Iterable[A]],
+      RefInfo[sci.Seq[A]] -> AvroScoreAuditor[sci.Seq[A]],
 
       // Fails
-      RefInfo[Iterable[A]] -> AvroGenericRecordAuditor[Iterable[A]],
-      RefInfo[IndexedSeq[A]] -> AvroGenericRecordAuditor[IndexedSeq[A]],
-      RefInfo[Seq[A]] -> AvroGenericRecordAuditor[Seq[A]]
+      RefInfo[Iterable[A]] -> AvroScoreAuditor[Iterable[A]],
+      RefInfo[IndexedSeq[A]] -> AvroScoreAuditor[IndexedSeq[A]],
+      RefInfo[Seq[A]] -> AvroScoreAuditor[Seq[A]]
     )
 
     val fails = auditors.collect { case (ri, None) => ri }.toSet
@@ -420,7 +409,7 @@ class AvroGenericRecordAuditorTest extends ModelSerializationTestHelper {
   }
 }
 
-object AvroGenericRecordAuditorTest {
+object AvroScoreAuditorTest {
   val ValueField = "value"
   val SubvaluesField = "subvalues"
   val ModelIdField = "model"
@@ -429,8 +418,6 @@ object AvroGenericRecordAuditorTest {
   val ErrorMsgsField = "errorMsgs"
   val MissingVarNamesField = "missingVarNames"
   val ProbField = "prob"
-
-  val SchemaVfsUrl = "res:com/eharmony/aloha/audit/impl/avro/generic_record_auditor.avsc"
 
   val RawBools = Seq(true, false)
   val RawBytes = Seq(1.toByte, 127.toByte)
@@ -448,6 +435,6 @@ object AvroGenericRecordAuditorTest {
   val Streams = Seq(Stream(111112L), Stream(111113L, 111114L))
   val Lists = Seq(List(1111112.toString), List(1111113.toString, 1111114.toString))
 
-  val M1 = ModelId(1, "one")
-  val M2 = ModelId(2, "two")
+  val M1 = com.eharmony.aloha.id.ModelId(1, "one")
+  val M2 = com.eharmony.aloha.id.ModelId(2, "two")
 }
