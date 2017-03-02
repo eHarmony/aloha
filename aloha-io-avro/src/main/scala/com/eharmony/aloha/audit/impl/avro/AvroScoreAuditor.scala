@@ -17,7 +17,7 @@ import scala.collection.JavaConversions.seqAsJavaList
   *
   * '''NOTE''': `java.util.List` instances contained in these auditors instances don't
   * allow many list operations that mutate the lists and should be considered immutable.
-  * 
+  *
   * Created by ryan on 2/26/17.
   *
   * @tparam N the natural output type of a model whose data is to be audited.
@@ -28,30 +28,48 @@ sealed abstract class AvroScoreAuditor[N]
 
 object AvroScoreAuditor extends Serializable {
   def apply[N](implicit ri: RefInfo[N]): Option[AvroScoreAuditor[N]] = {
+
     ri match {
-      case RefInfo.Boolean => opt(IdentityAuditor[Boolean]())
-      case RefInfo.Byte => opt(IdentitySubTypeAuditor[Byte, Int])
-      case RefInfo.Short => opt(IdentitySubTypeAuditor[Short, Int])
-      case RefInfo.Int => opt(IdentityAuditor[Int]())
-      case RefInfo.Long  => opt(IdentityAuditor[Long]())
-      case RefInfo.Float => opt(IdentityAuditor[Float]())
-      case RefInfo.Double => opt(IdentityAuditor[Double]())
+      case RefInfo.Boolean | RefInfo.JavaBoolean => opt(IdentityAuditor[Boolean]())
+      case RefInfo.Byte | RefInfo.JavaByte => opt(IdentitySubTypeAuditor[Byte, Int])
+      case RefInfo.Short | RefInfo.JavaShort => opt(IdentitySubTypeAuditor[Short, Int])
+      case RefInfo.Int | RefInfo.JavaInteger => opt(IdentityAuditor[Int]())
+      case RefInfo.Long | RefInfo.JavaLong => opt(IdentityAuditor[Long]())
+      case RefInfo.Float | RefInfo.JavaFloat => opt(IdentityAuditor[Float]())
+      case RefInfo.Double | RefInfo.JavaDouble => opt(IdentityAuditor[Double]())
+
+//      case RefInfo.JavaBoolean => opt(IdentityAuditor[Boolean]())
+//      case RefInfo.JavaByte => opt(IdentitySubTypeAuditor[jl.Byte, jl.Integer]()(_.intValue))
+//      case RefInfo.JavaShort => opt(IdentitySubTypeAuditor[jl.Short, jl.Integer]()(_.intValue))
+//      case RefInfo.JavaInteger => opt(IdentityAuditor[jl.Integer]())
+//      case RefInfo.JavaLong  => opt(IdentityAuditor[jl.Long]())
+//      case RefInfo.JavaFloat => opt(IdentityAuditor[jl.Float]())
+//      case RefInfo.JavaDouble => opt(IdentityAuditor[jl.Double]())
+
 
       // TODO: Should a String really be inserted to the record or a CharSequence like a avro.util.Utf8?
       case RefInfo.String => opt(IdentityAuditor[String]())
-      case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Boolean, r) =>
+
+      case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Boolean, r) ||
+                RefInfoOps.isImmutableIterableButNotMap(RefInfo.JavaBoolean, r) =>
         opt(IdentityArrayAuditor[Boolean]())
-      case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Byte, r) =>
+      case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Byte, r) ||
+                RefInfoOps.isImmutableIterableButNotMap(RefInfo.JavaByte, r) =>
         opt(IdentitySubTypeArrayAuditor[Byte, Int])
-      case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Short, r) =>
+      case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Short, r) ||
+                RefInfoOps.isImmutableIterableButNotMap(RefInfo.JavaShort, r) =>
         opt(IdentitySubTypeArrayAuditor[Short, Int])
-      case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Int, r) =>
+      case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Int, r) ||
+                RefInfoOps.isImmutableIterableButNotMap(RefInfo.JavaInteger, r) =>
         opt(IdentityArrayAuditor[Int]())
-      case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Long, r) =>
+      case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Long, r) ||
+                RefInfoOps.isImmutableIterableButNotMap(RefInfo.JavaLong, r) =>
         opt(IdentityArrayAuditor[Long]())
-      case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Float, r) =>
+      case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Float, r) ||
+                RefInfoOps.isImmutableIterableButNotMap(RefInfo.JavaFloat, r) =>
         opt(IdentityArrayAuditor[Float]())
-      case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Double, r) =>
+      case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Double, r) ||
+                RefInfoOps.isImmutableIterableButNotMap(RefInfo.JavaDouble, r) =>
         opt(IdentityArrayAuditor[Double]())
       case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.String, r) =>
         opt(IdentityArrayAuditor[String]())

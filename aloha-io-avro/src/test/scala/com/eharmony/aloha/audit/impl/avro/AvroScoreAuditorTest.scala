@@ -39,6 +39,12 @@ class AvroScoreAuditorTest extends ModelSerializationTestHelper {
     test(RawShorts, RawInts)
     test(RawLongs, RawFloats)
     test(RawDoubles, RawStrings)
+
+    test(RawJavaBools, RawJavaBytes)
+    test(RawJavaShorts, RawJavaInts)
+    test(RawJavaLongs, RawJavaFloats)
+    test(RawJavaDoubles, RawStrings)
+
     test(Iterables, IndexedSeqs)
     test(Seqs, Vectors)
     test(Sets, Streams)
@@ -54,6 +60,14 @@ class AvroScoreAuditorTest extends ModelSerializationTestHelper {
     instantiate[Float]()
     instantiate[Double]()
     instantiate[String]()
+
+    instantiate[jl.Boolean]()
+    instantiate[jl.Byte]()
+    instantiate[jl.Short]()
+    instantiate[jl.Integer]()
+    instantiate[jl.Long]()
+    instantiate[jl.Float]()
+    instantiate[jl.Double]()
   }
 
   @Test def testMissingValues(): Unit = {
@@ -187,28 +201,35 @@ class AvroScoreAuditorTest extends ModelSerializationTestHelper {
       //            AnyVal types in the auditor code.
       val v: AnyRef = extractedVal.get
       RefInfo[A] match {
-        case RefInfo.Boolean => assertEquals(exp, v.asInstanceOf[Boolean])
-        case RefInfo.Byte => assertEquals(exp, v.asInstanceOf[Int].toByte)
-        case RefInfo.Short => assertEquals(exp, v.asInstanceOf[Int].toShort)
-        case RefInfo.Int => assertEquals(exp, v.asInstanceOf[Int])
-        case RefInfo.Long => assertEquals(exp, v.asInstanceOf[Long])
-        case RefInfo.Float => assertEquals(exp.asInstanceOf[Float], v.asInstanceOf[Float], 0f)
-        case RefInfo.Double => assertEquals(exp.asInstanceOf[Double], v.asInstanceOf[Double], 0d)
-        case RefInfo.String  => assertEquals(exp, v.asInstanceOf[CharSequence].toString)
+        case RefInfo.Boolean | RefInfo.JavaBoolean => assertEquals(exp, v.asInstanceOf[Boolean])
+        case RefInfo.Byte | RefInfo.JavaByte => assertEquals(exp, v.asInstanceOf[Int].toByte)
+        case RefInfo.Short | RefInfo.JavaShort => assertEquals(exp, v.asInstanceOf[Int].toShort)
+        case RefInfo.Int | RefInfo.JavaInteger => assertEquals(exp, v.asInstanceOf[Int])
+        case RefInfo.Long | RefInfo.JavaLong => assertEquals(exp, v.asInstanceOf[Long])
+        case RefInfo.Float | RefInfo.JavaFloat => assertEquals(exp.asInstanceOf[Float], v.asInstanceOf[Float], 0f)
+        case RefInfo.Double | RefInfo.JavaDouble => assertEquals(exp.asInstanceOf[Double], v.asInstanceOf[Double], 0d)
+        case RefInfo.String => assertEquals(exp, v.asInstanceOf[CharSequence].toString)
 
-        case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Boolean, r) =>
+        case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Boolean, r) ||
+                  RefInfoOps.isImmutableIterableButNotMap(RefInfo.JavaBoolean, r) =>
           checkIter[A, Boolean](exp, v)
-        case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Byte, r) =>
+        case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Byte, r) ||
+                  RefInfoOps.isImmutableIterableButNotMap(RefInfo.JavaByte, r) =>
           checkCastIter[A, Int, Byte](exp, v)(_.toByte)
-        case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Short, r) =>
+        case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Short, r) ||
+                  RefInfoOps.isImmutableIterableButNotMap(RefInfo.JavaShort, r) =>
           checkCastIter[A, Int, Short](exp, v)(_.toShort)
-        case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Int, r) =>
+        case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Int, r) ||
+                  RefInfoOps.isImmutableIterableButNotMap(RefInfo.JavaInteger, r) =>
           checkIter[A, Int](exp, v)
-        case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Long, r) =>
+        case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Long, r) ||
+                  RefInfoOps.isImmutableIterableButNotMap(RefInfo.JavaLong, r) =>
           checkIter[A, Long](exp, v)
-        case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Float, r) =>
+        case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Float, r) ||
+                  RefInfoOps.isImmutableIterableButNotMap(RefInfo.JavaFloat, r) =>
           checkIter[A, Float](exp, v)
-        case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Double, r) =>
+        case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.Double, r) ||
+                  RefInfoOps.isImmutableIterableButNotMap(RefInfo.JavaDouble, r) =>
           checkIter[A, Double](exp, v)
         case r if RefInfoOps.isImmutableIterableButNotMap(RefInfo.String, r) =>
           checkCastIter[A, CharSequence, String](exp, v)(_.toString)
@@ -420,12 +441,19 @@ object AvroScoreAuditorTest {
   val ProbField = "prob"
 
   val RawBools = Seq(true, false)
+  val RawJavaBools = RawBools.map(jl.Boolean.valueOf)
   val RawBytes = Seq(1.toByte, 127.toByte)
+  val RawJavaBytes = RawBytes.map(jl.Byte.valueOf)
   val RawShorts = Seq(2.toShort, Short.MaxValue)
+  val RawJavaShorts = RawShorts.map(jl.Short.valueOf)
   val RawInts = Seq(3, Int.MaxValue)
+  val RawJavaInts = RawInts.map(jl.Integer.valueOf)
   val RawLongs = Seq(4L, Long.MaxValue)
+  val RawJavaLongs = RawLongs.map(jl.Long.valueOf)
   val RawFloats = Seq(5f, Float.MinPositiveValue)
+  val RawJavaFloats = RawFloats.map(jl.Float.valueOf)
   val RawDoubles = Seq(6d, 1e200)
+  val RawJavaDoubles = RawDoubles.map(jl.Double.valueOf)
   val RawStrings = Seq("Nothing", "Something")
   val Iterables = Seq(sci.Iterable(2), sci.Iterable(3, 4))
   val IndexedSeqs = Seq(sci.IndexedSeq(12), sci.IndexedSeq(13, 14))

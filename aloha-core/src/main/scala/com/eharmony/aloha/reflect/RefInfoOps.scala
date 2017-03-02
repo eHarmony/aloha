@@ -204,13 +204,13 @@ object RefInfoOps extends RefInfoOps[RefInfo] with EitherHelpers {
     !classOf[scala.collection.Map[_, _]].isAssignableFrom(possibleIterable.runtimeClass) &&
     (List(a) == possibleIterable.typeArguments ||
       (possibleIterable.typeArguments.isEmpty && (
-        (a == RefInfo.Int &&
+        ((a == RefInfo.Int || a == RefInfo.JavaInteger) &&
           (possibleIterable == RefInfo[sci.BitSet] ||
            possibleIterable == RefInfo[sci.BitSet.BitSet1] ||
            possibleIterable == RefInfo[sci.BitSet.BitSet2] ||
            possibleIterable == RefInfo[sci.BitSet.BitSetN] ||
            possibleIterable == RefInfo[sci.Range])) ||
-        (a == RefInfo.Char &&
+        ((a == RefInfo.Char || a == RefInfo.JavaCharacter) &&
            possibleIterable == RefInfo[sci.WrappedString]))))
   }
 
