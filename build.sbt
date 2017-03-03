@@ -1,6 +1,4 @@
 name := "aloha"
-homepage := Some(url("https://github.com/eharmony/aloha"))
-licenses := Seq("MIT License" -> url("http://opensource.org/licenses/MIT"))
 description := """Scala-based machine learning library with generic models and lazily created features."""
 
 
@@ -251,6 +249,14 @@ lazy val ioAvro = project.in(file("aloha-io-avro"))
 sonatypeProfileName := "com.eharmony"
 
 pomExtra in Global := (
+    <url>https://github.com/eharmony/aloha</url>
+    <licenses>
+      <license>
+        <name>MIT License</name>
+        <url>https://opensource.org/licenses/MIT</url>
+        <distribution>repo</distribution>
+      </license>
+    </licenses>
     <scm>
       <url>git@github.com:eharmony/aloha.git</url>
       <developerConnection>scm:git:git@github.com:eharmony/aloha.git</developerConnection>
