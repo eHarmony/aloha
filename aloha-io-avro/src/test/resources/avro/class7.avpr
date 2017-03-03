@@ -1,0 +1,10 @@
+{
+  "name": "Class7",
+  "type": "record",
+  "fields": [
+    {
+      "name": "req_str_1",
+      "type": "string"
+    }
+  ]
+}

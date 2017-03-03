@@ -118,7 +118,7 @@ object DoubleToLongModelTest {
     private val scalaFactory = ModelFactory.defaultFactory(semantics, TreeAuditor[Long]())
     private val javaFactory = ModelFactory.defaultFactory(semantics, TreeAuditor[jl.Long]())
 
-    def getScalaLongFactory: ModelFactory[Tree[_], Long, Any, Tree[Long]] = scalaFactory
+    def getScalaLongFactory: ModelFactory[Any, Tree[Long]] = scalaFactory
     def getJavaLongFactory = javaFactory
 
     private implicit def intToOptLong(a: Int): Option[Long] = Option(a)
