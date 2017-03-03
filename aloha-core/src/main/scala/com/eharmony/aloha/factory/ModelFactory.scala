@@ -24,12 +24,12 @@ import scala.util.{Failure, Success, Try}
   * @tparam A model input type
   * @tparam B Model output type
   */
-abstract class ModelFactory[A, B] extends ReadableByString[Try[Model[A, B]]]
-                                     with GZippedReadable[Try[Model[A, B]]]
-                                     with LocationLoggingReadable[Try[Model[A, B]]]
-                                     with MultipleAlohaReadable[Try[Model[A, B]]]
-                                     with SequenceMultipleReadable[ReadableSource, Try, Model[A, B]]
-                                     with Logging
+sealed abstract class ModelFactory[A, B] extends ReadableByString[Try[Model[A, B]]]
+                                            with GZippedReadable[Try[Model[A, B]]]
+                                            with LocationLoggingReadable[Try[Model[A, B]]]
+                                            with MultipleAlohaReadable[Try[Model[A, B]]]
+                                            with SequenceMultipleReadable[ReadableSource, Try, Model[A, B]]
+                                            with Logging
 
 /**
   * A `ModelFactory` is responsible for creating models from model specifications.
