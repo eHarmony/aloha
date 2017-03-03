@@ -163,6 +163,11 @@ lazy val root = project.in(file("."))
   .settings(commonSettings: _*)
   .settings(versionDependentSettings: _*)
   .settings(dependencyOverrides ++= Dependencies.overrideDeps)
+  .settings (
+    publish := { },
+    publishM2 := { },
+    publishLocal := { }
+  )
 
 lazy val core = project.in(file("aloha-core"))
   .settings(name := "aloha-core")
