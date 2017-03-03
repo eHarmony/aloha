@@ -19,7 +19,17 @@ import spray.json.{CompactPrinter, JsObject, JsValue, JsonFormat, JsonReader, Ro
 
 import scala.util.{Failure, Success, Try}
 
-
+/**
+  * A factory that produces models.
+  * @tparam A model input type
+  * @tparam B Model output type
+  */
+abstract class ModelFactory[A, B] extends ReadableByString[Try[Model[A, B]]]
+                                     with GZippedReadable[Try[Model[A, B]]]
+                                     with LocationLoggingReadable[Try[Model[A, B]]]
+                                     with MultipleAlohaReadable[Try[Model[A, B]]]
+                                     with SequenceMultipleReadable[ReadableSource, Try, Model[A, B]]
+                                     with Logging
 
 /**
   * A `ModelFactory` is responsible for creating models from model specifications.
@@ -69,18 +79,13 @@ import scala.util.{Failure, Success, Try}
   * @tparam A
   * @tparam B
   */
-case class ModelFactory[U, N, A, B <: U](
+case class ModelFactoryImpl[U, N, A, B <: U](
     semantics: Semantics[A],
     auditor: MorphableAuditor[U, N, B],
     parsers: Seq[ModelParser],
     refInfoToJsonFormat: RefInfoToJsonFormat)
    (implicit refInfo: RefInfo[N])
-   extends ReadableByString[Try[Model[A, B]]]
-      with GZippedReadable[Try[Model[A, B]]]
-      with LocationLoggingReadable[Try[Model[A, B]]]
-      with MultipleAlohaReadable[Try[Model[A, B]]]
-      with SequenceMultipleReadable[ReadableSource, Try, Model[A, B]]
-      with Logging { self =>
+  extends ModelFactory[A, B] { self =>
 
   // TODO: Determine if defs are OK instead of transient lazy values.
 
@@ -274,8 +279,8 @@ object ModelFactory {
   def defaultFactory[U, N, A, B <: U](
       semantics: Semantics[A],
       auditor: MorphableAuditor[U, N, B]
-  )(implicit refInfo: RefInfo[N]): ModelFactory[U, N, A, B] = {
-    ModelFactory(semantics, auditor, knownModelParsers(), new StdRefInfoToJsonFormat)
+  )(implicit refInfo: RefInfo[N]): ModelFactoryImpl[U, N, A, B] = {
+    ModelFactoryImpl(semantics, auditor, knownModelParsers(), new StdRefInfoToJsonFormat)
   }
 
   /** Get the list of models on the classpath with parsers that can be used by a model factory.
@@ -299,11 +304,11 @@ object ModelFactory {
     }
   }
 
-  private sealed trait InlineReader[U, N, -A, +B <: U, Y] {
+  private[factory] sealed trait InlineReader[U, N, -A, +B <: U, Y] {
     def jsonReader(parser: ModelParser): Try[JsonReader[_ <: Y]]
   }
 
-  private case class ModelInlineReader[U, N: RefInfo: JsonFormat, A, B <: U](
+  private[factory] case class ModelInlineReader[U, N: RefInfo: JsonFormat, A, B <: U](
       factory: SubmodelFactory[U, A],
       semantics: Semantics[A],
       auditor: Auditor[U, N, B]
@@ -323,7 +328,7 @@ object ModelFactory {
     }
   }
 
-  private case class SubmodelInlineReader[U, N: RefInfo: JsonFormat, A, B <: U](
+  private[factory] case class SubmodelInlineReader[U, N: RefInfo: JsonFormat, A, B <: U](
       factory: SubmodelFactory[U, A],
       semantics: Semantics[A],
       auditor: Auditor[U, N, B]

@@ -61,7 +61,7 @@ public class JavaDefaultModelFactoryTest {
      */
     private static final String[] PARSER_NAMES;
 
-    private static final ModelFactory<TreeAuditor.Tree<?>, Double, Map<String, Long>, TreeAuditor.Tree<Double>> defaultFactory;
+    private static final ModelFactoryImpl<TreeAuditor.Tree<?>, Double, Map<String, Long>, TreeAuditor.Tree<Double>> defaultFactory;
 
     static {
         String[] names = new String[] {

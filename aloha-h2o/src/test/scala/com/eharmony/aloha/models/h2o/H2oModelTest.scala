@@ -287,7 +287,7 @@ object H2oModelTest {
     semantics
   }
 
-  private def ProtoFactory[N: RefInfo]: ModelFactory[Tree[_], N, Abalone, Tree[N]] = ModelFactory.defaultFactory(protoSemantics, TreeAuditor[N]())
+  private def ProtoFactory[N: RefInfo]: ModelFactory[Abalone, Tree[N]] = ModelFactory.defaultFactory(protoSemantics, TreeAuditor[N]())
 
   /**
     * Recreate the h2o model results

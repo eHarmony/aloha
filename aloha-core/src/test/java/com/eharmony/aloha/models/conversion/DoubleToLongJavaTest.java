@@ -18,7 +18,7 @@ public class DoubleToLongJavaTest {
 
     @Test
     public void test() {
-        final ModelFactory<TreeAuditor.Tree<?>, Long, Object, TreeAuditor.Tree<Long>> factory = getJavaLongFactory();
+        final ModelFactory<Object, TreeAuditor.Tree<Long>> factory = getJavaLongFactory();
         final String json = goodJson();
         final Try<Model<Object, TreeAuditor.Tree<Long>>> modelTry = factory.fromString(json);
 
