@@ -164,7 +164,8 @@ lazy val root = project.in(file("."))
   .settings (
     publish := { },
     publishM2 := { },
-    publishLocal := { }
+    publishLocal := { },
+    publishArtifact := false
   )
 
 lazy val core = project.in(file("aloha-core"))
