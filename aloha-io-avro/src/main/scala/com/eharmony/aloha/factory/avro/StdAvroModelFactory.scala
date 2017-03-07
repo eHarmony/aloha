@@ -29,6 +29,46 @@ object StdAvroModelFactory {
     * `modelCodomainRefInfoStr` is a string rather than `RefInfo` so it can come from a
     * property file.
     *
+    * @param schema an Avro Schema that represents the data passed to models created by this factory.
+    * @param modelCodomainRefInfoStr A string representation of a `com.eharmony.aloha.reflect.RefInfo`.
+    * @param imports imports to be injected into feature functions synthesized by the factory.
+    * @param classCacheDir a cache directory on the local machine used to cache class files of
+    *                      the created feature functions used in the models produced by the
+    *                      factory.
+    * @param dereferenceAsOptional whether to treat the dereferencing of repeated variables as
+    *                              an optional type.  This avoids index out of bounds exceptions
+    *                              and is safer but slightly slower.
+    * @return A Try of a ModelFactory that creates models taking `GenericRecord` instances as
+    *         input and returns `com.eharmony.aloha.audit.impl.avro.Score` as output.
+    */
+  def withSchema(schema: Schema,
+                 modelCodomainRefInfoStr: String,
+                 imports: Seq[String] = Nil,
+                 classCacheDir: Option[File] = None,
+                 dereferenceAsOptional: Boolean = true): Try[ModelFactory[GenericRecord, Score]] = {
+
+    val f = for {
+      ri <- refInfo(modelCodomainRefInfoStr)
+      a <- auditor(ri)
+      s = semantics(schema, imports, classCacheDir, dereferenceAsOptional)
+      mf = ModelFactory.defaultFactory(s, a)(ri)
+    } yield mf
+
+    f match {
+      case s@Success(_) => s
+      case Failure(e) => Failure(new AlohaFactoryException("Problem creating Avro Factory.", e))
+    }
+  }
+
+
+  /**
+    * Provides an easy interface for creating ModelFactory instances that both take and
+    * return Avro objects.
+    *
+    * This is especially useful for creating factories in generic services because the
+    * `modelCodomainRefInfoStr` is a string rather than `RefInfo` so it can come from a
+    * property file.
+    *
     * @param modelDomainSchemaVfsUrl an Apache VFS URL pointing to a JSON Avro Schema that
     *                                represents the data passed to models created by this factory.
     * @param modelCodomainRefInfoStr A string representation of a `com.eharmony.aloha.reflect.RefInfo`.
@@ -50,36 +90,23 @@ object StdAvroModelFactory {
             dereferenceAsOptional: Boolean = true,
             useVfs2: Boolean = true): Try[ModelFactory[GenericRecord, Score]] = {
 
-    val f = for {
-      s <- semantics(modelDomainSchemaVfsUrl, useVfs2, imports, classCacheDir, dereferenceAsOptional)
-      ri <- refInfo(modelCodomainRefInfoStr)
-      a <- auditor(ri)
-      mf = ModelFactory.defaultFactory(s, a)(ri)
-    } yield mf
-
-    f match {
-      case s@Success(_) => s
-      case Failure(e) => Failure(new AlohaFactoryException("Problem creating Avro Factory.", e))
-    }
+    schema(modelDomainSchemaVfsUrl, useVfs2) flatMap (s =>
+      withSchema(s, modelCodomainRefInfoStr, imports, classCacheDir, dereferenceAsOptional)
+    )
   }
 
-  private[this] def semantics(vfsUrl: String,
-                              useVfs2: Boolean,
+  private[this] def semantics(s: Schema,
                               imports: Seq[String],
                               classCacheDir: Option[File],
                               dereferenceAsOptional: Boolean) = {
-    for {
-      s <- schema(vfsUrl, useVfs2)
-      p = CompiledSemanticsAvroPlugin[GenericRecord](s, dereferenceAsOptional)
-      cs = CompiledSemantics(TwitterEvalCompiler(classCacheDir = classCacheDir), p, imports)
-    } yield cs
+    val p = CompiledSemanticsAvroPlugin[GenericRecord](s, dereferenceAsOptional)
+    CompiledSemantics(TwitterEvalCompiler(classCacheDir = classCacheDir), p, imports)
   }
 
   private[this] def auditor[A](refInfo: RefInfo[A]) =
     AvroScoreAuditor(refInfo).map(Success.apply).getOrElse(
       Failure(new AlohaFactoryException(
         s"Couldn't create AvroScoreAuditor for ${RefInfoOps.toString(refInfo)}")))
-
 
   private[this] def refInfo(refInfoStr: String) =
     RefInfo.fromString(refInfoStr) match {
@@ -106,5 +133,4 @@ object StdAvroModelFactory {
     isTry.foreach(IOUtils.closeQuietly)
     inSchema
   }
-
 }
