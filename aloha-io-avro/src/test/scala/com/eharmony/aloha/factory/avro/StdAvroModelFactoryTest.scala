@@ -19,7 +19,30 @@ import org.junit.runners.BlockJUnit4ClassRunner
 class StdAvroModelFactoryTest {
   import StdAvroModelFactoryTest._
 
-  @Test def testHappyPath(): Unit = {
+  @Test def testHappyPathExplicitUrlConfig(): Unit = {
+    val factory: ModelFactory[GenericRecord, Score] =
+      StdAvroModelFactory.fromConfig(UrlConfig(SchemaUrl, ReturnType, Imports)).get
+
+    val model: Model[GenericRecord, Score] = factory.fromString(ModelJson).get
+
+    assertEquals(7d, model(record).getValue.asInstanceOf[Double], 0)
+  }
+
+  @Test def testHappyPathUrlMagnetSyntax(): Unit = {
+    // Must import syntax explicitly to use Magnet syntax. Can do
+    // import FactoryConfig.MagnetSyntax._
+    import FactoryConfig.MagnetSyntax.fromUrlCodomainImports
+
+    val factory: ModelFactory[GenericRecord, Score] =
+      StdAvroModelFactory.fromConfig(SchemaUrl, ReturnType, Imports).get
+
+    val model: Model[GenericRecord, Score] = factory.fromString(ModelJson).get
+
+    assertEquals(7d, model(record).getValue.asInstanceOf[Double], 0)
+  }
+
+  @SuppressWarnings(Array("deprecated"))
+  @Test def testHappyPathApply(): Unit = {
     val factory: ModelFactory[GenericRecord, Score] =
       StdAvroModelFactory(SchemaUrl, ReturnType, Imports).get
 
@@ -28,9 +51,13 @@ class StdAvroModelFactoryTest {
     assertEquals(7d, model(record).getValue.asInstanceOf[Double], 0)
   }
 
-  @Test def testHappyPathProvidedSchema(): Unit = {
+  @Test def testHappyPathSchemaMagnetSyntax(): Unit = {
+    // Must import syntax explicitly to use Magnet syntax. Can do
+    // import FactoryConfig.MagnetSyntax._
+    import FactoryConfig.MagnetSyntax.fromSchemaCodomainImports
+
     val factory: ModelFactory[GenericRecord, Score] =
-      StdAvroModelFactory.withSchema(TheSchema, ReturnType, Imports).get
+      StdAvroModelFactory.fromConfig(TheSchema, ReturnType, Imports).get
 
     val model: Model[GenericRecord, Score] = factory.fromString(ModelJson).get
 
