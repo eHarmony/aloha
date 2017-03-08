@@ -105,8 +105,8 @@ object Vfs {
         }
     }
 
-    implicit def apacheVfs1ToAloha(fo: vfs1.FileObject): Vfs1 = Vfs1(fo)
-    implicit def apacheVfs2ToAloha(fo: vfs2.FileObject): Vfs2 = Vfs2(fo)
+    implicit def apacheVfs1ToAloha(vfs1Fo: vfs1.FileObject): Vfs1 = Vfs1(fo)
+    implicit def apacheVfs2ToAloha(vfs2Fo: vfs2.FileObject): Vfs2 = Vfs2(fo)
     implicit def javaFileToAloha(f: java.io.File): File = File(f)
 }
 
