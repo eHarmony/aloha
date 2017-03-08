@@ -1,25 +1,30 @@
 package com.eharmony.aloha.factory.avro
 
-import java.io.{File, InputStream}
+import java.io.File
 
-import com.eharmony.aloha.audit.impl.avro.{AvroScoreAuditor, Score}
+import org.apache.commons.{vfs => vfs1, vfs2}
+import com.eharmony.aloha.io.vfs.{Vfs1, Vfs2}
+import com.eharmony.aloha.audit.impl.avro.Score
 import com.eharmony.aloha.factory.ModelFactory
-import com.eharmony.aloha.factory.ex.AlohaFactoryException
-import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
-import com.eharmony.aloha.semantics.compiled.CompiledSemantics
-import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
-import com.eharmony.aloha.semantics.compiled.plugin.avro.CompiledSemanticsAvroPlugin
-import org.apache.avro.Schema
 import org.apache.avro.generic.GenericRecord
-import org.apache.commons.io.IOUtils
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.{Failure, Success, Try}
+import scala.util.Try
+
+
 
 /**
   * Created by deak on 3/2/17.
   */
 object StdAvroModelFactory {
+
+  /**
+    * Provides a standard way to create Avro ModelFactory instances for producing
+    * models that take `GenericRecord`s and return `Score`s.
+    * @param conf a factory configuration.
+    *
+    * @return a Try of a ModelFactory.
+    */
+  def fromConfig(conf: FactoryConfig): Try[ModelFactory[GenericRecord, Score]] = conf()
 
   /**
     * Provides an easy interface for creating ModelFactory instances that both take and
@@ -43,6 +48,7 @@ object StdAvroModelFactory {
     * @return A Try of a ModelFactory that creates models taking `GenericRecord` instances as
     *         input and returns `com.eharmony.aloha.audit.impl.avro.Score` as output.
     */
+  @deprecated(message = "Prefer StdAvroModelFactory.fromConfig(conf: FactoryConfig)", since = "4.0.1")
   def apply(modelDomainSchemaVfsUrl: String,
             modelCodomainRefInfoStr: String,
             imports: Seq[String] = Nil,
@@ -50,61 +56,24 @@ object StdAvroModelFactory {
             dereferenceAsOptional: Boolean = true,
             useVfs2: Boolean = true): Try[ModelFactory[GenericRecord, Score]] = {
 
-    val f = for {
-      s <- semantics(modelDomainSchemaVfsUrl, useVfs2, imports, classCacheDir, dereferenceAsOptional)
-      ri <- refInfo(modelCodomainRefInfoStr)
-      a <- auditor(ri)
-      mf = ModelFactory.defaultFactory(s, a)(ri)
-    } yield mf
+    val vfs = url(modelDomainSchemaVfsUrl, useVfs2)
 
-    f match {
-      case s@Success(_) => s
-      case Failure(e) => Failure(new AlohaFactoryException("Problem creating Avro Factory.", e))
+    vfs.flatMap { u =>
+      UrlConfig(
+        u,
+        modelCodomainRefInfoStr,
+        imports,
+        classCacheDir,
+        dereferenceAsOptional
+      )()
     }
   }
 
-  private[this] def semantics(vfsUrl: String,
-                              useVfs2: Boolean,
-                              imports: Seq[String],
-                              classCacheDir: Option[File],
-                              dereferenceAsOptional: Boolean) = {
-    for {
-      s <- schema(vfsUrl, useVfs2)
-      p = CompiledSemanticsAvroPlugin[GenericRecord](s, dereferenceAsOptional)
-      cs = CompiledSemantics(TwitterEvalCompiler(classCacheDir = classCacheDir), p, imports)
-    } yield cs
-  }
-
-  private[this] def auditor[A](refInfo: RefInfo[A]) =
-    AvroScoreAuditor(refInfo).map(Success.apply).getOrElse(
-      Failure(new AlohaFactoryException(
-        s"Couldn't create AvroScoreAuditor for ${RefInfoOps.toString(refInfo)}")))
-
-
-  private[this] def refInfo(refInfoStr: String) =
-    RefInfo.fromString(refInfoStr) match {
-      case Left(err) => Failure(new AlohaFactoryException(err))
-      case Right(success) => Success(success.asInstanceOf[RefInfo[Any]])
-    }
-
-  private[this] def schemaInputStream(vfsUrl: String, useVfs2: Boolean) =
-    Try {
+  private[this] def url(modelDomainSchemaVfsUrl: String, useVfs2: Boolean) = {
+    val u =
       if (useVfs2)
-        org.apache.commons.vfs2.VFS.getManager.resolveFile(vfsUrl).getContent.getInputStream
-      else org.apache.commons.vfs.VFS.getManager.resolveFile(vfsUrl).getContent.getInputStream
-    }
-
-  private[this] def schemaFromIs(is: InputStream) =
-    Try { new Schema.Parser().parse(is) }
-
-  private[this] def schema(vfsUrl: String, useVfs2: Boolean) = {
-    val isTry = schemaInputStream(vfsUrl, useVfs2)
-    val inSchema = for {
-      is <- isTry
-      s <- schemaFromIs(is)
-    } yield s
-    isTry.foreach(IOUtils.closeQuietly)
-    inSchema
+        Try { Vfs2(vfs2.VFS.getManager.resolveFile(modelDomainSchemaVfsUrl)) }
+      else Try { Vfs1(vfs1.VFS.getManager.resolveFile(modelDomainSchemaVfsUrl)) }
+    FactoryConfig.wrapException(u)
   }
-
 }
