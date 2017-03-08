@@ -2,6 +2,8 @@ package com.eharmony.aloha.factory.avro
 
 import java.io.File
 
+import org.apache.commons.{vfs => vfs1, vfs2}
+import com.eharmony.aloha.io.vfs.{Vfs1, Vfs2}
 import com.eharmony.aloha.audit.impl.avro.Score
 import com.eharmony.aloha.factory.ModelFactory
 import org.apache.avro.generic.GenericRecord
@@ -18,12 +20,7 @@ object StdAvroModelFactory {
   /**
     * Provides a standard way to create Avro ModelFactory instances for producing
     * models that take `GenericRecord`s and return `Score`s.
-    * @param conf a factory configuration.  This can also be used via the Magnet
-    *             pattern.  See implicits in the [[FactoryConfig]] companion object
-    *             to see possible parameter combinations.  Also see the Spray
-    *             [[http://spray.io/blog/2012-12-13-the-magnet-pattern/ Magnet pattern]]
-    *             article for more information.  To enable Magnet pattern syntax, see
-    *             [[FactoryConfig.MagnetSyntax]]
+    * @param conf a factory configuration.
     *
     * @return a Try of a ModelFactory.
     */
@@ -51,20 +48,32 @@ object StdAvroModelFactory {
     * @return A Try of a ModelFactory that creates models taking `GenericRecord` instances as
     *         input and returns `com.eharmony.aloha.audit.impl.avro.Score` as output.
     */
-  @deprecated(message = "Prefer ", since = "4.0.1")
+  @deprecated(message = "Prefer StdAvroModelFactory.fromConfig(conf: FactoryConfig)", since = "4.0.1")
   def apply(modelDomainSchemaVfsUrl: String,
             modelCodomainRefInfoStr: String,
             imports: Seq[String] = Nil,
             classCacheDir: Option[File] = None,
             dereferenceAsOptional: Boolean = true,
             useVfs2: Boolean = true): Try[ModelFactory[GenericRecord, Score]] = {
-    UrlConfig(
-      modelDomainSchemaVfsUrl,
-      modelCodomainRefInfoStr,
-      imports,
-      classCacheDir,
-      dereferenceAsOptional,
-      useVfs2
-    )()
+
+    val vfs = url(modelDomainSchemaVfsUrl, useVfs2)
+
+    vfs.flatMap { u =>
+      UrlConfig(
+        u,
+        modelCodomainRefInfoStr,
+        imports,
+        classCacheDir,
+        dereferenceAsOptional
+      )()
+    }
+  }
+
+  private[this] def url(modelDomainSchemaVfsUrl: String, useVfs2: Boolean) = {
+    val u =
+      if (useVfs2)
+        Try { Vfs2(vfs2.VFS.getManager.resolveFile(modelDomainSchemaVfsUrl)) }
+      else Try { Vfs1(vfs1.VFS.getManager.resolveFile(modelDomainSchemaVfsUrl)) }
+    FactoryConfig.wrapException(u)
   }
 }

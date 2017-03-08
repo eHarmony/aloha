@@ -6,7 +6,9 @@ import com.eharmony.aloha.models.Model
 import org.apache.avro.Schema
 import org.apache.avro.generic.{GenericData, GenericRecord}
 import org.apache.commons.io.IOUtils
-import org.apache.commons.vfs2.VFS
+import org.apache.commons.{vfs => vfs1, vfs2}
+import com.eharmony.aloha.io.vfs.{Vfs1, Vfs2}
+
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,30 +21,31 @@ import org.junit.runners.BlockJUnit4ClassRunner
 class StdAvroModelFactoryTest {
   import StdAvroModelFactoryTest._
 
-  @Test def testHappyPathExplicitUrlConfig(): Unit = {
+  @Test def testHappyPathUrlVfs1Config(): Unit = {
+    // Create the Aloha Vfs URL.
+    val vfs = Vfs1(vfs1.VFS.getManager.resolveFile(SchemaUrl))
+
     val factory: ModelFactory[GenericRecord, Score] =
-      StdAvroModelFactory.fromConfig(UrlConfig(SchemaUrl, ReturnType, Imports)).get
+      StdAvroModelFactory.fromConfig(UrlConfig(vfs, ReturnType, Imports)).get
 
     val model: Model[GenericRecord, Score] = factory.fromString(ModelJson).get
 
     assertEquals(7d, model(record).getValue.asInstanceOf[Double], 0)
   }
 
-  @Test def testHappyPathUrlMagnetSyntax(): Unit = {
-    // Must import syntax explicitly to use Magnet syntax. Can do
-    // import FactoryConfig.MagnetSyntax._
-    import FactoryConfig.MagnetSyntax.fromUrlCodomainImports
+  @Test def testHappyPathUrlVfs2Config(): Unit = {
+    // Create the Aloha Vfs URL.
+    val vfs = Vfs2(vfs2.VFS.getManager.resolveFile(SchemaUrl))
 
     val factory: ModelFactory[GenericRecord, Score] =
-      StdAvroModelFactory.fromConfig(SchemaUrl, ReturnType, Imports).get
+      StdAvroModelFactory.fromConfig(UrlConfig(vfs, ReturnType, Imports)).get
 
     val model: Model[GenericRecord, Score] = factory.fromString(ModelJson).get
 
     assertEquals(7d, model(record).getValue.asInstanceOf[Double], 0)
   }
 
-  @SuppressWarnings(Array("deprecated"))
-  @Test def testHappyPathApply(): Unit = {
+  @Test def testHappyPathApplyDefaultVfs2(): Unit = {
     val factory: ModelFactory[GenericRecord, Score] =
       StdAvroModelFactory(SchemaUrl, ReturnType, Imports).get
 
@@ -51,13 +54,9 @@ class StdAvroModelFactoryTest {
     assertEquals(7d, model(record).getValue.asInstanceOf[Double], 0)
   }
 
-  @Test def testHappyPathSchemaMagnetSyntax(): Unit = {
-    // Must import syntax explicitly to use Magnet syntax. Can do
-    // import FactoryConfig.MagnetSyntax._
-    import FactoryConfig.MagnetSyntax.fromSchemaCodomainImports
-
+  @Test def testHappyPathApplyVfs1(): Unit = {
     val factory: ModelFactory[GenericRecord, Score] =
-      StdAvroModelFactory.fromConfig(TheSchema, ReturnType, Imports).get
+      StdAvroModelFactory(SchemaUrl, ReturnType, Imports, useVfs2 = false).get
 
     val model: Model[GenericRecord, Score] = factory.fromString(ModelJson).get
 
@@ -73,7 +72,7 @@ class StdAvroModelFactoryTest {
 
 object StdAvroModelFactoryTest {
   private lazy val TheSchema = {
-    val is = VFS.getManager.resolveFile("res:avro/class7.avpr").getContent.getInputStream
+    val is = getClass.getClassLoader.getResourceAsStream("avro/class7.avpr")
     try new Schema.Parser().parse(is) finally IOUtils.closeQuietly(is)
   }
 

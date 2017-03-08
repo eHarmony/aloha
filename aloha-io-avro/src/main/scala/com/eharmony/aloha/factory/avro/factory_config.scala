@@ -5,6 +5,7 @@ import java.io.{File, InputStream}
 import com.eharmony.aloha.audit.impl.avro.{AvroScoreAuditor, Score}
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.factory.ex.AlohaFactoryException
+import com.eharmony.aloha.io.vfs.Vfs
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
@@ -12,11 +13,15 @@ import com.eharmony.aloha.semantics.compiled.plugin.avro.CompiledSemanticsAvroPl
 import org.apache.avro.Schema
 import org.apache.avro.generic.GenericRecord
 import org.apache.commons.io.IOUtils
-import scala.concurrent.ExecutionContext.Implicits.global
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success, Try}
 
+/**
+  * A configuration object for Avro model factories.
+  */
 sealed abstract class FactoryConfig {
+
   /**
     * Attempt to create a factory.
     * @return
@@ -41,56 +46,24 @@ sealed abstract class FactoryConfig {
       case Left(err) => Failure(new AlohaFactoryException(err))
       case Right(success) => Success(success.asInstanceOf[RefInfo[Any]])
     }
-
-  protected[this] def schemaInputStream(vfsUrl: String, useVfs2: Boolean): Try[InputStream] =
-    Try {
-      if (useVfs2)
-        org.apache.commons.vfs2.VFS.getManager.resolveFile(vfsUrl).getContent.getInputStream
-      else org.apache.commons.vfs.VFS.getManager.resolveFile(vfsUrl).getContent.getInputStream
-    }
-
-  protected[this] def schemaFromIs(is: InputStream): Try[Schema] =
-    Try { new Schema.Parser().parse(is) }
-
-  protected[this] def schema(vfsUrl: String, useVfs2: Boolean): Try[Schema] = {
-    val isTry = schemaInputStream(vfsUrl, useVfs2)
-    val inSchema = for {
-      is <- isTry
-      s <- schemaFromIs(is)
-    } yield s
-    isTry.foreach(IOUtils.closeQuietly)
-    inSchema
-  }
 }
 
+// TODO: If desired, you can expose the Magnet pattern to provide convenience syntax.
+// See Spray's [[http://spray.io/blog/2012-12-13-the-magnet-pattern/ Magnet pattern]]
+// article for more information.  Just add implicits to this companion object.
 object FactoryConfig {
 
   /**
-    * To enable the use of the magnet pattern, import `MagnetSyntax._`.
-    * See Spray's [[http://spray.io/blog/2012-12-13-the-magnet-pattern/ Magnet pattern]]
-    * article for more information.
+    * Pass through successes and wrap failures in an AlohaFactoryException.
+    * @param t a try whose failures should be wrapped in an AlohaFactoryException.
+    * @tparam A type of Try.
+    * @return Successes are unchanged, Failures are wrapped in an AlohaFactoryException.
     */
-  object MagnetSyntax {
-    implicit def fromSchemaCodomain(tuple: (Schema, String)): FactoryConfig = {
-      val (s, cd) = tuple
-      SchemaConfig(s, cd)
-    }
-
-    implicit def fromSchemaCodomainImports(tuple: (Schema, String, Seq[String])): FactoryConfig = {
-      val (s, cd, imp) = tuple
-      SchemaConfig(s, cd, imp)
-    }
-
-    implicit def fromUrlCodomain(tuple: (String, String)): FactoryConfig = {
-      val (u, cd) = tuple
-      UrlConfig(u, cd)
-    }
-
-    implicit def fromUrlCodomainImports(tuple: (String, String, Seq[String])): FactoryConfig = {
-      val (u, cd, imp) = tuple
-      UrlConfig(u, cd, imp)
-    }
-  }
+  private[avro] def wrapException[A](t: Try[A]): Try[A] =
+    t.transform(
+      s => Success(s),
+      f => Failure(new AlohaFactoryException("Problem creating Avro Factory.", f))
+    )
 }
 
 /**
@@ -131,10 +104,7 @@ case class SchemaConfig(
       mf = ModelFactory.defaultFactory(s, a)(ri)
     } yield mf
 
-    f match {
-      case s@Success(_) => s
-      case Failure(e) => Failure(new AlohaFactoryException("Problem creating Avro Factory.", e))
-    }
+    FactoryConfig.wrapException(f)
   }
 }
 
@@ -146,8 +116,8 @@ case class SchemaConfig(
   * `modelCodomainRefInfoStr` is a string rather than `RefInfo` so it can come from a
   * property file.
   *
-  * @param modelDomainSchemaVfsUrl an Apache VFS URL pointing to a JSON Avro Schema that
-  *                                represents the data passed to models created by this factory.
+  * @param vfs A [[com.eharmony.aloha.io.vfs.Vfs]] wrapper around a URL pointing to a JSON Avro
+  *            Schema that represents the data passed to models created by this factory.
   * @param modelCodomainRefInfoStr A string representation of a `com.eharmony.aloha.reflect.RefInfo`.
   * @param imports imports to be injected into feature functions synthesized by the factory.
   * @param classCacheDir a cache directory on the local machine used to cache class files of
@@ -156,24 +126,40 @@ case class SchemaConfig(
   * @param dereferenceAsOptional whether to treat the dereferencing of repeated variables as
   *                              an optional type.  This avoids index out of bounds exceptions
   *                              and is safer but slightly slower.
-  * @param useVfs2 use Apache VFS2 to locate the domain schema (true) or use VFS1 (false.
   */
 case class UrlConfig(
-    modelDomainSchemaVfsUrl: String,
+    vfs: Vfs,
     modelCodomainRefInfoStr: String,
     imports: Seq[String] = Nil,
     classCacheDir: Option[File] = None,
-    dereferenceAsOptional: Boolean = true,
-    useVfs2: Boolean = true
+    dereferenceAsOptional: Boolean = true
 ) extends FactoryConfig {
 
   /**
     * @return A Try of a ModelFactory that creates models taking `GenericRecord` instances as
     *         input and returns `com.eharmony.aloha.audit.impl.avro.Score` as output.
     */
-  def apply(): Try[ModelFactory[GenericRecord, Score]] = {
-    schema(modelDomainSchemaVfsUrl, useVfs2) flatMap (s =>
-      SchemaConfig(s, modelCodomainRefInfoStr, imports, classCacheDir, dereferenceAsOptional)())
+  def apply(): Try[ModelFactory[GenericRecord, Score]] =
+    FactoryConfig.wrapException(schema(vfs.inputStream)) flatMap { s =>
+      SchemaConfig(s, modelCodomainRefInfoStr, imports, classCacheDir, dereferenceAsOptional)()
+    }
+
+  private[this] def schemaFromIs(is: InputStream) =
+    Try { new Schema.Parser().parse(is) }
+
+  /**
+    * Try to get a Schema from an input stream and close the stream.
+    * @param in call-by-name so that the creation of the input stream can be wrapped
+    *           in a Try.
+    * @return a possible schema.
+    */
+  private[this] def schema(in: => InputStream) = {
+    val isTry = Try { in }
+    val inSchema = for {
+      is <- isTry
+      s <- schemaFromIs(is)
+    } yield s
+    isTry.foreach(IOUtils.closeQuietly)
+    inSchema
   }
 }
-
