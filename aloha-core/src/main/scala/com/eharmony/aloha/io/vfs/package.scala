@@ -5,6 +5,7 @@ import java.io._
 import org.apache.commons.io.IOUtils
 import org.apache.commons.{vfs => vfs1, vfs2}
 import spray.json._
+import scala.language.implicitConversions
 
 /**
  * This provides a standard way to deal with different file systems.  Specifically, this is package should help
@@ -105,8 +106,8 @@ object Vfs {
         }
     }
 
-    implicit def apacheVfs1ToAloha(vfs1Fo: vfs1.FileObject): Vfs1 = Vfs1(fo)
-    implicit def apacheVfs2ToAloha(vfs2Fo: vfs2.FileObject): Vfs2 = Vfs2(fo)
+    implicit def apacheVfs1ToAloha(vfs1Fo: vfs1.FileObject): Vfs1 = Vfs1(vfs1Fo)
+    implicit def apacheVfs2ToAloha(vfs2Fo: vfs2.FileObject): Vfs2 = Vfs2(vfs2Fo)
     implicit def javaFileToAloha(f: java.io.File): File = File(f)
 }
 
