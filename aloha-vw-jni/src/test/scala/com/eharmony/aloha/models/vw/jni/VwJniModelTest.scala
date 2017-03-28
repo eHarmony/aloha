@@ -26,10 +26,9 @@ import org.junit.{BeforeClass, Ignore, Test}
 import spray.json._
 import vw.learner.{VWFloatLearner, VWLearner, VWLearners}
 
+import scala.collection.{mutable => scm}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.Try
-import scala.collection.{mutable => scm}
-
 
 /**
  * These tests are now designed to pass if the VW model cannot be created in the BeforeClass method.
