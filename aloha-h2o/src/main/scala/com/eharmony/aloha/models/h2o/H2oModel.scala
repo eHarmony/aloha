@@ -124,7 +124,6 @@ final case class H2oModel[U, N: RefInfo, -A, +B <: U](
     val stackError = t.getStackTrace.headOption.fold(List.empty[String])(s =>
       List("See: " + s.getClassName + "." + s.getMethodName + "(" + s.getFileName + ":" + s.getLineNumber + ")"))
 
-    // TODO: Check this: f.missing.keySet
     failure(prefix :: stackError, getMissingVariables(f.missing))
   }
 
