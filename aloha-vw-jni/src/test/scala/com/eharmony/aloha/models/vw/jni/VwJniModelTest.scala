@@ -3,7 +3,8 @@ package com.eharmony.aloha.models.vw.jni
 import java.io._
 import java.{lang => jl}
 
-import com.eharmony.aloha.audit.impl.OptionAuditor
+import com.eharmony.aloha.audit.impl.TreeAuditor.Tree
+import com.eharmony.aloha.audit.impl.{OptionAuditor, TreeAuditor}
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.io.sources.Base64StringSource
@@ -27,6 +28,7 @@ import vw.learner.{VWFloatLearner, VWLearner, VWLearners}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.Try
+import scala.collection.{mutable => scm}
 
 
 /**
@@ -78,9 +80,10 @@ class VwJniModelTest extends ModelSerializationTestHelper with Logging {
     @Test def testJavaDoubleOutputType(): Unit = testOutputType[jl.Double]()
 
     @Test def testNoThreshWithMissing(): Unit = {
-        val m = model[Float](noThreshJson)
+        val m = modelWithOutput[Float](noThreshJson)
         val y = m(missingHeight)
-        assertTrue(y.isDefined)
+        assertTrue(y.value.isDefined)
+      assertEquals(Set("height_cm"), y.missingVarNames)
     }
 
     // TODO: Determine if this is necessary.
@@ -97,10 +100,11 @@ class VwJniModelTest extends ModelSerializationTestHelper with Logging {
     }
 
     @Test def testExceededThresh(): Unit = {
-        val m = model[Float](threshJson)
+        val m = modelWithOutput[Float](threshJson)
         val y = m(missingHeight)
-        assertTrue(y.isEmpty)
+        assertTrue(y.value.isEmpty)
         assertEquals(List("height_cm"), m.featureFunctions.head.accessorOutputMissing(missingHeight))
+        assertEquals(Set("height_cm"), y.missingVarNames)
     }
 
   @Test def testAllocatedModelEqualsOriginalModel(): Unit = {
@@ -125,7 +129,7 @@ class VwJniModelTest extends ModelSerializationTestHelper with Logging {
     @Test def testNsDoesntCoverAllFeatureNamesFromJson(): Unit = {
         val m = model[Float](nonCoveringNsJson)
         val input = m.generateVwInput(missingHeight)
-        assertEquals(Right("| height:180"), input)
+        assertEquals((Option("| height:180"), scm.Map.empty), input)
     }
 
     @Test def testNssAndDefaultDoesntCoverAllFeatureInd(): Unit = {
@@ -385,7 +389,14 @@ class VwJniModelTest extends ModelSerializationTestHelper with Logging {
       m.asInstanceOf[VwJniModel[Option[_], A, CsvLine, Option[A]]]
     }
 
-    /**
+  private[this] def modelWithOutput[A : RefInfo](modelJson: JsValue) = {
+    val factory = ModelFactory.defaultFactory(semantics, TreeAuditor[A]())
+    val m: Model[CsvLine, Tree[A]] = factory.fromString(modelJson.compactPrint).get
+    assertEquals("VwJniModel", m.getClass.getSimpleName)
+    m.asInstanceOf[VwJniModel[Tree[_], A, CsvLine, Tree[A]]]
+  }
+
+  /**
      * Tests that the output equals the expected output value.  This ensures that the
      * @tparam A The output type.
      */
