@@ -81,7 +81,7 @@ final case class H2oModel[U, N: RefInfo, -A, +B <: U](
   protected[this] def predict(f: Features[RowData]): Subvalue[B, N] = {
     h2OPredictor(f.features).
       fold(ill => failure(Seq(ill.errorMsg), getMissingVariables(f.missing)),
-           s   => success(s))
+           s   => success(s, missingVarNames = getMissingVariables(f.missing)))
   }
 
   /**
@@ -125,7 +125,7 @@ final case class H2oModel[U, N: RefInfo, -A, +B <: U](
       List("See: " + s.getClassName + "." + s.getMethodName + "(" + s.getFileName + ":" + s.getLineNumber + ")"))
 
     // TODO: Check this: f.missing.keySet
-    failure(prefix :: stackError, f.missing.keySet)
+    failure(prefix :: stackError, getMissingVariables(f.missing))
   }
 
   protected[this] def handleBadCategorical(e: PredictUnknownCategoricalLevelException, f: Features[RowData]) =
@@ -133,7 +133,7 @@ final case class H2oModel[U, N: RefInfo, -A, +B <: U](
 
   // TODO: Extract to trait.
   protected[this] def getMissingVariables(missing: Map[String, Seq[String]]): Set[String] =
-    missing.values.flatten.toSet
+    missing.flatMap(_._2)(scala.collection.breakOut)
 
   protected[this] def failureDueToMissing(missing: Map[String, Seq[String]]) =
     failure(Seq(s"Too many features with missing variables: ${missing.count(_._2.nonEmpty)}"), getMissingVariables(missing))
