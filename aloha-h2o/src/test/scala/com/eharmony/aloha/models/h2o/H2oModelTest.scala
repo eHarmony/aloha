@@ -95,33 +95,10 @@ class H2oModelTest extends Logging {
     assertFalse(rowData.contains("len_none_no"))
   }
 
+
+
   @Test def testProto(): Unit = {
-    // All of the features just return the value one would expect to be associated with the name.
-    // The feature functions just exploit mathematical identities to show the expressive power of
-    // the language.
-
-    val json =
-      """
-        |{
-        |  "modelType": "H2o",
-        |  "modelId": { "id": 0, "name": "proto model" },
-        |  "features": {
-        |    "Sex":            { "type": "string", "spec": "${sex}.name.substring(0,1)" },
-        |    "Length":         "1d + ${length} - 1L",
-        |    "Diameter":       "${diameter} * 1f",
-        |    "Height":         "identity(${height})",
-        |    "Whole weight":   "${weight.whole} * ${height} / ${height}",
-        |    "Shucked weight": "pow(${weight.shucked}, 1)",
-        |    "Viscera weight": "${weight.viscera} * (pow(sin(${diameter}), 2) + pow(cos(${diameter}), 2))",
-        |    "Shell weight":   "${weight.shell} + log((${length} + ${height}) / (${height} + ${length}))",
-        |
-        |    "Circumference (unused)":  "Pi * ${diameter}"
-        |  },
-        |  "modelUrl": "res:com/eharmony/aloha/models/h2o/glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.java"
-        |}
-      """.stripMargin.trim
-
-    val model: Model[Abalone, Tree[Float]] = ProtoFactory[Float].fromString(json).get
+    val model = AbaloneModel
 
     // For expository purposes:
     val input:    Abalone       = AbaloneData.toStream.head
@@ -139,6 +116,31 @@ class H2oModelTest extends Logging {
       val act: Option[Float] = model(abalone).value
       assertEquals(s"in test $i", exp, act.get, Epsilon)
     }
+  }
+
+  @Test def testEmptyGLM(): Unit = {
+    val res = AbaloneModel(Abalone.getDefaultInstance)
+
+    val expectedErrors = Seq(
+      "H2o model may have encountered a missing categorical variable.  Likely features: Sex",
+      "See: glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.score0(glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.java:59)"
+    )
+
+    assertEquals(None, res.value)
+    assertEquals(expectedErrors, res.errorMsgs)
+    assertEquals(AbaloneModelFeatures, res.missingVarNames)
+    assertEquals(Nil, res.subvalues)
+    assertEquals(None, res.prob)
+  }
+
+  @Test def testEmptyGBM(): Unit = {
+    val res = AbaloneGBMModel(Abalone.getDefaultInstance)
+
+    assertEquals(Some(0.5122293f), res.value)  // Some arbitrary value.
+    assertEquals(Nil, res.errorMsgs)
+    assertEquals(AbaloneGBMModelFeatures, res.missingVarNames)
+    assertEquals(Nil, res.subvalues)
+    assertEquals(None, res.prob)
   }
 
   @Test def testExternalResource(): Unit = {
@@ -259,16 +261,15 @@ class H2oModelTest extends Logging {
 
     val model = factory.fromString(json).get
     val padding: Seq[Option[H2oColumn]] = IndexedSeq(0, 0, 0, 0, 0, 0, 0)
-    val out = model(Option(H2oMissingStringColumn) +: padding)
+    val input = Option(H2oMissingStringColumn) +: padding
+    val out = model(input)
 
     val expected = Tree(
       ModelId(0, "no features h2o"),
       Seq(
         "H2o model may have encountered a missing categorical variable.  Likely features: Sex",
         "See: glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.score0(glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.java:59)"
-      ),
-      Set("0")
-    )
+      ))
 
     assertEquals(expected, out)
   }
@@ -288,6 +289,8 @@ object H2oModelTest {
   }
 
   private def ProtoFactory[N: RefInfo]: ModelFactory[Abalone, Tree[N]] = ModelFactory.defaultFactory(protoSemantics, TreeAuditor[N]())
+
+
 
   /**
     * Recreate the h2o model results
@@ -369,4 +372,55 @@ object H2oModelTest {
   implicit def int2col(c: Int): Option[H2oColumn] = Option(H2oDoubleColumn(c))
   implicit def double2col(c: Double): Option[H2oColumn] = Option(H2oDoubleColumn(c))
   implicit def string2col(c: String): Option[H2oColumn] = Option(H2oStringColumn(c))
+
+
+  // All of the features just return the value one would expect to be associated with the name.
+  // The feature functions just exploit mathematical identities to show the expressive power of
+  // the language.
+  private val AbaloneModelJson =
+    """
+      |{
+      |  "modelType": "H2o",
+      |  "modelId": { "id": 0, "name": "proto model" },
+      |  "features": {
+      |    "Sex":            { "type": "string", "spec": "${sex}.name.substring(0,1)" },
+      |    "Length":         "1d + ${length} - 1L",
+      |    "Diameter":       "${diameter} * 1f",
+      |    "Height":         "identity(${height})",
+      |    "Whole weight":   "${weight.whole} * ${height} / ${height}",
+      |    "Shucked weight": "pow(${weight.shucked}, 1)",
+      |    "Viscera weight": "${weight.viscera} * (pow(sin(${diameter}), 2) + pow(cos(${diameter}), 2))",
+      |    "Shell weight":   "${weight.shell} + log((${length} + ${height}) / (${height} + ${length}))",
+      |
+      |    "Circumference (unused)":  "Pi * ${diameter}"
+      |  },
+      |  "modelUrl": "res:com/eharmony/aloha/models/h2o/glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.java"
+      |}
+    """.stripMargin.trim
+
+  private lazy val AbaloneModelFeatures =
+    """\$\{([a-zA-Z\.]+)\}""".r.findAllMatchIn(AbaloneModelJson).map(_.group(1)).toSet
+
+  private lazy val AbaloneModel: Model[Abalone, Tree[Float]] = ProtoFactory[Float].fromString(AbaloneModelJson).get
+
+  private val AbaloneGBMModelJson =
+    """
+      |{
+      |  "modelType": "H2o",
+      |  "modelId": { "id": 0, "name": "proto model" },
+      |  "features": {
+      |    "Length":         "1d + ${length} - 1L",
+      |    "Diameter":       "${diameter} * 1f",
+      |    "Height":         "identity(${height})",
+      |    "Whole weight":   "${weight.whole} * ${height} / ${height}",
+      |    "Shucked weight": "pow(${weight.shucked}, 1)"
+      |  },
+      |  "modelUrl": "res:com/eharmony/aloha/models/h2o/gbm_00ba3eb1_288d_4c30_ad67_c69293b96efc.java"
+      |}
+    """.stripMargin.trim
+
+  private lazy val AbaloneGBMModelFeatures =
+    """\$\{([a-zA-Z\.]+)\}""".r.findAllMatchIn(AbaloneGBMModelJson).map(_.group(1)).toSet
+
+  private lazy val AbaloneGBMModel: Model[Abalone, Tree[Float]] = ProtoFactory[Float].fromString(AbaloneGBMModelJson).get
 }

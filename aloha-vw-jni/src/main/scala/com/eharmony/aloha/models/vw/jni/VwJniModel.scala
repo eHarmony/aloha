@@ -26,7 +26,7 @@ import spray.json.{DeserializationException, JsValue, JsonFormat, JsonReader, pi
 import vw.learner.{VWFloatLearner, VWIntLearner, VWLearner, VWLearners}
 
 import scala.collection.immutable.ListMap
-import scala.collection.{immutable => sci, mutable => scm}
+import scala.collection.{breakOut, immutable => sci, mutable => scm}
 import scala.util.{Failure, Success, Try}
 
 /**
@@ -102,17 +102,18 @@ final case class VwJniModel[U, N, -A, +B <: U](
 
   override def subvalue(a: A): Subvalue[B, N] = {
     generateVwInput(a) match {
-      case Left(missing) =>
+      case (None, missing) =>
         failure(
           Seq(s"Too many features with missing variables: ${missing.count(_._2.nonEmpty)}"),
-          getMissingVariables(missing).toSet)
-      case Right(vwIn) =>
+          getMissingVariables(missing))
+      case (Some(vwIn), missing) =>
         Try { learnerEvaluator(vwIn) } match {
-          case Success(y) => success(y)
-          case Failure(ex) => failure(Seq(ex.getMessage))
+          case Success(y) => success(y, missingVarNames = getMissingVariables(missing))
+          case Failure(ex) => failure(Seq(ex.getMessage), getMissingVariables(missing))
         }
     }
   }
+
 
   /**
    * Close the underlying VW model.
@@ -121,8 +122,8 @@ final case class VwJniModel[U, N, -A, +B <: U](
 
 
   // TODO: Figure out how to make the missing features fast.
-  private[jni] def getMissingVariables(missing: scm.Map[String, Seq[String]]): Seq[String] =
-    missing.unzip._2.foldLeft(Set.empty[String])(_ ++ _).toIndexedSeq.sorted
+  private[jni] def getMissingVariables(missing: scm.Map[String, Seq[String]]): Set[String] =
+    missing.flatMap(_._2)(breakOut)
 
   /**
    * Get a VW line (on the right) or a map of missing features (on the left) if there was too much
@@ -130,10 +131,10 @@ final case class VwJniModel[U, N, -A, +B <: U](
    * @param a input
    * @return a result
    */
-  private[jni] def generateVwInput(a: A): Either[scm.Map[String, Seq[String]], String] = {
-    val Features(features, missing, missingOk) = constructFeatures(a)
-    if (missingOk) Right(vwRowCreator.unlabeledVwInput(features).toString)
-    else           Left(missing)
+  private[jni] def generateVwInput(a: A) = {
+    val f = constructFeatures(a)
+    if (f.missingOk) (Option(vwRowCreator.unlabeledVwInput(f.features).toString), f.missing)
+    else             (None, f.missing)
   }
 }
 
