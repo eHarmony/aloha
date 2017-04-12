@@ -23,6 +23,7 @@ import java.{util => ju}
 import java.{lang => jl}
 
 import com.eharmony.aloha.FileLocations
+import com.eharmony.aloha.feature.BasicFunctions
 import com.eharmony.aloha.semantics.SemanticsUdfException
 
 /**
@@ -54,6 +55,56 @@ class CompiledSemanticsAvroPluginTest {
       imports = Seq("com.eharmony.aloha.feature.BasicFunctions._"))
   }
 
+  @Test def testOptOptOptlist(): Unit = {
+    val (missing, present) = (genRecords.head, genRecords.last)
+
+    def optOptOptlist(r: GenericRecord): Iterable[(String, Double)] = {
+      (
+        for {
+          _1 <- Option(r.get("opt_c1")).asInstanceOf[Option[GenericRecord]]
+          _2 <- Option(_1.get("opt_c2")).asInstanceOf[Option[GenericRecord]]
+          _3 <- Option(_2.get("opt_rep_str_3")).asInstanceOf[Option[java.util.List[Utf8]]]
+          _4 = _3.map(_.toString)
+          _5 = BasicFunctions.ind(_4)
+        } yield _5
+      ) getOrElse Nil
+    }
+
+    def reqReqReqlist(r: GenericRecord): Iterable[(String, Double)] = {
+      val _1 = r.get("req_c1").asInstanceOf[GenericRecord]
+      val _2 = _1.get("req_c2").asInstanceOf[GenericRecord]
+      val _3 = _2.get("rep_str_3").asInstanceOf[java.util.List[Utf8]]
+      val _4 = _3.map(_.toString)
+      val _5 = BasicFunctions.ind(_4)
+      _5
+    }
+
+    // Better reporting than either.right.get.
+    def fn[A](e: => Either[Seq[String], A]): A = {
+      val run = e // for debugging
+      run.fold(m => throw new RuntimeException(m.mkString("\n")), identity)
+    }
+
+    val default = Option(Iterable.empty[(String, Double)])
+    val noDefault = Option.empty[Iterable[(String, Double)]]
+
+    lazy val oool = fn(semantics.createFunction("ind(${opt_c1.opt_c2.opt_rep_str_3})", default))
+//    lazy val rrrl = fn(semantics.createFunction("ind(${req_c1.req_c2.rep_str_3})", noDefault))
+
+    val expPresent = 1 to 3 map (i => (s"=$i", 1d))
+    val expMissing = Iterable.empty
+
+    assertEquals(expPresent, reqReqReqlist(present))
+
+    assertEquals(expPresent, optOptOptlist(present))
+    assertEquals(expMissing, optOptOptlist(missing))
+
+    assertEquals(expPresent, oool(present))
+    assertEquals(expMissing, oool(missing))
+
+//    assertEquals(expPresent, rrrl(present))
+//    assertEquals(expMissing, rrrl(missing))
+  }
 
   @Test def testRequiredChains() {
     for {
@@ -413,6 +464,10 @@ private[avro] object CompiledSemanticsAvroPluginTest {
     val b4 = fillClassInts(4, o(4), 41, s(4):_*)
     val b5 = fillClassInts(5, o(5), 51, s(5):_*)
     val b6 = fillClassInts(6, o(6), 61, s(6):_*)
+
+    // Put the repeated strings in Class3.
+    b2.put("rep_str_3", asJavaIterable(1 to 3 map (_.toString)))
+    b2.put("opt_rep_str_3", asJavaIterable(1 to 3 map (_.toString)))
 
     if (6 < m) { b5.put("opt_c6", b6); b5.put("rep_c6", asJavaIterable(Seq.fill(s(5).size)(b6))) } else b5.put("rep_c6", asJavaIterable(Iterable()))
     b5.put("req_c6", b6)
