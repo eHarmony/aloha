@@ -296,3 +296,10 @@ releaseProcess := Seq[ReleaseStep](
   ReleaseStep(action = Command.process("sonatypeReleaseAll", _), enableCrossBuild = true),
   pushChanges
 )
+
+
+// ===========================================================================
+//  Site
+// ===========================================================================
+
+enablePlugins(MicrositesPlugin)
