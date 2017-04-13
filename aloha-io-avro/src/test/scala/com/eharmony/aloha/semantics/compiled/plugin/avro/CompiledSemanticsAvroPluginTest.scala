@@ -55,6 +55,47 @@ class CompiledSemanticsAvroPluginTest {
       imports = Seq("com.eharmony.aloha.feature.BasicFunctions._"))
   }
 
+  @Test def testRepeateds(): Unit = {
+    val specs = Seq(
+      "ind(${opt_c1.opt_c2.opt_rep_str_3})",
+      "ind(${req_c1.opt_c2.opt_rep_str_3})",
+      "ind(${opt_c1.req_c2.opt_rep_str_3})",
+      "ind(${req_c1.req_c2.opt_rep_str_3})",
+
+      "ind(${opt_c1.opt_c2.rep_str_3})",
+      "ind(${req_c1.opt_c2.rep_str_3})",
+      "ind(${opt_c1.req_c2.rep_str_3})",
+      "ind(${req_c1.req_c2.rep_str_3})",
+
+      "${opt_c1.opt_c2.opt_rep_int_3} flatMap ind",
+      "${req_c1.opt_c2.opt_rep_int_3} flatMap ind",
+      "${opt_c1.req_c2.opt_rep_int_3} flatMap ind",
+      "${req_c1.req_c2.opt_rep_int_3} flatMap ind",
+
+      "${opt_c1.opt_c2.rep_int_3} flatMap ind",
+      "${req_c1.opt_c2.rep_int_3} flatMap ind",
+      "${opt_c1.req_c2.rep_int_3} flatMap ind",
+      "${req_c1.req_c2.rep_int_3} flatMap ind",
+
+      "${opt_c1.opt_c2.rep_c3.req_c4.req_int_5} flatMap ind",
+      "${req_c1.opt_c2.rep_c3.req_c4.req_int_5} flatMap ind",
+      "${opt_c1.req_c2.rep_c3.req_c4.req_int_5} flatMap ind",
+      "${req_c1.req_c2.rep_c3.req_c4.req_int_5} flatMap ind",
+
+      // TODO: The following are still failing.  Get these working.
+
+//      "${opt_c1.opt_c2.opt_rep_c3.req_c4.req_int_5} flatMap ind",
+//      "${req_c1.opt_c2.opt_rep_c3.req_c4.req_int_5} flatMap ind",
+//      "${opt_c1.req_c2.opt_rep_c3.req_c4.req_int_5} flatMap ind",
+//      "${req_c1.req_c2.opt_rep_c3.req_c4.req_int_5} flatMap ind"
+    )
+
+    specs.zipWithIndex foreach { case (s, i) =>
+      val f = semantics.createFunction(s, Option(Iterable.empty[(String, Double)]))
+      f.left.foreach(msgs => fail((s"Failure in case $i ($s):" +: msgs.map(m => s"\t$m")).mkString("\n")))
+    }
+  }
+
   @Test def testOptOptOptlist(): Unit = {
     val (missing, present) = (genRecords.head, genRecords.last)
 
@@ -89,7 +130,8 @@ class CompiledSemanticsAvroPluginTest {
     val noDefault = Option.empty[Iterable[(String, Double)]]
 
     lazy val oool = fn(semantics.createFunction("ind(${opt_c1.opt_c2.opt_rep_str_3})", default))
-//    lazy val rrrl = fn(semantics.createFunction("ind(${req_c1.req_c2.rep_str_3})", noDefault))
+    lazy val rrrl = fn(semantics.createFunction("ind(${req_c1.req_c2.rep_str_3})", noDefault))
+
 
     val expPresent = 1 to 3 map (i => (s"=$i", 1d))
     val expMissing = Iterable.empty
@@ -102,8 +144,8 @@ class CompiledSemanticsAvroPluginTest {
     assertEquals(expPresent, oool(present))
     assertEquals(expMissing, oool(missing))
 
-//    assertEquals(expPresent, rrrl(present))
-//    assertEquals(expMissing, rrrl(missing))
+    assertEquals(expPresent, rrrl(present))
+    assertEquals(expMissing, rrrl(missing))
   }
 
   @Test def testRequiredChains() {

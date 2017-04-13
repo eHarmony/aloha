@@ -61,7 +61,9 @@
         { "name": "rep_c3", "type": { "type": "array", "items": "Class3" } },
 
         { "name": "opt_rep_str_3", "type": [ "null", { "type": "array", "items": "string" } ] },
-        { "name": "rep_str_3", "type": { "type": "array", "items": "string" } }
+        { "name": "rep_str_3", "type": { "type": "array", "items": "string" } },
+        { "name": "opt_rep_int_3", "type": ["null", { "type": "array", "items": "int" }] },
+        { "name": "opt_rep_c3", "type": ["null", { "type": "array", "items": "Class3" }] }
       ]
     },
     {

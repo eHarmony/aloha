@@ -38,8 +38,12 @@ trait SchemaBasedSemanticsPlugin[A] { self: CompiledSemanticsPlugin[A] =>
 
   private[schemabased] def generateFunction(p: FieldAccessorPartition) = {
     val (before, repeated, after) = p
-    val b = determineMappingPartition(before)
-    val a = determineMappingPartition(after)
+
+    // We need to be mindful of whether the repeated field is nullable.  This affects the
+    // choice of map / flatMap in the last chain prior to the repeated field.
+    val nullableRepeated = repeated.fold(false)(_.field.nullable)
+    val b = determineMappingPartition(before, nullableRepeatedFollows = nullableRepeated)
+    val a = determineMappingPartition(after, nullableRepeatedFollows = false)
     generateFunctionHelper(b, repeated, a)
   }
 
@@ -108,7 +112,8 @@ trait SchemaBasedSemanticsPlugin[A] { self: CompiledSemanticsPlugin[A] =>
 
   private[schemabased] def rightParenthesize(a: Seq[_]) = Seq.fill(a.size - 1)(")").mkString("")
 
-  private[schemabased] def determineMappingPartition(accessors: List[FieldAccessor]): MappingPartition = {
+  private[schemabased] def determineMappingPartition(accessors: List[FieldAccessor],
+                                                     nullableRepeatedFollows: Boolean): MappingPartition = {
     // At the conclusion of the fold, each item in chains contains a chain of required variables and one
     // optional variable.  req contains the sequence of required variables following the last chain.  Note that
     // both of these variables are in reverse order and need to be reversed prior to returning.
@@ -120,10 +125,26 @@ trait SchemaBasedSemanticsPlugin[A] { self: CompiledSemanticsPlugin[A] =>
 
     // chains to be flat mapped, optional chain to mapped, and sequence of required variables to be
     // added to the end of the operation.
-    (chains.drop(1).reverse, chains.headOption, req.reverse)
+    //
+    // If an **optional** repeated field follows, then we have to flatMap the last chain.  If no
+    // **optional** repeated field follows, then map the last chain.  For instance, think about:
+    //
+    //    Option( Option(List("optional", "list")) ) flatMap (optList => optList) // vs
+    //    Option(        List("required", "list")  )     map (reqList => reqList)
+    //
+    // In the first one, we flatMap, whereas in the second, we map.  Both return Option[List[String]],
+    // but the way flattening works varies based on whether values are optional.  In the above example,
+    //
+    //   Option(List("required", "list")).map(reqList => reqList)
+    //     == Option(List("required", "list")).map(identity)
+    //     == Option(List("required", "list"))
+    //
+    // but that's not the point.  It's about mapping vs flatMapping.
+
+    if (nullableRepeatedFollows)
+      (chains.reverse, None, req.reverse)
+    else (chains.drop(1).reverse, chains.headOption, req.reverse)
   }
-
-
 
   private[schemabased] def partition(fa: List[FieldAccessor]): FieldAccessorPartition = {
     @tailrec def g(l: List[FieldAccessor],
