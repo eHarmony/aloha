@@ -113,59 +113,7 @@ class CompiledSemanticsAvroPluginTest {
 
     assertEquals(expected, results)
   }
-
-  @Test def testOptOptOptlist(): Unit = {
-    val (missing, present) = (genRecords.head, genRecords.last)
-
-    def optOptOptlist(r: GenericRecord): Iterable[(String, Double)] = {
-      (
-        for {
-          _1 <- Option(r.get("opt_c1")).asInstanceOf[Option[GenericRecord]]
-          _2 <- Option(_1.get("opt_c2")).asInstanceOf[Option[GenericRecord]]
-          _3 <- Option(_2.get("opt_rep_str_3")).asInstanceOf[Option[java.util.List[Utf8]]]
-          _4 = _3.map(_.toString)
-          _5 = BasicFunctions.ind(_4)
-        } yield _5
-      ) getOrElse Nil
-    }
-
-    def reqReqReqlist(r: GenericRecord): Iterable[(String, Double)] = {
-      val _1 = r.get("req_c1").asInstanceOf[GenericRecord]
-      val _2 = _1.get("req_c2").asInstanceOf[GenericRecord]
-      val _3 = _2.get("rep_str_3").asInstanceOf[java.util.List[Utf8]]
-      val _4 = _3.map(_.toString)
-      val _5 = BasicFunctions.ind(_4)
-      _5
-    }
-
-    // Better reporting than either.right.get.
-    def fn[A](e: => Either[Seq[String], A]): A = {
-      val run = e // for debugging
-      run.fold(m => throw new RuntimeException(m.mkString("\n")), identity)
-    }
-
-    val default = Option(Iterable.empty[(String, Double)])
-    val noDefault = Option.empty[Iterable[(String, Double)]]
-
-    lazy val oool = fn(semantics.createFunction("ind(${opt_c1.opt_c2.opt_rep_str_3})", default))
-    lazy val rrrl = fn(semantics.createFunction("ind(${req_c1.req_c2.rep_str_3})", noDefault))
-
-
-    val expPresent = 1 to 3 map (i => (s"=$i", 1d))
-    val expMissing = Iterable.empty
-
-    assertEquals(expPresent, reqReqReqlist(present))
-
-    assertEquals(expPresent, optOptOptlist(present))
-    assertEquals(expMissing, optOptOptlist(missing))
-
-    assertEquals(expPresent, oool(present))
-    assertEquals(expMissing, oool(missing))
-
-    assertEquals(expPresent, rrrl(present))
-    assertEquals(expMissing, rrrl(missing))
-  }
-
+  
   @Test def testRequiredChains() {
     for {
       i <- 1 to levels
