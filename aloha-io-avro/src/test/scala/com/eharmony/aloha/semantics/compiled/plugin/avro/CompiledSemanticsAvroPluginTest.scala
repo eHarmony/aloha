@@ -15,7 +15,7 @@ import org.apache.avro.util.Utf8
 import org.apache.commons.io.IOUtils
 import org.apache.commons.vfs2.VFS
 import org.junit.Assert._
-import org.junit.Test
+import org.junit.{Ignore, Test}
 
 import scala.collection.JavaConversions.{asJavaIterable, asScalaIterator, collectionAsScalaIterable, iterableAsScalaIterable}
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -23,6 +23,7 @@ import java.{util => ju}
 import java.{lang => jl}
 
 import com.eharmony.aloha.FileLocations
+import com.eharmony.aloha.feature.BasicFunctions
 import com.eharmony.aloha.semantics.SemanticsUdfException
 
 /**
@@ -54,7 +55,65 @@ class CompiledSemanticsAvroPluginTest {
       imports = Seq("com.eharmony.aloha.feature.BasicFunctions._"))
   }
 
+  // TODO: This should pass.  Need to fix bug and then remove the ignore.
+  @Ignore @Test def testRepeatedInMiddleOfVarPath(): Unit = {
+    val specs = Seq(
+      "${opt_c1.opt_c2.rep_c3.req_c4.req_int_5} flatMap ind",
+      "${req_c1.opt_c2.rep_c3.req_c4.req_int_5} flatMap ind",
+      "${opt_c1.req_c2.rep_c3.req_c4.req_int_5} flatMap ind",
+      "${req_c1.req_c2.rep_c3.req_c4.req_int_5} flatMap ind",
 
+      "${opt_c1.opt_c2.opt_rep_c3.opt_c4.opt_int_5} flatMap ind",
+      "${opt_c1.opt_c2.opt_rep_c3.opt_c4.req_int_5} flatMap ind",
+
+      "${opt_c1.opt_c2.opt_rep_c3.req_c4.req_int_5} flatMap ind",
+      "${req_c1.opt_c2.opt_rep_c3.req_c4.req_int_5} flatMap ind",
+      "${opt_c1.req_c2.opt_rep_c3.req_c4.req_int_5} flatMap ind",
+      "${req_c1.req_c2.opt_rep_c3.req_c4.req_int_5} flatMap ind"
+    )
+
+    specs.zipWithIndex foreach { case (s, i) =>
+      val f = semantics.createFunction(s, Option(Iterable.empty[(String, Double)]))
+      f.left.foreach(msgs => fail((s"Failure in case $i ($s):" +: msgs.map(m => s"\t$m")).mkString("\n")))
+    }
+  }
+
+  @Test def testRepeatedAtEndOfVarPath(): Unit = {
+    val specs = Seq(
+      "ind(${opt_c1.opt_c2.opt_rep_str_3})",
+      "ind(${req_c1.opt_c2.opt_rep_str_3})",
+      "ind(${opt_c1.req_c2.opt_rep_str_3})",
+      "ind(${req_c1.req_c2.opt_rep_str_3})",
+
+      "ind(${opt_c1.opt_c2.rep_str_3})",
+      "ind(${req_c1.opt_c2.rep_str_3})",
+      "ind(${opt_c1.req_c2.rep_str_3})",
+      "ind(${req_c1.req_c2.rep_str_3})",
+
+      "${opt_c1.opt_c2.opt_rep_int_3} flatMap ind",
+      "${req_c1.opt_c2.opt_rep_int_3} flatMap ind",
+      "${opt_c1.req_c2.opt_rep_int_3} flatMap ind",
+      "${req_c1.req_c2.opt_rep_int_3} flatMap ind",
+
+      "${opt_c1.opt_c2.rep_int_3} flatMap ind",
+      "${req_c1.opt_c2.rep_int_3} flatMap ind",
+      "${opt_c1.req_c2.rep_int_3} flatMap ind",
+      "${req_c1.req_c2.rep_int_3} flatMap ind"
+    )
+
+    // Compile and run function.
+    val results = specs map { s =>
+      semantics.createFunction(s, Option(Iterable.empty[(String, Double)])).right.get(genRecords.last)
+    }
+
+    val expected =
+      Seq.fill(8)((1 to 3).map(i => (s"=$i", 1d))) ++
+      Seq.fill(4)(Nil) ++
+      Seq.fill(4)((22 to 23).map(i => (s"=$i", 1d)))
+
+    assertEquals(expected, results)
+  }
+  
   @Test def testRequiredChains() {
     for {
       i <- 1 to levels
@@ -413,6 +472,10 @@ private[avro] object CompiledSemanticsAvroPluginTest {
     val b4 = fillClassInts(4, o(4), 41, s(4):_*)
     val b5 = fillClassInts(5, o(5), 51, s(5):_*)
     val b6 = fillClassInts(6, o(6), 61, s(6):_*)
+
+    // Put the repeated strings in Class3.
+    b2.put("rep_str_3", asJavaIterable(1 to 3 map (_.toString)))
+    b2.put("opt_rep_str_3", asJavaIterable(1 to 3 map (_.toString)))
 
     if (6 < m) { b5.put("opt_c6", b6); b5.put("rep_c6", asJavaIterable(Seq.fill(s(5).size)(b6))) } else b5.put("rep_c6", asJavaIterable(Iterable()))
     b5.put("req_c6", b6)
