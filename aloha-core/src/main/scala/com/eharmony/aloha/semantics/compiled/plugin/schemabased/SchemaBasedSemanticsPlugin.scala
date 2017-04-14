@@ -41,7 +41,7 @@ trait SchemaBasedSemanticsPlugin[A] { self: CompiledSemanticsPlugin[A] =>
 
     // We need to be mindful of whether the repeated field is nullable.  This affects the
     // choice of map / flatMap in the last chain prior to the repeated field.
-    val nullableRepeated = repeated.fold(false)(_.field.nullable)
+    val nullableRepeated = repeated.exists(_.field.nullable)
     val b = determineMappingPartition(before, nullableRepeatedFollows = nullableRepeated)
     val a = determineMappingPartition(after, nullableRepeatedFollows = false)
     generateFunctionHelper(b, repeated, a)
