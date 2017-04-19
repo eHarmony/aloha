@@ -1,10 +1,13 @@
 package com.eharmony.aloha.semantics.compiled.plugin.avro
 
 import java.io.File
+import java.{lang => jl, util => ju}
 
+import com.eharmony.aloha.FileLocations
 import com.eharmony.aloha.audit.impl.OptionAuditor
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
+import com.eharmony.aloha.semantics.SemanticsUdfException
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import org.apache.avro
@@ -15,16 +18,11 @@ import org.apache.avro.util.Utf8
 import org.apache.commons.io.IOUtils
 import org.apache.commons.vfs2.VFS
 import org.junit.Assert._
-import org.junit.{Ignore, Test}
+import org.junit.Test
 
 import scala.collection.JavaConversions.{asJavaIterable, asScalaIterator, collectionAsScalaIterable, iterableAsScalaIterable}
+import scala.collection.JavaConverters.seqAsJavaListConverter
 import scala.concurrent.ExecutionContext.Implicits.global
-import java.{util => ju}
-import java.{lang => jl}
-
-import com.eharmony.aloha.FileLocations
-import com.eharmony.aloha.feature.BasicFunctions
-import com.eharmony.aloha.semantics.SemanticsUdfException
 
 /**
   * Created by ryan.
@@ -55,16 +53,35 @@ class CompiledSemanticsAvroPluginTest {
       imports = Seq("com.eharmony.aloha.feature.BasicFunctions._"))
   }
 
-  // TODO: This should pass.  Need to fix bug and then remove the ignore.
-  @Ignore @Test def testRepeatedInMiddleOfVarPath(): Unit = {
+  @Test def testRepeatedCases(): Unit = {
     val specs = Seq(
+      "${opt_c1.opt_c2.rep_c3} flatMap (x => ind(x.toString))",
+      "${opt_c1.opt_c2.rep_c3.opt_c4.req_int_5}.flatten flatMap ind",
+      "${opt_c1.opt_c2.rep_c3.req_int_4} flatMap ind",
+
+      "${opt_c1.opt_c2.opt_rep_c3.opt_c4.opt_int_5}.flatten flatMap ind"
+    )
+
+    specs.zipWithIndex foreach { case (s, i) =>
+      val f = semantics.createFunction(s, Option(Iterable.empty[(String, Double)]))
+      f.left.foreach(msgs => fail((s"Failure in case $i ($s):" +: msgs.map(m => s"\t$m")).mkString("\n")))
+    }
+  }
+
+
+  // TODO: This should pass.  Need to fix bug and then remove the ignore.
+  @Test def testRepeatedInMiddleOfVarPath(): Unit = {
+    val specs = Seq(
+      // These have optional values after the repeated element so the variable has type:
+      // ${...}: Seq[Option[Int]]
+      "${opt_c1.opt_c2.opt_rep_c3.opt_c4.opt_int_5}.flatten flatMap ind",
+      "${opt_c1.opt_c2.opt_rep_c3.opt_c4.req_int_5}.flatten flatMap ind",
+
+      // Optional values.
       "${opt_c1.opt_c2.rep_c3.req_c4.req_int_5} flatMap ind",
       "${req_c1.opt_c2.rep_c3.req_c4.req_int_5} flatMap ind",
       "${opt_c1.req_c2.rep_c3.req_c4.req_int_5} flatMap ind",
       "${req_c1.req_c2.rep_c3.req_c4.req_int_5} flatMap ind",
-
-      "${opt_c1.opt_c2.opt_rep_c3.opt_c4.opt_int_5} flatMap ind",
-      "${opt_c1.opt_c2.opt_rep_c3.opt_c4.req_int_5} flatMap ind",
 
       "${opt_c1.opt_c2.opt_rep_c3.req_c4.req_int_5} flatMap ind",
       "${req_c1.opt_c2.opt_rep_c3.req_c4.req_int_5} flatMap ind",
@@ -72,10 +89,110 @@ class CompiledSemanticsAvroPluginTest {
       "${req_c1.req_c2.opt_rep_c3.req_c4.req_int_5} flatMap ind"
     )
 
-    specs.zipWithIndex foreach { case (s, i) =>
-      val f = semantics.createFunction(s, Option(Iterable.empty[(String, Double)]))
-      f.left.foreach(msgs => fail((s"Failure in case $i ($s):" +: msgs.map(m => s"\t$m")).mkString("\n")))
+    val fns = specs map (s =>
+      semantics.createFunction(s, Option(Iterable.empty[(String, Double)]))
+               .fold(errs => throw new Exception(s"for spec '$s': ${errs.mkString("\n")}"), f => f)
+    )
+
+    val res = fns.map { f => f(genRecords.last)}
+
+    val expected = Seq.fill(2)(Nil) ++
+                   Seq.fill(4)(Seq.fill(2)(("=41",1d))) ++
+                   Seq.fill(4)(Nil)
+
+    assertEquals(expected, res)
+  }
+
+  @Test def testDereferencingOOOl(): Unit = {
+    val f = semantics.createFunction[String]("${opt_c1.opt_c2.opt_rep_str_3[0]}", Some("no string found"))
+      .fold(m => throw new Exception(m.mkString("\n")), identity)
+    val x = genRecords.last
+    val y = f(x)
+    assertEquals("1", y)
+  }
+
+  @Test def testDereferencingOORl(): Unit = {
+    val f = semantics.createFunction[String]("${opt_c1.opt_c2.rep_str_3[0]}", Some("no string found"))
+      .fold(m => throw new Exception(m.mkString("\n")), identity)
+    val x = genRecords.last
+    val y = f(x)
+    assertEquals("1", y)
+  }
+
+  @Test def testDereferencingOOOlR(): Unit = {
+    val whenMissing = Int.MinValue
+    val f = semantics.createFunction[Int]("${opt_c1.opt_c2.opt_rep_c3[0].req_int_4}", Some(whenMissing))
+      .fold(m => throw new Exception(m.mkString("\n")), identity)
+    val x = genRecords.last
+    val y = f(x)
+    assertEquals(whenMissing, y)
+  }
+
+  @Test def testDereferencingOOOlO(): Unit = {
+    val expected = 523
+
+    val x = {
+      val msg = new GenericData.Record(Schemas(0))
+      msg.put("opt_c1", {
+        val c1 = new GenericData.Record(Schemas(1))
+        c1.put("opt_c2", {
+          val c2 = new GenericData.Record(Schemas(2))
+          c2.put("opt_rep_c3", {
+            val c3 = new GenericData.Record(Schemas(3))
+            c3.put("opt_int_4", expected)
+            Seq(c3).asJava
+          })
+          c2
+        })
+        c1
+      })
+      msg
     }
+
+    val whenMissing = Int.MinValue
+    val f = semantics.createFunction[Int]("${opt_c1.opt_c2.opt_rep_c3[0].opt_int_4}", Some(whenMissing))
+      .fold(m => throw new Exception(m.mkString("\n")), identity)
+    val y = f(x)
+    assertEquals(expected, y)
+  }
+
+
+  @Test def testDereferencingOORlR(): Unit = {
+    val whenMissing = Int.MinValue
+    val f = semantics.createFunction[Int]("${opt_c1.opt_c2.rep_c3[0].req_int_4}", Some(whenMissing))
+      .fold(m => throw new Exception(m.mkString("\n")), identity)
+    val x = genRecords.last
+    val y = f(x)
+    assertEquals(31, y)
+  }
+
+  @Test def testDereferencingOORlO(): Unit = {
+    val expected = 523
+
+    val x: GenericRecord = {
+      val msg = new GenericData.Record(Schemas(0))
+      msg.put("opt_c1", {
+        val c1 = new GenericData.Record(Schemas(1))
+        c1.put("opt_c2", {
+          val c2 = new GenericData.Record(Schemas(2))
+          c2.put("opt_rep_c3", {
+            val c3 = new GenericData.Record(Schemas(3))
+            c3.put("opt_int_4", expected)
+            Seq(c3).asJava
+          })
+          c2
+        })
+        c1
+      })
+      msg
+    }
+
+    val whenMissing = Int.MinValue
+
+    val f = semantics.createFunction[Int]("${opt_c1.opt_c2.opt_rep_c3[0].opt_int_4}", Some(whenMissing))
+      .fold(m => throw new Exception(m.mkString("\n")), identity)
+    val y = f(x)
+    assertEquals(expected, y)
   }
 
   @Test def testRepeatedAtEndOfVarPath(): Unit = {
@@ -103,7 +220,10 @@ class CompiledSemanticsAvroPluginTest {
 
     // Compile and run function.
     val results = specs map { s =>
-      semantics.createFunction(s, Option(Iterable.empty[(String, Double)])).right.get(genRecords.last)
+      semantics.createFunction(s, Option(Iterable.empty[(String, Double)])) match {
+        case Left(errs) => throw new Exception(s"for spec '$s': ${errs.mkString("\n")}")
+        case Right(f) => f(genRecords.last)
+      }
     }
 
     val expected =
@@ -204,7 +324,8 @@ class CompiledSemanticsAvroPluginTest {
 
   @Test def test_OROLOOR() {
     val s = "${opt_c1.req_c2.opt_c3.rep_c4.opt_c5.opt_c6.req_int_7}"
-    val f = semantics.createFunction[Seq[Option[Int]]](s).right.toOption.get
+    val fn = semantics.createFunction[Seq[Option[Int]]](s)
+    val f = fn.left.map(m => throw new Exception(m.mkString("\n"))).right.toOption.get
     assertEquals(Seq.fill(2)(Some(61)), f(genRecords.last))
   }
 
@@ -245,8 +366,19 @@ class CompiledSemanticsAvroPluginTest {
     * Test that an optional list is compiled
     */
   @Test def testOptionalListOfOpt(): Unit = {
-    val sumOpt = semantics.createFunction[Int]("${orep_oint_1}.flatten.sum")
-    val sum  = sumOpt.right.get
+    val sum = semantics.createFunction[Int]("${orep_oint_1}.flatten.sum").right.get
+    val s = sum(genRecords.last)
+    assertEquals(0, s)
+  }
+
+  @Test def testOptionalListOfString(): Unit = {
+    val sum = semantics.createFunction[Int]("${orep_str_1}.foldLeft(0)(_ + _.size)").right.get
+    val s = sum(genRecords.last)
+    assertEquals(0, s)
+  }
+
+  @Test def testOptionalListOfInt(): Unit = {
+    val sum = semantics.createFunction[Int]("${orep_int_1}.foldLeft(0)(_ + _.size)").right.get
     val s = sum(genRecords.last)
     assertEquals(0, s)
   }
@@ -465,6 +597,7 @@ private[avro] object CompiledSemanticsAvroPluginTest {
     val s = (0 until m).map(repeatedSeq) ++ Seq.fill(levels - m)(Nil)
     val b0 = fillClassInts(0, o(0),  1, s(0):_*)
     b0.put("req_str_1", strVal)
+    b0.put("rep_str_1", Seq(strVal).asJava)
 
     val b1 = fillClassInts(1, o(1), 11, s(1):_*)
     val b2 = fillClassInts(2, o(2), 21, s(2):_*)
