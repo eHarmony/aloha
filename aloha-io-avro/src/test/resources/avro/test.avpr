@@ -92,6 +92,9 @@
         { "name": "orep_int_1", "type": ["null", { "type": "array", "items": "int" }] },
         { "name": "orep_oint_1", "type": ["null", { "type": "array", "items": ["null", "int"] }] },
 
+        { "name": "orep_str_1", "type": ["null", { "type": "array", "items": "string" }] },
+        { "name": "rep_str_1", "type": { "type": "array", "items": "string" } },
+
         { "name": "ob", "type": ["null", "boolean"] },
         { "name": "os", "type": ["null", "string"] },
         { "name": "oi", "type": ["null", "int"] },
