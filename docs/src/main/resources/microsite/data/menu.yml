@@ -1,0 +1,17 @@
+options:
+  - title: Getting Started
+    url: docs/index.html
+    section: intro
+
+  - title: Configuring the Microsite
+    url: docs/settings.html
+
+  - title: Layouts
+    url: docs/layouts.html
+    section: resources
+
+  - title: Customize
+    url: docs/customize.html
+
+  - title: Build the microsite
+    url: docs/build-the-microsite.html
