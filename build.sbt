@@ -313,20 +313,7 @@ releaseProcess := Seq[ReleaseStep](
 //  Site
 // ===========================================================================
 
-//micrositeBaseUrl := "/aloha"
-//micrositeDocumentationUrl := "/aloha/docs"
-//micrositeAuthor := "eHarmony"
-//micrositeOrganizationHomepage := "http://www.eharmony.com"
-//micrositeGithubOwner := "eharmony"
-//micrositeGithubRepo := "aloha"
-//micrositeHighlightTheme := "monokai"
-//micrositeImgDirectory := (resourceDirectory in Compile).value / "site" / "images"
-//micrositeCssDirectory := (resourceDirectory in Compile).value / "site" / "styles"
-//micrositeJsDirectory := (resourceDirectory in Compile).value / "site" / "scripts"
-
 lazy val docsMappingsAPIDir = settingKey[String]("Name of subdirectory in site target directory for api docs")
-
-
 
 lazy val docSettings = Seq(
   micrositeName := "Aloha",
@@ -357,31 +344,32 @@ lazy val docSettings = Seq(
   ghpagesNoJekyll := false,
   fork in tut := true,
   fork in (ScalaUnidoc, unidoc) := true,
-//  scalacOptions in (ScalaUnidoc, unidoc) ++= Seq(
+  // unidoc
+  // Figure out a way to get this in.
+//  scalacOptions in (ScalaUnidoc) ++= Seq(
 //    "-Xfatal-warnings",
 //    "-doc-source-url", scmInfo.value.get.browseUrl + "/tree/master€{FILE_PATH}.scala",
 //    "-sourcepath", baseDirectory.in(LocalRootProject).value.getAbsolutePath,
 //    "-diagrams"
 //  ),
   git.remoteRepo := "git@github.com:eharmony/aloha.git",
-  includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.js" | "*.swf" | "*.yml" | "*.md"
+  includeFilter in makeSite := "**/*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.js" | "*.swf" | "*.yml" | "**/*.md"
 )
 
 
-
-lazy val docs = project
+// To see locally: docs/makeMicrosite
+lazy val docs = project.in(file("docs"))
+  .settings(name := "docs")
+//  .settings(moduleName := "docs")
   .enablePlugins(MicrositesPlugin)
   .enablePlugins(GhpagesPlugin)
-//  .enablePlugins(ScalaUnidocPlugin)
   .enablePlugins(ScalaUnidocPlugin)
-  .settings(moduleName := "aloha-docs")
-//  .settings(catsSettings)
-  .settings(GhpagesPlugin.globalSettings: _*)
-
   .settings(commonSettings: _*)
   .settings(noPublishSettings)
-//  .settings(unidocSettings)
+  .settings(GhpagesPlugin.globalSettings: _*)
   .settings(docSettings)
+  .settings(tutScalacOptions := Seq("-usejavacp", "-J-Xmx2g"))
+  .settings(dependencyOverrides ++= Dependencies.overrideDeps)
+  .dependsOn(core, vwJni, h2o, ioProto % "test->test;compile->compile", avroScoreJava, ioAvro, cli)
+//  .settings(tutSettings)
 //  .settings(tutScalacOptions ~= (_.filterNot(Set("-Ywarn-unused-import", "-Ywarn-dead-code"))))
-//  .settings(commonJvmSettings)
-//  .dependsOn(core, vwJni, h2o, ioProto, avroScoreJava, ioAvro, cli)

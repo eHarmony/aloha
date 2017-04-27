@@ -1,6 +1,10 @@
+---
+layout: docs
+title: Documentation
+---
+
 # Creating Semantics
 
----
 
 ## Scala
 
@@ -19,4 +23,3 @@ val semantics = CompiledSemantics(TwitterEvalCompiler(),
 
 ```
 
----

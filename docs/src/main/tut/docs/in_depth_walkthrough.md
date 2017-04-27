@@ -1,3 +1,8 @@
+---
+layout: docs
+title: Documentation
+---
+
 # An In-Depth Walkthrough
 
 There are a few basic concepts that carry through all aspects of Aloha.  Those are, namely, *features* and *semantics*. 

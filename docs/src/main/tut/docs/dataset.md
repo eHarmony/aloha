@@ -1,4 +1,9 @@
-<!-- 
+---
+layout: docs
+title: Documentation
+---
+
+<!--
 doxia-markdown-plugin syntax highlight support is broken.  Changing output to 
 &lt;pre&gt;&lt;code&gt;...&lt;/code&gt;&lt;/pre&gt; fix all highlighting.  See:
   https://github.com/andriusvelykis/reflow-maven-skin/issues/11
@@ -6,6 +11,7 @@ doxia-markdown-plugin syntax highlight support is broken.  Changing output to
 -->
 
 # Constructing Datasets via CLI
+
 
 ## Prerequisites
 
@@ -15,7 +21,14 @@ that you can reuse data in the testing code.  You can download and build via:
 ```bash
 git clone git@github.com:eHarmony/aloha.git
 cd aloha
-mvn clean install
+
+sbt +clean +publishLocal
+sbt ++2.10.5 clean publishLocal
+sbt ++2.11.8 clean publishLocal
+
+sbt +clean +publishM2
+sbt ++2.10.5 clean publishM2
+sbt ++2.11.8 clean publishM2
 ```
 
 ### Get CLI Jar and *aloha-cli* script
