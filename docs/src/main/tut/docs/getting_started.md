@@ -284,16 +284,19 @@ above command.
 ```json
 {
   "modelType": "VwJNI",
-  "modelId": { "id": 101, "name":"test-model" },
+  "modelId": { "id": 101, "name": "test-model" },
   "features": {
-    "name":   { "spec": "ind(${name})",   "defVal": [["=UNK",1.0 },
-    "gender": { "spec": "ind(${gender})", "defVal": [["=UNK",1.0]] },
-    "bmi":    { "spec":"${bmi}",          "defVal":[["=UNK",1.0]]},
+    "name":   { "spec": "ind(${name})",   "defVal": [["=UNK", 1]] },
+    "gender": { "spec": "ind(${gender})", "defVal": [["=UNK", 1]] },
+    "bmi":    { "spec": "${bmi}",         "defVal": [["=UNK", 1]] },
     "num_photos": "${photos}.size",
     "avg_photo_height": "{ val hs = ${photos.height};  hs.flatten.sum / hs.filter(_.nonEmpty).size }"
   },
   "namespaces": {
-    "photos": [ "num_photos", "avg_photo_height" ]
+    "photos": [
+      "num_photos",
+      "avg_photo_height"
+    ]
   },
   "vw": {
     "model": "[ base64-encoded data ]",
@@ -320,15 +323,14 @@ many options for this.  The most import here are:
 <span class="label">bash script</span>
 
 ```bash
-cat $(find $PWD/aloha-core/src -name 'fizz_buzzs.proto')               \
+cat $(find $PWD/aloha-core/src -name 'fizz_buzzs.proto')               \                                                                                                                                      ~/git/aloha
 | aloha-cli/bin/aloha-cli                                              \
-  -cp $(find $PWD/aloha-cli -name "*.jar" | grep dep):\
-$(find $PWD/aloha-core -name "*.jar" | grep test)                      \
+  -cp "$PWD/aloha-io-proto/target/scala-2.11/test-classes"             \
   --modelrunner                                                        \
   --output-type Double                                                 \
   -A                                                                   \
   --imports "scala.math._,com.eharmony.aloha.feature.BasicFunctions._" \
-  -p com.eharmony.aloha.test.proto.Testing.UserProto                   \
+  -p "com.eharmony.aloha.test.proto.Testing.UserProto"                 \
   /tmp/aloha-vw-model.json
 ```
 
