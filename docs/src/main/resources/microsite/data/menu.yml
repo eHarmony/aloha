@@ -12,19 +12,12 @@ options:
   - title: Constructing Datasets
     url: docs/dataset.html
 
-  - title: Creating Semantics
-    url: docs/creating_semantics.html
-
   - title: In Depth Walkthrough
     url: docs/in_depth_walkthrough.html
-
-  - title: Programmatic Model Usage
-    url: docs/prog_model_usage.html
-
-  - title: Release Notes
-    url: docs/release_notes.html
 
   - title: Model Formats
     url: docs/model_formats.html
     menu_section: model_formats
 
+  - title: Release Notes
+    url: docs/release_notes.html
