@@ -3,8 +3,11 @@ options:
   - title: API Docs
     url: docs/api/index.html
 
-  - title: Getting Started
+  - title: Getting Started (Data Sci)
     url: docs/getting_started.html
+
+  - title: Getting Started (Data Eng)
+    url: docs/getting_started_eng.html
 
   - title: Constructing Datasets
     url: docs/dataset.html

@@ -3,7 +3,7 @@ layout: docs
 title: Documentation
 ---
 
-# Getting Started
+# Getting Started (Data Scientists)
 
 This section will walk through downloading and building Aloha as well as doing some simple tasks in the command
 line interface (CLI) like generating datasets, creating models and using models to make predictions.
@@ -299,11 +299,23 @@ above command.
     ]
   },
   "vw": {
-    "model": "[ base64-encoded data ]",
+    "model": "[ base64-encoded data omitted ]",
     "params": "--quiet -t"
   }
 }
 ```
+
+### Inline Models Cannot Exceed 2GB
+
+Since the JVM arrays are indexed by 32-bit integers, and JVM Strings are backed by arrays, the largest
+String available able on the JVM is 2^(32 - 1) - 1 or about 2 billion characters.  Consequently, large base-64 encoded
+binary models that are embedded into the JSON will cause failures.  These may be easy or hard to find.  For instance,
+one of the more subtle errors may be attempting to create an array of negative size.  This would most likely arise from
+a large model whose size in bytes is a number larger than a 32-bit integer can represent.
+
+To overcome this, specify the `--external` flag when creating a model and provide an Apache VFS URL to the model.
+When the Aloha model is parsed, the underlying machine learned model resource will be retrieved using this URL.
+
 
 ## Aloha Model Prediction via CLI
 
@@ -323,7 +335,7 @@ many options for this.  The most import here are:
 <span class="label">bash script</span>
 
 ```bash
-cat $(find $PWD/aloha-core/src -name 'fizz_buzzs.proto')               \                                                                                                                                      ~/git/aloha
+cat $(find $PWD/aloha-core/src -name 'fizz_buzzs.proto')               \
 | aloha-cli/bin/aloha-cli                                              \
   -cp "$PWD/aloha-io-proto/target/scala-2.11/test-classes"             \
   --modelrunner                                                        \
@@ -337,7 +349,7 @@ cat $(find $PWD/aloha-core/src -name 'fizz_buzzs.proto')               \        
 <span class="label label-success">output</span>
 
 <pre>
-0.732928454875946	CAESBEFsYW4YASUAALhBKg0IARABGQAAAAAAAPA/Kg0IAhACGQAAAAAAAABA
+0.7329283952713013	CAESBEFsYW4YASUAALhBKg0IARABGQAAAAAAAPA/Kg0IAhACGQAAAAAAAABA
 0.7543833255767822	CAESBEthdGUYAioNCAMQAxkAAAAAAAAIQA==
 </pre>
 
@@ -347,7 +359,7 @@ If you don't want the input, just omit the `-A` flag or pipe and process the dat
 
 Notice that the outputs here are:
 
-* 0.732928454875946
+* 0.7329283952713013
 * 0.7543833255767822
 
 We saw in the section [Verifying the Model](#Verifying_the_Model), the that predictions were:
@@ -357,17 +369,17 @@ We saw in the section [Verifying the Model](#Verifying_the_Model), the that pred
 
 Which lines up.  *It appears our model is working!*
 
-## Programatic Aloha Model Prediction
-
-See the separate page [programatic Aloha model usage](prog_model_usage.html) for more details.
-
 ## Future plans
 
-In the near future, we will start on integrating Aloha with [H<sub>2</sub>O](http://h2o.ai).
+The two main areas of future development are
+
+1. Adding broad classes of IO types suck as Thrift, Scala case classes, etc.
+2. Adding additional ML libraries underneath the Aloha model facade.
+
 
 ## Ways to extend to ML libraries not natively supported
 
 One can think of this as being analogous to hadoop streaming.  Aloha can be integrated with other platforms
 by using it for feature transformation and dataset production.  This is an easy path for the data scientist
 as it can alleviate the burden on extracting and transforming features, especially when extract values from
-Protocol buffers.
+Protocol buffers or Avro.

@@ -32,35 +32,16 @@ In Aloha, models are written generically, and different
 give meaning to the features extracted from the arbitrary input types on which the models operate.
 
 
-Getting Started
----------------
-
-See the [Getting Started Guide](getting_started.html).
-
-<a href="dataset.html" class="btn btn-primary btn-large btn-block">Learn to Create a Dataset</a>
-
-<a href="model_formats.html" class="btn btn-primary btn-large btn-block">Learn to Create a Model</a>
-
-
 Maven Setup
 -----------
 
-<!--
+
+
+```xml
 <dependency>
   <groupId>com.eharmony</groupId>
-  <artifactId>aloha-core</artifactId>
-  <version>2.0.0</version>
+  <artifactId>aloha-core_2.11</artifactId>
+  <version>4.1.3</version>
 </dependency>
--->
+```
 
-
-<div class="source">
- <div class="source">
-  <pre class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-title">dependency</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-title">groupId</span>&gt;</span>com.eharmony<span class="hljs-tag">&lt;/<span class="hljs-title">groupId</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-title">artifactId</span>&gt;</span>aloha-core<span class="hljs-tag">&lt;/<span class="hljs-title">artifactId</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-title">version</span>&gt;</span><span id="version"></span><span class="hljs-tag">&lt;/<span class="hljs-title">version</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-title">dependency</span>&gt;</span>
-</pre>
- </div>
-</div>
