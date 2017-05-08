@@ -218,7 +218,7 @@ class H2oModelTest extends Logging {
 
     val out = model(string2col("M") +: padding)
 
-    val expected = Tree(ModelId(), Seq("Ill-conditioned scalar prediction: NaN."))
+    val expected = Tree(ModelId(), sci.Seq("Ill-conditioned scalar prediction: NaN."))
 
     assertEquals(expected, out)
   }
@@ -266,7 +266,7 @@ class H2oModelTest extends Logging {
 
     val expected = Tree(
       ModelId(0, "no features h2o"),
-      Seq(
+      sci.Seq(
         "H2o model may have encountered a missing categorical variable.  Likely features: Sex",
         "See: glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.score0(glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.java:59)"
       ))
