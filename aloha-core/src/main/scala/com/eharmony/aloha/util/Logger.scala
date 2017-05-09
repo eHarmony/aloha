@@ -1,6 +1,6 @@
 package com.eharmony.aloha.util
 
-import org.slf4j.LoggerFactory
+import org.slf4j.{Logger, LoggerFactory}
 
 /**
  * Mix the `Logging` trait into a class to get:
@@ -21,19 +21,19 @@ trait Logging {
    */
   protected def loggerInitName(): String = getClass.getName
 
-  @transient final protected lazy val logger = LoggerFactory.getLogger(loggerInitName())
+  @transient final protected lazy val logger: Logger = LoggerFactory.getLogger(loggerInitName())
 
   /**
    * Get the name associated with this logger.
    *
    * @return the name.
    */
-  final protected def loggerName = logger.getName
+  final protected def loggerName: String = logger.getName
 
   /**
    * Determine whether trace logging is enabled.
    */
-  final protected def isTraceEnabled = logger.isTraceEnabled
+  final protected def isTraceEnabled: Boolean = logger.isTraceEnabled
 
   /**
    * Issue a trace logging message.
@@ -57,7 +57,7 @@ trait Logging {
   /**
    * Determine whether debug logging is enabled.
    */
-  final protected def isDebugEnabled = logger.isDebugEnabled
+  final protected def isDebugEnabled: Boolean = logger.isDebugEnabled
 
   /**
    * Issue a debug logging message.
@@ -81,7 +81,7 @@ trait Logging {
   /**
    * Determine whether error logging is enabled.
    */
-  final protected def isErrorEnabled = logger.isErrorEnabled
+  final protected def isErrorEnabled: Boolean = logger.isErrorEnabled
 
   /**
    * Issue a error logging message.
@@ -105,7 +105,7 @@ trait Logging {
   /**
    * Determine whether info logging is enabled.
    */
-  final protected def isInfoEnabled = logger.isInfoEnabled
+  final protected def isInfoEnabled: Boolean = logger.isInfoEnabled
 
   /**
    * Issue a info logging message.
@@ -129,7 +129,7 @@ trait Logging {
   /**
    * Determine whether warn logging is enabled.
    */
-  final protected def isWarnEnabled = logger.isWarnEnabled
+  final protected def isWarnEnabled: Boolean = logger.isWarnEnabled
 
   /**
    * Issue a warn logging message.
