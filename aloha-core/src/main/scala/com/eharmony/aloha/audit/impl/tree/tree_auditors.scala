@@ -54,7 +54,17 @@ trait TreePathOps[+U] { self: Tree[U] =>
   }
 }
 
-private[tree] case class TreeImpl[+U](
+/**
+  * Exposed to `aloha` package only for testing.
+  * @param modelId
+  * @param errorMsgs
+  * @param missingVarNames
+  * @param value
+  * @param subvalues
+  * @param prob
+  * @tparam U Type of all nodes in the tree
+  */
+private[aloha] case class TreeImpl[+U](
   modelId: ModelIdentity,
   errorMsgs: sci.Seq[String],
   missingVarNames: Set[String],
@@ -64,7 +74,18 @@ private[tree] case class TreeImpl[+U](
 ) extends Tree[U] with TreePathOps[U]
 
 
-private[tree] case class RootedTreeImpl[+U, +N <: U](
+/**
+  * Exposed to `aloha` package only for testing.
+  * @param modelId
+  * @param errorMsgs
+  * @param missingVarNames
+  * @param value
+  * @param subvalues
+  * @param prob
+  * @tparam U Upper bound on all of the nodes in the tree
+  * @tparam N Type of the root node value.
+  */
+private[aloha] case class RootedTreeImpl[+U, +N <: U](
     modelId: ModelIdentity,
     errorMsgs: sci.Seq[String],
     missingVarNames: Set[String],
