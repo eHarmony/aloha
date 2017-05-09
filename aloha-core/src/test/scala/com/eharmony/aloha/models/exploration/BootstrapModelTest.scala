@@ -1,8 +1,8 @@
 package com.eharmony.aloha.models.exploration
 
 import com.eharmony.aloha.ModelSerializationTestHelper
-import com.eharmony.aloha.audit.impl.TreeAuditor.Tree
-import com.eharmony.aloha.audit.impl.{OptionAuditor, TreeAuditor}
+import com.eharmony.aloha.audit.impl.OptionAuditor
+import com.eharmony.aloha.audit.impl.tree.{RootedTree, RootedTreeAuditor}
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.models.{AnySemanticsWithoutFunctionCreation, CloserTesterModel, ConstantModel, Model}
@@ -16,7 +16,7 @@ import scala.collection.{immutable => sci}
   * Created by jmorra on 2/26/16.
   */
 class BootstrapModelTest extends ModelSerializationTestHelper {
-  private[this] val factory = ModelFactory.defaultFactory(AnySemanticsWithoutFunctionCreation, TreeAuditor[String]())
+  private[this] val factory = ModelFactory.defaultFactory(AnySemanticsWithoutFunctionCreation, RootedTreeAuditor.noUpperBound[String]())
 //  private[this] val Reader = BootstrapModel.Parser.modelJsonReader[Any, String](ModelFactory(ConstantModel.parser), Option())
   private[this] val delta = 0.00001f
   implicit val audit = true
@@ -85,7 +85,7 @@ class BootstrapModelTest extends ModelSerializationTestHelper {
     assertEquals("model: 2", s.subvalues.head.modelId.getName())
   }
 
-  def makeModel(policies: Iterable[Int], salt: Long): Model[Any, Tree[String]] = {
+  def makeModel(policies: Iterable[Int], salt: Long): Model[Any, RootedTree[Any, String]] = {
     val policyJss = policies.zipWithIndex.map{ p =>
       s"""
         | {

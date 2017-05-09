@@ -2,7 +2,7 @@ package com.eharmony.aloha.factory
 
 import java.io.StringReader
 
-import com.eharmony.aloha.audit.impl.TreeAuditor
+import com.eharmony.aloha.audit.impl.tree.RootedTreeAuditor
 import com.eharmony.aloha.io.sources.ReadableSourceConverters.Implicits._
 import com.eharmony.aloha.io.sources.ReadableSourceConverters.StringImplicits.stringToStringReadableConverter
 import com.eharmony.aloha.io.sources.{InputStreamReadableSource, ReadableSource, ReaderReadableSource, StringReadableSource}
@@ -101,7 +101,7 @@ object ScalaDefaultModelFactoryTest {
     val ConstModelJson = s"""{"modelType": "Constant", "modelId": {"id": $ConstModelId, "name": "$ConstModelName"}, "value": $ConstModelVal}"""
 
     // Create the model factory.  Notice the implicit reflection information is automatically injected.
-    private val defaultFactory = ModelFactory.defaultFactory(NoSemantics[Map[String, Long]](), TreeAuditor[Double]())
+    private val defaultFactory = ModelFactory.defaultFactory(NoSemantics[Map[String, Long]](), RootedTreeAuditor.noUpperBound[Double]())
 
     def getInputStream(json: String) = new ReaderInputStream(getReader(json))
     def getReader(json: String) = new StringReader(json)

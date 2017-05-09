@@ -1,6 +1,7 @@
 package com.eharmony.aloha.models.conversion;
 
-import com.eharmony.aloha.audit.impl.TreeAuditor;
+import com.eharmony.aloha.audit.impl.tree.RootedTree;
+import com.eharmony.aloha.audit.impl.tree.Tree;
 import com.eharmony.aloha.factory.ModelFactory;
 import com.eharmony.aloha.models.Model;
 import org.junit.Test;
@@ -18,14 +19,14 @@ public class DoubleToLongJavaTest {
 
     @Test
     public void test() {
-        final ModelFactory<Object, TreeAuditor.Tree<Long>> factory = getJavaLongFactory();
+        final ModelFactory<Object, RootedTree<Object, Long>> factory = getJavaLongFactory();
         final String json = goodJson();
-        final Try<Model<Object, TreeAuditor.Tree<Long>>> modelTry = factory.fromString(json);
+        final Try<Model<Object, RootedTree<Object, Long>>> modelTry = factory.fromString(json);
 
-        final Model<Object, TreeAuditor.Tree<Long>> m = modelTry.get();
-        final TreeAuditor.Tree<Long> s = m.apply(null);
+        final Model<Object, RootedTree<Object, Long>> m = modelTry.get();
+        final RootedTree<Object, Long> s = m.apply(null);
 
-        final TreeAuditor.Tree<Object> sub = s.subvalues().head();
+        final Tree<Object> sub = s.subvalues().head();
 
         assertEquals(1l, s.value().get().longValue());
         assertTrue(s.errorMsgs().isEmpty() && s.missingVarNames().isEmpty());

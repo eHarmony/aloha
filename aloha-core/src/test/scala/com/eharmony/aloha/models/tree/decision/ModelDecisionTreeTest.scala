@@ -1,8 +1,8 @@
 package com.eharmony.aloha.models.tree.decision
 
 import com.eharmony.aloha.ModelSerializationTestHelper
-import com.eharmony.aloha.audit.impl.TreeAuditor.Tree
-import com.eharmony.aloha.audit.impl.{OptionAuditor, TreeAuditor}
+import com.eharmony.aloha.audit.impl.OptionAuditor
+import com.eharmony.aloha.audit.impl.tree.{NubRootedTree, RootedTreeAuditor}
 import com.eharmony.aloha.factory._
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.models.{CloserTesterModel, ErrorModel, Model}
@@ -175,7 +175,7 @@ class ModelDecisionTreeTest extends ModelSerializationTestHelper {
         assertTrue(submodels.forall(_.isClosed))
     }
 
-    def success(m: ModelContainer[Map[String, Double], Tree[Int]], x: Map[String, Double], missing: Seq[String], errors: Seq[String], exp: Int) {
+    def success(m: ModelContainer[Map[String, Double], NubRootedTree[Int]], x: Map[String, Double], missing: Seq[String], errors: Seq[String], exp: Int) {
         val s = m.model(x)
 
         assertTrue("Model should produce a score.", s.value.isDefined)
@@ -199,7 +199,7 @@ class ModelDecisionTreeTest extends ModelSerializationTestHelper {
         }
     }
 
-    def failure(m: ModelContainer[Map[String, Double], Tree[Int]], x: Map[String, Double], missing: Seq[String], errors: Seq[String]) {
+    def failure(m: ModelContainer[Map[String, Double], NubRootedTree[Int]], x: Map[String, Double], missing: Seq[String], errors: Seq[String]) {
         val s = m.model(x)
 
         if (s.value.isDefined)
@@ -319,7 +319,7 @@ object ModelDecisionTreeTest {
   }
 
   private[this] def model(missing1: Boolean, best1: Boolean, missing2: Boolean, best2: Boolean) = {
-    val auditor = TreeAuditor[Int](accumulateErrors = true, accumulateMissingFeatures = true)
+    val auditor = RootedTreeAuditor.noUpperBound[Int](accumulateErrors = true, accumulateMissingFeatures = true)
     val factory = ModelFactory.defaultFactory(semantics, auditor)
     val mTry = factory.fromString(json(missing1, best1, missing2, best2)) // So we can see the exception in debugging.
     val m = mTry.get

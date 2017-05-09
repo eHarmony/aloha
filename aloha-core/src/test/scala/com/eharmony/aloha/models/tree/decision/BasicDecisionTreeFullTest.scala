@@ -1,7 +1,6 @@
 package com.eharmony.aloha.models.tree.decision
 
-import com.eharmony.aloha.audit.impl.TreeAuditor
-import com.eharmony.aloha.audit.impl.TreeAuditor.Tree
+import com.eharmony.aloha.audit.impl.tree.{NubRootedTree, RootedTreeAuditor}
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.reflect._
 import com.eharmony.aloha.semantics.Semantics
@@ -85,13 +84,13 @@ class BasicDecisionTreeFullTest {
   @Test def ttft() { success(ttDt(ft), 2) }
 
 
-  private[this] def success(s: Tree[Double], v: Int) {
+  private[this] def success(s: NubRootedTree[Double], v: Int) {
     assertTrue(s"Score should not have any errors.  Found: ${s.errorMsgs}", s.errorMsgs.isEmpty)
     assertTrue(s"Score should have a score.  No score found: $s", s.value.isDefined)
     assertEquals(Option(v.toDouble), s.value)
   }
 
-  private[this] def successWithMissing(s: Tree[Double], v: Int, missing: String*){
+  private[this] def successWithMissing(s: NubRootedTree[Double], v: Int, missing: String*){
     assertTrue(s"Score should have a score.  No score found: $s", s.value.isDefined)
     assertTrue(s"Score should have an error.  No error found: $s", s.missingVarNames.nonEmpty)
     assertEquals(Option(v.toDouble), s.value)
@@ -100,7 +99,7 @@ class BasicDecisionTreeFullTest {
     assertEquals(missing.toSet, m)
   }
 
-  private[this] def missing(s: Tree[Double], missing: String*) {
+  private[this] def missing(s: NubRootedTree[Double], missing: String*) {
     assertTrue(s"Score should not have a score.  Found: ${s.value}", s.value.isEmpty)
     assertTrue(s"Score should have an error.  No error found: $s", s.missingVarNames.nonEmpty)
     assertEquals(s"There should be one error message.  Found: ${s.errorMsgs}", 1, s.errorMsgs.size)
@@ -109,7 +108,7 @@ class BasicDecisionTreeFullTest {
     assertEquals(missing.toSet, m)
   }
 
-  private[this] def noneSat(s: Tree[Double]) {
+  private[this] def noneSat(s: NubRootedTree[Double]) {
     assertTrue(s"Score should not have a score.  Found: ${s.value}", s.value.isEmpty)
     assertTrue(s"Score should have an error.  No error found: $s", s.missingVarNames.nonEmpty || s.errorMsgs.nonEmpty)
     assertEquals(s"There should be one error message.  Found: ${s.errorMsgs}", 1, s.errorMsgs.size)
@@ -117,7 +116,7 @@ class BasicDecisionTreeFullTest {
     assertTrue(s"Should not be any missing features. Found: ${s.missingVarNames}", s.missingVarNames.isEmpty)
   }
 
-  private[this] def noneSatWithMissing(s: Tree[Double], missing: String*){
+  private[this] def noneSatWithMissing(s: NubRootedTree[Double], missing: String*){
     assertTrue(s"Score should not have a score.  Found: ${s.value}", s.value.isEmpty)
     assertTrue(s"Score should have an error.  No error found: $s", s.missingVarNames.nonEmpty)
     assertEquals(s"There should be one error message.  Found: ${s.errorMsgs}", 1, s.errorMsgs.size)
@@ -167,7 +166,7 @@ class BasicDecisionTreeFullTest {
     }
   }
 
-  private[this] val f = ModelFactory.defaultFactory(semantics, TreeAuditor[Double]())
+  private[this] val f = ModelFactory.defaultFactory(semantics, RootedTreeAuditor.noUpperBound[Double]())
 
   // getModel[Map[String, Double], Double](json, Option(semantics)).get
   private[this] def getDecisionTree(jsonStr: String) = f.fromString(jsonStr)
