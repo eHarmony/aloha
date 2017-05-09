@@ -132,8 +132,8 @@ object TreeAuditor {
     (m, _) => m
 }
 
-case class RootedTreeAuditor[U: RefInfo, N <: U] private(accumulateErrors: Boolean,
-                                                         accumulateMissingFeatures: Boolean
+case class RootedTreeAuditor[U: RefInfo, N <: U](accumulateErrors: Boolean = false,
+                                                 accumulateMissingFeatures: Boolean = false
 ) extends MorphableAuditor[Tree[U], N, RootedTree[U, N]] {
   import TreeAuditor._
 
@@ -178,10 +178,6 @@ case class RootedTreeAuditor[U: RefInfo, N <: U] private(accumulateErrors: Boole
 
 object RootedTreeAuditor {
   def noUpperBound[N](accumulateErrors: Boolean = false,
-               accumulateMissingFeatures: Boolean = false): RootedTreeAuditor[Any, N] =
-    RootedTreeAuditor[Any, N](accumulateErrors, accumulateMissingFeatures)
-
-  def withUpperBound[U: RefInfo, N <: U](accumulateErrors: Boolean = false,
-                                accumulateMissingFeatures: Boolean = false): RootedTreeAuditor[Any, N] =
+                      accumulateMissingFeatures: Boolean = false): RootedTreeAuditor[Any, N] =
     RootedTreeAuditor[Any, N](accumulateErrors, accumulateMissingFeatures)
 }
