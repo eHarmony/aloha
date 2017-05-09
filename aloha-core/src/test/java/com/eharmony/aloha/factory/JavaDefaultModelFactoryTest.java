@@ -6,7 +6,9 @@ import java.io.StringReader;
 import java.util.*;
 
 import com.eharmony.aloha.audit.MorphableAuditor;
-import com.eharmony.aloha.audit.impl.TreeAuditor;
+import com.eharmony.aloha.audit.impl.tree.RootedTree;
+import com.eharmony.aloha.audit.impl.tree.RootedTreeAuditor;
+import com.eharmony.aloha.audit.impl.tree.Tree;
 import com.eharmony.aloha.models.conversion.DoubleToLongModel;
 import com.eharmony.aloha.models.exploration.BootstrapModel;
 import com.eharmony.aloha.models.exploration.EpsilonGreedyModel;
@@ -61,7 +63,7 @@ public class JavaDefaultModelFactoryTest {
      */
     private static final String[] PARSER_NAMES;
 
-    private static final ModelFactoryImpl<TreeAuditor.Tree<?>, Double, Map<String, Long>, TreeAuditor.Tree<Double>> defaultFactory;
+    private static final ModelFactoryImpl<Tree<Object>, Double, Map<String, Long>, RootedTree<Object, Double>> defaultFactory;
 
     static {
         String[] names = new String[] {
@@ -86,7 +88,11 @@ public class JavaDefaultModelFactoryTest {
                 (Manifest<Map<String, Long>>) RefInfo.fromString("java.util.Map[java.lang.String, java.lang.Long]").right().get();
         final Manifest<Double> rOut = (Manifest<Double>) RefInfo.fromString("Double").right().get();
         final Semantics<Map<String, Long>> semantics = new NoSemantics<>(rIn);
-        final MorphableAuditor<TreeAuditor.Tree<?>, Double, TreeAuditor.Tree<Double>> auditor = new TreeAuditor<>(false, false);
+//        final MorphableAuditor<Tree<?>, Double, RootedTree<Object, Double>> auditor = RootedTreeAuditor.<Double>noUpperBound(false, false);
+        RootedTreeAuditor<Object, Double> auditor = RootedTreeAuditor.<Double>noUpperBound(false, false);
+//        ModelFactoryImpl<Tree<Object>, Double, Map<String, Long>, RootedTree<Object, Double>> f =
+//                ModelFactory.defaultFactory(semantics, auditor, rOut);
+
         defaultFactory = ModelFactory.defaultFactory(semantics, auditor, rOut);
     }
 
@@ -107,12 +113,12 @@ public class JavaDefaultModelFactoryTest {
 
     @Test
     public void testErrorModelFromDefaultFactory() {
-        final Model<Map<String, Long>, TreeAuditor.Tree<Double>> model = defaultFactory.fromString(ERROR_MODEL_JSON).get();
+        final Model<Map<String, Long>, RootedTree<Object, Double>> model = defaultFactory.fromString(ERROR_MODEL_JSON).get();
 
         assertEquals(ERROR_MODEL_NAME, model.modelId().getName());
         assertEquals(ERROR_MODEL_ID, model.modelId().getId());
 
-        final TreeAuditor.Tree<Double> score = model.apply(null);
+        final RootedTree<Object, Double> score = model.apply(null);
 
         assertFalse(score.value().isDefined());
         assertEquals(1, score.errorMsgs().size());
@@ -122,12 +128,12 @@ public class JavaDefaultModelFactoryTest {
 
     @Test
     public void testConstantModelFromDefaultFactory() {
-        final Model<Map<String, Long>, TreeAuditor.Tree<Double>> model = defaultFactory.fromString(CONST_MODEL_JSON).get();
+        final Model<Map<String, Long>, RootedTree<Object, Double>> model = defaultFactory.fromString(CONST_MODEL_JSON).get();
 
         assertEquals(CONST_MODEL_NAME, model.modelId().getName());
         assertEquals(CONST_MODEL_ID, model.modelId().getId());
 
-        final TreeAuditor.Tree<Double> score = model.apply(null);
+        final RootedTree<Object, Double> score = model.apply(null);
         final Double ds1 = score.value().get();
         assertEquals(CONST_MODEL_VAL, ds1, 0);
 
@@ -137,8 +143,8 @@ public class JavaDefaultModelFactoryTest {
 
     @Test
     public void testMultipleFromDefaultFactory() {
-        final Model<Map<String, Long>, TreeAuditor.Tree<Double>> constModel = defaultFactory.fromString(CONST_MODEL_JSON).get();
-        final Model<Map<String, Long>, TreeAuditor.Tree<Double>> errModel = defaultFactory.fromString(ERROR_MODEL_JSON).get();
+        final Model<Map<String, Long>, RootedTree<Object, Double>> constModel = defaultFactory.fromString(CONST_MODEL_JSON).get();
+        final Model<Map<String, Long>, RootedTree<Object, Double>> errModel = defaultFactory.fromString(ERROR_MODEL_JSON).get();
 
         final ICList<ReadableSource> rtl =
                 ICList.<ReadableSource>empty()
@@ -151,14 +157,14 @@ public class JavaDefaultModelFactoryTest {
 
         final List<ReadableSource> readables = rtl.toList();
 
-        final List<Try<Model<Map<String, Long>, TreeAuditor.Tree<Double>>>> tryList = defaultFactory.fromMultipleSources(readables);
+        final List<Try<Model<Map<String, Long>, RootedTree<Object, Double>>>> tryList = defaultFactory.fromMultipleSources(readables);
 
-        final Collection<Try<Model<Map<String, Long>, TreeAuditor.Tree<Double>>>> tries = JavaConversions.asJavaCollection(tryList);
+        final Collection<Try<Model<Map<String, Long>, RootedTree<Object, Double>>>> tries = JavaConversions.asJavaCollection(tryList);
 
         int i = 0;
-        for (Iterator<Try<Model<Map<String, Long>, TreeAuditor.Tree<Double>>>> it = tries.iterator(); it.hasNext(); ++i) {
-            final Model<Map<String, Long>, TreeAuditor.Tree<Double>> m = it.next().get();
-            final Model<Map<String, Long>, TreeAuditor.Tree<Double>> exp = 0 == i % 2 ? errModel : constModel;
+        for (Iterator<Try<Model<Map<String, Long>, RootedTree<Object, Double>>>> it = tries.iterator(); it.hasNext(); ++i) {
+            final Model<Map<String, Long>, RootedTree<Object, Double>> m = it.next().get();
+            final Model<Map<String, Long>, RootedTree<Object, Double>> exp = 0 == i % 2 ? errModel : constModel;
             assertEquals("on test " + i + ":", exp, m);
         }
     }

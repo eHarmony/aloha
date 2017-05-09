@@ -1,6 +1,6 @@
 package com.eharmony.aloha.models.tree.decision
 
-import com.eharmony.aloha.audit.impl.TreeAuditor
+import com.eharmony.aloha.audit.impl.tree.RootedTreeAuditor
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.reflect.RefInfo
 import com.eharmony.aloha.semantics.Semantics
@@ -225,5 +225,5 @@ private object NodeTest {
     m
   }
 
-  private val Factory = ModelFactory.defaultFactory(Semantics, TreeAuditor[Int]())
+  private val Factory = ModelFactory.defaultFactory(Semantics, RootedTreeAuditor.noUpperBound[Int]())
 }

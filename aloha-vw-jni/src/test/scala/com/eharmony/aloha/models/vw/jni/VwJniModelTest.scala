@@ -3,8 +3,8 @@ package com.eharmony.aloha.models.vw.jni
 import java.io._
 import java.{lang => jl}
 
-import com.eharmony.aloha.audit.impl.TreeAuditor.Tree
-import com.eharmony.aloha.audit.impl.{OptionAuditor, TreeAuditor}
+import com.eharmony.aloha.audit.impl.OptionAuditor
+import com.eharmony.aloha.audit.impl.tree.{NubRootedTree, RootedTreeAuditor}
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.io.sources.Base64StringSource
@@ -389,10 +389,10 @@ class VwJniModelTest extends ModelSerializationTestHelper with Logging {
     }
 
   private[this] def modelWithOutput[A : RefInfo](modelJson: JsValue) = {
-    val factory = ModelFactory.defaultFactory(semantics, TreeAuditor[A]())
-    val m: Model[CsvLine, Tree[A]] = factory.fromString(modelJson.compactPrint).get
+    val factory = ModelFactory.defaultFactory(semantics, RootedTreeAuditor.noUpperBound[A]())
+    val m: Model[CsvLine, NubRootedTree[A]] = factory.fromString(modelJson.compactPrint).get
     assertEquals("VwJniModel", m.getClass.getSimpleName)
-    m.asInstanceOf[VwJniModel[Tree[_], A, CsvLine, Tree[A]]]
+    m.asInstanceOf[VwJniModel[NubRootedTree[_], A, CsvLine, NubRootedTree[A]]]
   }
 
   /**

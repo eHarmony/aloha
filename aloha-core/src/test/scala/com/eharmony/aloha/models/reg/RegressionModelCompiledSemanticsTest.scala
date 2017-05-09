@@ -1,7 +1,8 @@
 package com.eharmony.aloha.models.reg
 
 import com.eharmony.aloha.FileLocations
-import com.eharmony.aloha.audit.impl.{OptionAuditor, TreeAuditor}
+import com.eharmony.aloha.audit.impl.OptionAuditor
+import com.eharmony.aloha.audit.impl.tree.RootedTreeAuditor
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.reflect.RefInfo
@@ -168,7 +169,7 @@ object RegressionModelCompiledSemanticsTest {
     )).result()
 
     // RegressionModel(mid, features, featureFunctions, beta, invLink, spline, numMissing)
-    RegressionModel(mId, features.keys.toIndexedSeq, features.values.toIndexedSeq, w, identity, None, None, TreeAuditor[Double]())
+    RegressionModel(mId, features.keys.toIndexedSeq, features.values.toIndexedSeq, w, identity, None, None, RootedTreeAuditor.noUpperBound[Double]())
   }
 
 }

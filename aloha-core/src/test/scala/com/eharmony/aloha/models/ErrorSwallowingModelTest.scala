@@ -1,7 +1,8 @@
 package com.eharmony.aloha.models
 
 import com.eharmony.aloha.ModelSerializationTestHelper
-import com.eharmony.aloha.audit.impl.{OptionAuditor, TreeAuditor}
+import com.eharmony.aloha.audit.impl.OptionAuditor
+import com.eharmony.aloha.audit.impl.tree.RootedTreeAuditor
 import com.eharmony.aloha.ex.SchrodingerException
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
@@ -53,7 +54,7 @@ class ErrorSwallowingModelTest extends ModelSerializationTestHelper {
         |}
       """.stripMargin
     val semantics = FunctionWithErrorProducingSemantics[Any](new SchrodingerException())
-    val factory = ModelFactory.defaultFactory(semantics, TreeAuditor[Double]())
+    val factory = ModelFactory.defaultFactory(semantics, RootedTreeAuditor.noUpperBound[Double]())
     val model = factory.fromString(json).get
 
     val s = model(null)
@@ -84,7 +85,7 @@ class ErrorSwallowingModelTest extends ModelSerializationTestHelper {
         |}
       """.stripMargin
     val semantics = FunctionWithErrorProducingSemantics[Any](new Exception("exception here."))
-    val factory = ModelFactory.defaultFactory(semantics, TreeAuditor[Double]())
+    val factory = ModelFactory.defaultFactory(semantics, RootedTreeAuditor.noUpperBound[Double]())
     val model = factory.fromString(json).get
 
     val s = model(null)
@@ -127,7 +128,7 @@ class ErrorSwallowingModelTest extends ModelSerializationTestHelper {
     )
 
     val semantics = FunctionWithErrorProducingSemantics[Any](ex)
-    val factory = ModelFactory.defaultFactory(semantics, TreeAuditor[Double]())
+    val factory = ModelFactory.defaultFactory(semantics, RootedTreeAuditor.noUpperBound[Double]())
     val model = factory.fromString(json).get
 
     val s = model(null)
@@ -162,7 +163,7 @@ class ErrorSwallowingModelTest extends ModelSerializationTestHelper {
     val ex = new SemanticsUdfException[Any](null, null, null, null, null, null)
 
     val semantics = FunctionWithErrorProducingSemantics[Any](ex)
-    val factory = ModelFactory.defaultFactory(semantics, TreeAuditor[Double]())
+    val factory = ModelFactory.defaultFactory(semantics, RootedTreeAuditor.noUpperBound[Double]())
     val model = factory.fromString(json).get
 
     val s = model(null)

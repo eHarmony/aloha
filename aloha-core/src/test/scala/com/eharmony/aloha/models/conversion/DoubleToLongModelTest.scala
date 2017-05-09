@@ -3,8 +3,8 @@ package com.eharmony.aloha.models.conversion
 import java.{lang => jl}
 
 import com.eharmony.aloha.ModelSerializationTestHelper
-import com.eharmony.aloha.audit.impl.TreeAuditor.Tree
-import com.eharmony.aloha.audit.impl.{OptionAuditor, TreeAuditor}
+import com.eharmony.aloha.audit.impl.OptionAuditor
+import com.eharmony.aloha.audit.impl.tree.{RootedTree, RootedTreeAuditor, Tree}
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.models._
@@ -115,10 +115,10 @@ class DoubleToLongModelTest extends ModelSerializationTestHelper {
 
 object DoubleToLongModelTest {
     private val semantics = EmptySemantics[Any]
-    private val scalaFactory = ModelFactory.defaultFactory(semantics, TreeAuditor[Long]())
-    private val javaFactory = ModelFactory.defaultFactory(semantics, TreeAuditor[jl.Long]())
+    private val scalaFactory = ModelFactory.defaultFactory(semantics, RootedTreeAuditor.noUpperBound[Long]())
+    private val javaFactory = ModelFactory.defaultFactory(semantics, RootedTreeAuditor.noUpperBound[jl.Long]())
 
-    def getScalaLongFactory: ModelFactory[Any, Tree[Long]] = scalaFactory
+    def getScalaLongFactory: ModelFactory[Any, RootedTree[Any, Long]] = scalaFactory
     def getJavaLongFactory = javaFactory
 
     private implicit def intToOptLong(a: Int): Option[Long] = Option(a)

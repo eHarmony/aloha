@@ -1,6 +1,8 @@
 package com.eharmony.aloha.semantics.compiled.plugin.proto;
 
-import com.eharmony.aloha.audit.impl.TreeAuditor;
+import com.eharmony.aloha.audit.impl.tree.RootedTree;
+import com.eharmony.aloha.audit.impl.tree.RootedTreeAuditor;
+import com.eharmony.aloha.audit.impl.tree.Tree;
 import com.eharmony.aloha.factory.ModelFactory;
 import com.eharmony.aloha.factory.ModelFactoryImpl;
 import com.eharmony.aloha.factory.ModelParser;
@@ -80,12 +82,11 @@ public class NonSpringJavaTest {
 
 		// Construct the factory. Can use one factory for many models so long as
 		// the type parameters are the same.
-		final ModelFactoryImpl<TreeAuditor.Tree<?>, Double, TestProto, TreeAuditor.Tree<Double>> modelFactory =
-				getModelFactory();
+		ModelFactory<TestProto, RootedTree<Object, Double>> modelFactory = getModelFactory();
 
 		// Construct the model. Can reuse the models. All models should be
 		// thread safe and lock free.
-		final Model<TestProto, TreeAuditor.Tree<Double>> model =
+		final Model<TestProto, RootedTree<Object, Double>> model =
 			getModel(
 				modelFactory,
 				vfs2FileManager.resolveFile(VFS2_MODEL_LOCATION_URL_STRING));
@@ -101,9 +102,9 @@ public class NonSpringJavaTest {
 	 * @param model
 	 *            a model to test
 	 */
-	private static void testModel(Model<TestProto, TreeAuditor.Tree<Double>> model) {
+	private static void testModel(Model<TestProto, RootedTree<Object, Double>> model) {
 		final TestProto p = SpringModelFactoryTest.PROTOS.get(1);
-		final TreeAuditor.Tree<Double> s = model.apply(p);
+		final RootedTree<Object, Double> s = model.apply(p);
 		final Double d = s.value().get();
 		Assert.assertEquals(SpringModelFactoryTest.EXPECTED_1, d,
 				SpringModelFactoryTest.TOLERANCE);
@@ -119,8 +120,8 @@ public class NonSpringJavaTest {
 	 *            a file from which to construct a model
 	 * @return a model specified by the file.
 	 */
-	private static Model<TestProto, TreeAuditor.Tree<Double>> getModel(
-			ModelFactoryImpl<TreeAuditor.Tree<?>, Double, TestProto, TreeAuditor.Tree<Double>> modelFactory,
+	private static Model<TestProto, RootedTree<Object, Double>> getModel(
+			ModelFactory<TestProto, RootedTree<Object, Double>> modelFactory,
 			FileObject fo2Model) {
 
 		// THIS CAST IS NECESSARY (even though it might not seem like it):
@@ -129,8 +130,8 @@ public class NonSpringJavaTest {
 
 		// TODO: Figure out how to eliminate the need to do this cast.
 		@SuppressWarnings("unchecked")
-		final Try<Model<TestProto, TreeAuditor.Tree<Double>>> modelTry =
-				(Try<Model<TestProto, TreeAuditor.Tree<Double>>>) modelFactory.fromVfs2(fo2Model);
+		final Try<Model<TestProto, RootedTree<Object, Double>>> modelTry =
+				(Try<Model<TestProto, RootedTree<Object, Double>>>) modelFactory.fromVfs2(fo2Model);
 
 		// modelTry.isSuccess() tells if there is something inside:
 		// - true is good.
@@ -161,8 +162,7 @@ public class NonSpringJavaTest {
 	 * 
 	 * @return a factory used to construct models.
 	 */
-	private static ModelFactoryImpl<TreeAuditor.Tree<?>, Double, TestProto, TreeAuditor.Tree<Double>> getModelFactory() {
-
+	private static ModelFactoryImpl<Tree<Object>, Double, TestProto, RootedTree<Object, Double>> getModelFactory() {
 		// ================================================================================================
 		// Construct the semantics
 		// ================================================================================================
@@ -215,7 +215,7 @@ public class NonSpringJavaTest {
 		// ================================================================================================
 		//  Get a MorphableAuditor
 		// ================================================================================================
-		final TreeAuditor<Double> morphableAuditor = new TreeAuditor<>(false, false);
+		RootedTreeAuditor<Object, Double> morphableAuditor = RootedTreeAuditor.noUpperBound(false, false);
 
 		// ================================================================================================
 		// Create an untyped factory. This isn't much use in Java because it
@@ -226,8 +226,8 @@ public class NonSpringJavaTest {
 		// ================================================================================================
 		final Manifest<Double> refInfo = (Manifest<Double>) RefInfo.fromString("java.lang.Double").right().get();
 
-		final ModelFactoryImpl<TreeAuditor.Tree<?>, Double, TestProto, TreeAuditor.Tree<Double>> factory =
-			new ModelFactoryImpl<>(
+		ModelFactoryImpl<Tree<Object>, Double, TestProto, RootedTree<Object, Double>> factory =
+		new ModelFactoryImpl<>(
 				semantics,
 				morphableAuditor,
 				JavaConversions.asScalaBuffer(parsers),

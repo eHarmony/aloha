@@ -1,8 +1,8 @@
 package com.eharmony.aloha.models.h2o
 
 import com.eharmony.aloha.FileLocations
-import com.eharmony.aloha.audit.impl.TreeAuditor
-import com.eharmony.aloha.audit.impl.TreeAuditor.Tree
+import com.eharmony.aloha.audit.impl.tree.Tree
+import com.eharmony.aloha.audit.impl.tree.{NubRootedTree, RootedTree, RootedTreeAuditor, RootedTreeImpl}
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.io.vfs.{Vfs, VfsType}
@@ -75,7 +75,7 @@ class H2oModelTest extends Logging {
         |}
       """.stripMargin.trim
 
-    val model = ProtoFactory[Float].fromString(json).get.asInstanceOf[H2oModel[Tree[_], Float, Abalone, Tree[Float]]]
+    val model = ProtoFactory[Float].fromString(json).get.asInstanceOf[H2oModel[Tree[_], Float, Abalone, NubRootedTree[Float]]]
 
     val x = AbaloneData.take(1).toSeq.head
     val y: Features[RowData] = model.constructFeatures(x)
@@ -218,7 +218,7 @@ class H2oModelTest extends Logging {
 
     val out = model(string2col("M") +: padding)
 
-    val expected = Tree(ModelId(), Seq("Ill-conditioned scalar prediction: NaN."))
+    val expected = RootedTreeImpl(ModelId(), sci.Seq("Ill-conditioned scalar prediction: NaN."), Set.empty, None, Nil, None)
 
     assertEquals(expected, out)
   }
@@ -264,12 +264,14 @@ class H2oModelTest extends Logging {
     val input = Option(H2oMissingStringColumn) +: padding
     val out = model(input)
 
-    val expected = Tree(
+    val expected = RootedTreeImpl(
       ModelId(0, "no features h2o"),
-      Seq(
+      sci.Seq(
         "H2o model may have encountered a missing categorical variable.  Likely features: Sex",
         "See: glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.score0(glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.java:59)"
-      ))
+      ),
+      Set.empty, None, Nil, None
+    )
 
     assertEquals(expected, out)
   }
@@ -288,9 +290,8 @@ object H2oModelTest {
     semantics
   }
 
-  private def ProtoFactory[N: RefInfo]: ModelFactory[Abalone, Tree[N]] = ModelFactory.defaultFactory(protoSemantics, TreeAuditor[N]())
-
-
+  private def ProtoFactory[N: RefInfo]: ModelFactory[Abalone, NubRootedTree[N]] =
+   ModelFactory.defaultFactory(protoSemantics, RootedTreeAuditor.noUpperBound[N]())
 
   /**
     * Recreate the h2o model results
@@ -366,8 +367,7 @@ object H2oModelTest {
     }
   }
 
-  private lazy val factory = ModelFactory.defaultFactory(semantics, TreeAuditor[Double]())
-  // ModelFactory(H2oModel.parser).toTypedFactory[Seq[Option[H2oColumn]], Double](semantics)
+  private lazy val factory = ModelFactory.defaultFactory(semantics, RootedTreeAuditor.noUpperBound[Double]())
 
   implicit def int2col(c: Int): Option[H2oColumn] = Option(H2oDoubleColumn(c))
   implicit def double2col(c: Double): Option[H2oColumn] = Option(H2oDoubleColumn(c))
@@ -401,7 +401,7 @@ object H2oModelTest {
   private lazy val AbaloneModelFeatures =
     """\$\{([a-zA-Z\.]+)\}""".r.findAllMatchIn(AbaloneModelJson).map(_.group(1)).toSet
 
-  private lazy val AbaloneModel: Model[Abalone, Tree[Float]] = ProtoFactory[Float].fromString(AbaloneModelJson).get
+  private lazy val AbaloneModel: Model[Abalone, NubRootedTree[Float]] = ProtoFactory[Float].fromString(AbaloneModelJson).get
 
   private val AbaloneGBMModelJson =
     """
@@ -422,5 +422,5 @@ object H2oModelTest {
   private lazy val AbaloneGBMModelFeatures =
     """\$\{([a-zA-Z\.]+)\}""".r.findAllMatchIn(AbaloneGBMModelJson).map(_.group(1)).toSet
 
-  private lazy val AbaloneGBMModel: Model[Abalone, Tree[Float]] = ProtoFactory[Float].fromString(AbaloneGBMModelJson).get
+  private lazy val AbaloneGBMModel: Model[Abalone, NubRootedTree[Float]] = ProtoFactory[Float].fromString(AbaloneGBMModelJson).get
 }
