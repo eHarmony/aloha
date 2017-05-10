@@ -5,35 +5,35 @@ import org.slf4j.{Logger, LoggerFactory}
 /**
  * Mix the `Logging` trait into a class to get:
  *
- * - Logging methods
- * - A `Logger` object, accessible via the `log` property
- *
- * Does not affect the public API of the class mixing it in.
+ - protected Logging methods
+ - protected A `org.slf4j.Logger` object, accessible via the `logger` property.
  */
 trait Logging {
 
   /**
-   * Get the `Logger` for the class that mixes this trait in. The `Logger`
-   * is created the first time this method is call. The other methods (e.g.,
-   * `error`, `info`, etc.) call this method to get the logger.
-   *
-   * @return the `Logger`
-   */
+    * The name with which the logger is initialized.  This can be overridden in a derived class.
+    * @return
+    */
   protected def loggerInitName(): String = getClass.getName
 
-  @transient final protected lazy val logger: Logger = LoggerFactory.getLogger(loggerInitName())
+  /**
+    * The logger is a `@transient lazy val` to enable proper working with Spark.
+    * The logger will not be serialized with the rest of the class with which this
+    * trait is mixed-in.
+    */
+  @transient final protected[this] lazy val logger: Logger = LoggerFactory.getLogger(loggerInitName())
 
   /**
    * Get the name associated with this logger.
    *
    * @return the name.
    */
-  final protected def loggerName: String = logger.getName
+  final protected[this] def loggerName: String = logger.getName
 
   /**
    * Determine whether trace logging is enabled.
    */
-  final protected def isTraceEnabled: Boolean = logger.isTraceEnabled
+  final protected[this] def isTraceEnabled: Boolean = logger.isTraceEnabled
 
   /**
    * Issue a trace logging message.
@@ -41,7 +41,7 @@ trait Logging {
    * @param msg  the message object. `toString()` is called to convert it
    *             to a loggable string.
    */
-  final protected def trace(msg: => Any): Unit =
+  final protected[this] def trace(msg: => Any): Unit =
     if (logger.isTraceEnabled) logger.trace(msg.toString)
 
   /**
@@ -51,13 +51,13 @@ trait Logging {
    *             to a loggable string.
    * @param t    the exception to include with the logged message.
    */
-  final protected def trace(msg: => Any, t: => Throwable): Unit =
+  final protected[this] def trace(msg: => Any, t: => Throwable): Unit =
     if (logger.isTraceEnabled) logger.trace(msg.toString, t)
 
   /**
    * Determine whether debug logging is enabled.
    */
-  final protected def isDebugEnabled: Boolean = logger.isDebugEnabled
+  final protected[this] def isDebugEnabled: Boolean = logger.isDebugEnabled
 
   /**
    * Issue a debug logging message.
@@ -65,7 +65,7 @@ trait Logging {
    * @param msg  the message object. `toString()` is called to convert it
    *             to a loggable string.
    */
-  final protected def debug(msg: => Any): Unit =
+  final protected[this] def debug(msg: => Any): Unit =
     if (logger.isDebugEnabled()) logger.debug(msg.toString)
 
   /**
@@ -75,13 +75,13 @@ trait Logging {
    *             to a loggable string.
    * @param t    the exception to include with the logged message.
    */
-  final protected def debug(msg: => Any, t: => Throwable): Unit =
+  final protected[this] def debug(msg: => Any, t: => Throwable): Unit =
     if (logger.isDebugEnabled()) logger.debug(msg.toString, t)
 
   /**
    * Determine whether error logging is enabled.
    */
-  final protected def isErrorEnabled: Boolean = logger.isErrorEnabled
+  final protected[this] def isErrorEnabled: Boolean = logger.isErrorEnabled
 
   /**
    * Issue a error logging message.
@@ -89,7 +89,7 @@ trait Logging {
    * @param msg  the message object. `toString()` is called to convert it
    *             to a loggable string.
    */
-  final protected def error(msg: => Any): Unit =
+  final protected[this] def error(msg: => Any): Unit =
     if (logger.isErrorEnabled) logger.error(msg.toString)
 
   /**
@@ -99,13 +99,13 @@ trait Logging {
    *             to a loggable string.
    * @param t    the exception to include with the logged message.
    */
-  final protected def error(msg: => Any, t: => Throwable): Unit =
+  final protected[this] def error(msg: => Any, t: => Throwable): Unit =
     if (logger.isErrorEnabled) logger.error(msg.toString, t)
 
   /**
    * Determine whether info logging is enabled.
    */
-  final protected def isInfoEnabled: Boolean = logger.isInfoEnabled
+  final protected[this] def isInfoEnabled: Boolean = logger.isInfoEnabled
 
   /**
    * Issue a info logging message.
@@ -113,7 +113,7 @@ trait Logging {
    * @param msg  the message object. `toString()` is called to convert it
    *             to a loggable string.
    */
-  final protected def info(msg: => Any): Unit =
+  final protected[this] def info(msg: => Any): Unit =
     if (logger.isInfoEnabled) logger.info(msg.toString)
 
   /**
@@ -123,13 +123,13 @@ trait Logging {
    *             to a loggable string.
    * @param t    the exception to include with the logged message.
    */
-  final protected def info(msg: => Any, t: => Throwable): Unit =
+  final protected[this] def info(msg: => Any, t: => Throwable): Unit =
     if (logger.isInfoEnabled) logger.info(msg.toString, t)
 
   /**
    * Determine whether warn logging is enabled.
    */
-  final protected def isWarnEnabled: Boolean = logger.isWarnEnabled
+  final protected[this] def isWarnEnabled: Boolean = logger.isWarnEnabled
 
   /**
    * Issue a warn logging message.
@@ -137,7 +137,7 @@ trait Logging {
    * @param msg  the message object. `toString()` is called to convert it
    *             to a loggable string.
    */
-  final protected def warn(msg: => Any): Unit =
+  final protected[this] def warn(msg: => Any): Unit =
     if (logger.isWarnEnabled) logger.warn(msg.toString)
 
   /**
@@ -147,6 +147,6 @@ trait Logging {
    *             to a loggable string.
    * @param t    the exception to include with the logged message.
    */
-  final protected def warn(msg: => Any, t: => Throwable): Unit =
+  final protected[this] def warn(msg: => Any, t: => Throwable): Unit =
     if (logger.isWarnEnabled) logger.warn(msg.toString, t)
 }
