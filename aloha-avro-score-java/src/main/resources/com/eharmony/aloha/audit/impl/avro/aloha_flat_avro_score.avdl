@@ -1,0 +1,29 @@
+@namespace("com.eharmony.aloha.audit.impl.avro")
+protocol AlohaFlatScoreProtocol {
+  import idl "aloha_avro_score.avdl";
+
+  record FlatScore {
+    union { null, ModelId } model = null;
+
+    union {
+      null, boolean, int, long, float, double, string,
+      array<union{boolean, int, long, float, double, string}>
+    } value = null;
+
+    /**
+     Each value in subvalues is an index in the FlatScoreList.scores.
+     E.g., 1 means the FlatScore at index 1 in FlatScoreList.scores is a subvalue of this FlatScore.
+     */
+    union { array<int>, null } subvalues = [];
+    union { array<string>, null } errorMsgs = [];
+    union { array<string>, null } missingVarNames = [];
+    union { null, float } prob = null;
+  }
+
+  record FlatScoreList {
+    /**
+     The first element in the list is the root score.
+     */
+    union { null, array<FlatScore> } scores = null;
+  }
+}
