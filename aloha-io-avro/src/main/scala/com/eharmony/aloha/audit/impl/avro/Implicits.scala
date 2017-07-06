@@ -2,9 +2,9 @@ package com.eharmony.aloha.audit.impl.avro
 
 import java.{util => ju}
 
-import scala.collection.{immutable => sci}
-import scala.collection.JavaConverters.asScalaBufferConverter
 import scala.annotation.tailrec
+import scala.collection.JavaConverters.asScalaBufferConverter
+import scala.collection.{immutable => sci}
 
 /**
   * Created by ryan.deak on 7/5/17.
