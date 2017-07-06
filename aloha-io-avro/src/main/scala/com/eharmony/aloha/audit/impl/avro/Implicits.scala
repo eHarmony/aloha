@@ -39,7 +39,7 @@ object Implicits {
     */
   private[this] def score(fss: ju.List[FlatScore], i: Int): Score = {
     val fs = fss.get(i)
-    new Score(fs.getModel, fs.getValue, getSubs(fss, fs), fs.getErrorMsgs, fs.getErrorMsgs, fs.getProb)
+    new Score(fs.getModel, fs.getValue, getSubs(fss, fs), fs.getErrorMsgs, fs.getMissingVarNames, fs.getProb)
   }
 
   /**
