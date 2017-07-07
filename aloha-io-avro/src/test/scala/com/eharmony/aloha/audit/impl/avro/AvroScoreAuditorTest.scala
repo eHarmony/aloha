@@ -319,33 +319,6 @@ class AvroScoreAuditorTest extends ModelSerializationTestHelper {
   }
 
   /**
-    * Serializing round-trip ensures that the data adheres to the schema.
-    * @param schema an Avro schema used to validate the data
-    * @param records records to serialize.
-    * @return
-    */
-  private[this] def serializeRoundTrip(schema: Schema, records: GenericRecord*): Seq[GenericRecord] = {
-    val datumWriter = new GenericDatumWriter[GenericRecord](schema)
-
-    val f = File.createTempFile("avrotest", ".dat")
-    f.deleteOnExit()
-
-    // Serialize
-    val fileWriter = new DataFileWriter(datumWriter)
-    fileWriter.create(schema, f)
-    records.foreach(fileWriter.append)
-    fileWriter.close()
-
-    // Deserialize
-    val datumReader = new GenericDatumReader[GenericRecord](schema)
-    val dataFileReader = new DataFileReader(f, datumReader)
-    val deserializedRecords = asScalaIterator(dataFileReader.iterator()).toList
-    dataFileReader.close()
-
-    deserializedRecords
-  }
-
-  /**
     * Test that data is properly audited for given types `A` and `B`.  `A` represents the top-level
     * values in the audit trail and `B` represents the values at the second level of the audit trail.
     * '''Note''': Not testing whether errorMsgs and missingVarNames
@@ -465,4 +438,31 @@ object AvroScoreAuditorTest {
 
   val M1 = com.eharmony.aloha.id.ModelId(1, "one")
   val M2 = com.eharmony.aloha.id.ModelId(2, "two")
+
+  /**
+    * Serializing round-trip ensures that the data adheres to the schema.
+    * @param schema an Avro schema used to validate the data
+    * @param records records to serialize.
+    * @return
+    */
+  private[avro] def serializeRoundTrip(schema: Schema, records: GenericRecord*): Seq[GenericRecord] = {
+    val datumWriter = new GenericDatumWriter[GenericRecord](schema)
+
+    val f = File.createTempFile("avrotest", ".dat")
+    f.deleteOnExit()
+
+    // Serialize
+    val fileWriter = new DataFileWriter(datumWriter)
+    fileWriter.create(schema, f)
+    records.foreach(fileWriter.append)
+    fileWriter.close()
+
+    // Deserialize
+    val datumReader = new GenericDatumReader[GenericRecord](schema)
+    val dataFileReader = new DataFileReader(f, datumReader)
+    val deserializedRecords = asScalaIterator(dataFileReader.iterator()).toList
+    dataFileReader.close()
+
+    deserializedRecords
+  }
 }
