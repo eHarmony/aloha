@@ -8,52 +8,46 @@ package com.eharmony.aloha.audit.impl.avro;
 import org.apache.avro.specific.SpecificData;
 
 @SuppressWarnings("all")
-/** Information in here mirrors the information in Score and FlatScoreDescendant.  That means
-   that when treating a FlatScore or Score as a GenericRecord, the information for the top-level
-   score can be accessed uniformly. */
 @org.apache.avro.specific.AvroGenerated
-public class FlatScore extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -8637973361660658603L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"FlatScore\",\"namespace\":\"com.eharmony.aloha.audit.impl.avro\",\"doc\":\"Information in here mirrors the information in Score and FlatScoreDescendant.  That means\\n   that when treating a FlatScore or Score as a GenericRecord, the information for the top-level\\n   score can be accessed uniformly.\",\"fields\":[{\"name\":\"model\",\"type\":[\"null\",{\"type\":\"record\",\"name\":\"ModelId\",\"fields\":[{\"name\":\"id\",\"type\":[\"null\",\"long\"],\"default\":null},{\"name\":\"name\",\"type\":[\"null\",\"string\"],\"default\":null}]}],\"default\":null},{\"name\":\"value\",\"type\":[\"null\",\"boolean\",\"int\",\"long\",\"float\",\"double\",\"string\",{\"type\":\"array\",\"items\":[\"boolean\",\"int\",\"long\",\"float\",\"double\",\"string\"]}],\"default\":null},{\"name\":\"subvalueIndices\",\"type\":[{\"type\":\"array\",\"items\":\"int\"},\"null\"],\"doc\":\"Each value in subvalues is an index in the FlatScore.descendants.\\n     E.g., 0 means the FlatScoreDescendant at index 0 in FlatScore.descendants is a\\n     subvalue of this FlatScore.\",\"default\":[]},{\"name\":\"errorMsgs\",\"type\":[{\"type\":\"array\",\"items\":\"string\"},\"null\"],\"default\":[]},{\"name\":\"missingVarNames\",\"type\":[{\"type\":\"array\",\"items\":\"string\"},\"null\"],\"default\":[]},{\"name\":\"prob\",\"type\":[\"null\",\"float\"],\"default\":null},{\"name\":\"descendants\",\"type\":[{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"FlatScoreDescendant\",\"fields\":[{\"name\":\"model\",\"type\":[\"null\",\"ModelId\"],\"default\":null},{\"name\":\"value\",\"type\":[\"null\",\"boolean\",\"int\",\"long\",\"float\",\"double\",\"string\",{\"type\":\"array\",\"items\":[\"boolean\",\"int\",\"long\",\"float\",\"double\",\"string\"]}],\"default\":null},{\"name\":\"subvalueIndices\",\"type\":[{\"type\":\"array\",\"items\":\"int\"},\"null\"],\"doc\":\"Each value in subvalues is an index in the FlatScore.descendants.\\n     E.g., 1 means the FlatScoreDescendant at index 1 in FlatScore.descendants is a\\n     subvalue of this FlatScoreDescendant.\",\"default\":[]},{\"name\":\"errorMsgs\",\"type\":[{\"type\":\"array\",\"items\":\"string\"},\"null\"],\"default\":[]},{\"name\":\"missingVarNames\",\"type\":[{\"type\":\"array\",\"items\":\"string\"},\"null\"],\"default\":[]},{\"name\":\"prob\",\"type\":[\"null\",\"float\"],\"default\":null}]}},\"null\"],\"default\":[]}]}");
+public class FlatScoreDescendant extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
+  private static final long serialVersionUID = -1476707363243015518L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"FlatScoreDescendant\",\"namespace\":\"com.eharmony.aloha.audit.impl.avro\",\"fields\":[{\"name\":\"model\",\"type\":[\"null\",{\"type\":\"record\",\"name\":\"ModelId\",\"fields\":[{\"name\":\"id\",\"type\":[\"null\",\"long\"],\"default\":null},{\"name\":\"name\",\"type\":[\"null\",\"string\"],\"default\":null}]}],\"default\":null},{\"name\":\"value\",\"type\":[\"null\",\"boolean\",\"int\",\"long\",\"float\",\"double\",\"string\",{\"type\":\"array\",\"items\":[\"boolean\",\"int\",\"long\",\"float\",\"double\",\"string\"]}],\"default\":null},{\"name\":\"subvalueIndices\",\"type\":[{\"type\":\"array\",\"items\":\"int\"},\"null\"],\"doc\":\"Each value in subvalues is an index in the FlatScore.descendants.\\n     E.g., 1 means the FlatScoreDescendant at index 1 in FlatScore.descendants is a\\n     subvalue of this FlatScoreDescendant.\",\"default\":[]},{\"name\":\"errorMsgs\",\"type\":[{\"type\":\"array\",\"items\":\"string\"},\"null\"],\"default\":[]},{\"name\":\"missingVarNames\",\"type\":[{\"type\":\"array\",\"items\":\"string\"},\"null\"],\"default\":[]},{\"name\":\"prob\",\"type\":[\"null\",\"float\"],\"default\":null}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
   @Deprecated public com.eharmony.aloha.audit.impl.avro.ModelId model;
   @Deprecated public java.lang.Object value;
   /** Each value in subvalues is an index in the FlatScore.descendants.
-     E.g., 0 means the FlatScoreDescendant at index 0 in FlatScore.descendants is a
-     subvalue of this FlatScore. */
+     E.g., 1 means the FlatScoreDescendant at index 1 in FlatScore.descendants is a
+     subvalue of this FlatScoreDescendant. */
   @Deprecated public java.util.List<java.lang.Integer> subvalueIndices;
   @Deprecated public java.util.List<java.lang.CharSequence> errorMsgs;
   @Deprecated public java.util.List<java.lang.CharSequence> missingVarNames;
   @Deprecated public java.lang.Float prob;
-  @Deprecated public java.util.List<com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant> descendants;
 
   /**
    * Default constructor.  Note that this does not initialize fields
    * to their default values from the schema.  If that is desired then
    * one should use <code>newBuilder()</code>.
    */
-  public FlatScore() {}
+  public FlatScoreDescendant() {}
 
   /**
    * All-args constructor.
    * @param model The new value for model
    * @param value The new value for value
    * @param subvalueIndices Each value in subvalues is an index in the FlatScore.descendants.
-     E.g., 0 means the FlatScoreDescendant at index 0 in FlatScore.descendants is a
-     subvalue of this FlatScore.
+     E.g., 1 means the FlatScoreDescendant at index 1 in FlatScore.descendants is a
+     subvalue of this FlatScoreDescendant.
    * @param errorMsgs The new value for errorMsgs
    * @param missingVarNames The new value for missingVarNames
    * @param prob The new value for prob
-   * @param descendants The new value for descendants
    */
-  public FlatScore(com.eharmony.aloha.audit.impl.avro.ModelId model, java.lang.Object value, java.util.List<java.lang.Integer> subvalueIndices, java.util.List<java.lang.CharSequence> errorMsgs, java.util.List<java.lang.CharSequence> missingVarNames, java.lang.Float prob, java.util.List<com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant> descendants) {
+  public FlatScoreDescendant(com.eharmony.aloha.audit.impl.avro.ModelId model, java.lang.Object value, java.util.List<java.lang.Integer> subvalueIndices, java.util.List<java.lang.CharSequence> errorMsgs, java.util.List<java.lang.CharSequence> missingVarNames, java.lang.Float prob) {
     this.model = model;
     this.value = value;
     this.subvalueIndices = subvalueIndices;
     this.errorMsgs = errorMsgs;
     this.missingVarNames = missingVarNames;
     this.prob = prob;
-    this.descendants = descendants;
   }
 
   public org.apache.avro.Schema getSchema() { return SCHEMA$; }
@@ -66,7 +60,6 @@ public class FlatScore extends org.apache.avro.specific.SpecificRecordBase imple
     case 3: return errorMsgs;
     case 4: return missingVarNames;
     case 5: return prob;
-    case 6: return descendants;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -81,7 +74,6 @@ public class FlatScore extends org.apache.avro.specific.SpecificRecordBase imple
     case 3: errorMsgs = (java.util.List<java.lang.CharSequence>)value$; break;
     case 4: missingVarNames = (java.util.List<java.lang.CharSequence>)value$; break;
     case 5: prob = (java.lang.Float)value$; break;
-    case 6: descendants = (java.util.List<com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant>)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -121,8 +113,8 @@ public class FlatScore extends org.apache.avro.specific.SpecificRecordBase imple
   /**
    * Gets the value of the 'subvalueIndices' field.
    * @return Each value in subvalues is an index in the FlatScore.descendants.
-     E.g., 0 means the FlatScoreDescendant at index 0 in FlatScore.descendants is a
-     subvalue of this FlatScore.
+     E.g., 1 means the FlatScoreDescendant at index 1 in FlatScore.descendants is a
+     subvalue of this FlatScoreDescendant.
    */
   public java.util.List<java.lang.Integer> getSubvalueIndices() {
     return subvalueIndices;
@@ -131,8 +123,8 @@ public class FlatScore extends org.apache.avro.specific.SpecificRecordBase imple
   /**
    * Sets the value of the 'subvalueIndices' field.
    * Each value in subvalues is an index in the FlatScore.descendants.
-     E.g., 0 means the FlatScoreDescendant at index 0 in FlatScore.descendants is a
-     subvalue of this FlatScore.
+     E.g., 1 means the FlatScoreDescendant at index 1 in FlatScore.descendants is a
+     subvalue of this FlatScoreDescendant.
    * @param value the value to set.
    */
   public void setSubvalueIndices(java.util.List<java.lang.Integer> value) {
@@ -188,64 +180,47 @@ public class FlatScore extends org.apache.avro.specific.SpecificRecordBase imple
   }
 
   /**
-   * Gets the value of the 'descendants' field.
-   * @return The value of the 'descendants' field.
+   * Creates a new FlatScoreDescendant RecordBuilder.
+   * @return A new FlatScoreDescendant RecordBuilder
    */
-  public java.util.List<com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant> getDescendants() {
-    return descendants;
+  public static com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant.Builder newBuilder() {
+    return new com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant.Builder();
   }
 
   /**
-   * Sets the value of the 'descendants' field.
-   * @param value the value to set.
-   */
-  public void setDescendants(java.util.List<com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant> value) {
-    this.descendants = value;
-  }
-
-  /**
-   * Creates a new FlatScore RecordBuilder.
-   * @return A new FlatScore RecordBuilder
-   */
-  public static com.eharmony.aloha.audit.impl.avro.FlatScore.Builder newBuilder() {
-    return new com.eharmony.aloha.audit.impl.avro.FlatScore.Builder();
-  }
-
-  /**
-   * Creates a new FlatScore RecordBuilder by copying an existing Builder.
+   * Creates a new FlatScoreDescendant RecordBuilder by copying an existing Builder.
    * @param other The existing builder to copy.
-   * @return A new FlatScore RecordBuilder
+   * @return A new FlatScoreDescendant RecordBuilder
    */
-  public static com.eharmony.aloha.audit.impl.avro.FlatScore.Builder newBuilder(com.eharmony.aloha.audit.impl.avro.FlatScore.Builder other) {
-    return new com.eharmony.aloha.audit.impl.avro.FlatScore.Builder(other);
+  public static com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant.Builder newBuilder(com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant.Builder other) {
+    return new com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant.Builder(other);
   }
 
   /**
-   * Creates a new FlatScore RecordBuilder by copying an existing FlatScore instance.
+   * Creates a new FlatScoreDescendant RecordBuilder by copying an existing FlatScoreDescendant instance.
    * @param other The existing instance to copy.
-   * @return A new FlatScore RecordBuilder
+   * @return A new FlatScoreDescendant RecordBuilder
    */
-  public static com.eharmony.aloha.audit.impl.avro.FlatScore.Builder newBuilder(com.eharmony.aloha.audit.impl.avro.FlatScore other) {
-    return new com.eharmony.aloha.audit.impl.avro.FlatScore.Builder(other);
+  public static com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant.Builder newBuilder(com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant other) {
+    return new com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant.Builder(other);
   }
 
   /**
-   * RecordBuilder for FlatScore instances.
+   * RecordBuilder for FlatScoreDescendant instances.
    */
-  public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<FlatScore>
-    implements org.apache.avro.data.RecordBuilder<FlatScore> {
+  public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<FlatScoreDescendant>
+    implements org.apache.avro.data.RecordBuilder<FlatScoreDescendant> {
 
     private com.eharmony.aloha.audit.impl.avro.ModelId model;
     private com.eharmony.aloha.audit.impl.avro.ModelId.Builder modelBuilder;
     private java.lang.Object value;
     /** Each value in subvalues is an index in the FlatScore.descendants.
-     E.g., 0 means the FlatScoreDescendant at index 0 in FlatScore.descendants is a
-     subvalue of this FlatScore. */
+     E.g., 1 means the FlatScoreDescendant at index 1 in FlatScore.descendants is a
+     subvalue of this FlatScoreDescendant. */
     private java.util.List<java.lang.Integer> subvalueIndices;
     private java.util.List<java.lang.CharSequence> errorMsgs;
     private java.util.List<java.lang.CharSequence> missingVarNames;
     private java.lang.Float prob;
-    private java.util.List<com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant> descendants;
 
     /** Creates a new Builder */
     private Builder() {
@@ -256,7 +231,7 @@ public class FlatScore extends org.apache.avro.specific.SpecificRecordBase imple
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(com.eharmony.aloha.audit.impl.avro.FlatScore.Builder other) {
+    private Builder(com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant.Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.model)) {
         this.model = data().deepCopy(fields()[0].schema(), other.model);
@@ -285,17 +260,13 @@ public class FlatScore extends org.apache.avro.specific.SpecificRecordBase imple
         this.prob = data().deepCopy(fields()[5].schema(), other.prob);
         fieldSetFlags()[5] = true;
       }
-      if (isValidValue(fields()[6], other.descendants)) {
-        this.descendants = data().deepCopy(fields()[6].schema(), other.descendants);
-        fieldSetFlags()[6] = true;
-      }
     }
 
     /**
-     * Creates a Builder by copying an existing FlatScore instance
+     * Creates a Builder by copying an existing FlatScoreDescendant instance
      * @param other The existing instance to copy.
      */
-    private Builder(com.eharmony.aloha.audit.impl.avro.FlatScore other) {
+    private Builder(com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant other) {
             super(SCHEMA$);
       if (isValidValue(fields()[0], other.model)) {
         this.model = data().deepCopy(fields()[0].schema(), other.model);
@@ -322,10 +293,6 @@ public class FlatScore extends org.apache.avro.specific.SpecificRecordBase imple
         this.prob = data().deepCopy(fields()[5].schema(), other.prob);
         fieldSetFlags()[5] = true;
       }
-      if (isValidValue(fields()[6], other.descendants)) {
-        this.descendants = data().deepCopy(fields()[6].schema(), other.descendants);
-        fieldSetFlags()[6] = true;
-      }
     }
 
     /**
@@ -341,7 +308,7 @@ public class FlatScore extends org.apache.avro.specific.SpecificRecordBase imple
       * @param value The value of 'model'.
       * @return This builder.
       */
-    public com.eharmony.aloha.audit.impl.avro.FlatScore.Builder setModel(com.eharmony.aloha.audit.impl.avro.ModelId value) {
+    public com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant.Builder setModel(com.eharmony.aloha.audit.impl.avro.ModelId value) {
       validate(fields()[0], value);
       this.modelBuilder = null;
       this.model = value;
@@ -377,7 +344,7 @@ public class FlatScore extends org.apache.avro.specific.SpecificRecordBase imple
      * @param value The builder instance that must be set.
      * @return This builder.
      */
-    public com.eharmony.aloha.audit.impl.avro.FlatScore.Builder setModelBuilder(com.eharmony.aloha.audit.impl.avro.ModelId.Builder value) {
+    public com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant.Builder setModelBuilder(com.eharmony.aloha.audit.impl.avro.ModelId.Builder value) {
       clearModel();
       modelBuilder = value;
       return this;
@@ -395,7 +362,7 @@ public class FlatScore extends org.apache.avro.specific.SpecificRecordBase imple
       * Clears the value of the 'model' field.
       * @return This builder.
       */
-    public com.eharmony.aloha.audit.impl.avro.FlatScore.Builder clearModel() {
+    public com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant.Builder clearModel() {
       model = null;
       modelBuilder = null;
       fieldSetFlags()[0] = false;
@@ -415,7 +382,7 @@ public class FlatScore extends org.apache.avro.specific.SpecificRecordBase imple
       * @param value The value of 'value'.
       * @return This builder.
       */
-    public com.eharmony.aloha.audit.impl.avro.FlatScore.Builder setValue(java.lang.Object value) {
+    public com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant.Builder setValue(java.lang.Object value) {
       validate(fields()[1], value);
       this.value = value;
       fieldSetFlags()[1] = true;
@@ -435,7 +402,7 @@ public class FlatScore extends org.apache.avro.specific.SpecificRecordBase imple
       * Clears the value of the 'value' field.
       * @return This builder.
       */
-    public com.eharmony.aloha.audit.impl.avro.FlatScore.Builder clearValue() {
+    public com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant.Builder clearValue() {
       value = null;
       fieldSetFlags()[1] = false;
       return this;
@@ -444,8 +411,8 @@ public class FlatScore extends org.apache.avro.specific.SpecificRecordBase imple
     /**
       * Gets the value of the 'subvalueIndices' field.
       * Each value in subvalues is an index in the FlatScore.descendants.
-     E.g., 0 means the FlatScoreDescendant at index 0 in FlatScore.descendants is a
-     subvalue of this FlatScore.
+     E.g., 1 means the FlatScoreDescendant at index 1 in FlatScore.descendants is a
+     subvalue of this FlatScoreDescendant.
       * @return The value.
       */
     public java.util.List<java.lang.Integer> getSubvalueIndices() {
@@ -455,12 +422,12 @@ public class FlatScore extends org.apache.avro.specific.SpecificRecordBase imple
     /**
       * Sets the value of the 'subvalueIndices' field.
       * Each value in subvalues is an index in the FlatScore.descendants.
-     E.g., 0 means the FlatScoreDescendant at index 0 in FlatScore.descendants is a
-     subvalue of this FlatScore.
+     E.g., 1 means the FlatScoreDescendant at index 1 in FlatScore.descendants is a
+     subvalue of this FlatScoreDescendant.
       * @param value The value of 'subvalueIndices'.
       * @return This builder.
       */
-    public com.eharmony.aloha.audit.impl.avro.FlatScore.Builder setSubvalueIndices(java.util.List<java.lang.Integer> value) {
+    public com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant.Builder setSubvalueIndices(java.util.List<java.lang.Integer> value) {
       validate(fields()[2], value);
       this.subvalueIndices = value;
       fieldSetFlags()[2] = true;
@@ -470,8 +437,8 @@ public class FlatScore extends org.apache.avro.specific.SpecificRecordBase imple
     /**
       * Checks whether the 'subvalueIndices' field has been set.
       * Each value in subvalues is an index in the FlatScore.descendants.
-     E.g., 0 means the FlatScoreDescendant at index 0 in FlatScore.descendants is a
-     subvalue of this FlatScore.
+     E.g., 1 means the FlatScoreDescendant at index 1 in FlatScore.descendants is a
+     subvalue of this FlatScoreDescendant.
       * @return True if the 'subvalueIndices' field has been set, false otherwise.
       */
     public boolean hasSubvalueIndices() {
@@ -482,11 +449,11 @@ public class FlatScore extends org.apache.avro.specific.SpecificRecordBase imple
     /**
       * Clears the value of the 'subvalueIndices' field.
       * Each value in subvalues is an index in the FlatScore.descendants.
-     E.g., 0 means the FlatScoreDescendant at index 0 in FlatScore.descendants is a
-     subvalue of this FlatScore.
+     E.g., 1 means the FlatScoreDescendant at index 1 in FlatScore.descendants is a
+     subvalue of this FlatScoreDescendant.
       * @return This builder.
       */
-    public com.eharmony.aloha.audit.impl.avro.FlatScore.Builder clearSubvalueIndices() {
+    public com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant.Builder clearSubvalueIndices() {
       subvalueIndices = null;
       fieldSetFlags()[2] = false;
       return this;
@@ -505,7 +472,7 @@ public class FlatScore extends org.apache.avro.specific.SpecificRecordBase imple
       * @param value The value of 'errorMsgs'.
       * @return This builder.
       */
-    public com.eharmony.aloha.audit.impl.avro.FlatScore.Builder setErrorMsgs(java.util.List<java.lang.CharSequence> value) {
+    public com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant.Builder setErrorMsgs(java.util.List<java.lang.CharSequence> value) {
       validate(fields()[3], value);
       this.errorMsgs = value;
       fieldSetFlags()[3] = true;
@@ -525,7 +492,7 @@ public class FlatScore extends org.apache.avro.specific.SpecificRecordBase imple
       * Clears the value of the 'errorMsgs' field.
       * @return This builder.
       */
-    public com.eharmony.aloha.audit.impl.avro.FlatScore.Builder clearErrorMsgs() {
+    public com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant.Builder clearErrorMsgs() {
       errorMsgs = null;
       fieldSetFlags()[3] = false;
       return this;
@@ -544,7 +511,7 @@ public class FlatScore extends org.apache.avro.specific.SpecificRecordBase imple
       * @param value The value of 'missingVarNames'.
       * @return This builder.
       */
-    public com.eharmony.aloha.audit.impl.avro.FlatScore.Builder setMissingVarNames(java.util.List<java.lang.CharSequence> value) {
+    public com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant.Builder setMissingVarNames(java.util.List<java.lang.CharSequence> value) {
       validate(fields()[4], value);
       this.missingVarNames = value;
       fieldSetFlags()[4] = true;
@@ -564,7 +531,7 @@ public class FlatScore extends org.apache.avro.specific.SpecificRecordBase imple
       * Clears the value of the 'missingVarNames' field.
       * @return This builder.
       */
-    public com.eharmony.aloha.audit.impl.avro.FlatScore.Builder clearMissingVarNames() {
+    public com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant.Builder clearMissingVarNames() {
       missingVarNames = null;
       fieldSetFlags()[4] = false;
       return this;
@@ -583,7 +550,7 @@ public class FlatScore extends org.apache.avro.specific.SpecificRecordBase imple
       * @param value The value of 'prob'.
       * @return This builder.
       */
-    public com.eharmony.aloha.audit.impl.avro.FlatScore.Builder setProb(java.lang.Float value) {
+    public com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant.Builder setProb(java.lang.Float value) {
       validate(fields()[5], value);
       this.prob = value;
       fieldSetFlags()[5] = true;
@@ -603,55 +570,16 @@ public class FlatScore extends org.apache.avro.specific.SpecificRecordBase imple
       * Clears the value of the 'prob' field.
       * @return This builder.
       */
-    public com.eharmony.aloha.audit.impl.avro.FlatScore.Builder clearProb() {
+    public com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant.Builder clearProb() {
       prob = null;
       fieldSetFlags()[5] = false;
       return this;
     }
 
-    /**
-      * Gets the value of the 'descendants' field.
-      * @return The value.
-      */
-    public java.util.List<com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant> getDescendants() {
-      return descendants;
-    }
-
-    /**
-      * Sets the value of the 'descendants' field.
-      * @param value The value of 'descendants'.
-      * @return This builder.
-      */
-    public com.eharmony.aloha.audit.impl.avro.FlatScore.Builder setDescendants(java.util.List<com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant> value) {
-      validate(fields()[6], value);
-      this.descendants = value;
-      fieldSetFlags()[6] = true;
-      return this;
-    }
-
-    /**
-      * Checks whether the 'descendants' field has been set.
-      * @return True if the 'descendants' field has been set, false otherwise.
-      */
-    public boolean hasDescendants() {
-      return fieldSetFlags()[6];
-    }
-
-
-    /**
-      * Clears the value of the 'descendants' field.
-      * @return This builder.
-      */
-    public com.eharmony.aloha.audit.impl.avro.FlatScore.Builder clearDescendants() {
-      descendants = null;
-      fieldSetFlags()[6] = false;
-      return this;
-    }
-
     @Override
-    public FlatScore build() {
+    public FlatScoreDescendant build() {
       try {
-        FlatScore record = new FlatScore();
+        FlatScoreDescendant record = new FlatScoreDescendant();
         if (modelBuilder != null) {
           record.model = this.modelBuilder.build();
         } else {
@@ -662,7 +590,6 @@ public class FlatScore extends org.apache.avro.specific.SpecificRecordBase imple
         record.errorMsgs = fieldSetFlags()[3] ? this.errorMsgs : (java.util.List<java.lang.CharSequence>) defaultValue(fields()[3]);
         record.missingVarNames = fieldSetFlags()[4] ? this.missingVarNames : (java.util.List<java.lang.CharSequence>) defaultValue(fields()[4]);
         record.prob = fieldSetFlags()[5] ? this.prob : (java.lang.Float) defaultValue(fields()[5]);
-        record.descendants = fieldSetFlags()[6] ? this.descendants : (java.util.List<com.eharmony.aloha.audit.impl.avro.FlatScoreDescendant>) defaultValue(fields()[6]);
         return record;
       } catch (Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);

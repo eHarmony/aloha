@@ -6,7 +6,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 import scala.collection.JavaConverters.seqAsJavaListConverter
-import com.eharmony.aloha.audit.impl.avro.Implicits.{RichFlatScoreList, RichScore}
+import com.eharmony.aloha.audit.impl.avro.Implicits.{RichFlatScore, RichScore}
 
 import java.{lang => jl, util => ju}
 
@@ -16,23 +16,27 @@ import java.{lang => jl, util => ju}
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class ImplicitsTest {
   import ImplicitsTest._
-  import FlatScoreListTest.flatScoreList
+  import FlatScoreListTest.flatScore
 
-  @Test def testFlatScoreListToScore(): Unit =
-    assertEquals(score, flatScoreList.toScore)
+  @Test def testFlatScoreToScore(): Unit =
+    assertEquals(score, flatScore.toScore)
 
-  @Test def testScoreToFlatScoreList(): Unit =
-    assertEquals(flatScoreList, score.toFlatScoreList)
+  @Test def testScoreToFlatScore(): Unit =
+    assertEquals(flatScore, score.toFlatScore)
 
   /**
     * Tests that scores are corrected inserted during conversions and that
     * children ordering is preserved.
     */
   @Test def testRoundTripConversionFromScore(): Unit =
-    assertEquals(score, score.toFlatScoreList.toScore)
+    assertEquals(score, score.toFlatScore.toScore)
 
-  @Test def testRoundTripConversionFromFlatScoreList(): Unit =
-    assertEquals(flatScoreList, flatScoreList.toScore.toFlatScoreList)
+  // TODO: Fix this test.  Once fixed, the stuff should be considered good.
+  @Test def testRoundTripConversionFromScoreIrregularTree(): Unit =
+    assertEquals(irregularTree, irregularTree.toFlatScore.toScore)
+
+  @Test def testRoundTripConversionFromFlatScore(): Unit =
+    assertEquals(flatScore, flatScore.toScore.toFlatScore)
 
   /**
     * Unlike `testRoundTripConversionFromScore`, this tests verifies that
@@ -40,7 +44,7 @@ class ImplicitsTest {
     */
   @Test def testAllFieldsAppear(): Unit = {
     val s = new Score(modelId, value, subvalues, errors, missing, prob)
-    assertEquals(s, s.toFlatScoreList.toScore)
+    assertEquals(s, s.toFlatScore.toScore)
   }
 }
 
@@ -62,6 +66,18 @@ object ImplicitsTest {
       ),
       scr(3d, 3,
         scr(6d, 6),
+        scr(7L, 7)
+      )
+    )
+
+  private lazy val irregularTree: Score =
+    scr(1, 1,
+      scr(2L, 2),
+      scr(3d, 3,
+        scr(5d, 5),
+        scr(6L, 6)
+      ),
+      scr(4d, 4,
         scr(7L, 7)
       )
     )
