@@ -13,8 +13,8 @@ import java.{util => ju}
   * Created by ryan.deak on 7/5/17.
   */
 @RunWith(classOf[BlockJUnit4ClassRunner])
-class FlatScoreListTest {
-  import FlatScoreListTest.flatScore
+class FlatScoreTest {
+  import FlatScoreTest.flatScore
 
   @Test def testSerializability(): Unit = {
     val serDeserFS =
@@ -27,7 +27,7 @@ class FlatScoreListTest {
   }
 }
 
-object FlatScoreListTest {
+object FlatScoreTest {
   private[this] def empty[A]: ju.List[A] = ju.Collections.emptyList[A]
 
   private[this] implicit def toArrayList[A, B](as: Seq[A])(implicit ev: A => B): ju.ArrayList[B] =
