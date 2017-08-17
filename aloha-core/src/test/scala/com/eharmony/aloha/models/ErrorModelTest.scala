@@ -1,7 +1,8 @@
 package com.eharmony.aloha.models
 
 import com.eharmony.aloha.ModelSerializationTestHelper
-import com.eharmony.aloha.audit.impl.{OptionAuditor, TreeAuditor}
+import com.eharmony.aloha.audit.impl.OptionAuditor
+import com.eharmony.aloha.audit.impl.tree.RootedTreeAuditor
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.semantics.NoSemantics
@@ -16,7 +17,7 @@ class ErrorModelTest extends ModelSerializationTestHelper {
   private val factory = ModelFactory.defaultFactory(NoSemantics[Unit](), OptionAuditor[Byte]())
 
   @Test def test1() {
-    val em = ErrorModel(ModelId(), Seq("There should be a valid user ID.  Couldn't find one...", "blah blah"), TreeAuditor[Byte]())
+    val em = ErrorModel(ModelId(), Seq("There should be a valid user ID.  Couldn't find one...", "blah blah"), RootedTreeAuditor.noUpperBound[Byte]())
     val s = em(null)
     assertNotNull(s)
     assertTrue(s.value.isEmpty)

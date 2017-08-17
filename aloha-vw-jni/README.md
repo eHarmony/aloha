@@ -14,12 +14,12 @@ These can be installed on OS X via [homebrew](http://brew.sh) by doing:
 # install boost 1.55 via homebrew
 brew install homebrew/versions/boost155
 
-
 # create boost symlinks in /usr/local/lib
 cd /usr/local/lib
 for F in libboost_program_options-mt.dylib libboost_serialization-mt.dylib; do
   ln -s /usr/local/opt/boost155/lib/$F $F
 done
+**Note:** the latest homebrew may name the above dir /usr/local/opt/boost@1.55/lib so I (a reader) had to change this the above line to make it work
 
 
 # Create libz symlink to default system-installed libz.

@@ -100,7 +100,7 @@ private[avro] object AvroCodeGenerators extends CodeGenerators {
         val c = s"""${indent(i)}${reqPrefix(i, req)}.get("${fa.field.name}")${castCode(fa.field)}.toSeq"""
         if (fa.field.elementType.isInstanceOf[StringField])
           s"$c.map(_.toString)"
-        c
+        else c
       }
     }
   }

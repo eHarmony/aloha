@@ -1,0 +1,49 @@
+@namespace("com.eharmony.aloha.audit.impl.avro")
+protocol AlohaFlatScoreProtocol {
+  import idl "aloha_avro_score.avdl";
+
+  record FlatScoreDescendant {
+    union { null, ModelId } model = null;
+
+    union {
+      null, boolean, int, long, float, double, string,
+      array<union{boolean, int, long, float, double, string}>
+    } value = null;
+
+    /**
+     Each value in subvalues is an index in the FlatScore.descendants.
+     E.g., 1 means the FlatScoreDescendant at index 1 in FlatScore.descendants is a
+     subvalue of this FlatScoreDescendant.
+     */
+    union { array<int>, null } subvalueIndices = [];
+    union { array<string>, null } errorMsgs = [];
+    union { array<string>, null } missingVarNames = [];
+    union { null, float } prob = null;
+  }
+
+  /**
+   Information in here mirrors the information in Score and FlatScoreDescendant.  That means
+   that when treating a FlatScore or Score as a GenericRecord, the information for the top-level
+   score can be accessed uniformly.
+   */
+  record FlatScore {
+    union { null, ModelId } model = null;
+
+    union {
+      null, boolean, int, long, float, double, string,
+      array<union{boolean, int, long, float, double, string}>
+    } value = null;
+
+    /**
+     Each value in subvalues is an index in the FlatScore.descendants.
+     E.g., 0 means the FlatScoreDescendant at index 0 in FlatScore.descendants is a
+     subvalue of this FlatScore.
+     */
+    union { array<int>, null } subvalueIndices = [];
+    union { array<string>, null } errorMsgs = [];
+    union { array<string>, null } missingVarNames = [];
+    union { null, float } prob = null;
+
+    union { array<FlatScoreDescendant>, null } descendants = [];
+  }
+}
