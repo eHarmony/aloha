@@ -11,7 +11,7 @@ import com.eharmony.aloha.semantics.SemanticsUdfException
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import org.apache.avro
-import org.apache.avro.{Protocol, Schema}
+import org.apache.avro.Protocol
 import org.apache.avro.file.{DataFileReader, DataFileWriter}
 import org.apache.avro.generic.{GenericData, GenericDatumReader, GenericDatumWriter, GenericRecord}
 import org.apache.avro.util.Utf8
@@ -233,7 +233,7 @@ class CompiledSemanticsAvroPluginTest {
 
     assertEquals(expected, results)
   }
-  
+
   @Test def testRequiredChains() {
     for {
       i <- 1 to levels
