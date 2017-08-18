@@ -14,7 +14,8 @@ git checkout $VW_RELEASE_HASH
 make java
 mkdir -p $JAVA_LIB_PATH_DIR
 cp java/target/libvw_jni.so $JAVA_LIB_PATH_DIR
-
+echo "Files in $JAVA_LIB_PATH_DIR"
+ls -halF $JAVA_LIB_PATH_DIR
 # VW's libvw_jni.so needs to go in one of the following:
 #   /usr/java/packages/lib/amd64
 #   /usr/lib64
