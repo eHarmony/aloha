@@ -12,6 +12,7 @@ cd vowpal_wabbit
 git fetch
 git checkout $VW_RELEASE_HASH
 make java
+mkdir -p $JAVA_LIB_PATH_DIR
 cp java/target/libvw_jni.so $JAVA_LIB_PATH_DIR
 
 # VW's libvw_jni.so needs to go in one of the following:
