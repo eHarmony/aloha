@@ -23,7 +23,7 @@ import com.eharmony.aloha.util.{EitherHelpers, Logging, SimpleTypeSeq}
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.io.IOUtils
 import spray.json.{DeserializationException, JsValue, JsonFormat, JsonReader, pimpAny, pimpString}
-import vw.learner.{VWFloatLearner, VWIntLearner, VWLearner, VWLearners}
+import vowpalWabbit.learner._
 
 import scala.collection.immutable.ListMap
 import scala.collection.{breakOut, immutable => sci, mutable => scm}
@@ -143,6 +143,44 @@ object VwJniModel
     with VwJniModelJson
     with Logging {
 
+  private[jni] def toLabelFn[N: RefInfo](labels: Option[SimpleTypeSeq]): Int => N = {
+    labels map { ls =>
+      val tc = convFn(ls.refInfo, RefInfo[N])
+      (i: Int) => tc(ls.values(i - 1))
+    } getOrElse {
+      convFn[Int, N]
+    }
+  }
+
+  private[jni] def convFn[A: RefInfo, B: RefInfo] = {
+    TypeCoercion[A, B] getOrElse {
+      throw new AlohaException(s"Couldn't find a conversion to from ${RefInfoOps.toString[A]} to ${RefInfoOps.toString[B]}.")
+    }
+  }
+
+  // Note the repetitiveness below.  This is because the underlying base class is package private.  This is
+  // good so that the class cannot be extended outside the vowpalWabbit.learner package, but it leads to
+  // repetitive code.  Perhaps there should be a separate public interface apart from the abstract base class.
+
+  // TODO: This is where additional VW learners should be wrapped.
+
+  private[jni] def multiclassLearner[N: RefInfo](l: VWMulticlassLearner, labels: Option[SimpleTypeSeq]) = {
+    val toLabel = toLabelFn[N](labels)
+    (s: String) => toLabel(l.predict(s))
+  }
+
+  private[jni] def scalarLearner[N: RefInfo](l: VWScalarLearner, spline: Option[Spline]) = {
+    val doubleCf = convFn[Double, N]
+    val doubleCfSpline = spline.map(_.andThen(doubleCf)).getOrElse(doubleCf)
+    (x: String) => doubleCfSpline(l.predict(x))
+  }
+
+  private[jni] def probLearner[N: RefInfo](l: VWProbLearner, spline: Option[Spline]) = {
+    val doubleCf = convFn[Double, N]
+    val doubleCfSpline = spline.map(_.andThen(doubleCf)).getOrElse(doubleCf)
+    (x: String) => doubleCfSpline(l.predict(x))
+  }
+
   /**
     * LearnerCreator is designed to avoid gotchas that lead to serialization exceptions.  This class avoids
     * creating the type coercion function until the apply function is called.  Additionally, the binary VW
@@ -158,31 +196,11 @@ object VwJniModel
     */
   private[this] case class LearnerCreator[N](labels: Option[SimpleTypeSeq], spline: Option[Spline], vwParams: String)
                                             (implicit rin: RefInfo[N]) extends (VWLearner => String => N) {
-
-    private[this] def convFn[A: RefInfo, B: RefInfo] = {
-      TypeCoercion[A, B] getOrElse {
-        throw new AlohaException(s"Couldn't find a conversion to from ${RefInfoOps.toString[A]} to ${RefInfoOps.toString[B]}.")
-      }
-    }
-
-    private[this] def toLabelFn: Int => N = {
-      labels map { ls =>
-        val tc = convFn(ls.refInfo, rin)
-        (i: Int) => tc(ls.values(i - 1))
-      } getOrElse {
-        convFn[Int, N]
-      }
-    }
-
     override def apply(vwLearner: VWLearner): String => N = vwLearner match {
-      case l: VWIntLearner =>
-        val toLabel = toLabelFn
-        (s: String) => toLabel(l.predict(s))
-      case l: VWFloatLearner =>
-        val doubleCf = convFn[Double, N]
-        val doubleCfSpline = spline.map(_.andThen(doubleCf)).getOrElse(doubleCf)
-        (x: String) => doubleCfSpline(l.predict(x))
-      case l: VWLearner =>
+      case m: VWMulticlassLearner => multiclassLearner(m, labels)
+      case p: VWProbLearner       => probLearner(p, spline)
+      case s: VWScalarLearner     => scalarLearner(s, spline)
+      case l: VWLearner           =>
         throw new UnsupportedOperationException(s"Unsupported learner type ${l.getClass.getCanonicalName} produced by arguments: $vwParams")
       case d => throw new IllegalStateException(s"${d.getClass.getCanonicalName} is not a VWLearner.")
     }
