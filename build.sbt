@@ -1,5 +1,5 @@
 name := "aloha"
-description := """Scala-based machine learning library with generic models and lazily created features."""
+description := "Scala-based machine learning library with generic models and lazily created features."
 
 
 // ===========================================================================
@@ -84,12 +84,16 @@ lazy val versionDependentSettings = Seq(
 //  Resource Filtering
 // ===========================================================================
 
+// Since `flatten` is a very generic name, Alias it to avoid conflicts with keys in other plugins.
+import EditSourcePlugin.autoImport.{flatten => editFlatten}
+import com.sun.java.swing.plaf.windows.WindowsInternalFrameTitlePane.ScalableIconUIResource
+
 def editSourceSettings = Seq[Setting[_]](
   // This might be the only one that requires def instead of lazy val:
   targetDirectory in EditSource := (crossTarget.value / "filtered"),
 
   // These don't change per project and should be OK with a lazy val instead of def:
-  flatten in EditSource := false,
+  editFlatten in EditSource := false,
   (sources in EditSource) ++= baseDirectory.map { d =>
     (d / "src" / "main" / "filtered_resources" / "" ** "*.*").get ++
     (d / "src" / "test" / "filtered_resources" / "" ** "*.*").get
@@ -152,21 +156,28 @@ lazy val filteredTask = Def.task {
 
 
 // ===========================================================================
+//  Other Common Settings
+// ===========================================================================
+
+lazy val noPublishSettings = Seq(
+  publish := { },
+  publishM2 := { },
+  publishLocal := { },
+  publishArtifact := false
+)
+
+// ===========================================================================
 //  Modules
 // ===========================================================================
 
 lazy val root = project.in(file("."))
-  .aggregate(core, vwJni, h2o, cli, ioProto, avroScoreJava, ioAvro)
-  .dependsOn(core, vwJni, h2o, cli, ioProto, avroScoreJava, ioAvro)
+  .aggregate(core, vwJni, h2o, cli, ioProto, avroScoreJava, ioAvro, docs)
+  .dependsOn(core, vwJni, h2o, cli, ioProto, avroScoreJava, ioAvro, docs)
   .settings(commonSettings: _*)
   .settings(versionDependentSettings: _*)
   .settings(dependencyOverrides ++= Dependencies.overrideDeps)
-  .settings (
-    publish := { },
-    publishM2 := { },
-    publishLocal := { },
-    publishArtifact := false
-  )
+  .settings(noPublishSettings)
+//  .enablePlugins(ScalaUnidocPlugin)
 
 lazy val core = project.in(file("aloha-core"))
   .settings(name := "aloha-core")
@@ -296,3 +307,69 @@ releaseProcess := Seq[ReleaseStep](
   ReleaseStep(action = Command.process("sonatypeReleaseAll", _), enableCrossBuild = true),
   pushChanges
 )
+
+
+// ===========================================================================
+//  Site
+// ===========================================================================
+
+lazy val docsMappingsAPIDir = settingKey[String]("Name of subdirectory in site target directory for api docs")
+
+lazy val docSettings = Seq(
+  micrositeName := "Aloha",
+  micrositeDescription := "Generic machine learning, lazy features",
+  micrositeAuthor := "eHarmony",
+  micrositeHighlightTheme := "atom-one-light",
+  micrositeHomepage := "http://eharmony.github.io/aloha",
+  micrositeOrganizationHomepage := "http://www.eharmony.com",
+  micrositeBaseUrl := "aloha",
+  micrositeDocumentationUrl := "docs",
+  micrositeGithubOwner := "eharmony",
+//  micrositeExtraMdFiles := Map(file("CONTRIBUTING.md") -> "contributing.md"),
+  micrositeGithubRepo := "aloha",
+  micrositePalette := Map(
+    "brand-primary" -> "#5B5988",
+    "brand-secondary" -> "#292E53",
+    "brand-tertiary" -> "#222749",
+    "gray-dark" -> "#49494B",
+    "gray" -> "#7B7B7E",
+    "gray-light" -> "#E5E5E6",
+    "gray-lighter" -> "#F4F3F4",
+    "white-color" -> "#FFFFFF"),
+  autoAPIMappings := true,
+  unidocProjectFilter in (ScalaUnidoc, unidoc) :=
+    inProjects(core, vwJni, h2o, ioProto, avroScoreJava, ioAvro, cli),
+  docsMappingsAPIDir := "docs/api",
+  addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), docsMappingsAPIDir),
+  ghpagesNoJekyll := false,
+  fork in tut := true,
+  fork in (ScalaUnidoc, unidoc) := true,
+  // unidoc
+  // Figure out a way to get this in.
+//  scalacOptions in (ScalaUnidoc) ++= Seq(
+//    "-Xfatal-warnings",
+//    "-doc-source-url", scmInfo.value.get.browseUrl + "/tree/master€{FILE_PATH}.scala",
+//    "-sourcepath", baseDirectory.in(LocalRootProject).value.getAbsolutePath,
+//    "-diagrams"
+//  ),
+  git.remoteRepo := "git@github.com:eharmony/aloha.git",
+  includeFilter in makeSite := "**/*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.js" | "*.swf" | "*.yml" | "**/*.md"
+)
+
+
+// To see locally: docs/makeMicrosite
+lazy val docs = project.in(file("docs"))
+  .settings(name := "docs")
+//  .settings(moduleName := "docs")
+  .enablePlugins(MicrositesPlugin)
+  .enablePlugins(GhpagesPlugin)
+  .enablePlugins(ScalaUnidocPlugin)
+  .settings(commonSettings: _*)
+  .settings(noPublishSettings)
+  .settings(GhpagesPlugin.globalSettings: _*)
+  .settings(docSettings)
+  .settings(tutScalacOptions := Seq("-usejavacp", "-J-Xmx2g"))
+  .settings(dependencyOverrides ++= Dependencies.overrideDeps)
+  .dependsOn(core, vwJni, h2o, ioProto % "test->test;compile->compile", avroScoreJava, ioAvro, cli)
+//  .settings(tutSettings)
+//  .settings(tutScalacOptions ~= (_.filterNot(Set("-Ywarn-unused-import", "-Ywarn-dead-code"))))

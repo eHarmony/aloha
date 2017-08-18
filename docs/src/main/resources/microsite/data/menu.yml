@@ -1,0 +1,23 @@
+options:
+
+  - title: API Docs
+    url: docs/api/index.html
+
+  - title: Getting Started (Data Sci)
+    url: docs/getting_started.html
+
+  - title: Getting Started (Data Eng)
+    url: docs/getting_started_eng.html
+
+  - title: Constructing Datasets
+    url: docs/dataset.html
+
+  - title: In Depth Walkthrough
+    url: docs/in_depth_walkthrough.html
+
+  - title: Model Formats
+    url: docs/model_formats.html
+    menu_section: model_formats
+
+  - title: Release Notes
+    url: docs/release_notes.html

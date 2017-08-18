@@ -20,3 +20,9 @@ addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.3")
 
 // To do resource filtering.
 addSbtPlugin("org.clapper" % "sbt-editsource" % "0.7.0")
+
+// For microsite
+addSbtPlugin("com.47deg"  % "sbt-microsites" % "0.5.3")
+
+// For unified scaladoc
+addSbtPlugin("com.eed3si9n" % "sbt-unidoc" % "0.4.0")

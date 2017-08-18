@@ -1,3 +1,8 @@
+---
+layout: docs
+title: Documentation
+---
+
 # An In-Depth Walkthrough
 
 There are a few basic concepts that carry through all aspects of Aloha.  Those are, namely, *features* and *semantics*. 
@@ -73,7 +78,7 @@ and the function of these two parameters. Let's say that we could write scala fu
 from the input type.  For simplicity, let's say we are working with a `Map[String, Any]`.  Then, our functions could 
 be written like the following: 
 
-```scala
+```tut:silent
 val weight = (x: Map[String, Any]) => x get { "weight" } collect { case x: Float => x }  // Optional value.
 val height = (x: Map[String, Any]) => x("height").asInstanceOf[Int]                      // Required value.
 ```
@@ -81,7 +86,7 @@ val height = (x: Map[String, Any]) => x("height").asInstanceOf[Int]             
 Now let's say that Aloha has a generic way of combining the return values of two functions (representing parameters) 
 using a third combining function.  We could easily write this as: 
 
-```scala
+```tut:silent
 /**
  * @param u a function with domain X and codomain U 
  * @param v a function with domain X and codomain V 
@@ -98,7 +103,7 @@ def functionWithTwoVariables[X, U, V, Y](u: X => U, v: X => V)(f: (U, V) => Y) =
 
 Then we could construct the BMI function easily from the definitions `weight` and `height` using the following: 
 
-```scala
+```tut:silent
 // functions w and h are defined above.
 // Type of bmi:   Map[String,Any] => Option[Double]
 val bmi = functionWithTwoVariables(weight, height)((weightOpt, height) => {
@@ -180,7 +185,7 @@ object Ops {
    * @tparam A the type of algebraic ring
    * @return ''v'' added to some value ''a'' in the implicit scope
    */
-  def add[A](v: A)(implicit a: A, ring: Numeric[A]) = num.plus(v, a)
+  def add[A](v: A)(implicit a: A, ring: Numeric[A]) = ring.plus(v, a)
 }
 
 object Implicits {
@@ -206,42 +211,62 @@ be extremely dangerous.  It is imperative to understand the imports being import
 
 ### Protobuf Plugin 
 
-Currently there are two main CompiledSemantics plugins.  The first is 
-[CompiledSemanticsProtoPlugin](aloha-core/scaladocs/index.html#com.eharmony.aloha.semantics.compiled.plugin.proto.CompiledSemanticsProtoPlugin) located 
-in the `com.eharmony.aloha.semantics.compiled.plugin.proto` package in [aloha-core](aloha-core/index.html). This 
+Currently there are a few main CompiledSemantics plugins.  The first is
+[CompiledSemanticsProtoPlugin](/aloha/docs/api/index.html#com.eharmony.aloha.semantics.compiled.plugin.proto.CompiledSemanticsProtoPlugin) located
+in the `com.eharmony.aloha.semantics.compiled.plugin.proto` package in `aloha-io-proto`. This
 plugin allows for arbitrary kinds of [Protocol Buffer](https://developers.google.com/protocol-buffers/) instances 
 that extend [GeneratedMessage](https://developers.google.com/protocol-buffers/docs/reference/java/com/google/protobuf/GeneratedMessage).
 
 See [dependencies](aloha-core/dependencies.html) for the version of protocol buffers used in Aloha.  At the time of 
 this writing, Aloha uses protocol buffers 2.4.1.
 
-```scala
+```tut:silent
 // Scala Code: Constructing a compiled semantics protocol buffer plugin is easy.
 import com.eharmony.aloha.semantics.compiled.plugin.proto.CompiledSemanticsProtoPlugin
-import some.proto.defs.MyProto
-val plugin = CompiledSemanticsProtoPlugin[MyProto]
+import com.eharmony.aloha.test.proto.TestProtoBuffs.Abalone
+
+val plugin = CompiledSemanticsProtoPlugin[Abalone]
 
 // pass to compiled semantics ... (more on this later)
 ```
+
+### Avro Plugin
+
+Aloha Also supports Avro input and output.  The support for this in located in the `aloha-io-avro` module.
+
+```tut:silent
+import java.io.File
+import org.apache.avro.{Protocol, Schema}
+import org.apache.avro.generic.GenericRecord
+import com.eharmony.aloha.semantics.compiled.plugin.avro.CompiledSemanticsAvroPlugin
+
+// Get the Avro Schema.
+val alohaRoot = new File(new File(".").getAbsolutePath.replaceFirst("/aloha/.*$", "/aloha/"))
+val protocolFile = new File(alohaRoot, "aloha-io-avro/src/test/resources/avro/test.avpr")
+val protocol = Protocol.parse(protocolFile)
+val schema = protocol.getType("Test")
+
+// Pass the Avro Schema to plugin.  Need to specify the type associated with the Schema.
+val plugin = CompiledSemanticsAvroPlugin[GenericRecord](schema)
+
+// pass to compiled semantics ... (more on this later)
+```
+
 
 #### Future structured input datatypes Aloha may support
  
 One of the niceties of Aloha is that it allows models to accept structured input in a typesafe way.  Currently, this 
 is limited to protocol buffers but we'd like to extend allow to integrate with other serialization protocols such as
 
-* [Avro](https://avro.apache.org)
 * [Thrift](https://thrift.apache.org)
 
-To accomplish this, we'll need to remove the current coupling with protocol buffers for the output score object.  If
-someone wants to help with this, *we'd love the help!*
-See [dependencies](aloha-core/dependencies.html) for the version of protocol buffers used in Aloha.
 
 ### CSV Plugin 
 
-The second kind of CompiledSemantics plugin currently in use is the 
+Another kind of CompiledSemantics plugin currently in use is the
 
-[CompiledSemanticsCsvPlugin](aloha-core/scaladocs/index.html#com.eharmony.aloha.semantics.compiled.plugin.csv.CompiledSemanticsCsvPlugin) located
-in the `com.eharmony.aloha.semantics.compiled.plugin.csv` package in [aloha-core](aloha-core/index.html). This plugin
+[CompiledSemanticsCsvPlugin](/aloha/docs/api/index.html#com.eharmony.aloha.semantics.compiled.plugin.csv.CompiledSemanticsCsvPlugin) located
+in the `com.eharmony.aloha.semantics.compiled.plugin.csv` package in `aloha-core`. This plugin
 allows the user to specify [Delimiter-separated values](https://en.wikipedia.org/wiki/Delimiter-separated_values) 
 with lots of different underlying input types.  This plugin takes string-based data and turns it into strongly typed 
 data that can encode fields with types: 
@@ -255,27 +280,32 @@ data that can encode fields with types:
 - Optional inputs
 
 Specifying the plugin is easy.  It just requires providing a column name to column type map.  The types come from
-[com.eharmony.aloha.semantics.compiled.plugin.csv.CsvTypes](aloha-core/scaladocs/index.html#com.eharmony.aloha.semantics.compiled.plugin.csv.CsvTypes%24).
+[com.eharmony.aloha.semantics.compiled.plugin.csv.CsvTypes](aloha/docs/api/index.html#com.eharmony.aloha.semantics.compiled.plugin.csv.CsvTypes$).
 
-```scala
+```tut:silent
 // Scala Code
-import com.eharmony.aloha.semantics.compiled.plugin.csv.CsvTypes.CsvType._
+import com.eharmony.aloha.semantics.compiled.plugin.csv.CompiledSemanticsCsvPlugin
+import com.eharmony.aloha.semantics.compiled.plugin.csv.CsvTypes.{IntType, FloatOptionType}
 
 val plugin = CompiledSemanticsCsvPlugin(
-  "height" -> IntType
+  "height" -> IntType,
   "weight" -> FloatOptionType
 )
 ```
 
-Notice that since [CompiledSemanticsCsvPlugin](aloha-core/scaladocs/index.html#com.eharmony.aloha.semantics.compiled.plugin.csv.CompiledSemanticsCsvPlugin) extends 
-[CompiledSemanticsPlugin](aloha-core/scaladocs/index.html#com.eharmony.aloha.semantics.compiled.CompiledSemanticsPlugin)\[[CsvLine](aloha-core/scaladocs/index.html#com.eharmony.aloha.semantics.compiled.plugin.csv.CsvLine)\],
-the features produced by a [CompiledSemantics](aloha-core/scaladocs/index.html#com.eharmony.aloha.semantics.compiled.CompiledSemantics) instance 
-parameterized by an [CompiledSemanticsCsvPlugin](aloha-core/scaladocs/index.html#com.eharmony.aloha.semantics.compiled.plugin.csv.CompiledSemanticsCsvPlugin) operate 
-on instances of [CsvLine](aloha-core/scaladocs/index.html#com.eharmony.aloha.semantics.compiled.plugin.csv.CsvLine).  It 
+Notice that since [CompiledSemanticsCsvPlugin](/aloha/docs/api/index.html#com.eharmony.aloha.semantics.compiled.plugin.csv.CompiledSemanticsCsvPlugin) extends
+[CompiledSemanticsPlugin](/aloha/docs/api/index.html#com.eharmony.aloha.semantics.compiled.CompiledSemanticsPlugin)\[[CsvLine](/aloha/docs/api/index.html#com.eharmony.aloha.semantics.compiled.plugin.csv.CsvLine)\],
+the features produced by a [CompiledSemantics](/aloha/docs/api/index.html#com.eharmony.aloha.semantics.compiled.CompiledSemantics) instance
+parameterized by an [CompiledSemanticsCsvPlugin](/aloha/docs/api/index.html#com.eharmony.aloha.semantics.compiled.plugin.csv.CompiledSemanticsCsvPlugin) operate
+on instances of [CsvLine](/aloha/docs/api/index.html#com.eharmony.aloha.semantics.compiled.plugin.csv.CsvLine).  It
 is therefore necessary to produce instances of CsvLine to make use of this plugin.  This is pretty easy to do though.
 
-```scala
-val csvLines = CsvLines(
+```tut:silent
+import com.eharmony.aloha.semantics.compiled.plugin.csv.CsvLines
+
+// Same as:
+//   val tsvLinesWithDefaults = CsvLines(Map("height" -> 0, "weight" -> 1))
+val tsvLines = CsvLines(
   Map(                     // 0-based field indices
     "height" -> 0, 
     "weight" -> 1
@@ -287,54 +317,111 @@ val csvLines = CsvLines(
   false,                   // errorOnOptMissingField 
   false                    // errorOnOptMissingEnum
 )
-
-val csvLinesWithDefaults = CsvLines(Map("height" -> 0, "weight" -> 1))
-
-require(csvLinesWithDefaults == csvLines)  // This requirement is satisfied.
 ```
 
-Once in possession of a CsvLines instance, it's easy to generate CsvLine instances:  
+Once in possession of a `CsvLines` instance, it's easy to generate `CsvLine` instances:
 
-```scala
-val oneCsvLine: CsvLineImpl = csvLines("72, 175") // height = 72 inches, weight = 175 lbs.
-val manyCsvLinesUsingVarArgs: Vector[CsvLineImpl] = csvLines("72, 175", "70, 180", "64, 110")
-val csvLineIterator: Iterator[CsvLineImpl] = csvLines(Iterator("72, 175", "70, 180", "64, 110"))
-val csvLineVector: Seq[CsvLineImpl] = csvLines(Seq("72, 175", "70, 180", "64, 110"))
+```tut:silent
+import com.eharmony.aloha.semantics.compiled.plugin.csv.CsvLine
+
+val csvLines = CsvLines(Map("height" -> 0, "weight" -> 1), fs = ",")
+
+val oneCsvLine: CsvLine = csvLines("72, 175") // height = 72 inches, weight = 175 lbs.
+assert(72 == oneCsvLine.i("height") && Some(175f) == oneCsvLine.of("weight"))
+
+val manyCsvLinesUsingVarArgs: Vector[CsvLine] = csvLines("72, 175", "70, 180", "64, 110")
+val csvLineIterator: Iterator[CsvLine] = csvLines(Iterator("72, 175", "70, 180", "64, 110"))
+val csvLineVector: Seq[CsvLine] = csvLines(Seq("72, 175", "70, 180", "64, 110"))
 val nonStrictVectorOfCsvLine = csvLines.nonStrict(Vector("72, 175", "70, 180", "64, 110"))
 ```
+
+There are many ways to get one or multiple lines CSV lines.  These methods, found in
+[CsvLines](aloha/docs/api/index.html#com.eharmony.aloha.semantics.compiled.plugin.csv.CsvLines),
+are very general and
+have [strict](https://en.wikipedia.org/wiki/Evaluation_strategy#Strict_evaluation) and
+[non-strict](https://en.wikipedia.org/wiki/Evaluation_strategy#Non-strict_evaluation) versions.
+These methods transform collections passed to them and should retain the collection shape
+appropriately.
+
 
 ## Factory
 
 Factories are important to create models: 
 
-```scala
+```tut:silent
 // Scala Code
+import com.eharmony.aloha.audit.impl.OptionAuditor
 import com.eharmony.aloha.factory.ModelFactory
-import com.eharmony.aloha.semantics.compiled.plugin.csv.CsvTypes.CsvType._
+import com.eharmony.aloha.semantics.compiled.CompiledSemantics
+import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
+import com.eharmony.aloha.semantics.compiled.plugin.csv.CompiledSemanticsCsvPlugin
+import com.eharmony.aloha.semantics.compiled.plugin.csv.CsvTypes.{IntType, FloatOptionType}
+import java.io.File
+import scala.concurrent.ExecutionContext.Implicits.global
+
+/** @return a cache directory if possible */
+def cacheDir(): Option[File] = {
+  val f = new File("/tmp/aloha/cache")
+  if (f.exists)
+    if (f.isDirectory)
+      Option(f)
+    else None
+  else if (f.mkdirs)
+    Option(f)
+  else None
+}
 
 // vvvvv  Define the semantics  vvvvvvvvvvvvvvvvvvvvvv
 
 // -----  Define the plugin  -------------------------
 val plugin = CompiledSemanticsCsvPlugin(
-  "height" -> IntType
-  "weight" -> FloatOptionType
+  "profile.user_id" -> IntType
 )
+// -----  Define the plugin  -------------------------
 
-val imports = Seq("scala.math._")
-val cacheDir: java.io.File = getCacheDir() // Get a place to cache features.
-val semantics = CompiledSemantics(TwitterEvalCompiler(classCacheDir = Option(cacheDir), plugin, imports)
+
+// Imports allow extensions to the language.  These can be anything on
+// the classpath, and can be defined outside of Aloha.  Importing BasicFunctions
+// is not required but it's like Aloha's version of Predef to make things work
+// better / more easily.
+val imports = Seq("scala.math._", "com.eharmony.aloha.feature.BasicFunctions._")
+
+// Compiled semantics is the most general.  It requires a compiler, a plugin
+// and a sequence of imports.
+val semantics = CompiledSemantics(TwitterEvalCompiler(classCacheDir = cacheDir()), plugin, imports)
 // ^^^^^  Define the semantics  ^^^^^^^^^^^^^^^^^^^^^^
 
-// Get a typed factory.
-val untypedFactory = ModelFactory.defaultFactory
+// Create an Auditor
+val auditor = OptionAuditor[Double]()
 
-val typedFactory = untypedFactory.toTypedFactory[CsvLine, Double](semantics)
+// Create a model factory.  It requires a semantics to make sense of features
+// and an auditor to report predictions in the proper container.
+val factory = ModelFactory.defaultFactory(semantics, auditor)
 
-val modelFile: java.io.File = ...
+val modelFile = {
+  val alohaRoot = new File(new File(".").getAbsolutePath.replaceFirst("/aloha/.*$", "/aloha/"))
+  new File(alohaRoot, "aloha-core/src/test/resources/fizzbuzz.json")
+}
 
 // type: scala.util.Try[com.eharmony.aloha.models.Model[CsvLine, Double]]
-val modelAttempt = typedFactory.fromFile(modelFile)
-val model = modelAttempt.get 
+val modelAttempt = factory.fromFile(modelFile)
+val model = modelAttempt.get
 ```
 
-For more information on creating semantics and factories, see the [Creating Semantics](creating_semantics.html) page.
+Once we have a model, we can create some input data and run the model.  So, based on this data:
+
+```tut:silent
+val csvLines = CsvLines(Map("profile.user_id" -> 0))
+val lines = csvLines(10 to 15 map (i => i.toString))
+```
+
+we can use the model to predict.  Since the model is just a function, this is rather easy.
+
+```tut
+val predictions = lines map (x => model(x)) // or just 'lines map model'
+
+val inputs = lines map (x => x.i("profile.user_id"))
+(inputs zip predictions).flatMap { case (x, p) => p.map(y => (x, y)) }.mkString("\n")
+```
+
+For more information on creating semantics and factories, see the [Creating Semantics](/aloha/docs/creating_semantics.html) page.

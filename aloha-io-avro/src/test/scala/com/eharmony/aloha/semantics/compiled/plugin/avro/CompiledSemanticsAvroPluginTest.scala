@@ -233,7 +233,7 @@ class CompiledSemanticsAvroPluginTest {
 
     assertEquals(expected, results)
   }
-  
+
   @Test def testRequiredChains() {
     for {
       i <- 1 to levels

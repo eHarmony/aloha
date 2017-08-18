@@ -1,3 +1,8 @@
+---
+layout: docs
+title: Documentation
+---
+
 # Error Handling
 
 Aloha doesn't attempt to trap exceptions thrown in features.  It only attempts to enrich the errors and rethrow the 
