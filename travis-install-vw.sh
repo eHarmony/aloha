@@ -5,7 +5,7 @@ set -e
 # cd vowpal_wabbit
 # make java
 # echo "put the JNI lib in one of these:"
-for F in $(scala -e 'println(System.getProperty("java.library.path"))' | tr : '\n'); do
+for F in $((echo -e 'public class Main{public static void main(String[] args){ System.out.println(System.getProperty("java.library.path"));}}' > Main.java && javac Main.java) | tr : '\n'); do
   echo -e "\t$F"
 done
 exit 1
