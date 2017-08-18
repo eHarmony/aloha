@@ -32,8 +32,9 @@ addons:
       - libboost-program-options-dev
 
 before_install:
+  - export LD_LIBRARY_PATH=$HOME/lib
   - source travis-install-protobuf.sh
   - bash travis-install-aloha-proto.sh
   - bash travis-install-vw.sh
 
-sbt_args: -Djava.library.path=$HOME/lib
+# sbt_args: -Djava.library.path=$HOME/lib
