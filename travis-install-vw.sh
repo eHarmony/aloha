@@ -5,8 +5,8 @@ set -e
 # For more info, see: https://github.com/JohnLangford/vowpal_wabbit/tree/master/java
 #
 VW_RELEASE_HASH=10bd09ab06f59291e04ad7805e88fd3e693b7159
-JAVA_LIB_PATH_DIR=/usr/java/packages/lib/amd64
-
+# JAVA_LIB_PATH_DIR=/usr/java/packages/lib/amd64
+JAVA_LIB_PATH_DIR=$HOME/lib
 git clone https://github.com/JohnLangford/vowpal_wabbit.git
 cd vowpal_wabbit
 git fetch

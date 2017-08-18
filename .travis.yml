@@ -35,3 +35,5 @@ before_install:
   - source travis-install-protobuf.sh
   - bash travis-install-aloha-proto.sh
   - bash travis-install-vw.sh
+
+sbt_args: -Djava.library.path=$HOME/lib
