@@ -32,9 +32,7 @@ addons:
       - libboost-program-options-dev
 
 before_install:
-  - export LD_LIBRARY_PATH=$HOME/lib
+  - export LD_LIBRARY_PATH=$HOME/lib    # Install dir for libs.  LD_LIBRARY_PATH is included in java.library.path.
   - source travis-install-protobuf.sh
   - bash travis-install-aloha-proto.sh
-  - bash travis-install-vw.sh
-
-# sbt_args: -Djava.library.path=$HOME/lib
+  - bash travis-install-vw-jni-lib.sh
