@@ -26,10 +26,10 @@ if [[ "$VW_LIB_SHA256" != "$EXPECTED_VW_LIB_SHA256" ]]; then
   mkdir -p $VW_LIB_DIR
   cp java/target/libvw_jni.so $VW_LIB_DIR
 
-  if [[ -f "$VW_JNI_LIB" ]];
+  if [[ -f "$VW_JNI_LIB" ]]; then
     NEW_VW_LIB_SHA256=$(openssl dgst -sha256 $VW_JNI_LIB 2>/dev/null | sed 's/..* //g')
     green "$VW_JNI_LIB exists with SHA 256 hash '$NEW_VW_LIB_SHA256'"
-  then
+  fi
 
   cd -
 fi
