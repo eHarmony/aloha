@@ -146,6 +146,8 @@ object VwJniModel
   private[jni] def toLabelFn[N: RefInfo](labels: Option[SimpleTypeSeq]): Int => N = {
     labels map { ls =>
       val tc = convFn(ls.refInfo, RefInfo[N])
+
+      // VW uses 1-based indexing for classes.  0-based indexing is better for dereference arrays of values, etc.
       (i: Int) => tc(ls.values(i - 1))
     } getOrElse {
       convFn[Int, N]
