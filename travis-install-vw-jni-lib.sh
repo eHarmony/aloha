@@ -22,7 +22,7 @@ if [[ "$VW_LIB_SHA256" != "$EXPECTED_VW_LIB_SHA256" ]]; then
   cd vowpal_wabbit
   git fetch
   git checkout $VW_RELEASE_HASH
-  /usr/bin/time make java
+  /usr/bin/time --verbose make java
   mkdir -p $VW_LIB_DIR
   cp java/target/libvw_jni.so $VW_LIB_DIR
 
