@@ -22,12 +22,14 @@ if [[ "$VW_LIB_SHA256" != "$EXPECTED_VW_LIB_SHA256" ]]; then
   cd vowpal_wabbit
   git fetch
   git checkout $VW_RELEASE_HASH
-  make java
+  /usr/bin/time make java
   mkdir -p $VW_LIB_DIR
   cp java/target/libvw_jni.so $VW_LIB_DIR
-  NEW_VW_LIB_SHA256=$(openssl dgst -sha256 $VW_JNI_LIB 2>/dev/null | sed 's/..* //g')
 
-  green "$VW_JNI_LIB exists with SHA 256 hash '$NEW_VW_LIB_SHA256'"
+  if [[ -f ""$VW_JNI_LIB" ]];
+    NEW_VW_LIB_SHA256=$(openssl dgst -sha256 $VW_JNI_LIB 2>/dev/null | sed 's/..* //g')
+    green "$VW_JNI_LIB exists with SHA 256 hash '$NEW_VW_LIB_SHA256'"
+  then
 
   cd -
 fi
