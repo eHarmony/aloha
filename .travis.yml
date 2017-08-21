@@ -16,6 +16,7 @@ sudo: false
 # Cache the installation of protoc
 cache:
   directories:
+    - $HOME/vw
     - $HOME/protobuf
     - $HOME/.m2/repository
     - $HOME/.sbt

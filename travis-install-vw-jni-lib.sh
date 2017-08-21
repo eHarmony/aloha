@@ -5,7 +5,7 @@ set -e
 # For more info, see: https://github.com/JohnLangford/vowpal_wabbit/tree/master/java
 #
 VW_RELEASE_HASH=10bd09ab06f59291e04ad7805e88fd3e693b7159
-EXPECTED_VW_LIB_SHA256=NONHEX_DUMMY
+EXPECTED_VW_LIB_SHA256=476714cc030dc95640dc3ffaa2fa0c92fcca9e37f2edb7695e72af01d989537d
 BUILD_CONCURRENCY=4
 
 # Where to put VW library.  See .travis.yml.
