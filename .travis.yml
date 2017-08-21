@@ -35,6 +35,6 @@ addons:
 before_install:
   - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/vw  # Install dir for libs.  LD_LIBRARY_PATH is included in java.library.path.
   - source travis-bash-fns.sh
+  - source travis-install-vw-jni-lib.sh
   - source travis-install-protobuf.sh
   - bash travis-install-aloha-proto.sh
-  - bash travis-install-vw-jni-lib.sh
