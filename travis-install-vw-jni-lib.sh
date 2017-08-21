@@ -20,7 +20,9 @@ VW_JNI_LIB=$VW_LIB_DIR/libvw_jni.so
 VW_LIB_SHA256=$(openssl dgst -sha256 $VW_JNI_LIB 2>/dev/null | sed 's/..* //g')
 
 
-if [[ ! -f "$VW_JNI_LIB" ]]; then
+if [[ -f "$VW_JNI_LIB" ]]; then
+  green "Attempting to use cached version of $VW_JNI_LIB"
+else
   yellow "Could NOT find cached version of $VW_JNI_LIB"
 fi
 
