@@ -20,6 +20,10 @@ VW_JNI_LIB=$VW_LIB_DIR/libvw_jni.so
 VW_LIB_SHA256=$(openssl dgst -sha256 $VW_JNI_LIB 2>/dev/null | sed 's/..* //g')
 
 
+if [[ ! -f "$VW_JNI_LIB" ]]; then
+  yellow "Could NOT find cached version of $VW_JNI_LIB"
+fi
+
 if [[ "$VW_LIB_SHA256" != "$EXPECTED_VW_LIB_SHA256" ]]; then
   yellow "VW JNI library hash '$VW_LIB_SHA256' doesn't match expected: '$EXPECTED_VW_LIB_SHA256'."
   yellow "Compiling VW JNI lib."
