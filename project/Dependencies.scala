@@ -15,7 +15,7 @@ object Dependencies {
   val log4jVersion = "1.2.17"
 
   val vwJniVersion = "8.4.1"
-  val h2oVersion = "3.8.2.3"
+  val h2oVersion = "3.10.3.2"
   val guavaVersion = "16.0.1"
   val avroVersion = "1.8.1"
 
