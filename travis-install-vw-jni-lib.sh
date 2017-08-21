@@ -10,7 +10,7 @@ EXPECTED_VW_LIB_SHA256=NONHEX_DUMMY
 
 # Where to put VW library.  See .travis.yml.
 VW_LIB_DIR=$HOME/vw
-VW_JNI_LIB = $VW_LIB_DIR/libvw_jni.so
+VW_JNI_LIB=$VW_LIB_DIR/libvw_jni.so
 VW_LIB_SHA256=$(openssl dgst -sha256 $VW_JNI_LIB 2>/dev/null | sed 's/..* //g')
 
 
