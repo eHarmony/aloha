@@ -18,7 +18,7 @@ if [[ "$VW_LIB_SHA256" != "$EXPECTED_VW_LIB_SHA256" ]]; then
   yellow "VW JNI library hash '$VW_LIB_SHA256' doesn't match expected: '$EXPECTED_VW_LIB_SHA256'."
   yellow "Compiling VW JNI lib."
 
-  git glone https://github.com/JohnLangford/vowpal_wabbit.git
+  git clone https://github.com/JohnLangford/vowpal_wabbit.git
   cd vowpal_wabbit
   git fetch
   git checkout $VW_RELEASE_HASH
