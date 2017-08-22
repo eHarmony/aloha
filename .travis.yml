@@ -7,6 +7,9 @@ scala:
 jdk:
   - oraclejdk8
 
+# Use the container-based infrastructure.  Aloha only works on the container-based infrastructure
+# because currently, /proc/version in the non-container-based infrastructure doesn't match the VM
+# type.  The VM says Ubuntu 12 and /proc/version says redhat.
 dist: trusty
 sudo: false
 
@@ -19,16 +22,18 @@ cache:
     - $HOME/.ivy2
 
 before_cache:
+  # Tricks to avoid unnecessary cache updates
   - find $HOME/.ivy2 -name "ivydata-*.properties" -delete
   - find $HOME/.sbt -name "*.lock" -delete
 
+# VW in aloha-vw-jni needs libboost program options
 addons:
   apt:
     packages:
       - libboost-program-options-dev
 
 before_install:
-  - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/vw
+  - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/vw  # Install dir for libs.  LD_LIBRARY_PATH is included in java.library.path.
   - source travis-bash-fns.sh
   - source travis-install-vw-jni-lib.sh
   - source travis-install-protobuf.sh
