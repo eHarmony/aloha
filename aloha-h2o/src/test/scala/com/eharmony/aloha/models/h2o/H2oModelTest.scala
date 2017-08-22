@@ -1,8 +1,7 @@
 package com.eharmony.aloha.models.h2o
 
 import com.eharmony.aloha.FileLocations
-import com.eharmony.aloha.audit.impl.tree.Tree
-import com.eharmony.aloha.audit.impl.tree.{NubRootedTree, RootedTree, RootedTreeAuditor, RootedTreeImpl}
+import com.eharmony.aloha.audit.impl.tree.{NubRootedTree, RootedTreeAuditor, RootedTreeImpl, Tree}
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.io.vfs.{Vfs, VfsType}

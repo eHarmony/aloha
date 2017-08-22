@@ -24,7 +24,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 import org.junit.{BeforeClass, Ignore, Test}
 import spray.json._
-import vw.learner.{VWFloatLearner, VWLearner, VWLearners}
+import vowpalWabbit.learner._
 
 import scala.collection.{mutable => scm}
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -146,7 +146,7 @@ class VwJniModelTest extends ModelSerializationTestHelper with Logging {
                 Vector(h),
                 Nil,
                 Nil,
-                (_: VWLearner).asInstanceOf[VWFloatLearner].predict,
+                (_: VWLearner).asInstanceOf[VWScalarLearner].predict,
                 OptionAuditor[Float](),
                 None
             )
@@ -171,7 +171,7 @@ class VwJniModelTest extends ModelSerializationTestHelper with Logging {
                 Vector(h),
                 Nil,
                 Nil,
-                (_: VWLearner).asInstanceOf[VWFloatLearner].predict,
+                (_: VWLearner).asInstanceOf[VWScalarLearner].predict,
                 OptionAuditor[Float](),
                 None
             )
@@ -193,7 +193,7 @@ class VwJniModelTest extends ModelSerializationTestHelper with Logging {
                 Vector(),
                 Nil,
                 Nil,
-                (_: VWLearner).asInstanceOf[VWFloatLearner].predict,
+                (_: VWLearner).asInstanceOf[VWScalarLearner].predict,
                 OptionAuditor[Float](),
                 None
             )
@@ -670,7 +670,7 @@ object VwJniModelTest extends Logging {
     // echo "" | vw -t --quiet -i log_0.5.model -p pred; cat pred; rm -f ./pred ./log_0.5.model
     // 0.504197
     private[this] def allocateModel() = {
-        val m = VWLearners.create[VWFloatLearner](s"--quiet --loss_function logistic --link logistic -f $VwModelPath")
+        val m = VWLearners.create[VWScalarLearner](s"--quiet --loss_function logistic --link logistic -f $VwModelPath")
         1 to 100 foreach { _ =>
             m.learn("-1 | ")
             m.learn( "1 | ")
