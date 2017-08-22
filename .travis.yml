@@ -1,11 +1,15 @@
 language: scala
+
 scala:
 - 2.10.5
 - 2.11.8
+
 jdk:
 - oraclejdk8
+
 dist: trusty
 sudo: false
+
 cache:
   directories:
   - $HOME/vw
@@ -13,20 +17,27 @@ cache:
   - $HOME/.m2/repository
   - $HOME/.sbt
   - $HOME/.ivy2
+
 before_cache:
 - find $HOME/.ivy2 -name "ivydata-*.properties" -delete
 - find $HOME/.sbt -name "*.lock" -delete
+
 addons:
   apt:
     packages:
     - libboost-program-options-dev
+
 before_install:
 - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/vw
 - source travis-bash-fns.sh
 - source travis-install-vw-jni-lib.sh
 - source travis-install-protobuf.sh
 - bash travis-install-aloha-proto.sh
+
 env:
   global:
   - secure: Ir1wCfjcmkyZWTS+oIBnuRfFRBH7BO02Ox1OiaBTZ0sxV5F3/sQ5oeKANVzrrZA730vNWdE/PuwgjtPamRQdEZRaQIC1RTSmmLAQgYScy7eU+D9kmeD4+WeUul7rN8ACb6jFzFbA/7C06GZSpSPFrK3SbkCNNnTt2AmuAu8/1Wsdj3xbzRXRbrEl2j6/PF/6F2LsTFSQ+BsOw93aDLv6XDEMJ4fT2MhajaoxPah8tK4bKDWDO4VR4OxxWQErh7QHBovWkza6ZPmPMJcAXOndHT9KRS8YZNAzUildld3jPaxMvTmZsQOE1oBwylvvGAWR976LBRgPPwMymGHKTM6/i4YKKTApRSXXQ3mpFkSv2IOYyQfQf0A5g+C/x9slb/EOM9Mzm3wvVDSVE0mjUIooztkfnYsa3fjG+tUxWHD2brGbOSbbPsa+6PKHLvM5AHfZFVZO/MwX9tf2pHCqRtEM8z69xuaMxGM40m8IKkAvAb7T4LBW93QOyCqWKxKXIw0yfnz4XZV4Xs3Hf6Sc/AOL6KWub8KecaQyg0vOZrXfca9BK2VuWlYgRfFDjF3v1Smb7Han3HHiP8L2i2zfbOEEp92EnmJCiWnGl/OyjN0XslIKfwLdlw2jMFXjIyLijoBgObrDqOmop5jEipxTlEpvxz1y1iIqqplexyledpQrCmw=
   - secure: kzzFJcjhnekWHoyE9ADAawTchWcHT0TOiXNH24fxhbtXfLT83f9GcsVK7Y8jqB7429LN+HZvIWpWROcWVUt3yOneaXUmAJAsaMXyXia9bY8+VhGCmmDrQEFFee39rSPKR1v4+1dcEyHNeC9sHiS3GWjvcfQsA2lHwsM6gHPNkmgtXaWdT2TReS/ErOTUqDY/Lxzpp58S1e9xdVWOKPLWIoAZYtH309Svx9oReTggtb5719viPOrpJQV5t6E4XkwC3V9V1j1VxeGQIbLYlwnt1lSjk2dMvRUMwEJiuwsmMnozFZv7XrlbeapUlHDBFhclGRu6jZyHHwjNjUf6nLiYU34PZeRk/+sJ93jtrVOoDIvQ9a4d6yQCwBoyh5LeGglJ1Y2KeLRGzjFw1YLZuXu1MDJ0Tn5U6cCEnEXrrC2TA2HTH3jGzIDZuHZJbBP+aW4gdOujUWxtcShvnR2nT3PV0geL3dXpxtQDe4aE/m7FiXX71WgYIghg9UZeGyro9DAe2v2YbD9bLcSwJkPLSvtbbCOeB8dNA+xqaujeOyw2fKTMmdDPItEt5tUrsNNnNO8yFMZB8cPXhKQyOQlcTJH8JGNqvhGsxYPdnLawEndRBrxZ345VOSkTzNpbGAY1RJ7QwbJIbgM9g11EqNmrjrYjKpJhCIupM07cQjAN1hwnCdQ=
+
+after_success:
+  - "[[ $TRAVIS_BRANCH == \"master\" ]] && { sbt publish; };"
