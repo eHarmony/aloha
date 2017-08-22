@@ -10,7 +10,7 @@ jdk:
 # Use the container-based infrastructure.  Aloha only works on the container-based infrastructure
 # because currently, /proc/version in the non-container-based infrastructure doesn't match the VM
 # type.  The VM says Ubuntu 12 and /proc/version says redhat.
-dist: trusty
+dist: precise
 sudo: false
 
 cache:
