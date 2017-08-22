@@ -1,10 +1,15 @@
 (for {
   username <- Option(System.getenv().get("SONATYPE_USERNAME"))
   password <- Option(System.getenv().get("SONATYPE_PASSWORD"))
-} yield
-  credentials += Credentials(
+} yield {
+  Credentials(
     "Sonatype Nexus Repository Manager",
     "oss.sonatype.org",
     username,
     password)
-  ).getOrElse(credentials ++= Seq())
+}) match {
+  case Some(cred) =>
+    credentials += cred
+  case None =>
+    credentials ++= Seq()
+}
