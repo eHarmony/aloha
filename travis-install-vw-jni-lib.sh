@@ -39,7 +39,7 @@ if [[ "$VW_LIB_SHA256" != "$EXPECTED_VW_LIB_SHA256" ]]; then
   mv Makefile Makefile.orig
   cat Makefile.orig | sed "s/-j  *\$(NPROCS)/-j $BUILD_CONCURRENCY/g" > Makefile
 
-  /usr/bin/time --verbose make java
+  make java
   mkdir -p $VW_LIB_DIR
   cp java/target/libvw_jni.so $VW_LIB_DIR
 
