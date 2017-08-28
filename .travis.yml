@@ -38,6 +38,15 @@ before_install:
   - source travis-install-vw-jni-lib.sh
   - source travis-install-protobuf.sh
   - bash travis-install-aloha-proto.sh
+  - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then bash scripts/decrypt-keys.sh; fi
+  - export PATH=${PATH}:./vendor/bundle
+
+# These are all sbt-microsites requirements
+install:
+  - rvm use 2.2.3 --install --fuzzy
+  - gem update --system
+  - gem install sass
+  - gem install jekyll -v 3.2.1
 
 env:
   global:
@@ -45,4 +54,5 @@ env:
     - secure: A93hW8ZDRHV23cgQWF5d5gUKDu4s1DqTiyN8f+p0eFzOpNh9hY2iBpdS6OZ4EIqzIrpX4pOWrX/olcxO0S37QHt+buhGb7xxhOfxMoWhy5Q0hCVbo4VGEnW7H0MucQUEOqrIrDgoBTeNoD5+hprINvCYSfZCRZuBCa3kewIUKbGBGVUclFK/uFcvTJm2+c2kQAaYuqKlXxAIFTL5wqs6p7kA8SBT20DxYBYoggir3rMJMMgemCXahYDYxy+kjuK4Eo+b6XFNuBOPVzE2W7cRrOFsspR2pPUohZQH7rcXbLS7m2I0Er6IjZovS8j71Loqygexron1WurgQ1RVv8/WjkZJFSq2bT7WshatXNNEkExkaQxM6sSxlSGIE3jAtRfc/XfyWn3twJMoAPU00XjSDXuNDJUGneBHjbyL1XkLx1UIKQVNbxqB90Y38nom3tRnOMawpAtxfc0zqqwA2bCZ4CZoN+8hgBu4SznZtUbI5jagTEqI371wRckYG88QF6GwwmzRz6UEiDQEaMz3ZUexGqoYJxli3Awmze8rPdkZroSgy6zIMuCZ+m2/LqNplXYsJEpiv1gxDhSlAiwKMQWAD13lpTYvl6Ld/zyowvka7l0IPyfmCE5XClGnG5zHWdS/9qqEhUxtoYC2ssmtCdie9clu4IvbC9bLoKyLhvRY7Bs=
 
 after_success:
-  - if [[ "$TRAVIS_BRANCH" == "master" ]]; then sbt ++$TRAVIS_SCALA_VERSION publish; fi
+  - if [[ "$TRAVIS_BRANCH" == "master" -a "$TRAVIS_PULL_REQUEST" == "false" ]]; then sbt ++$TRAVIS_SCALA_VERSION publish; fi
+  - if [[ "$TRAVIS_BRANCH" == "master" ]]; then bash travis-publish-microsite.sh; fi
