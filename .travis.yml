@@ -38,7 +38,10 @@ before_install:
   - source travis-install-vw-jni-lib.sh
   - source travis-install-protobuf.sh
   - bash travis-install-aloha-proto.sh
-  - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then bash scripts/decrypt-keys.sh; fi
+  - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then
+      bash travis-decrypt-keys.sh;
+      green "Key SHA-512   $(openssl dgst -sha512 ~/.ssh/id_rsa | sed 's/.*  *//g')"
+    fi
   - export PATH=${PATH}:./vendor/bundle
 
 # These are all sbt-microsites requirements
