@@ -7,4 +7,4 @@ git config --global push.default simple
 
 # green assumes sourcing travis-bash-fns.sh
 green "publishing docs"
-sbt -v docs/publishMicrosite
+sbt docs/publishMicrosite
