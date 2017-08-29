@@ -55,4 +55,7 @@ env:
 
 after_success:
   - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then sbt ++$TRAVIS_SCALA_VERSION publish; fi
-  - if [ "$TRAVIS_BRANCH" = "master" ]; then bash travis-publish-microsite.sh; fi
+  - if [ "$TRAVIS_BRANCH" = "master" ]; then
+      green "publishing docs";
+      bash travis-publish-microsite.sh;
+    fi
