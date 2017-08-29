@@ -1,0 +1,550 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>models - com.eharmony.aloha.models</title>
+          <meta name="description" content="models - com.eharmony.aloha.models" />
+          <meta name="keywords" content="models com.eharmony.aloha.models" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../index.html';
+            var hash = 'com.eharmony.aloha.models.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img alt="Package" src="../../../../lib/package_big.png" />
+        <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.eharmony">eharmony</a>.<a href="../package.html" class="extype" name="com.eharmony.aloha">aloha</a></p>
+        <h1>models</h1><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.models.package" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">models</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="com.eharmony.aloha.models.CategoricalDistibutionModel" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="CategoricalDistibutionModel[U,N,-A,+B&lt;:U]extendsSubmodelBase[U,N,A,B]withProductwithSerializable"></a>
+      <a id="CategoricalDistibutionModel[U,N,-A,+B&lt;:U]:CategoricalDistibutionModel[U,N,A,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="CategoricalDistibutionModel.html"><span class="name">CategoricalDistibutionModel</span></a><span class="tparams">[<span name="U">U</span>, <span name="N">N</span>, <span name="A">-A</span>, <span name="B">+B &lt;: <span class="extype" name="com.eharmony.aloha.models.CategoricalDistibutionModel.U">U</span></span>]</span><span class="params">(<span name="modelId">modelId: <a href="../id/ModelIdentity.html" class="extype" name="com.eharmony.aloha.id.ModelIdentity">ModelIdentity</a></span>, <span name="features">features: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<a href="../semantics/func/GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.models.CategoricalDistibutionModel.A">A</span>, <span class="extype" name="scala.Any">Any</span>]]</span>, <span name="distribution">distribution: <a href="../util/rand/HashedCategoricalDistribution.html" class="extype" name="com.eharmony.aloha.util.rand.HashedCategoricalDistribution">HashedCategoricalDistribution</a></span>, <span name="labels">labels: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="com.eharmony.aloha.models.CategoricalDistibutionModel.N">N</span>]</span>, <span name="auditor">auditor: <a href="../audit/Auditor.html" class="extype" name="com.eharmony.aloha.audit.Auditor">Auditor</a>[<span class="extype" name="com.eharmony.aloha.models.CategoricalDistibutionModel.U">U</span>, <span class="extype" name="com.eharmony.aloha.models.CategoricalDistibutionModel.N">N</span>, <span class="extype" name="com.eharmony.aloha.models.CategoricalDistibutionModel.B">B</span>]</span>, <span name="missingOk">missingOk: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result"> extends <a href="SubmodelBase.html" class="extype" name="com.eharmony.aloha.models.SubmodelBase">SubmodelBase</a>[<span class="extype" name="com.eharmony.aloha.models.CategoricalDistibutionModel.U">U</span>, <span class="extype" name="com.eharmony.aloha.models.CategoricalDistibutionModel.N">N</span>, <span class="extype" name="com.eharmony.aloha.models.CategoricalDistibutionModel.A">A</span>, <span class="extype" name="com.eharmony.aloha.models.CategoricalDistibutionModel.B">B</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.models.package@CategoricalDistibutionModel[U,N,-A,+B&lt;:U]extendsSubmodelBase[U,N,A,B]withProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A model representing a categorical distribution.</p><div class="fullcomment"><div class="comment cmt"><p>A model representing a categorical distribution.  This will return values with the probabilities prescribed by the
+distribution parameter.  For information on
+<a href="http://en.wikipedia.org/wiki/Categorical_distribution" target="_blank">categorical distribution</a>s, check out Wikipedia's page.</p></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>model input type</p></dd><dt class="tparam">B</dt><dd class="cmt"><p>model output type</p></dd><dt class="param">modelId</dt><dd class="cmt"><p>An id with which to identify this model</p></dd><dt class="param">features</dt><dd class="cmt"><p>features whose values are fed to the distribution.  These features are functions of the input.</p></dd><dt class="param">distribution</dt><dd class="cmt"><p>A distribution parametrized by a sequence of probabilities, that takes a sequence of values and
+                    produces a hash that is used as the randomness with which to choose one of the labels.</p></dd><dt class="param">labels</dt><dd class="cmt"><p>the values that can returned by this model (with the probabilities described by the distribution)</p></dd><dt class="param">missingOk</dt><dd class="cmt"><p>Whether to allow missing data defaults to false).  When this is set to false and missing data (
+                 scala.None) is produced by one of the features, the model will result in an error.</p></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.ConstantModel" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ConstantModel[U,N,+B&lt;:U]extendsSubmodelBase[U,N,Any,B]withProductwithSerializable"></a>
+      <a id="ConstantModel[U,N,+B&lt;:U]:ConstantModel[U,N,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ConstantModel.html"><span class="name">ConstantModel</span></a><span class="tparams">[<span name="U">U</span>, <span name="N">N</span>, <span name="B">+B &lt;: <span class="extype" name="com.eharmony.aloha.models.ConstantModel.U">U</span></span>]</span><span class="params">(<span name="constant">constant: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.eharmony.aloha.models.ConstantModel.N">N</span>]</span>, <span name="modelId">modelId: <a href="../id/ModelIdentity.html" class="extype" name="com.eharmony.aloha.id.ModelIdentity">ModelIdentity</a></span>, <span name="auditor">auditor: <a href="../audit/Auditor.html" class="extype" name="com.eharmony.aloha.audit.Auditor">Auditor</a>[<span class="extype" name="com.eharmony.aloha.models.ConstantModel.U">U</span>, <span class="extype" name="com.eharmony.aloha.models.ConstantModel.N">N</span>, <span class="extype" name="com.eharmony.aloha.models.ConstantModel.B">B</span>]</span>)</span><span class="result"> extends <a href="SubmodelBase.html" class="extype" name="com.eharmony.aloha.models.SubmodelBase">SubmodelBase</a>[<span class="extype" name="com.eharmony.aloha.models.ConstantModel.U">U</span>, <span class="extype" name="com.eharmony.aloha.models.ConstantModel.N">N</span>, <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="com.eharmony.aloha.models.ConstantModel.B">B</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.models.package@ConstantModel[U,N,+B&lt;:U]extendsSubmodelBase[U,N,Any,B]withProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.models.ErrorModel" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ErrorModel[U,+B&lt;:U]extendsSubmodelBase[U,Nothing,Any,B]withProductwithSerializable"></a>
+      <a id="ErrorModel[U,+B&lt;:U]:ErrorModel[U,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ErrorModel.html"><span class="name">ErrorModel</span></a><span class="tparams">[<span name="U">U</span>, <span name="B">+B &lt;: <span class="extype" name="com.eharmony.aloha.models.ErrorModel.U">U</span></span>]</span><span class="params">(<span name="modelId">modelId: <a href="../id/ModelIdentity.html" class="extype" name="com.eharmony.aloha.id.ModelIdentity">ModelIdentity</a></span>, <span name="errors">errors: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="auditor">auditor: <a href="../audit/Auditor.html" class="extype" name="com.eharmony.aloha.audit.Auditor">Auditor</a>[<span class="extype" name="com.eharmony.aloha.models.ErrorModel.U">U</span>, <span class="extype" name="scala.Nothing">Nothing</span>, <span class="extype" name="com.eharmony.aloha.models.ErrorModel.B">B</span>]</span>)</span><span class="result"> extends <a href="SubmodelBase.html" class="extype" name="com.eharmony.aloha.models.SubmodelBase">SubmodelBase</a>[<span class="extype" name="com.eharmony.aloha.models.ErrorModel.U">U</span>, <span class="extype" name="scala.Nothing">Nothing</span>, <span class="extype" name="scala.Any">Any</span>, <span class="extype" name="com.eharmony.aloha.models.ErrorModel.B">B</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.models.package@ErrorModel[U,+B&lt;:U]extendsSubmodelBase[U,Nothing,Any,B]withProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.models.ErrorSwallowingModel" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ErrorSwallowingModel[U,N,-A,+B&lt;:U]extendsSubmodelBase[U,N,A,B]withProductwithSerializable"></a>
+      <a id="ErrorSwallowingModel[U,N,-A,+B&lt;:U]:ErrorSwallowingModel[U,N,A,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ErrorSwallowingModel.html"><span class="name">ErrorSwallowingModel</span></a><span class="tparams">[<span name="U">U</span>, <span name="N">N</span>, <span name="A">-A</span>, <span name="B">+B &lt;: <span class="extype" name="com.eharmony.aloha.models.ErrorSwallowingModel.U">U</span></span>]</span><span class="params">(<span name="submodel">submodel: <a href="Submodel.html" class="extype" name="com.eharmony.aloha.models.Submodel">Submodel</a>[<span class="extype" name="com.eharmony.aloha.models.ErrorSwallowingModel.N">N</span>, <span class="extype" name="com.eharmony.aloha.models.ErrorSwallowingModel.A">A</span>, <span class="extype" name="com.eharmony.aloha.models.ErrorSwallowingModel.U">U</span>]</span>, <span name="auditor">auditor: <a href="../audit/Auditor.html" class="extype" name="com.eharmony.aloha.audit.Auditor">Auditor</a>[<span class="extype" name="com.eharmony.aloha.models.ErrorSwallowingModel.U">U</span>, <span class="extype" name="com.eharmony.aloha.models.ErrorSwallowingModel.N">N</span>, <span class="extype" name="com.eharmony.aloha.models.ErrorSwallowingModel.B">B</span>]</span>, <span name="recordErrorStackTraces">recordErrorStackTraces: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="result"> extends <a href="SubmodelBase.html" class="extype" name="com.eharmony.aloha.models.SubmodelBase">SubmodelBase</a>[<span class="extype" name="com.eharmony.aloha.models.ErrorSwallowingModel.U">U</span>, <span class="extype" name="com.eharmony.aloha.models.ErrorSwallowingModel.N">N</span>, <span class="extype" name="com.eharmony.aloha.models.ErrorSwallowingModel.A">A</span>, <span class="extype" name="com.eharmony.aloha.models.ErrorSwallowingModel.B">B</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.models.package@ErrorSwallowingModel[U,N,-A,+B&lt;:U]extendsSubmodelBase[U,N,A,B]withProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A model that swallows exceptions thrown by submodel.</p><div class="fullcomment"><div class="comment cmt"><p>A model that swallows exceptions thrown by submodel.</p><p>When exceptions are thrown by <i>submodel</i>, then a score containing a ScoreError should be produces where the error
+list should be either:</p><ul><li>com.eharmony.aloha.models.ErrorSwallowingModel.errorMsg(ex)</li><li>[Exception error message ...]</li><li>[Stack trace here ...]</li></ul><p>when recordErrorStackTraces and the stack trace and message could be retrieved; otherwise, the error list
+should be:</p><ul><li>com.eharmony.aloha.models.ErrorSwallowingModel.errorMsg(ex)</li><li><i>com.eharmony.aloha.models.ErrorSwallowingModel.ExMsgThrewMsg</i></li><li><i>com.eharmony.aloha.models.ErrorSwallowingModel.StackTraceOmitted</i></li></ul><p>If the exception that is caught is a <a href="../semantics/SemanticsUdfException.html" class="extype" name="com.eharmony.aloha.semantics.SemanticsUdfException">com.eharmony.aloha.semantics.SemanticsUdfException</a>, then
+3 additional fields are added to the end of the errors list in indices 3, 4, 5:</p><ul><li>The specification of the feature in error.</li><li>The feature accessors in the feature that are in err.</li><li>The feature accessors in the feature that are missing an output value.
+</li></ul></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>model input type</p></dd><dt class="tparam">B</dt><dd class="cmt"><p>model output type</p></dd><dt class="param">submodel</dt><dd class="cmt"><p>the submodel to which the score calculations are delegated.</p></dd><dt class="param">recordErrorStackTraces</dt><dd class="cmt"><p>whether stack traces should be recorded.</p></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.Model" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="Model[-A,+B]extendsA=&gt;BwithIdentifiable[com.eharmony.aloha.id.ModelIdentity]withCloseable"></a>
+      <a id="Model[-A,+B]:Model[A,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Model.html"><span class="name">Model</span></a><span class="tparams">[<span name="A">-A</span>, <span name="B">+B</span>]</span><span class="result"> extends (<span class="extype" name="com.eharmony.aloha.models.Model.A">A</span>) ⇒ <span class="extype" name="com.eharmony.aloha.models.Model.B">B</span> with <a href="../id/Identifiable.html" class="extype" name="com.eharmony.aloha.id.Identifiable">Identifiable</a>[<a href="../id/ModelIdentity.html" class="extype" name="com.eharmony.aloha.id.ModelIdentity">ModelIdentity</a>] with <span class="extype" name="java.io.Closeable">Closeable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.models.package@Model[-A,+B]extendsA=&gt;BwithIdentifiable[com.eharmony.aloha.id.ModelIdentity]withCloseable" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Created by ryan on 1/11/17.</p>
+    </li><li name="com.eharmony.aloha.models.SegmentationModel" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="SegmentationModel[U,SN,N,A,B&lt;:U]extendsSubmodelBase[U,N,A,B]withProductwithSerializable"></a>
+      <a id="SegmentationModel[U,SN,N,A,B&lt;:U]:SegmentationModel[U,SN,N,A,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="SegmentationModel.html"><span class="name">SegmentationModel</span></a><span class="tparams">[<span name="U">U</span>, <span name="SN">SN</span>, <span name="N">N</span>, <span name="A">A</span>, <span name="B">B &lt;: <span class="extype" name="com.eharmony.aloha.models.SegmentationModel.U">U</span></span>]</span><span class="params">(<span name="modelId">modelId: <a href="../id/ModelIdentity.html" class="extype" name="com.eharmony.aloha.id.ModelIdentity">ModelIdentity</a></span>, <span name="submodel">submodel: <a href="Submodel.html" class="extype" name="com.eharmony.aloha.models.Submodel">Submodel</a>[<span class="extype" name="com.eharmony.aloha.models.SegmentationModel.SN">SN</span>, <span class="extype" name="com.eharmony.aloha.models.SegmentationModel.A">A</span>, <span class="extype" name="com.eharmony.aloha.models.SegmentationModel.U">U</span>]</span>, <span name="thresholds">thresholds: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="com.eharmony.aloha.models.SegmentationModel.SN">SN</span>]</span>, <span name="labels">labels: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="com.eharmony.aloha.models.SegmentationModel.N">N</span>]</span>, <span name="auditor">auditor: <a href="../audit/Auditor.html" class="extype" name="com.eharmony.aloha.audit.Auditor">Auditor</a>[<span class="extype" name="com.eharmony.aloha.models.SegmentationModel.U">U</span>, <span class="extype" name="com.eharmony.aloha.models.SegmentationModel.N">N</span>, <span class="extype" name="com.eharmony.aloha.models.SegmentationModel.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="thresholdOrdering">thresholdOrdering: <a href="../../../../scala/package.html#Ordering[T]=scala.math.Ordering[T]" class="extmbr" name="scala.Ordering">Ordering</a>[<span class="extype" name="com.eharmony.aloha.models.SegmentationModel.SN">SN</span>]</span>)</span><span class="result"> extends <a href="SubmodelBase.html" class="extype" name="com.eharmony.aloha.models.SubmodelBase">SubmodelBase</a>[<span class="extype" name="com.eharmony.aloha.models.SegmentationModel.U">U</span>, <span class="extype" name="com.eharmony.aloha.models.SegmentationModel.N">N</span>, <span class="extype" name="com.eharmony.aloha.models.SegmentationModel.A">A</span>, <span class="extype" name="com.eharmony.aloha.models.SegmentationModel.B">B</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.models.package@SegmentationModel[U,SN,N,A,B&lt;:U]extendsSubmodelBase[U,N,A,B]withProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A model that runs the subModel and returns the label associated with the segment in which the inner model's
+score falls.</p><div class="fullcomment"><div class="comment cmt"><p>A model that runs the subModel and returns the label associated with the segment in which the inner model's
+score falls.  This is done via a linear scan of the thresholds.</p></div><dl class="paramcmts block"><dt class="tparam">U</dt><dd class="cmt"><p>upper type bound for output of model and all submodels.</p></dd><dt class="tparam">SN</dt><dd class="cmt"><p>submodel's natural type</p></dd><dt class="tparam">N</dt><dd class="cmt"><p>segmentation model's natural type</p></dd><dt class="tparam">A</dt><dd class="cmt"><p>the model input type</p></dd><dt class="tparam">B</dt><dd class="cmt"><p>the model's ultimate output type</p></dd><dt class="param">modelId</dt><dd class="cmt"><p>a model identifier</p></dd><dt class="param">submodel</dt><dd class="cmt"><p>a sub model</p></dd><dt class="param">thresholds</dt><dd class="cmt"><p>a sequence of ordered thresholds against which</p></dd><dt class="param">labels</dt><dd class="cmt"><p>a set of labesl to use</p></dd><dt class="param">thresholdOrdering</dt><dd class="cmt"><p>an implicit ordering</p></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.Submodel" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="Submodel[+N,-A,+B]extendsIdentifiable[com.eharmony.aloha.id.ModelIdentity]withCloseable"></a>
+      <a id="Submodel[+N,-A,+B]:Submodel[N,A,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Submodel.html"><span class="name">Submodel</span></a><span class="tparams">[<span name="N">+N</span>, <span name="A">-A</span>, <span name="B">+B</span>]</span><span class="result"> extends <a href="../id/Identifiable.html" class="extype" name="com.eharmony.aloha.id.Identifiable">Identifiable</a>[<a href="../id/ModelIdentity.html" class="extype" name="com.eharmony.aloha.id.ModelIdentity">ModelIdentity</a>] with <span class="extype" name="java.io.Closeable">Closeable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.models.package@Submodel[+N,-A,+B]extendsIdentifiable[com.eharmony.aloha.id.ModelIdentity]withCloseable" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Created by ryan on 1/18/17.</p>
+    </li><li name="com.eharmony.aloha.models.SubmodelBase" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="SubmodelBase[U,N,-A,+B&lt;:U]extendsSubmodel[N,A,B]withModel[A,B]"></a>
+      <a id="SubmodelBase[U,N,-A,+B&lt;:U]:SubmodelBase[U,N,A,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="SubmodelBase.html"><span class="name">SubmodelBase</span></a><span class="tparams">[<span name="U">U</span>, <span name="N">N</span>, <span name="A">-A</span>, <span name="B">+B &lt;: <span class="extype" name="com.eharmony.aloha.models.SubmodelBase.U">U</span></span>]</span><span class="result"> extends <a href="Submodel.html" class="extype" name="com.eharmony.aloha.models.Submodel">Submodel</a>[<span class="extype" name="com.eharmony.aloha.models.SubmodelBase.N">N</span>, <span class="extype" name="com.eharmony.aloha.models.SubmodelBase.A">A</span>, <span class="extype" name="com.eharmony.aloha.models.SubmodelBase.B">B</span>] with <a href="Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.models.SubmodelBase.A">A</span>, <span class="extype" name="com.eharmony.aloha.models.SubmodelBase.B">B</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.models.package@SubmodelBase[U,N,-A,+B&lt;:U]extendsSubmodel[N,A,B]withModel[A,B]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Created by ryan on 1/18/17.</p>
+    </li><li name="com.eharmony.aloha.models.Subvalue" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Subvalue[+B,+N]extendsProductwithSerializable"></a>
+      <a id="Subvalue[+B,+N]:Subvalue[B,N]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Subvalue.html"><span class="name">Subvalue</span></a><span class="tparams">[<span name="B">+B</span>, <span name="N">+N</span>]</span><span class="params">(<span name="audited">audited: <span class="extype" name="com.eharmony.aloha.models.Subvalue.B">B</span></span>, <span name="natural">natural: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.eharmony.aloha.models.Subvalue.N">N</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.models.package@Subvalue[+B,+N]extendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Created by ryan on 1/18/17.</p>
+    </li><li name="com.eharmony.aloha.models.TopLevelModel" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TopLevelModel[-A,+B]extendsModel[A,B]withProductwithSerializable"></a>
+      <a id="TopLevelModel[-A,+B]:TopLevelModel[A,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="TopLevelModel.html"><span class="name">TopLevelModel</span></a><span class="tparams">[<span name="A">-A</span>, <span name="B">+B</span>]</span><span class="params">(<span name="model">model: <a href="Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.models.TopLevelModel.A">A</span>, <span class="extype" name="com.eharmony.aloha.models.TopLevelModel.B">B</span>]</span>, <span name="fields">fields: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.models.TopLevelModel.A">A</span>, <span class="extype" name="com.eharmony.aloha.models.TopLevelModel.B">B</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.models.package@TopLevelModel[-A,+B]extendsModel[A,B]withProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.models.TypeCoercion" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="TypeCoercionextendsAnyRef"></a>
+      <a id="TypeCoercion:TypeCoercion"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="TypeCoercion.html"><span class="name">TypeCoercion</span></a><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.models.package@TypeCoercionextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Provides over 200 coercions between types.</p><div class="fullcomment"><div class="comment cmt"><p>Provides over 200 coercions between types.  This works for the following matrix of types:</p><p><pre>
+                                        TO
+
+            Bo  C   By  Sh  I   L   F   D   JBy JSh JI  JL  JF  JD  JC  JBo St
+          +--------------------------------------------------------------------
+      Bo  | I                                                           bB  tS
+      C   |     I   A   A   A   A   A   A   A   A   A   A   A   A   A       tS
+      By  |     A   I   A   A   A   A   A   A   A   A   A   A   A   A       tS
+      Sh  |     A   A   I   A   A   A   A   A   A   A   A   A   A   A       tS
+      I   |     A   A   A   I   A   A   A   A   A   A   A   A   A   A       tS
+      L   |     A   A   A   A   I   A   A   A   A   A   A   A   A   A       tS
+ F    F   |     A   A   A   A   A   I   A   A   A   A   A   A   A   A       tS
+ R    D   |     A   A   A   A   A   A   I   A   A   A   A   A   A   A       tS
+ O    JBy |     N   N   N   N   N   N   N   I   N   N   N   N   N   N       tS
+ M    JSh |     N   N   N   N   N   N   N   N   I   N   N   N   N   N       tS
+      JI  |     N   N   N   N   N   N   N   N   N   I   N   N   N   N       tS
+      JL  |     N   N   N   N   N   N   N   N   N   N   I   N   N   N       tS
+      JF  |     N   N   N   N   N   N   N   N   N   N   N   I   N   N       tS
+      JD  |     N   N   N   N   N   N   N   N   N   N   N   N   I   N       tS
+      JC  |     uC                                                  I       tS
+      JBo | uB                                                          I   tS
+      St  |                                                                 I
+</pre></p><p>Where the label abbreviations are:</p><ul><li><b><i>Bo</i></b>:  <i>scala.Boolean</i></li><li><b><i>C</i></b>:   <i>scala.Char</i></li><li><b><i>By</i></b>:  <i>scala.Byte</i></li><li><b><i>Sh</i></b>:  <i>scala.Short</i></li><li><b><i>I</i></b>:   <i>scala.Int</i></li><li><b><i>L</i></b>:   <i>scala.Long</i></li><li><b><i>F</i></b>:   <i>scala.Float</i></li><li><b><i>D</i></b>:   <i>scala.Double</i></li><li><b><i>JBy</i></b>: <i>java.lang.Byte</i></li><li><b><i>JSh</i></b>: <i>java.lang.Short</i></li><li><b><i>JI</i></b>:  <i>java.lang.Integer</i></li><li><b><i>JL</i></b>:  <i>java.lang.Long</i></li><li><b><i>JF</i></b>:  <i>java.lang.Float</i></li><li><b><i>JD</i></b>:  <i>java.lang.Character</i></li><li><b><i>JC</i></b>:  <i>java.lang.Double</i></li><li><b><i>JBo</i></b>: <i>java.lang.Boolean</i></li><li><b><i>St</i></b>:  <i>java.lang.String</i></li></ul><p>and value abbreviations are:</p><ul><li><b><i>A</i></b>: <i>coercion from scala.AnyVal</i></li><li><b><i>N</i></b>: <i>coercion from java.lang.Number</i></li><li><b><i>I</i></b>: <i>identity function</i></li><li><b><i>bB</i></b>: <i>boxing Boolean coercion</i></li><li><b><i>uB</i></b>: <i>unboxing Boolean coercion</i></li><li><b><i>uC</i></b>: <i>unboxing character coercion</i></li><li><b><i>tS</i></b>: <i>toString coercion</i></li></ul><p>The rationale behind not supplying coercion from Strings is that too many exceptions can
+be thrown during the coercion process.  Coercions from String to character have issues
+with the empty string.  One could call one of the following but they all throw exceptions:</p><pre><span class="lit">""</span>.charAt(<span class="num">0</span>) <span class="cmt">// java.lang.StringIndexOutOfBoundsException: String index out of range: 0</span>
+<span class="lit">""</span>.apply(<span class="num">0</span>)  <span class="cmt">// java.lang.StringIndexOutOfBoundsException: String index out of range: 0</span>
+<span class="lit">""</span>.head      <span class="cmt">// java.util.NoSuchElementException: next on empty iterator</span></pre><p>Conversion to Boolean from Numbers and vice versa is not supported because there are a
+number of ways to do this:</p><ul><li>Non-zero numbers are true, 0 is false.</li><li>One is true, all else is false
+</li></ul></div></div>
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="com.eharmony.aloha.models.CategoricalDistibutionModel" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CategoricalDistibutionModel"></a>
+      <a id="CategoricalDistibutionModel:CategoricalDistibutionModel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CategoricalDistibutionModel$.html"><span class="name">CategoricalDistibutionModel</span></a><span class="result"> extends <a href="../factory/ParserProviderCompanion.html" class="extype" name="com.eharmony.aloha.factory.ParserProviderCompanion">ParserProviderCompanion</a> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.models.package@CategoricalDistibutionModel" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.models.ConstantModel" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ConstantModel"></a>
+      <a id="ConstantModel:ConstantModel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ConstantModel$.html"><span class="name">ConstantModel</span></a><span class="result"> extends <a href="../factory/ParserProviderCompanion.html" class="extype" name="com.eharmony.aloha.factory.ParserProviderCompanion">ParserProviderCompanion</a> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.models.package@ConstantModel" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.models.ErrorModel" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ErrorModel"></a>
+      <a id="ErrorModel:ErrorModel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ErrorModel$.html"><span class="name">ErrorModel</span></a><span class="result"> extends <a href="../factory/ParserProviderCompanion.html" class="extype" name="com.eharmony.aloha.factory.ParserProviderCompanion">ParserProviderCompanion</a> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.models.package@ErrorModel" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.models.ErrorSwallowingModel" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ErrorSwallowingModel"></a>
+      <a id="ErrorSwallowingModel:ErrorSwallowingModel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ErrorSwallowingModel$.html"><span class="name">ErrorSwallowingModel</span></a><span class="result"> extends <a href="../factory/ParserProviderCompanion.html" class="extype" name="com.eharmony.aloha.factory.ParserProviderCompanion">ParserProviderCompanion</a> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.models.package@ErrorSwallowingModel" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.models.SegmentationModel" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SegmentationModel"></a>
+      <a id="SegmentationModel:SegmentationModel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="SegmentationModel$.html"><span class="name">SegmentationModel</span></a><span class="result"> extends <a href="../factory/ParserProviderCompanion.html" class="extype" name="com.eharmony.aloha.factory.ParserProviderCompanion">ParserProviderCompanion</a> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.models.package@SegmentationModel" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.models.TransformedModelOps" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TransformedModelOps"></a>
+      <a id="TransformedModelOps:TransformedModelOps"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="TransformedModelOps$.html"><span class="name">TransformedModelOps</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.models.package@TransformedModelOps" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.models.TypeCoercion" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TypeCoercion"></a>
+      <a id="TypeCoercion:TypeCoercion"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="TypeCoercion$.html"><span class="name">TypeCoercion</span></a><span class="result"> extends <a href="TypeCoercion.html" class="extype" name="com.eharmony.aloha.models.TypeCoercion">TypeCoercion</a> with <a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.models.package@TypeCoercion" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.models.conversion" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="conversion"></a>
+      <a id="conversion:conversion"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="conversion/package.html"><span class="name">conversion</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.models.package@conversion" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.models.exploration" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="exploration"></a>
+      <a id="exploration:exploration"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="exploration/package.html"><span class="name">exploration</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.models.package@exploration" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.models.h2o" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="h2o"></a>
+      <a id="h2o:h2o"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="h2o/package.html"><span class="name">h2o</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.models.package@h2o" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Created by deak on 10/13/15.</p>
+    </li><li name="com.eharmony.aloha.models.reg" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="reg"></a>
+      <a id="reg:reg"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="reg/package.html"><span class="name">reg</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.models.package@reg" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.models.tree" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="tree"></a>
+      <a id="tree:tree"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="tree/package.html"><span class="name">tree</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.models.package@tree" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.models.vw" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="vw"></a>
+      <a id="vw:vw"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="vw/package.html"><span class="name">vw</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.models.package@vw" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>

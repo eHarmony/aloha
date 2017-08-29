@@ -1,0 +1,510 @@
+<html><head><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><title>Aloha</title><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="Generic machine learning, lazy features" /><meta name="author" content="eHarmony" /><meta name="og:image" content="/aloha/img/poster.png" /><meta name="og:title" content="Aloha" /><meta name="og:site_name" content="Aloha" /><meta name="og:url" content="http://eharmony.github.io/aloha" /><meta name="og:type" content="website" /><meta name="og:description" content="Generic machine learning, lazy features" /><meta name="twitter:image" content="/aloha/img/poster.png" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:site" content="" /><meta name="kazari-dependencies" content="" /><meta name="kazari-resolvers" content="" /><link rel="icon" type="image/png" href="/aloha/img/favicon.png" /><link rel="icon" type="image/png" sizes="16x16" href="/aloha/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/aloha/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/aloha/img/favicon32x32.png" /><link rel="icon" type="image/png" sizes="48x48" href="/aloha/img/favicon48x48.png" /><link rel="icon" type="image/png" sizes="57x57" href="/aloha/img/favicon57x57.png" /><link rel="icon" type="image/png" sizes="60x60" href="/aloha/img/favicon60x60.png" /><link rel="icon" type="image/png" sizes="64x64" href="/aloha/img/favicon64x64.png" /><link rel="icon" type="image/png" sizes="70x70" href="/aloha/img/favicon70x70.png" /><link rel="icon" type="image/png" sizes="72x72" href="/aloha/img/favicon72x72.png" /><link rel="icon" type="image/png" sizes="76x76" href="/aloha/img/favicon76x76.png" /><link rel="icon" type="image/png" sizes="96x96" href="/aloha/img/favicon96x96.png" /><link rel="icon" type="image/png" sizes="114x114" href="/aloha/img/favicon114x114.png" /><link rel="icon" type="image/png" sizes="120x120" href="/aloha/img/favicon120x120.png" /><link rel="icon" type="image/png" sizes="128x128" href="/aloha/img/favicon128x128.png" /><link rel="icon" type="image/png" sizes="144x144" href="/aloha/img/favicon144x144.png" /><link rel="icon" type="image/png" sizes="150x150" href="/aloha/img/favicon150x150.png" /><link rel="icon" type="image/png" sizes="152x152" href="/aloha/img/favicon152x152.png" /><link rel="icon" type="image/png" sizes="196x196" href="/aloha/img/favicon196x196.png" /><link rel="icon" type="image/png" sizes="310x310" href="/aloha/img/favicon310x310.png" /><link rel="icon" type="image/png" sizes="310x150" href="/aloha/img/favicon310x150.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/aloha/highlight/styles/atom-one-light.css" /><link rel="stylesheet" href="/aloha/css/style.css" /><link rel="stylesheet" href="/aloha/css/palette.css" /><link rel="stylesheet" href="/aloha/css/codemirror.css" /><link rel="stylesheet" href="/aloha/css/kazari-style.css" /><link rel="stylesheet" href="/aloha/css/solarized-dark.css" /><link rel="stylesheet" href="/aloha/css/override.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/aloha/" class="brand"><div class="brand-wrapper"><span>Aloha</span></div></a></li> <li><a href="/aloha/docs/api/index.html" class="">API Docs</a></li> <li><a href="/aloha/docs/getting_started.html" class="">Getting Started (Data Sci)</a></li> <li><a href="/aloha/docs/getting_started_eng.html" class="">Getting Started (Data Eng)</a></li> <li><a href="/aloha/docs/dataset.html" class="">Constructing Datasets</a></li> <li><a href="/aloha/docs/in_depth_walkthrough.html" class="">In Depth Walkthrough</a></li> <li><a href="/aloha/docs/model_formats.html" class="">Model Formats</a></li> <li><a href="/aloha/docs/release_notes.html" class="">Release Notes</a></li></ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li id="gh-eyes-item" class="hidden-xs"><a href="https://github.com/eharmony/aloha"><i class="fa fa-eye"></i><span>WATCH<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs"><a href="https://github.com/eharmony/aloha"><i class="fa fa-star-o"></i><span>STARS<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('Aloha Generic machine learning, lazy features');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('Aloha Generic machine learning, lazy features');"><i class="fa fa-facebook"></i></a></li><li><a href="#" onclick="shareSiteGoogle();"><i class="fa fa-google-plus"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="eharmony" data-github-repo="aloha"><div class="content-wrapper"><section><!--
+doxia-markdown-plugin syntax highlight support is broken.  Changing output to 
+&lt;pre&gt;&lt;code&gt;...&lt;/code&gt;&lt;/pre&gt; fix all highlighting.  See:
+  https://github.com/andriusvelykis/reflow-maven-skin/issues/11
+  https://issues.apache.org/jira/browse/DOXIA-507
+-->
+
+<h1 id="constructing-datasets-via-cli">Constructing Datasets via CLI</h1>
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<p><strong>A quick note</strong>: <em>All examples will assume you’ve check out Aloha from GitHub and built it from source.</em>  This is so
+that you can reuse data in the testing code.  You can download and build via:</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>git clone git@github.com:eHarmony/aloha.git
+<span class="nb">cd </span>aloha
+
+sbt +clean +publishLocal
+sbt ++2.10.5 clean publishLocal
+sbt ++2.11.8 clean publishLocal
+
+sbt +clean +publishM2
+sbt ++2.10.5 clean publishM2
+sbt ++2.11.8 clean publishM2
+</code></pre>
+</div>
+
+<h3 id="get-cli-jar-and-aloha-cli-script">Get CLI Jar and <em>aloha-cli</em> script</h3>
+
+<p>In reality, you’ll probably not want to download the source and build from scratch to use Aloha to create a dataset.
+You can get a few different ways.  For instance:</p>
+
+<ol>
+  <li>If you have the Aloha source code, just do an <code class="highlighter-rouge">mvn clean install</code> and look for the 
+<code class="highlighter-rouge">aloha-cli-[X.Y.Z]-jar-with-dependencies.jar</code> in 
+<code class="highlighter-rouge">$HOME/.m2/repository/com/eharmony/aloha-cli/[X.Y.Z]/aloha-cli-[X.Y.Z]-jar-with-dependencies.jar</code></li>
+  <li>If you are using a project that has an Aloha Maven dependency, <code class="highlighter-rouge">aloha-cli-[X.Y.Z]-jar-with-dependencies.jar</code>
+may already be present at 
+<code class="highlighter-rouge">$HOME/.m2/repository/com/eharmony/aloha-cli/[X.Y.Z]/aloha-cli-[X.Y.Z]-jar-with-dependencies.jar</code></li>
+  <li>If you are not currently using Aloha in a project but just want the CLI functionality, you can download the 
+<code class="highlighter-rouge">aloha-cli-[X.Y.Z]-jar-with-dependencies.jar</code> from <a href="http://search.maven.org/#search%7Cga%7C1%7Ccom.eharmony.aloha-cli">Maven Central</a>.
+Just click <a href="http://search.maven.org/#search%7Cga%7C1%7Ccom.eharmony.aloha-cli">here</a>, then click the 
+<code class="highlighter-rouge">jar-with-dependencies.jar</code> link to download the latest Jar file with all of the dependencies included.</li>
+</ol>
+
+<h3 id="copy-the-cli-script-to-some-place-your-system-path">Copy the CLI script to some place your system path</h3>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>curl -fsSL https://raw.githubusercontent.com/eHarmony/aloha/master/aloha-cli/bin/aloha-cli
+</code></pre>
+</div>
+
+<h2 id="getting-acquainted">Getting Acquainted</h2>
+
+<h3 id="a-look-at-the-cli">A Look at the CLI</h3>
+
+<p><span class="label">Input</span></p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>aloha-cli/bin/aloha-cli
+</code></pre>
+</div>
+
+<p><span class="label label-success">Output</span></p>
+
+<pre><code>usage: aloha-cli -cp /path/to/some.jar:/path/to/other.jar:... [args to CLI]</code></pre>
+
+<p>So, it’s clear that some jar files need to be specified on the classpath to make the CLI work.  Luckily, when 
+aloha is built, the <em>aloha-cli</em> module has a jar that includes all of the necessary dependencies.  This can 
+be found automatically with the following shell script magic which looks in the target directory of the 
+<em>aloha-cli</em> module for a jar with dependencies.</p>
+
+<p>Let’s try running again with the proper jar on the classpath.</p>
+
+<p><span class="label">Input</span></p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>aloha-cli/bin/aloha-cli                                    <span class="se">\</span>
+  -cp <span class="k">$(</span>find aloha-cli -name <span class="s2">"*jar-with-dependencies.jar"</span><span class="k">)</span>
+</code></pre>
+</div>
+
+<p><span class="label label-success">Output</span></p>
+
+<pre><code>No arguments supplied. Supply one of: '--dataset', '--modelrunner', '--vw'.</code></pre>
+
+<p>Now the CLI gets a little further.  Let’s choose the <code class="highlighter-rouge">--dataset</code> option (<em>since we’re making a dataset</em>).</p>
+
+<p><span class="label">Input</span></p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>aloha-cli/bin/aloha-cli                                    <span class="se">\</span>
+  -cp <span class="k">$(</span>find aloha-cli -name <span class="s2">"*jar-with-dependencies.jar"</span><span class="k">)</span> <span class="se">\</span>
+  --dataset
+</code></pre>
+</div>
+
+<p><span class="label label-success">Output</span></p>
+
+<pre><code>Error: Missing option --spec
+Error: No output dataset type provided.  Provide at least one of: vw, vw_labeled, vw_cb, libsvm, libsvm_labeled, csv
+dataset [ SOME ALOHA VERSION HERE ]
+Usage: dataset [options]
+
+  --cachedir &lt;value&gt;
+        a cache directory
+  --parallel &lt;value&gt;
+        a list of Apache VFS URLs additional jars to be included on the classpath
+  -s &lt;value&gt; | --spec &lt;value&gt;
+        Apache VFS URL to a JSON specification file containing attributes of the dataset being created.
+  -p &lt;value&gt; | --proto-input &lt;value&gt;
+        canonical class name of the protocol buffer type to use.
+  -c &lt;value&gt; | --csv-input &lt;value&gt;
+        Apache VFS URL to JSON file specifying the structure of the CSV input.
+  -i &lt;value&gt; | --in &lt;value&gt;
+        Apache VFS URL to the input file.  If not supplied, STDIN will be used.
+  --vw &lt;value&gt;
+        produce an unlabeled VW dataset and place the output in the specified location.
+  --vw_labeled &lt;value&gt;
+        produce a labeled VW dataset and place the output in the specified location.
+  --vw_cb &lt;value&gt;
+        produce a contextual bandit VW dataset and place the output in the specified location.
+  --libsvm &lt;value&gt;
+        produce an unlabeled LIBSVM dataset and place the output in the specified location.
+  --libsvm_labeled &lt;value&gt;
+        produce a labeled LIBSVM dataset and place the output in the specified location.
+  --csv &lt;value&gt;
+        produce a CSV dataset and place the output in the specified location.
+  --csv-headers
+        Produce headers in CSV output.
+  --csv-header-file &lt;value&gt;
+        Write CSV headers to the designated file.
+</code></pre>
+
+<p>So, now we’re getting somewhere.  Now that we have the lay of the land, let’s create some small datasets for real.</p>
+
+<h2 id="examples">Examples</h2>
+
+<h3 id="csv-input-transformed-csv-output">CSV Input, Transformed CSV output</h3>
+
+<hr />
+
+<h4 id="command-and-results">Command and Results</h4>
+
+<p><span class="label">Input</span></p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="c"># Creating an Aloha cache directory provides a speed up </span>
+<span class="c"># when running multiple times.  </span>
+<span class="c">#</span>
+<span class="c"># The cache directory must exist if it's specified.</span>
+<span class="c"># </span>
+mkdir -p /tmp/aloha-cache 2&gt;/dev/null
+</code></pre>
+</div>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="c"># Read 2 rows of data from STDIN.</span>
+<span class="o">(</span>
+cat <span class="sh">&lt;&lt;EOM
+MALE,175,
+FEMALE,,books|films|chinese food
+EOM
+</span><span class="o">)</span> |<span class="se">\</span>
+aloha-cli/bin/aloha-cli                               <span class="se">\</span>
+  -cp <span class="k">$(</span>find aloha-cli -name <span class="s2">"*.jar"</span> | grep dep<span class="k">)</span>      <span class="se">\</span>
+  --dataset                                           <span class="se">\</span>
+  --cachedir /tmp/aloha-cache                         <span class="se">\</span>
+  -c <span class="k">$(</span>find <span class="nv">$PWD</span>/aloha-core/src -name <span class="s1">'csv_types1.js'</span><span class="k">)</span><span class="se">\</span>
+  -s <span class="k">$(</span>find <span class="nv">$PWD</span>/aloha-core/src -name <span class="s1">'csv_spec2.js'</span><span class="k">)</span> <span class="se">\</span>
+  --csv -
+</code></pre>
+</div>
+
+<p><span class="label label-success">Output</span></p>
+
+<pre>
+MALE,170,0
+FEMALE,NULL,3
+</pre>
+
+<h4 id="files">Files</h4>
+
+<p><span class="label label-info text-right">csv_types1.js</span></p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="w">
+</span><span class="p">{</span><span class="w">
+  </span><span class="nt">"fs"</span><span class="p">:</span><span class="w"> </span><span class="s2">","</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"ifs"</span><span class="p">:</span><span class="w"> </span><span class="s2">"|"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"missingData"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NULL"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"errorOnOptMissingField"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"errorOnOptMissingEnum"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"columns"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gender"</span><span class="p">,</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"enum"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"className"</span><span class="p">:</span><span class="w"> </span><span class="s2">"a.b.Gender"</span><span class="p">,</span><span class="w"> 
+      </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"MALE"</span><span class="p">,</span><span class="w"> </span><span class="s2">"FEMALE"</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"weight"</span><span class="p">,</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"int"</span><span class="p">,</span><span class="w"> 
+      </span><span class="nt">"optional"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"likes"</span><span class="p">,</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w"> 
+      </span><span class="nt">"vectorized"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p><span class="label label-info text-right">csv_spec2.js</span></p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="w">
+</span><span class="p">{</span><span class="w">
+  </span><span class="nt">"separator"</span><span class="p">:</span><span class="w"> </span><span class="s2">","</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"nullValue"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NULL"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"encoding"</span><span class="p">:</span><span class="w"> </span><span class="s2">"regular"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"imports"</span><span class="p">:[],</span><span class="w">
+  </span><span class="nt">"features"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gender"</span><span class="p">,</span><span class="w"> </span><span class="nt">"spec"</span><span class="p">:</span><span class="s2">"${gender}"</span><span class="w"> </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"weight"</span><span class="p">,</span><span class="w"> </span><span class="nt">"spec"</span><span class="p">:</span><span class="s2">"${weight} / 10 * 10"</span><span class="w"> </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"num_likes"</span><span class="p">,</span><span class="w"> </span><span class="nt">"spec"</span><span class="p">:</span><span class="s2">"${likes}.size"</span><span class="w"> </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<hr />
+
+<p>Let’s look at the CLI arguments and the file structure of the auxiliary we provied to examine what happened.  We 
+supplied:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">--cachedir /tmp/aloha-cache</code>: This is useful for avoiding recompilation of Aloha features across calls to the 
+CLI.  Try to specify a cache directory when possible.  The directory must exist.</li>
+  <li><code class="highlighter-rouge">-c $(find $PWD/aloha-core/src -name 'csv_types1.js')</code> describes the structure of the CSV <strong>INPUT</strong> data 
+used to construct the dataset.  This isn’t necessary when using 
+<a href="https://developers.google.com/protocol-buffers/?hl=en">Protocol Buffer</a> input (<code class="highlighter-rouge">-p</code> flag).</li>
+  <li><code class="highlighter-rouge">-s $(find $PWD/aloha-core/src -name 'csv_spec2.js')</code> describes the <strong>OUTPUT</strong> format of the dataset.</li>
+  <li><code class="highlighter-rouge">--csv -</code> This option says that we want to create a <em>CSV</em> dataset.  The <code class="highlighter-rouge">-</code> at the end of the option indicates that
+the output be directed to standard output (<em>STDOUT</em>).</li>
+</ul>
+
+<h4 id="external-csv-input-format-description">External CSV input format description</h4>
+
+<p><code class="highlighter-rouge">csv_types1.js</code> is a JSON file describing the CSV input structure of the original data we are transforming.  These 
+files have 6 fields.</p>
+
+<ul>
+  <li><code class="highlighter-rouge">fs</code>: The associated value is a string describing the <em>field separator</em>.  For instance, with comma-delimited data, 
+the value would be <code class="highlighter-rouge">","</code>; for tab-separated data, it would be <code class="highlighter-rouge">"\t"</code>.</li>
+  <li><code class="highlighter-rouge">ifs</code>: The <em>intra-field separator</em>.  This is used when fields are <code class="highlighter-rouge">vectorized</code> to separate the values in a 
+vectorized data within a column.</li>
+  <li><code class="highlighter-rouge">missingData</code>: This is the string which represents a missing value.  For instance, <code class="highlighter-rouge">NULL</code> was used in the above 
+example.  If we set the second line in the input in the above example to <code class="highlighter-rouge">FEMALE,NULL,books|films|chinese food</code>, 
+everything still works.</li>
+  <li><code class="highlighter-rouge">errorOnOptMissingField</code>: a Boolean telling whether to produce an error for the row when an optional field 
+is missing.  Currently, an error in an output line causes the line not to included in the resulting dataset, 
+but the dataset creation process is not halted.  <code class="highlighter-rouge">false</code> is recommended since it’s more forgiving; it allows 
+rows with a missing value to be included in the dataset.</li>
+  <li><code class="highlighter-rouge">errorOnOptMissingEnum</code>: Similar to <code class="highlighter-rouge">errorOnOptMissingField</code>, this field tells whether to produce an error when an
+unknown value for an enumerated type is provided in the input data.</li>
+  <li><code class="highlighter-rouge">columns</code>: An array of column definitions.  The order in which the columns appear in the array defined the expected
+column order in the CSV input.</li>
+</ul>
+
+<p>In the <code class="highlighter-rouge">columns</code> field, each associated value in the array is a JSON object.</p>
+
+<ul>
+  <li><code class="highlighter-rouge">name</code>: This is the name of the field.  This is important not just for documentation but for use in the output 
+specification as well.</li>
+  <li><code class="highlighter-rouge">type</code>: one of { <code class="highlighter-rouge">boolean</code>, <code class="highlighter-rouge">double</code>, <code class="highlighter-rouge">enum</code>, <code class="highlighter-rouge">float</code>, <code class="highlighter-rouge">int</code>, <code class="highlighter-rouge">long</code>, <code class="highlighter-rouge">string</code> }</li>
+  <li><code class="highlighter-rouge">optional</code>: a Boolean value. <code class="highlighter-rouge">true</code> if the column’s value might <em>NOT</em> appear in the input data.  The default when 
+not provided is <code class="highlighter-rouge">false</code>.</li>
+  <li><code class="highlighter-rouge">vectorized</code>: a Boolean value. <code class="highlighter-rouge">true</code> if the column’s contains <em>zero or more</em> values.  In case this is set to 
+<code class="highlighter-rouge">true</code>, the <code class="highlighter-rouge">ifs</code> value is used to split the values in the column into a vector of values.  When <code class="highlighter-rouge">vectorized</code> is not 
+provided, its default value is <code class="highlighter-rouge">false</code>.</li>
+</ul>
+
+<h3 id="protocol-buffer-input-vowpal-wabbit-output">Protocol Buffer input, Vowpal Wabbit output</h3>
+
+<p>This example will show off a bunch of features not covered in the
+<a href="#CSV_Input_Transformed_CSV_output">CSV Input, Transformed CSV output</a> example.  We’ll see how to used Protocol 
+Buffer input data and output to a different output type, namely Vowpal Wabbit.  We’ll also see how to specify an 
+input and output file, rather relying on STDIN and STDOUT.</p>
+
+<p>Let’s start by looking at the fields in the data that we’ll be working with in this example.  To do so, just cat the 
+User.proto file:</p>
+
+<p><span class="label">Input</span></p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>cat aloha-core/src/test/proto/User.proto
+</code></pre>
+</div>
+
+<p><span class="label label-success">Output</span></p>
+
+<pre>
+package com.eharmony.aloha.test.proto;
+
+option java_outer_classname="Testing";
+
+enum GenderProto {
+    MALE   = 1;
+    FEMALE = 2;
+}
+
+message PhotoProto {
+    required int64  id = 1;
+    optional int32 height = 2;
+    optional double aspect_ratio = 3;
+}
+
+message UserProto {
+    required int64 id = 1;
+    optional string name = 2;
+    optional GenderProto gender = 3;
+    optional float bmi = 4;
+    repeated PhotoProto photos = 5;
+}
+</pre>
+
+<p>Now let’s create some data and then process it.</p>
+
+<p><span class="label">Input</span></p>
+
+<p>Create temporary input and output files:</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="nv">INFILE</span><span class="o">=</span><span class="k">$(</span>mktemp -t example_input<span class="k">)</span>
+<span class="nv">OUTFILE</span><span class="o">=</span><span class="k">$(</span>mktemp -t example_output<span class="k">)</span>
+</code></pre>
+</div>
+
+<p>Fill the input file with base64-encoded UserProto data.  This is the data that will be provided to the data 
+scientist for analysis.  Aloha is used to decode and transform with serialized data.</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="o">(</span>
+cat <span class="sh">&lt;&lt;EOM
+CAESBEFsYW4YASUAALhBKg0IARABGQAAAAAAAPA/Kg0IAhACGQAAAAAAAABA
+CAESBEthdGUYAioNCAMQAxkAAAAAAAAIQA==
+EOM
+</span><span class="o">)</span> &gt;&gt; <span class="nv">$INFILE</span>
+</code></pre>
+</div>
+
+<p>Run the CLI.  Note we need the second entry in the <code class="highlighter-rouge">-cp</code> (classpath) flag because it is the jar that contains 
+the protocol buffer definitions.</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>aloha-cli/bin/aloha-cli                              <span class="se">\</span>
+  -cp <span class="k">$(</span>find aloha-cli -name <span class="s2">"*.jar"</span> | grep dep<span class="k">)</span>:<span class="se">\</span>
+<span class="k">$(</span>find aloha-core -name <span class="s2">"*.jar"</span> | grep <span class="nb">test</span><span class="k">)</span>         <span class="se">\</span>
+  --dataset                                          <span class="se">\</span>
+  -i <span class="nv">$INFILE</span>                                         <span class="se">\</span>
+  -s <span class="k">$(</span>find <span class="nv">$PWD</span>/aloha-core/src -name <span class="s1">'proto_spec1.js'</span><span class="k">)</span>   <span class="se">\</span>
+  -p com.eharmony.aloha.test.proto.Testing.UserProto <span class="se">\</span>
+  --cachedir /tmp/aloha-cache                        <span class="se">\</span>
+  --vw <span class="nv">$OUTFILE</span>
+</code></pre>
+</div>
+
+<p>Clean up temp files and print the output.</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>rm -f <span class="nv">$INFILE</span>
+cat <span class="nv">$OUTFILE</span>
+rm -f <span class="nv">$OUTFILE</span>
+</code></pre>
+</div>
+
+<p><span class="label label-success">Output</span></p>
+
+<pre>
+| name=Alan gender=MALE bmi:23 num_photos:2
+| name=Kate gender=FEMALE bmi=UNK num_photos
+</pre>
+
+<p>Again, let’s look at the CLI arguments.  We’ll only describe the parameters that differ from the CSV input example:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">-i $INFILE</code> This is an input file containing the data.</li>
+  <li><code class="highlighter-rouge">-p com.eharmony.aloha.test.proto.Testing.UserProto</code> Tells the CLI that the input will be protocol buffer 
+data that will have the structure described by the <code class="highlighter-rouge">com.eharmony.aloha.test.proto.Testing.UserProto</code> class.</li>
+  <li><code class="highlighter-rouge">--vw $OUTFILE</code> output an unlabeled vowpal wabbit dataset and put it in the file pointed to by the $OUTFILE shell 
+variable.  Obviously, there’s no need for a variable here because we are just executing a shell command.  The key
+is that the value containing the output file location is an Apache VFS URL.</li>
+</ul>
+
+<h2 id="output-specification-files">(Output) specification files</h2>
+
+<p>All CLI-based dataset creation involves a specification file for the output type.  In the 
+<a href="#CSV_Input_Transformed_CSV_output">CSV example</a>, we used 
+<a href="https://github.com/eHarmony/aloha/blob/master/aloha-core/src/test/resources/com/eharmony/aloha/dataset/cli/csv_spec2.js">csv_spec2.js</a>.
+In the <a href="#Protocol_Buffer_input_Vowpal_Wabbit_output">Protocol Buffer example</a>, we used
+<a href="https://github.com/eHarmony/aloha/blob/master/aloha-core/src/test/resources/com/eharmony/aloha/dataset/cli/proto_spec1.js">proto_spec1.js</a>.
+Note that these files have the same <code class="highlighter-rouge">features</code> array format, but some of the other fields vary.  This is because there
+are innate differences in the <em>output type</em> of columns in each row emitted by the dataset creator.  For instance, each 
+column of a CSV dataset is a scalar value.  This means the vector of columns is a dense vector format.  In the case of 
+vowpal wabbit output, the covariate data is inherently sparse in nature so key-value pairs are outputted.</p>
+
+<h3 id="common-fields">Common fields</h3>
+
+<ul>
+  <li><code class="highlighter-rouge">imports</code> an array of strings.  These imports that will be imported into scope for eeach feature definition. 
+Wildcard imports are specified with an underscore.  For instance, a common import one should consider is 
+<code class="highlighter-rouge">"com.eharmony.aloha.feature.BasicFunctions._"</code></li>
+  <li><code class="highlighter-rouge">features</code> an array containing JSON objects which describe the features to be produced.  More on this later.</li>
+</ul>
+
+<h3 id="csv-specific-fields">CSV-specific fields</h3>
+
+<ul>
+  <li><code class="highlighter-rouge">separator</code> the column delimiter. <code class="highlighter-rouge">","</code> for comma-delimited data, <code class="highlighter-rouge">"\t"</code> for tab-delimited.</li>
+  <li><code class="highlighter-rouge">nullValue</code> the string value to assign to a column when its data is missing. <code class="highlighter-rouge">""</code> or <code class="highlighter-rouge">"NULL"</code>, for instance.</li>
+  <li><code class="highlighter-rouge">encoding</code> how categorical variables are encoded.  Currently, this can be <code class="highlighter-rouge">regular</code> or <code class="highlighter-rouge">hotOne</code>.  Regular encoding
+just creates a one-dimensional string representation of the value.
+<a href="https://en.wikipedia.org/wiki/One-hot">Hot-one encoding</a> is a binarized vector representation of the feature.</li>
+</ul>
+
+<h3 id="features">features</h3>
+
+<p>Each feature has three values:</p>
+<ul>
+  <li><code class="highlighter-rouge">name</code> the name of the feature</li>
+  <li><code class="highlighter-rouge">spec</code> how to compute the feature (scala code with the imports in the <code class="highlighter-rouge">imports</code> array in scope)</li>
+  <li><code class="highlighter-rouge">defVal</code> a default value.  This field is optional.  If omitted, the <code class="highlighter-rouge">nullValue</code> value will be used if necessary in 
+the CSV case and an empty sequence of key-value pairs will be used in the case of sparse formats like VW and LIBSVM.</li>
+</ul>
+
+<h3 id="a-word-of-sparse-formats">A word of sparse formats</h3>
+
+<p>Each feature in a sparse dataset type outputs a sequence of key-value pairs.  This can be <em>zero or more</em>.  If the 
+sequence sizes for each feature are exactly <em>zero</em> or <em>one</em>, the same specification file can be used for both dense 
+(CSV) or sparse (VW, LIBSVM) dataset creation.  By importing <code class="highlighter-rouge">com.eharmony.aloha.feature.BasicFunctions._</code>, a 
+conversion mechanism is brought into scope.  So when specifying a feature like:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w"> 
+  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"some_feature_name"</span><span class="p">,</span><span class="w"> 
+  </span><span class="nt">"spec"</span><span class="p">:</span><span class="w"> </span><span class="s2">"${some.extracted.scalar.number}"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>and assuming a datum passed into the dataset CLI has a value of <code class="highlighter-rouge">7</code> associated with the field 
+<code class="highlighter-rouge">some.extracted.scalar.number</code>, Aloha can automatically generate a sequence of one key-value pair: 
+<code class="highlighter-rouge">[ "some_feature_name" -&gt; 7) ]</code>.</p>
+
+<h3 id="multiple-dataset-formats">Multiple dataset formats</h3>
+
+<p>Additionally, the dataset creator ignores JSON fields in the specification file that aren’t used by the desired dataset
+type.  This means that if we provide a union of fields used by multiple dataset creators, we can those to generate two
+or more datasets of different types at once.  We just need to make sure the destination files differ.  For instance:</p>
+
+<p>Create the files again (like above):</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="nv">INFILE</span><span class="o">=</span><span class="k">$(</span>mktemp -t example_input<span class="k">)</span>
+<span class="nv">OUTFILE_CSV</span><span class="o">=</span><span class="k">$(</span>mktemp -t example_output<span class="k">)</span>
+<span class="nv">OUTFILE_VW</span><span class="o">=</span><span class="k">$(</span>mktemp -t example_output<span class="k">)</span>
+</code></pre>
+</div>
+
+<p>Create the protocol buffer input again (like above):</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="o">(</span>
+cat <span class="sh">&lt;&lt;EOM
+CAESBEFsYW4YASUAALhBKg0IARABGQAAAAAAAPA/Kg0IAhACGQAAAAAAAABA
+CAESBEthdGUYAioNCAMQAxkAAAAAAAAIQA==
+EOM
+</span><span class="o">)</span> &gt;&gt; <span class="nv">$INFILE</span>
+</code></pre>
+</div>
+
+<p>Run the CLI.  Here we create two datasets simultaneously from the same protocol buffer input data and the same 
+specification file,
+<a href="https://github.com/eHarmony/aloha/blob/master/aloha-core/src/test/resources/com/eharmony/aloha/dataset/cli/csv_AND_vw_spec.js">csv_AND_vw_spec.js</a>.
+We give headers to the CSV file.  Everything else is the same.</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>aloha-cli/bin/aloha-cli                                     <span class="se">\</span>
+  -cp <span class="k">$(</span>find aloha-cli -name <span class="s2">"*.jar"</span> | grep dep<span class="k">)</span>:<span class="se">\</span>
+<span class="k">$(</span>find aloha-core -name <span class="s2">"*.jar"</span> | grep <span class="nb">test</span><span class="k">)</span>                <span class="se">\</span>
+  --dataset                                                 <span class="se">\</span>
+  -i <span class="nv">$INFILE</span>                                                <span class="se">\</span>
+  -s <span class="k">$(</span>find <span class="nv">$PWD</span>/aloha-core/src -name <span class="s1">'csv_AND_vw_spec.js'</span><span class="k">)</span> <span class="se">\</span>
+  -p com.eharmony.aloha.test.proto.Testing.UserProto        <span class="se">\</span>
+  --cachedir /tmp/aloha-cache                               <span class="se">\</span>
+  --vw_labeled  <span class="nv">$OUTFILE_VW</span>                                 <span class="se">\</span>
+  --csv <span class="nv">$OUTFILE_CSV</span>                                        <span class="se">\</span>
+  --csv-headers
+</code></pre>
+</div>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>cat <span class="nv">$OUTFILE_CSV</span>
+</code></pre>
+</div>
+
+<p><span class="label label-success">Output</span></p>
+
+<pre>
+csv_label,gender,bmi,num_photos,avg_photo_height
+1,0,23.0,2,1
+1,1,NULL,1,3
+</pre>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>cat <span class="nv">$OUTFILE_VW</span>
+</code></pre>
+</div>
+
+<p><span class="label label-success">Output</span></p>
+
+<pre>
+1 1|ignored csv_label |personal bmi:23 |photos num_photos:2 avg_photo_height
+1 1|ignored csv_label |personal gender |photos num_photos avg_photo_height:3
+</pre>
+
+</section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/aloha/highlight/highlight.pack.js"></script><script>hljs.configure({
+languages:['scala','java','bash']
+});
+hljs.initHighlighting();
+             </script><script src="/aloha/js/main.js"></script><script src="/aloha/js/kazari.js"></script><script>
+$(document).ready(function() {
+	kazari.KazariPlugin().decorateCode('https://scala-evaluator-212.herokuapp.com/eval', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.S2F6YXJp.Jl2eqMfw8IakJF93PjxTbrf-8YUJgX5OoOfy5JHE8Yw', '', 'solarized-dark')
+})
+    </script></body></html>

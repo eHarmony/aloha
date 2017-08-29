@@ -1,0 +1,1033 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>VwJniModel - com.eharmony.aloha.models.vw.jni.VwJniModel</title>
+          <meta name="description" content="VwJniModel - com.eharmony.aloha.models.vw.jni.VwJniModel" />
+          <meta name="keywords" content="VwJniModel com.eharmony.aloha.models.vw.jni.VwJniModel" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../../../index.html';
+            var hash = 'com.eharmony.aloha.models.vw.jni.VwJniModel$';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <a href="VwJniModel.html" title="See companion class"><img alt="Object/Class" src="../../../../../../lib/object_to_class_big.png" /></a>
+        <p id="owner"><a href="../../../../../package.html" class="extype" name="com">com</a>.<a href="../../../../package.html" class="extype" name="com.eharmony">eharmony</a>.<a href="../../../package.html" class="extype" name="com.eharmony.aloha">aloha</a>.<a href="../../package.html" class="extype" name="com.eharmony.aloha.models">models</a>.<a href="../package.html" class="extype" name="com.eharmony.aloha.models.vw">vw</a>.<a href="package.html" class="extype" name="com.eharmony.aloha.models.vw.jni">jni</a></p>
+        <h1><a href="VwJniModel.html" title="See companion class">VwJniModel</a></h1><h3><span class="morelinks"><div>
+            Related Docs:
+            <a href="VwJniModel.html" title="See companion class">class VwJniModel</a>
+            | <a href="package.html" class="extype" name="com.eharmony.aloha.models.vw.jni">package jni</a>
+          </div></span></h3><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <span class="name">VwJniModel</span><span class="result"> extends <a href="../../../factory/ParserProviderCompanion.html" class="extype" name="com.eharmony.aloha.factory.ParserProviderCompanion">ParserProviderCompanion</a> with <a href="VwJniModelJson.html" class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModelJson">VwJniModelJson</a> with <a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a>, <a href="VwJniModelJson.html" class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModelJson">VwJniModelJson</a>, <a href="../../reg/json/SpecJson.html" class="extype" name="com.eharmony.aloha.models.reg.json.SpecJson">SpecJson</a>, <a href="../../../factory/ParserProviderCompanion.html" class="extype" name="com.eharmony.aloha.factory.ParserProviderCompanion">ParserProviderCompanion</a>, <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+        </div></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        <div id="order">
+              <span class="filtertype">Ordering</span>
+              <ol>
+                
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By Inheritance</span></li>
+              </ol>
+            </div>
+        <div id="ancestors">
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="com.eharmony.aloha.models.vw.jni.VwJniModel"><span>VwJniModel</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="com.eharmony.aloha.util.Logging"><span>Logging</span></li><li class="in" name="com.eharmony.aloha.models.vw.jni.VwJniModelJson"><span>VwJniModelJson</span></li><li class="in" name="com.eharmony.aloha.models.reg.json.SpecJson"><span>SpecJson</span></li><li class="in" name="com.eharmony.aloha.factory.ParserProviderCompanion"><span>ParserProviderCompanion</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show All</span></li>
+            </ol>
+          </div>
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="com.eharmony.aloha.models.vw.jni.VwJniModelJson.Vw" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="VwextendsProductwithSerializable"></a>
+      <a id="Vw:Vw"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="VwJniModelJson$Vw.html"><span class="name">Vw</span></a><span class="params">(<span name="modelSource">modelSource: <a href="../../../io/sources/ModelSource.html" class="extype" name="com.eharmony.aloha.io.sources.ModelSource">ModelSource</a></span>, <span name="params">params: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../../../scala/package.html#Either[+A,+B]=scala.util.Either[A,B]" class="extmbr" name="scala.Either">Either</a>[<a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>], <span class="extype" name="scala.Predef.String">String</span>]] = <span class="symbol"><span class="name"><a href="../../../../../../scala/package.html">Option(Right(&quot;&quot;))</a></span></span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModelJson@VwextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Note that as is, this declaration will cause a compiler warning:</p><div class="fullcomment"><div class="comment cmt"><p>Note that as is, this declaration will cause a compiler warning:</p><p>    &quot;The outer reference in this type test cannot be checked at run time.&quot;</p><p>This is a known issue and is a scala bug.  See:
+- https://issues.scala-lang.org/browse/SI-4440
+- http://stackoverflow.com/questions/16450008/typesafe-swing-events-the-outer-reference-in-this-type-test-cannot-be-checked-a</p><p>A solution that would remove the warning is to make the class not <i>final</i>.  Not doing this just to remove a
+warning.</p></div><dl class="paramcmts block"><dt class="param">modelSource</dt><dd class="cmt"><p>A ModelSource</p></dd><dt class="param">params</dt><dd class="cmt"><p>VW initialization parameters.  This is either a sequence of parameters that will be made into a
+              single string by imploding the list with a &quot; &quot; separator or it is one string.  If None,</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="VwJniModelJson.html" class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModelJson">VwJniModelJson</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.VwJniModelJson.VwJNIAst" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="VwJNIAstextendsProductwithSerializable"></a>
+      <a id="VwJNIAst:VwJNIAst"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="VwJniModelJson$VwJNIAst.html"><span class="name">VwJNIAst</span></a><span class="params">(<span name="modelType">modelType: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="modelId">modelId: <a href="../../../id/ModelIdentity.html" class="extype" name="com.eharmony.aloha.id.ModelIdentity">ModelIdentity</a></span>, <span name="features">features: <span class="extype" name="scala.collection.immutable.ListMap">ListMap</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="../../reg/json/Spec.html" class="extype" name="com.eharmony.aloha.models.reg.json.Spec">Spec</a>]</span>, <span name="vw">vw: <a href="VwJniModelJson$Vw.html" class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModelJson.Vw">Vw</a></span>, <span name="namespaces">namespaces: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.collection.immutable.ListMap">ListMap</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]]] = <span class="symbol"><span class="name"><a href="../../../../../../scala/package.html">Some(ListMap.empty)</a></span></span></span>, <span name="numMissingThreshold">numMissingThreshold: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>] = <span class="symbol"><span class="name"><a href="../../../../../../scala/package.html">None</a></span></span></span>, <span name="notes">notes: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]] = <span class="symbol"><span class="name"><a href="../../../../../../scala/package.html">None</a></span></span></span>, <span name="spline">spline: <span class="extype" name="scala.Option">Option</span>[<a href="../../reg/ConstantDeltaSpline.html" class="extype" name="com.eharmony.aloha.models.reg.ConstantDeltaSpline">ConstantDeltaSpline</a>] = <span class="symbol"><span class="name"><a href="../../../../../../scala/package.html">None</a></span></span></span>, <span name="classLabels">classLabels: <span class="extype" name="scala.Option">Option</span>[<a href="../../../util/SimpleTypeSeq.html" class="extype" name="com.eharmony.aloha.util.SimpleTypeSeq">SimpleTypeSeq</a>] = <span class="symbol"><span class="name"><a href="../../../../../../scala/package.html">None</a></span></span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModelJson@VwJNIAstextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Note that as is, this declaration will cause a compiler warning:</p><div class="fullcomment"><div class="comment cmt"><p>Note that as is, this declaration will cause a compiler warning:</p><p>    &quot;The outer reference in this type test cannot be checked at run time.&quot;</p><p>This is a known issue and is a scala bug.  See:
+- https://issues.scala-lang.org/browse/SI-4440
+- http://stackoverflow.com/questions/16450008/typesafe-swing-events-the-outer-reference-in-this-type-test-cannot-be-checked-a</p><p>A solution that would remove the warning is to make the class not <i>final</i>.  Not doing this just to remove a
+warning.</p></div><dl class="paramcmts block"><dt class="param">modelType</dt><dd class="cmt"><p>The model type (Should be VwJNI).</p></dd><dt class="param">modelId</dt><dd class="cmt"><p>a model ID</p></dd><dt class="param">features</dt><dd class="cmt"><p>an map of features (whose iteration order is the declaration order).</p></dd><dt class="param">vw</dt><dd class="cmt"><p>an object for configuring the VwScorer object that will be embedded in the VwJniModel.</p></dd><dt class="param">namespaces</dt><dd class="cmt"><p>an map of namespace name to sequence of feature names in the namespace.</p></dd><dt class="param">numMissingThreshold</dt><dd class="cmt"><p>A threshold dictating how many missing features to allow before making
+                           the prediction fail.  None means the threshold is &infin;.  If, when mapping
+                           feature functions over the input, the resulting sequence contains more than
+                           <i>numMissingThreshold</i> values that are empty Iterable values, then the
+                           <i>Features.missingOk</i> value returned by <i>constructFeatures</i> will be
+                           <b>false</b>; otherwise, it will be <b>true</b>.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="VwJniModelJson.html" class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModelJson">VwJniModelJson</a></dd></dl></div>
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="!=(x$1:Any):Boolean"></a>
+      <a id="!=(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@!=(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="##():Int"></a>
+      <a id="##():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@##():Int" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="==(x$1:Any):Boolean"></a>
+      <a id="==(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@==(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.reg.json.SpecJson.FeatureSpecFormat" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="FeatureSpecFormat"></a>
+      <a id="FeatureSpecFormat:FeatureSpecFormat"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="../../reg/json/SpecJson$FeatureSpecFormat$.html"><span class="name">FeatureSpecFormat</span></a><span class="result"> extends <span class="extype" name="spray.json.JsonFormat">JsonFormat</span>[<a href="../../reg/json/Spec.html" class="extype" name="com.eharmony.aloha.models.reg.json.Spec">Spec</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.reg.json.SpecJson@FeatureSpecFormat" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../reg/json/SpecJson.html" class="extype" name="com.eharmony.aloha.models.reg.json.SpecJson">SpecJson</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.VwJniModel.Parser" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Parser"></a>
+      <a id="Parser:Parser"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="VwJniModel$$Parser$.html"><span class="name">Parser</span></a><span class="result"> extends <a href="../../../factory/ModelSubmodelParsingPlugin.html" class="extype" name="com.eharmony.aloha.factory.ModelSubmodelParsingPlugin">ModelSubmodelParsingPlugin</a> with <a href="../../../util/EitherHelpers.html" class="extype" name="com.eharmony.aloha.util.EitherHelpers">EitherHelpers</a> with <a href="../../reg/RegFeatureCompiler.html" class="extype" name="com.eharmony.aloha.models.reg.RegFeatureCompiler">RegFeatureCompiler</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@Parser" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.models.vw.jni.VwJniModelJson.VwFormat" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="VwFormat"></a>
+      <a id="VwFormat:VwFormat"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="VwJniModelJson$VwFormat$.html"><span class="name">VwFormat</span></a><span class="result"> extends <span class="extype" name="spray.json.RootJsonFormat">RootJsonFormat</span>[<a href="VwJniModelJson$Vw.html" class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModelJson.Vw">Vw</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModelJson@VwFormat" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="VwJniModelJson.html" class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModelJson">VwJniModelJson</a></dd></dl></div>
+    </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asInstanceOf[T0]:T0"></a>
+      <a id="asInstanceOf[T0]:T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@asInstanceOf[T0]:T0" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="clone():Object"></a>
+      <a id="clone():AnyRef"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@clone():Object" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#debug" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="debug(msg:=&gt;Any,t:=&gt;Throwable):Unit"></a>
+      <a id="debug(⇒Any,⇒Throwable):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">debug</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>, <span name="t">t: ⇒ <a href="../../../../../../scala/package.html#Throwable=Throwable" class="extmbr" name="scala.Throwable">Throwable</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@debug(msg:=&gt;Any,t:=&gt;Throwable):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a debug logging message, with an exception.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a debug logging message, with an exception.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd><dt class="param">t</dt><dd class="cmt"><p>the exception to include with the logged message.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#debug" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="debug(msg:=&gt;Any):Unit"></a>
+      <a id="debug(⇒Any):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">debug</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@debug(msg:=&gt;Any):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a debug logging message.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a debug logging message.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="eq(x$1:AnyRef):Boolean"></a>
+      <a id="eq(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(x$1:Any):Boolean"></a>
+      <a id="equals(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@equals(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#error" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="error(msg:=&gt;Any,t:=&gt;Throwable):Unit"></a>
+      <a id="error(⇒Any,⇒Throwable):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">error</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>, <span name="t">t: ⇒ <a href="../../../../../../scala/package.html#Throwable=Throwable" class="extmbr" name="scala.Throwable">Throwable</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@error(msg:=&gt;Any,t:=&gt;Throwable):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a error logging message, with an exception.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a error logging message, with an exception.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd><dt class="param">t</dt><dd class="cmt"><p>the exception to include with the logged message.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#error" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="error(msg:=&gt;Any):Unit"></a>
+      <a id="error(⇒Any):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">error</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@error(msg:=&gt;Any):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a error logging message.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a error logging message.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="finalize():Unit"></a>
+      <a id="finalize():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@finalize():Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getClass():Class[_]"></a>
+      <a id="getClass():Class[_]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@getClass():Class[_]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode():Int"></a>
+      <a id="hashCode():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@hashCode():Int" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#info" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="info(msg:=&gt;Any,t:=&gt;Throwable):Unit"></a>
+      <a id="info(⇒Any,⇒Throwable):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">info</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>, <span name="t">t: ⇒ <a href="../../../../../../scala/package.html#Throwable=Throwable" class="extmbr" name="scala.Throwable">Throwable</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@info(msg:=&gt;Any,t:=&gt;Throwable):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a info logging message, with an exception.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a info logging message, with an exception.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd><dt class="param">t</dt><dd class="cmt"><p>the exception to include with the logged message.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#info" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="info(msg:=&gt;Any):Unit"></a>
+      <a id="info(⇒Any):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">info</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@info(msg:=&gt;Any):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a info logging message.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a info logging message.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#isDebugEnabled" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isDebugEnabled:Boolean"></a>
+      <a id="isDebugEnabled:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isDebugEnabled</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@isDebugEnabled:Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Determine whether debug logging is enabled.</p><div class="fullcomment"><div class="comment cmt"><p>Determine whether debug logging is enabled.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#isErrorEnabled" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isErrorEnabled:Boolean"></a>
+      <a id="isErrorEnabled:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isErrorEnabled</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@isErrorEnabled:Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Determine whether error logging is enabled.</p><div class="fullcomment"><div class="comment cmt"><p>Determine whether error logging is enabled.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#isInfoEnabled" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isInfoEnabled:Boolean"></a>
+      <a id="isInfoEnabled:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isInfoEnabled</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@isInfoEnabled:Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Determine whether info logging is enabled.</p><div class="fullcomment"><div class="comment cmt"><p>Determine whether info logging is enabled.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#isTraceEnabled" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isTraceEnabled:Boolean"></a>
+      <a id="isTraceEnabled:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isTraceEnabled</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@isTraceEnabled:Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Determine whether trace logging is enabled.</p><div class="fullcomment"><div class="comment cmt"><p>Determine whether trace logging is enabled.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#isWarnEnabled" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isWarnEnabled:Boolean"></a>
+      <a id="isWarnEnabled:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isWarnEnabled</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@isWarnEnabled:Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Determine whether warn logging is enabled.</p><div class="fullcomment"><div class="comment cmt"><p>Determine whether warn logging is enabled.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.VwJniModel#json" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="json(vw:com.eharmony.aloha.dataset.vw.json.VwJsonLike,model:com.eharmony.aloha.io.vfs.Vfs,id:com.eharmony.aloha.id.ModelId,vwArgs:Option[String],externalModel:Boolean,numMissingThreshold:Option[Int],notes:Option[Seq[String]],spline:Option[com.eharmony.aloha.models.reg.ConstantDeltaSpline],classLabels:Option[com.eharmony.aloha.util.SimpleTypeSeq]):spray.json.JsValue"></a>
+      <a id="json(VwJsonLike,Vfs,ModelId,Option[String],Boolean,Option[Int],Option[Seq[String]],Option[ConstantDeltaSpline],Option[SimpleTypeSeq]):JsValue"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">json</span><span class="params">(<span name="vw">vw: <a href="../../../dataset/vw/json/VwJsonLike.html" class="extype" name="com.eharmony.aloha.dataset.vw.json.VwJsonLike">VwJsonLike</a></span>, <span name="model">model: <a href="../../../io/vfs/Vfs.html" class="extype" name="com.eharmony.aloha.io.vfs.Vfs">Vfs</a></span>, <span name="id">id: <a href="../../../id/ModelId.html" class="extype" name="com.eharmony.aloha.id.ModelId">ModelId</a></span>, <span name="vwArgs">vwArgs: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="externalModel">externalModel: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="numMissingThreshold">numMissingThreshold: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="notes">notes: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]]</span>, <span name="spline">spline: <span class="extype" name="scala.Option">Option</span>[<a href="../../reg/ConstantDeltaSpline.html" class="extype" name="com.eharmony.aloha.models.reg.ConstantDeltaSpline">ConstantDeltaSpline</a>]</span>, <span name="classLabels">classLabels: <span class="extype" name="scala.Option">Option</span>[<a href="../../../util/SimpleTypeSeq.html" class="extype" name="com.eharmony.aloha.util.SimpleTypeSeq">SimpleTypeSeq</a>]</span>)</span><span class="result">: <span class="extype" name="spray.json.JsValue">JsValue</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@json(vw:com.eharmony.aloha.dataset.vw.json.VwJsonLike,model:com.eharmony.aloha.io.vfs.Vfs,id:com.eharmony.aloha.id.ModelId,vwArgs:Option[String],externalModel:Boolean,numMissingThreshold:Option[Int],notes:Option[Seq[String]],spline:Option[com.eharmony.aloha.models.reg.ConstantDeltaSpline],classLabels:Option[com.eharmony.aloha.util.SimpleTypeSeq]):spray.json.JsValue" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p>
+    </li><li name="com.eharmony.aloha.models.vw.jni.VwJniModel#json" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="json(spec:com.eharmony.aloha.io.vfs.Vfs,model:com.eharmony.aloha.io.vfs.Vfs,id:com.eharmony.aloha.id.ModelId,vwArgs:Option[String],externalModel:Boolean,numMissingThreshold:Option[Int],notes:Option[Seq[String]],spline:Option[com.eharmony.aloha.models.reg.ConstantDeltaSpline]):spray.json.JsValue"></a>
+      <a id="json(Vfs,Vfs,ModelId,Option[String],Boolean,Option[Int],Option[Seq[String]],Option[ConstantDeltaSpline]):JsValue"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">json</span><span class="params">(<span name="spec">spec: <a href="../../../io/vfs/Vfs.html" class="extype" name="com.eharmony.aloha.io.vfs.Vfs">Vfs</a></span>, <span name="model">model: <a href="../../../io/vfs/Vfs.html" class="extype" name="com.eharmony.aloha.io.vfs.Vfs">Vfs</a></span>, <span name="id">id: <a href="../../../id/ModelId.html" class="extype" name="com.eharmony.aloha.id.ModelId">ModelId</a></span>, <span name="vwArgs">vwArgs: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="externalModel">externalModel: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="numMissingThreshold">numMissingThreshold: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>] = <span class="symbol"><span class="name"><a href="../../../../../../scala/package.html">None</a></span></span></span>, <span name="notes">notes: <span class="extype" name="scala.Option">Option</span>[<a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]] = <span class="symbol"><span class="name"><a href="../../../../../../scala/package.html">None</a></span></span></span>, <span name="spline">spline: <span class="extype" name="scala.Option">Option</span>[<a href="../../reg/ConstantDeltaSpline.html" class="extype" name="com.eharmony.aloha.models.reg.ConstantDeltaSpline">ConstantDeltaSpline</a>] = <span class="symbol"><span class="name"><a href="../../../../../../scala/package.html">None</a></span></span></span>)</span><span class="result">: <span class="extype" name="spray.json.JsValue">JsValue</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@json(spec:com.eharmony.aloha.io.vfs.Vfs,model:com.eharmony.aloha.io.vfs.Vfs,id:com.eharmony.aloha.id.ModelId,vwArgs:Option[String],externalModel:Boolean,numMissingThreshold:Option[Int],notes:Option[Seq[String]],spline:Option[com.eharmony.aloha.models.reg.ConstantDeltaSpline]):spray.json.JsValue" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p>
+    </li><li name="com.eharmony.aloha.util.Logging#logger" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="logger:org.slf4j.Logger"></a>
+      <a id="logger:Logger"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">logger</span><span class="result">: <span class="extype" name="org.slf4j.Logger">Logger</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@logger:org.slf4j.Logger" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">The logger is a <code>@transient lazy val</code> to enable proper working with Spark.</p><div class="fullcomment"><div class="comment cmt"><p>The logger is a <code>@transient lazy val</code> to enable proper working with Spark.
+The logger will not be serialized with the rest of the class with which this
+trait is mixed-in.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#loggerInitName" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="loggerInitName():String"></a>
+      <a id="loggerInitName():String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">loggerInitName</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@loggerInitName():String" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">The name with which the logger is initialized.</p><div class="fullcomment"><div class="comment cmt"><p>The name with which the logger is initialized.  This can be overridden in a derived class.</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#loggerName" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="loggerName:String"></a>
+      <a id="loggerName:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">loggerName</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@loggerName:String" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Get the name associated with this logger.</p><div class="fullcomment"><div class="comment cmt"><p>Get the name associated with this logger.
+</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the name.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ne(x$1:AnyRef):Boolean"></a>
+      <a id="ne(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notify():Unit"></a>
+      <a id="notify():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@notify():Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#notifyAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notifyAll():Unit"></a>
+      <a id="notifyAll():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@notifyAll():Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.VwJniModel#parser" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="parser:com.eharmony.aloha.factory.ModelParser"></a>
+      <a id="parser:ModelParser"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">parser</span><span class="result">: <a href="../../../factory/ModelParser.html" class="extype" name="com.eharmony.aloha.factory.ModelParser">ModelParser</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@parser:com.eharmony.aloha.factory.ModelParser" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModel">VwJniModel</a> → <a href="../../../factory/ParserProviderCompanion.html" class="extype" name="com.eharmony.aloha.factory.ParserProviderCompanion">ParserProviderCompanion</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.reg.json.SpecJson#specJsonFormat" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="specJsonFormat:spray.json.RootJsonFormat[com.eharmony.aloha.models.reg.json.Spec]"></a>
+      <a id="specJsonFormat:RootJsonFormat[Spec]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">specJsonFormat</span><span class="result">: <span class="extype" name="spray.json.RootJsonFormat">RootJsonFormat</span>[<a href="../../reg/json/Spec.html" class="extype" name="com.eharmony.aloha.models.reg.json.Spec">Spec</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@specJsonFormat:spray.json.RootJsonFormat[com.eharmony.aloha.models.reg.json.Spec]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../reg/json/SpecJson.html" class="extype" name="com.eharmony.aloha.models.reg.json.SpecJson">SpecJson</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.VwJniModelJson#splineJsonFormat" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="splineJsonFormat:spray.json.RootJsonFormat[com.eharmony.aloha.models.reg.ConstantDeltaSpline]"></a>
+      <a id="splineJsonFormat:RootJsonFormat[ConstantDeltaSpline]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit final </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">splineJsonFormat</span><span class="result">: <span class="extype" name="spray.json.RootJsonFormat">RootJsonFormat</span>[<a href="../../reg/ConstantDeltaSpline.html" class="extype" name="com.eharmony.aloha.models.reg.ConstantDeltaSpline">ConstantDeltaSpline</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@splineJsonFormat:spray.json.RootJsonFormat[com.eharmony.aloha.models.reg.ConstantDeltaSpline]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="VwJniModelJson.html" class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModelJson">VwJniModelJson</a></dd></dl></div>
+    </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
+      <a id="synchronized[T0](⇒T0):T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toString():String"></a>
+      <a id="toString():String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@toString():String" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#trace" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="trace(msg:=&gt;Any,t:=&gt;Throwable):Unit"></a>
+      <a id="trace(⇒Any,⇒Throwable):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">trace</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>, <span name="t">t: ⇒ <a href="../../../../../../scala/package.html#Throwable=Throwable" class="extmbr" name="scala.Throwable">Throwable</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@trace(msg:=&gt;Any,t:=&gt;Throwable):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a trace logging message, with an exception.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a trace logging message, with an exception.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd><dt class="param">t</dt><dd class="cmt"><p>the exception to include with the logged message.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#trace" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="trace(msg:=&gt;Any):Unit"></a>
+      <a id="trace(⇒Any):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">trace</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@trace(msg:=&gt;Any):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a trace logging message.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a trace logging message.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.VwJniModelJson#vwJNIAstFormat" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="vwJNIAstFormat:spray.json.RootJsonFormat[VwJniModelJson.this.VwJNIAst]"></a>
+      <a id="vwJNIAstFormat:RootJsonFormat[VwJNIAst]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit final </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">vwJNIAstFormat</span><span class="result">: <span class="extype" name="spray.json.RootJsonFormat">RootJsonFormat</span>[<a href="#VwJNIAstextendsProductwithSerializable" class="extmbr" name="com.eharmony.aloha.models.vw.jni.VwJniModelJson.VwJNIAst">VwJNIAst</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@vwJNIAstFormat:spray.json.RootJsonFormat[VwJniModelJson.this.VwJNIAst]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="VwJniModelJson.html" class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModelJson">VwJniModelJson</a></dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait():Unit"></a>
+      <a id="wait():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@wait():Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long,x$2:Int):Unit"></a>
+      <a id="wait(Long,Int):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long):Unit"></a>
+      <a id="wait(Long):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@wait(x$1:Long):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#warn" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="warn(msg:=&gt;Any,t:=&gt;Throwable):Unit"></a>
+      <a id="warn(⇒Any,⇒Throwable):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">warn</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>, <span name="t">t: ⇒ <a href="../../../../../../scala/package.html#Throwable=Throwable" class="extmbr" name="scala.Throwable">Throwable</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@warn(msg:=&gt;Any,t:=&gt;Throwable):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a warn logging message, with an exception.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a warn logging message, with an exception.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd><dt class="param">t</dt><dd class="cmt"><p>the exception to include with the logged message.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#warn" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="warn(msg:=&gt;Any):Unit"></a>
+      <a id="warn(⇒Any):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">warn</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.vw.jni.VwJniModel$@warn(msg:=&gt;Any):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a warn logging message.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a warn logging message.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        <div class="parent" name="scala.Serializable">
+              <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="java.io.Serializable">
+              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="com.eharmony.aloha.util.Logging">
+              <h3>Inherited from <a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></h3>
+            </div><div class="parent" name="com.eharmony.aloha.models.vw.jni.VwJniModelJson">
+              <h3>Inherited from <a href="VwJniModelJson.html" class="extype" name="com.eharmony.aloha.models.vw.jni.VwJniModelJson">VwJniModelJson</a></h3>
+            </div><div class="parent" name="com.eharmony.aloha.models.reg.json.SpecJson">
+              <h3>Inherited from <a href="../../reg/json/SpecJson.html" class="extype" name="com.eharmony.aloha.models.reg.json.SpecJson">SpecJson</a></h3>
+            </div><div class="parent" name="com.eharmony.aloha.factory.ParserProviderCompanion">
+              <h3>Inherited from <a href="../../../factory/ParserProviderCompanion.html" class="extype" name="com.eharmony.aloha.factory.ParserProviderCompanion">ParserProviderCompanion</a></h3>
+            </div><div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+            </div>
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>

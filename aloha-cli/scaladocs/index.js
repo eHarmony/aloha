@@ -1,1 +1,0 @@
-Index.PACKAGES = {"com" : [], "com.eharmony" : [], "com.eharmony.aloha" : [], "com.eharmony.aloha.cli" : [{"object" : "com\/eharmony\/aloha\/cli\/Cli$.html", "name" : "com.eharmony.aloha.cli.Cli"}]};

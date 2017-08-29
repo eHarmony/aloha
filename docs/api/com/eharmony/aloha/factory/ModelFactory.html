@@ -1,0 +1,1126 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>ModelFactory - com.eharmony.aloha.factory.ModelFactory</title>
+          <meta name="description" content="ModelFactory - com.eharmony.aloha.factory.ModelFactory" />
+          <meta name="keywords" content="ModelFactory com.eharmony.aloha.factory.ModelFactory" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../index.html';
+            var hash = 'com.eharmony.aloha.factory.ModelFactory';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="type">
+      <div id="definition">
+        <a href="ModelFactory$.html" title="See companion object"><img alt="Class/Object" src="../../../../lib/class_to_object_big.png" /></a>
+        <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.eharmony">eharmony</a>.<a href="../package.html" class="extype" name="com.eharmony.aloha">aloha</a>.<a href="package.html" class="extype" name="com.eharmony.aloha.factory">factory</a></p>
+        <h1><a href="ModelFactory$.html" title="See companion object">ModelFactory</a></h1><h3><span class="morelinks"><div>
+            Related Docs:
+            <a href="ModelFactory$.html" title="See companion object">object ModelFactory</a>
+            | <a href="package.html" class="extype" name="com.eharmony.aloha.factory">package factory</a>
+          </div></span></h3><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ModelFactory</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> extends <a href="../io/ReadableByString.html" class="extype" name="com.eharmony.aloha.io.ReadableByString">ReadableByString</a>[<span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]] with <a href="../io/GZippedReadable.html" class="extype" name="com.eharmony.aloha.io.GZippedReadable">GZippedReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]] with <a href="../io/LocationLoggingReadable.html" class="extype" name="com.eharmony.aloha.io.LocationLoggingReadable">LocationLoggingReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]] with <a href="../io/multiple/MultipleAlohaReadable.html" class="extype" name="com.eharmony.aloha.io.multiple.MultipleAlohaReadable">MultipleAlohaReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]] with <a href="../io/multiple/SequenceMultipleReadable.html" class="extype" name="com.eharmony.aloha.io.multiple.SequenceMultipleReadable">SequenceMultipleReadable</a>[<a href="../io/sources/ReadableSource.html" class="extype" name="com.eharmony.aloha.io.sources.ReadableSource">ReadableSource</a>, <span class="extype" name="scala.util.Try">Try</span>, <a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]] with <a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A factory that produces models.</p></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>model input type</p></dd><dt class="tparam">B</dt><dd class="cmt"><p>Model output type</p></dd></dl><div class="toggleContainer block">
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent"><a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a>, <a href="../io/multiple/SequenceMultipleReadable.html" class="extype" name="com.eharmony.aloha.io.multiple.SequenceMultipleReadable">SequenceMultipleReadable</a>[<a href="../io/sources/ReadableSource.html" class="extype" name="com.eharmony.aloha.io.sources.ReadableSource">ReadableSource</a>, <span class="extype" name="scala.util.Try">Try</span>, <a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]], <a href="../io/multiple/MultipleAlohaReadable.html" class="extype" name="com.eharmony.aloha.io.multiple.MultipleAlohaReadable">MultipleAlohaReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]], <a href="../io/multiple/MultipleReadable.html" class="extype" name="com.eharmony.aloha.io.multiple.MultipleReadable">MultipleReadable</a>[<a href="../io/sources/ReadableSource.html" class="extype" name="com.eharmony.aloha.io.sources.ReadableSource">ReadableSource</a>, <span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]], <a href="../io/LocationLoggingReadable.html" class="extype" name="com.eharmony.aloha.io.LocationLoggingReadable">LocationLoggingReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]], <a href="../io/GZippedReadable.html" class="extype" name="com.eharmony.aloha.io.GZippedReadable">GZippedReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]], <a href="../io/ReadableByString.html" class="extype" name="com.eharmony.aloha.io.ReadableByString">ReadableByString</a>[<span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]], <a href="../io/FileReadableByInputStream.html" class="extype" name="com.eharmony.aloha.io.FileReadableByInputStream">FileReadableByInputStream</a>[<span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]], <a href="../io/AlohaReadable.html" class="extype" name="com.eharmony.aloha.io.AlohaReadable">AlohaReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]], <a href="../io/NonFileReadable.html" class="extype" name="com.eharmony.aloha.io.NonFileReadable">NonFileReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]], <a href="../io/FileReadable.html" class="extype" name="com.eharmony.aloha.io.FileReadable">FileReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]], <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+        </div><div class="toggleContainer block">
+            <span class="toggle">Known Subclasses</span>
+            <div class="subClasses hiddenContent"><a href="ModelFactoryImpl.html" class="extype" name="com.eharmony.aloha.factory.ModelFactoryImpl">ModelFactoryImpl</a></div>
+          </div></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        <div id="order">
+              <span class="filtertype">Ordering</span>
+              <ol>
+                
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By Inheritance</span></li>
+              </ol>
+            </div>
+        <div id="ancestors">
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="com.eharmony.aloha.factory.ModelFactory"><span>ModelFactory</span></li><li class="in" name="com.eharmony.aloha.util.Logging"><span>Logging</span></li><li class="in" name="com.eharmony.aloha.io.multiple.SequenceMultipleReadable"><span>SequenceMultipleReadable</span></li><li class="in" name="com.eharmony.aloha.io.multiple.MultipleAlohaReadable"><span>MultipleAlohaReadable</span></li><li class="in" name="com.eharmony.aloha.io.multiple.MultipleReadable"><span>MultipleReadable</span></li><li class="in" name="com.eharmony.aloha.io.LocationLoggingReadable"><span>LocationLoggingReadable</span></li><li class="in" name="com.eharmony.aloha.io.GZippedReadable"><span>GZippedReadable</span></li><li class="in" name="com.eharmony.aloha.io.ReadableByString"><span>ReadableByString</span></li><li class="in" name="com.eharmony.aloha.io.FileReadableByInputStream"><span>FileReadableByInputStream</span></li><li class="in" name="com.eharmony.aloha.io.AlohaReadable"><span>AlohaReadable</span></li><li class="in" name="com.eharmony.aloha.io.NonFileReadable"><span>NonFileReadable</span></li><li class="in" name="com.eharmony.aloha.io.FileReadable"><span>FileReadable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show All</span></li>
+            </ol>
+          </div>
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        
+
+        <div id="values" class="values members">
+              <h3>Abstract Value Members</h3>
+              <ol><li name="com.eharmony.aloha.io.NonFileReadable#fromString" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="fromString(s:String):A"></a>
+      <a id="fromString(String):Try[Model[A,B]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromString</span><span class="params">(<span name="s">s: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@fromString(s:String):A" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Read from a String.</p><div class="fullcomment"><div class="comment cmt"><p>Read from a String.</p></div><dl class="paramcmts block"><dt class="param">s</dt><dd class="cmt"><p>a String to read.</p></dd><dt>returns</dt><dd class="cmt"><p>the result</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/NonFileReadable.html" class="extype" name="com.eharmony.aloha.io.NonFileReadable">NonFileReadable</a></dd></dl></div>
+    </li></ol>
+            </div>
+
+        <div id="values" class="values members">
+              <h3>Concrete Value Members</h3>
+              <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="!=(x$1:Any):Boolean"></a>
+      <a id="!=(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@!=(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="##():Int"></a>
+      <a id="##():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@##():Int" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="==(x$1:Any):Boolean"></a>
+      <a id="==(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@==(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asInstanceOf[T0]:T0"></a>
+      <a id="asInstanceOf[T0]:T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@asInstanceOf[T0]:T0" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="clone():Object"></a>
+      <a id="clone():AnyRef"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@clone():Object" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#debug" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="debug(msg:=&gt;Any,t:=&gt;Throwable):Unit"></a>
+      <a id="debug(⇒Any,⇒Throwable):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">debug</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>, <span name="t">t: ⇒ <a href="../../../../scala/package.html#Throwable=Throwable" class="extmbr" name="scala.Throwable">Throwable</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@debug(msg:=&gt;Any,t:=&gt;Throwable):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a debug logging message, with an exception.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a debug logging message, with an exception.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd><dt class="param">t</dt><dd class="cmt"><p>the exception to include with the logged message.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#debug" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="debug(msg:=&gt;Any):Unit"></a>
+      <a id="debug(⇒Any):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">debug</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@debug(msg:=&gt;Any):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a debug logging message.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a debug logging message.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="eq(x$1:AnyRef):Boolean"></a>
+      <a id="eq(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(x$1:Any):Boolean"></a>
+      <a id="equals(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@equals(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#error" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="error(msg:=&gt;Any,t:=&gt;Throwable):Unit"></a>
+      <a id="error(⇒Any,⇒Throwable):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">error</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>, <span name="t">t: ⇒ <a href="../../../../scala/package.html#Throwable=Throwable" class="extmbr" name="scala.Throwable">Throwable</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@error(msg:=&gt;Any,t:=&gt;Throwable):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a error logging message, with an exception.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a error logging message, with an exception.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd><dt class="param">t</dt><dd class="cmt"><p>the exception to include with the logged message.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#error" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="error(msg:=&gt;Any):Unit"></a>
+      <a id="error(⇒Any):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">error</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@error(msg:=&gt;Any):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a error logging message.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a error logging message.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="finalize():Unit"></a>
+      <a id="finalize():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@finalize():Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.io.FileReadableByInputStream#fromClasspathResource" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="fromClasspathResource(r:String):A"></a>
+      <a id="fromClasspathResource(String):Try[Model[A,B]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromClasspathResource</span><span class="params">(<span name="r">r: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@fromClasspathResource(r:String):A" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Read from a classpath resource.</p><div class="fullcomment"><div class="comment cmt"><p>Read from a classpath resource.  This uses fromVfs2 under the hood.</p></div><dl class="paramcmts block"><dt class="param">r</dt><dd class="cmt"><p>a classpath resource path.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/FileReadableByInputStream.html" class="extype" name="com.eharmony.aloha.io.FileReadableByInputStream">FileReadableByInputStream</a> → <a href="../io/FileReadable.html" class="extype" name="com.eharmony.aloha.io.FileReadable">FileReadable</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.io.LocationLoggingReadable#fromFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="fromFile(f:java.io.File):A"></a>
+      <a id="fromFile(File):Try[Model[A,B]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromFile</span><span class="params">(<span name="f">f: <span class="extype" name="java.io.File">File</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@fromFile(f:java.io.File):A" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Read from a file.</p><div class="fullcomment"><div class="comment cmt"><p>Read from a file.  Logs the file.
+</p></div><dl class="paramcmts block"><dt class="param">f</dt><dd class="cmt"><p>a file to read.  The file's InputStream is automatically closed.</p></dd><dt>returns</dt><dd class="cmt"><p>the result</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/LocationLoggingReadable.html" class="extype" name="com.eharmony.aloha.io.LocationLoggingReadable">LocationLoggingReadable</a> → <a href="../io/FileReadableByInputStream.html" class="extype" name="com.eharmony.aloha.io.FileReadableByInputStream">FileReadableByInputStream</a> → <a href="../io/FileReadable.html" class="extype" name="com.eharmony.aloha.io.FileReadable">FileReadable</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.io.ReadableByString#fromInputStream" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="fromInputStream(is:java.io.InputStream):A"></a>
+      <a id="fromInputStream(InputStream):Try[Model[A,B]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromInputStream</span><span class="params">(<span name="is">is: <span class="extype" name="java.io.InputStream">InputStream</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@fromInputStream(is:java.io.InputStream):A" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Read from an InputStream.</p><div class="fullcomment"><div class="comment cmt"><p>Read from an InputStream.</p></div><dl class="paramcmts block"><dt class="param">is</dt><dd class="cmt"><p>an InputStream to read.  The InputStream is automatically closed.</p></dd><dt>returns</dt><dd class="cmt"><p>the result</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/ReadableByString.html" class="extype" name="com.eharmony.aloha.io.ReadableByString">ReadableByString</a> → <a href="../io/FileReadableByInputStream.html" class="extype" name="com.eharmony.aloha.io.FileReadableByInputStream">FileReadableByInputStream</a> → <a href="../io/NonFileReadable.html" class="extype" name="com.eharmony.aloha.io.NonFileReadable">NonFileReadable</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.io.multiple.MultipleReadable#fromMultipleSources" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="fromMultipleSources[F[_]](readableTypes:F[A])(implicitf:scalaz.Functor[F]):F[B]"></a>
+      <a id="fromMultipleSources[F[_]](F[ReadableSource])(Functor[F]):F[Try[Model[A,B]]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromMultipleSources</span><span class="tparams">[<span name="F">F<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="params">(<span name="readableTypes">readableTypes: <span class="extype" name="com.eharmony.aloha.io.multiple.MultipleReadable.fromMultipleSources.F">F</span>[<a href="../io/sources/ReadableSource.html" class="extype" name="com.eharmony.aloha.io.sources.ReadableSource">ReadableSource</a>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="f">f: <span class="extype" name="scalaz.Functor">Functor</span>[<span class="extype" name="com.eharmony.aloha.io.multiple.MultipleReadable.fromMultipleSources.F">F</span>]</span>)</span><span class="result">: <span class="extype" name="com.eharmony.aloha.io.multiple.MultipleReadable.fromMultipleSources.F">F</span>[<span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@fromMultipleSources[F[_]](readableTypes:F[A])(implicitf:scalaz.Functor[F]):F[B]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Parse a bunch of readable sources given a Functor (see <a href="http://thedet.wordpress.com/2012/04/28/functors-monads-applicatives-can-be-so-simple/" target="_blank">Functors, Monads, Applicatives – can be so simple</a>).</p><div class="fullcomment"><div class="comment cmt"><p>Parse a bunch of readable sources given a Functor (see <a href="http://thedet.wordpress.com/2012/04/28/functors-monads-applicatives-can-be-so-simple/" target="_blank">Functors, Monads, Applicatives – can be so simple</a>).</p></div><dl class="paramcmts block"><dt class="tparam">F</dt><dd class="cmt"><p>the functor type</p></dd><dt class="param">readableTypes</dt><dd class="cmt"><p>a container of instances to convert into type the output type</p></dd><dt class="param">f</dt><dd class="cmt"><p>a function instance</p></dd><dt>returns</dt><dd class="cmt"><p>a container <i>F</i> of the output type <i>B</i></p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/multiple/MultipleReadable.html" class="extype" name="com.eharmony.aloha.io.multiple.MultipleReadable">MultipleReadable</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.io.multiple.MultipleReadable#fromMultipleSources" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="fromMultipleSources(readableTypes:java.util.Collection[A]):java.util.Collection[B]"></a>
+      <a id="fromMultipleSources(Collection[ReadableSource]):Collection[Try[Model[A,B]]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromMultipleSources</span><span class="params">(<span name="readableTypes">readableTypes: <span class="extype" name="java.util.Collection">Collection</span>[<a href="../io/sources/ReadableSource.html" class="extype" name="com.eharmony.aloha.io.sources.ReadableSource">ReadableSource</a>]</span>)</span><span class="result">: <span class="extype" name="java.util.Collection">Collection</span>[<span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@fromMultipleSources(readableTypes:java.util.Collection[A]):java.util.Collection[B]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Parse a bunch of readable sources from a java collection and return the results.</p><div class="fullcomment"><div class="comment cmt"><p>Parse a bunch of readable sources from a java collection and return the results.</p></div><dl class="paramcmts block"><dt class="param">readableTypes</dt><dd class="cmt"><p>a collection of sources from which</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/multiple/MultipleReadable.html" class="extype" name="com.eharmony.aloha.io.multiple.MultipleReadable">MultipleReadable</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.io.multiple.MultipleReadable#fromMultipleSources" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="fromMultipleSources(readableTypes:List[A]):List[B]"></a>
+      <a id="fromMultipleSources(List[ReadableSource]):List[Try[Model[A,B]]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromMultipleSources</span><span class="params">(<span name="readableTypes">readableTypes: <a href="../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<a href="../io/sources/ReadableSource.html" class="extype" name="com.eharmony.aloha.io.sources.ReadableSource">ReadableSource</a>]</span>)</span><span class="result">: <a href="../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@fromMultipleSources(readableTypes:List[A]):List[B]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Parse a list of readable sources and return the results.</p><div class="fullcomment"><div class="comment cmt"><p>Parse a list of readable sources and return the results.</p></div><dl class="paramcmts block"><dt class="param">readableTypes</dt><dd class="cmt"><p>a list of readable sources containing the necessary information to parse the resource and
+                     produce the proper outputs.</p></dd><dt>returns</dt><dd class="cmt"><p>a list of objects produced by parsing the resources in the readable types.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/multiple/MultipleReadable.html" class="extype" name="com.eharmony.aloha.io.multiple.MultipleReadable">MultipleReadable</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.io.ReadableByString#fromReader" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="fromReader(r:java.io.Reader):A"></a>
+      <a id="fromReader(Reader):Try[Model[A,B]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromReader</span><span class="params">(<span name="r">r: <span class="extype" name="java.io.Reader">Reader</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@fromReader(r:java.io.Reader):A" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Read from a Reader.</p><div class="fullcomment"><div class="comment cmt"><p>Read from a Reader.  Whoever extends this trait is responsible for closing the Reader.</p></div><dl class="paramcmts block"><dt class="param">r</dt><dd class="cmt"><p>a Reader containing data to be read.</p></dd><dt>returns</dt><dd class="cmt"><p>the result</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/ReadableByString.html" class="extype" name="com.eharmony.aloha.io.ReadableByString">ReadableByString</a> → <a href="../io/NonFileReadable.html" class="extype" name="com.eharmony.aloha.io.NonFileReadable">NonFileReadable</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.io.FileReadableByInputStream#fromResource" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="fromResource(r:String):A"></a>
+      <a id="fromResource(String):Try[Model[A,B]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromResource</span><span class="params">(<span name="r">r: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@fromResource(r:String):A" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Read from a resource.</p><div class="fullcomment"><div class="comment cmt"><p>Read from a resource.  This uses fromVfs2 under the hood.</p></div><dl class="paramcmts block"><dt class="param">r</dt><dd class="cmt"><p>a resource path.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/FileReadableByInputStream.html" class="extype" name="com.eharmony.aloha.io.FileReadableByInputStream">FileReadableByInputStream</a> → <a href="../io/FileReadable.html" class="extype" name="com.eharmony.aloha.io.FileReadable">FileReadable</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.io.multiple.SequenceMultipleReadable#fromSequencedMultipleSources" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="fromSequencedMultipleSources[T[_]](readableTypes:T[A])(implicitt:scalaz.Traverse[T],implicitap:scalaz.Applicative[APP]):APP[T[B]]"></a>
+      <a id="fromSequencedMultipleSources[T[_]](T[ReadableSource])(Traverse[T],Applicative[Try]):Try[T[Model[A,B]]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromSequencedMultipleSources</span><span class="tparams">[<span name="T">T<span class="tparams">[<span name="_">_</span>]</span></span>]</span><span class="params">(<span name="readableTypes">readableTypes: <span class="extype" name="com.eharmony.aloha.io.multiple.SequenceMultipleReadable.fromSequencedMultipleSources.T">T</span>[<a href="../io/sources/ReadableSource.html" class="extype" name="com.eharmony.aloha.io.sources.ReadableSource">ReadableSource</a>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="t">t: <span class="extype" name="scalaz.Traverse">Traverse</span>[<span class="extype" name="com.eharmony.aloha.io.multiple.SequenceMultipleReadable.fromSequencedMultipleSources.T">T</span>]</span>, <span name="ap">ap: <span class="extype" name="scalaz.Applicative">Applicative</span>[<span class="extype" name="scala.util.Try">Try</span>]</span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.io.multiple.SequenceMultipleReadable.fromSequencedMultipleSources.T">T</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@fromSequencedMultipleSources[T[_]](readableTypes:T[A])(implicitt:scalaz.Traverse[T],implicitap:scalaz.Applicative[APP]):APP[T[B]]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Produce multiple outputs from multiple inputs and sequence the data so that we commute that container types.</p><div class="fullcomment"><div class="comment cmt"><p>Produce multiple outputs from multiple inputs and sequence the data so that we commute that container types.
+For an example, see that trait documentation.</p></div><dl class="paramcmts block"><dt class="tparam">T</dt><dd class="cmt"><p>the Traverse container type</p></dd><dt class="param">readableTypes</dt><dd class="cmt"><p>A container of readable sources to convert to outputs.</p></dd><dt class="param">t</dt><dd class="cmt"><p>a Traverse type class instance</p></dd><dt class="param">ap</dt><dd class="cmt"><p>an applicative function type class instance</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/multiple/SequenceMultipleReadable.html" class="extype" name="com.eharmony.aloha.io.multiple.SequenceMultipleReadable">SequenceMultipleReadable</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.io.LocationLoggingReadable#fromUrl" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="fromUrl(u:java.net.URL):A"></a>
+      <a id="fromUrl(URL):Try[Model[A,B]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromUrl</span><span class="params">(<span name="u">u: <span class="extype" name="java.net.URL">URL</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@fromUrl(u:java.net.URL):A" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Read from a URL.</p><div class="fullcomment"><div class="comment cmt"><p>Read from a URL.  Logs the URL.
+</p></div><dl class="paramcmts block"><dt class="param">u</dt><dd class="cmt"><p>a URL to read.  The URL's InputStream is automatically closed.</p></dd><dt>returns</dt><dd class="cmt"><p>the result</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/LocationLoggingReadable.html" class="extype" name="com.eharmony.aloha.io.LocationLoggingReadable">LocationLoggingReadable</a> → <a href="../io/FileReadableByInputStream.html" class="extype" name="com.eharmony.aloha.io.FileReadableByInputStream">FileReadableByInputStream</a> → <a href="../io/FileReadable.html" class="extype" name="com.eharmony.aloha.io.FileReadable">FileReadable</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.io.LocationLoggingReadable#fromVfs1" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="fromVfs1(foVfs1:org.apache.commons.vfs.FileObject):A"></a>
+      <a id="fromVfs1(FileObject):Try[Model[A,B]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromVfs1</span><span class="params">(<span name="foVfs1">foVfs1: <span class="extype" name="org.apache.commons.vfs.FileObject">FileObject</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@fromVfs1(foVfs1:org.apache.commons.vfs.FileObject):A" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Read from an Apache VFS v1 FileObject.</p><div class="fullcomment"><div class="comment cmt"><p>Read from an Apache VFS v1 FileObject.  Logs the file object location.
+</p></div><dl class="paramcmts block"><dt class="param">foVfs1</dt><dd class="cmt"><p>an Apache VFS v1 FileObject to read.  The FileObject's InputStream is automatically closed.</p></dd><dt>returns</dt><dd class="cmt"><p>the result</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/LocationLoggingReadable.html" class="extype" name="com.eharmony.aloha.io.LocationLoggingReadable">LocationLoggingReadable</a> → <a href="../io/FileReadableByInputStream.html" class="extype" name="com.eharmony.aloha.io.FileReadableByInputStream">FileReadableByInputStream</a> → <a href="../io/FileReadable.html" class="extype" name="com.eharmony.aloha.io.FileReadable">FileReadable</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.io.LocationLoggingReadable#fromVfs2" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="fromVfs2(foVfs2:org.apache.commons.vfs2.FileObject):A"></a>
+      <a id="fromVfs2(FileObject):Try[Model[A,B]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromVfs2</span><span class="params">(<span name="foVfs2">foVfs2: <span class="extype" name="org.apache.commons.vfs2.FileObject">FileObject</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@fromVfs2(foVfs2:org.apache.commons.vfs2.FileObject):A" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Read from an Apache VFS v1 FileObject.</p><div class="fullcomment"><div class="comment cmt"><p>Read from an Apache VFS v1 FileObject.  Logs the file object location.
+</p></div><dl class="paramcmts block"><dt class="param">foVfs2</dt><dd class="cmt"><p>an Apache VFS v1 FileObject to read.  The FileObject's InputStream is automatically closed.</p></dd><dt>returns</dt><dd class="cmt"><p>the result</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/LocationLoggingReadable.html" class="extype" name="com.eharmony.aloha.io.LocationLoggingReadable">LocationLoggingReadable</a> → <a href="../io/FileReadableByInputStream.html" class="extype" name="com.eharmony.aloha.io.FileReadableByInputStream">FileReadableByInputStream</a> → <a href="../io/FileReadable.html" class="extype" name="com.eharmony.aloha.io.FileReadable">FileReadable</a></dd></dl></div>
+    </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getClass():Class[_]"></a>
+      <a id="getClass():Class[_]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@getClass():Class[_]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.io.GZippedReadable#gz" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="gz:com.eharmony.aloha.io.FileReadableByInputStream[A]withcom.eharmony.aloha.io.multiple.MultipleFileReadable[A]"></a>
+      <a id="gz:FileReadableByInputStream[Try[Model[A,B]]]withMultipleFileReadable[Try[Model[A,B]]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">gz</span><span class="result">: <a href="../io/FileReadableByInputStream.html" class="extype" name="com.eharmony.aloha.io.FileReadableByInputStream">FileReadableByInputStream</a>[<span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]] with <a href="../io/multiple/MultipleFileReadable.html" class="extype" name="com.eharmony.aloha.io.multiple.MultipleFileReadable">MultipleFileReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@gz:com.eharmony.aloha.io.FileReadableByInputStream[A]withcom.eharmony.aloha.io.multiple.MultipleFileReadable[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/GZippedReadable.html" class="extype" name="com.eharmony.aloha.io.GZippedReadable">GZippedReadable</a></dd></dl></div>
+    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode():Int"></a>
+      <a id="hashCode():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@hashCode():Int" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#info" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="info(msg:=&gt;Any,t:=&gt;Throwable):Unit"></a>
+      <a id="info(⇒Any,⇒Throwable):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">info</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>, <span name="t">t: ⇒ <a href="../../../../scala/package.html#Throwable=Throwable" class="extmbr" name="scala.Throwable">Throwable</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@info(msg:=&gt;Any,t:=&gt;Throwable):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a info logging message, with an exception.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a info logging message, with an exception.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd><dt class="param">t</dt><dd class="cmt"><p>the exception to include with the logged message.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#info" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="info(msg:=&gt;Any):Unit"></a>
+      <a id="info(⇒Any):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">info</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@info(msg:=&gt;Any):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a info logging message.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a info logging message.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.io.ReadableByString#inputCharset" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="inputCharset:String"></a>
+      <a id="inputCharset:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">inputCharset</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@inputCharset:String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">The character set that is used to decode the input streams in fromInputStream in the derived classes.</p><div class="fullcomment"><div class="comment cmt"><p>The character set that is used to decode the input streams in fromInputStream in the derived classes.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../io/ReadableByString.html" class="extype" name="com.eharmony.aloha.io.ReadableByString">ReadableByString</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#isDebugEnabled" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isDebugEnabled:Boolean"></a>
+      <a id="isDebugEnabled:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isDebugEnabled</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@isDebugEnabled:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Determine whether debug logging is enabled.</p><div class="fullcomment"><div class="comment cmt"><p>Determine whether debug logging is enabled.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#isErrorEnabled" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isErrorEnabled:Boolean"></a>
+      <a id="isErrorEnabled:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isErrorEnabled</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@isErrorEnabled:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Determine whether error logging is enabled.</p><div class="fullcomment"><div class="comment cmt"><p>Determine whether error logging is enabled.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#isInfoEnabled" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isInfoEnabled:Boolean"></a>
+      <a id="isInfoEnabled:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isInfoEnabled</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@isInfoEnabled:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Determine whether info logging is enabled.</p><div class="fullcomment"><div class="comment cmt"><p>Determine whether info logging is enabled.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#isTraceEnabled" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isTraceEnabled:Boolean"></a>
+      <a id="isTraceEnabled:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isTraceEnabled</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@isTraceEnabled:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Determine whether trace logging is enabled.</p><div class="fullcomment"><div class="comment cmt"><p>Determine whether trace logging is enabled.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#isWarnEnabled" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isWarnEnabled:Boolean"></a>
+      <a id="isWarnEnabled:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isWarnEnabled</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@isWarnEnabled:Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Determine whether warn logging is enabled.</p><div class="fullcomment"><div class="comment cmt"><p>Determine whether warn logging is enabled.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#logger" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="logger:org.slf4j.Logger"></a>
+      <a id="logger:Logger"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">logger</span><span class="result">: <span class="extype" name="org.slf4j.Logger">Logger</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@logger:org.slf4j.Logger" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">The logger is a <code>@transient lazy val</code> to enable proper working with Spark.</p><div class="fullcomment"><div class="comment cmt"><p>The logger is a <code>@transient lazy val</code> to enable proper working with Spark.
+The logger will not be serialized with the rest of the class with which this
+trait is mixed-in.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#loggerInitName" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="loggerInitName():String"></a>
+      <a id="loggerInitName():String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">loggerInitName</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@loggerInitName():String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">The name with which the logger is initialized.</p><div class="fullcomment"><div class="comment cmt"><p>The name with which the logger is initialized.  This can be overridden in a derived class.</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#loggerName" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="loggerName:String"></a>
+      <a id="loggerName:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">loggerName</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@loggerName:String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Get the name associated with this logger.</p><div class="fullcomment"><div class="comment cmt"><p>Get the name associated with this logger.
+</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the name.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.io.multiple.MultipleAlohaReadable#mapper" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="mapper:com.eharmony.aloha.io.sources.ReadableSource=&gt;A"></a>
+      <a id="mapper:(ReadableSource)⇒Try[Model[A,B]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mapper</span><span class="result">: (<a href="../io/sources/ReadableSource.html" class="extype" name="com.eharmony.aloha.io.sources.ReadableSource">ReadableSource</a>) ⇒ <span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@mapper:com.eharmony.aloha.io.sources.ReadableSource=&gt;A" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A function that maps from the Readable type to the output type.</p><div class="fullcomment"><div class="comment cmt"><p>A function that maps from the Readable type to the output type.</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a function.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../io/multiple/MultipleAlohaReadable.html" class="extype" name="com.eharmony.aloha.io.multiple.MultipleAlohaReadable">MultipleAlohaReadable</a> → <a href="../io/multiple/MultipleReadable.html" class="extype" name="com.eharmony.aloha.io.multiple.MultipleReadable">MultipleReadable</a></dd></dl></div>
+    </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ne(x$1:AnyRef):Boolean"></a>
+      <a id="ne(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notify():Unit"></a>
+      <a id="notify():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@notify():Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#notifyAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notifyAll():Unit"></a>
+      <a id="notifyAll():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@notifyAll():Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
+      <a id="synchronized[T0](⇒T0):T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toString():String"></a>
+      <a id="toString():String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@toString():String" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#trace" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="trace(msg:=&gt;Any,t:=&gt;Throwable):Unit"></a>
+      <a id="trace(⇒Any,⇒Throwable):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">trace</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>, <span name="t">t: ⇒ <a href="../../../../scala/package.html#Throwable=Throwable" class="extmbr" name="scala.Throwable">Throwable</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@trace(msg:=&gt;Any,t:=&gt;Throwable):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a trace logging message, with an exception.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a trace logging message, with an exception.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd><dt class="param">t</dt><dd class="cmt"><p>the exception to include with the logged message.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#trace" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="trace(msg:=&gt;Any):Unit"></a>
+      <a id="trace(⇒Any):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">trace</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@trace(msg:=&gt;Any):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a trace logging message.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a trace logging message.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait():Unit"></a>
+      <a id="wait():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@wait():Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long,x$2:Int):Unit"></a>
+      <a id="wait(Long,Int):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long):Unit"></a>
+      <a id="wait(Long):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@wait(x$1:Long):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#warn" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="warn(msg:=&gt;Any,t:=&gt;Throwable):Unit"></a>
+      <a id="warn(⇒Any,⇒Throwable):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">warn</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>, <span name="t">t: ⇒ <a href="../../../../scala/package.html#Throwable=Throwable" class="extmbr" name="scala.Throwable">Throwable</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@warn(msg:=&gt;Any,t:=&gt;Throwable):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a warn logging message, with an exception.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a warn logging message, with an exception.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd><dt class="param">t</dt><dd class="cmt"><p>the exception to include with the logged message.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#warn" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="warn(msg:=&gt;Any):Unit"></a>
+      <a id="warn(⇒Any):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">warn</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory@warn(msg:=&gt;Any):Unit" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a warn logging message.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a warn logging message.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        <div class="parent" name="com.eharmony.aloha.util.Logging">
+              <h3>Inherited from <a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></h3>
+            </div><div class="parent" name="com.eharmony.aloha.io.multiple.SequenceMultipleReadable">
+              <h3>Inherited from <a href="../io/multiple/SequenceMultipleReadable.html" class="extype" name="com.eharmony.aloha.io.multiple.SequenceMultipleReadable">SequenceMultipleReadable</a>[<a href="../io/sources/ReadableSource.html" class="extype" name="com.eharmony.aloha.io.sources.ReadableSource">ReadableSource</a>, <span class="extype" name="scala.util.Try">Try</span>, <a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]</h3>
+            </div><div class="parent" name="com.eharmony.aloha.io.multiple.MultipleAlohaReadable">
+              <h3>Inherited from <a href="../io/multiple/MultipleAlohaReadable.html" class="extype" name="com.eharmony.aloha.io.multiple.MultipleAlohaReadable">MultipleAlohaReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]]</h3>
+            </div><div class="parent" name="com.eharmony.aloha.io.multiple.MultipleReadable">
+              <h3>Inherited from <a href="../io/multiple/MultipleReadable.html" class="extype" name="com.eharmony.aloha.io.multiple.MultipleReadable">MultipleReadable</a>[<a href="../io/sources/ReadableSource.html" class="extype" name="com.eharmony.aloha.io.sources.ReadableSource">ReadableSource</a>, <span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]]</h3>
+            </div><div class="parent" name="com.eharmony.aloha.io.LocationLoggingReadable">
+              <h3>Inherited from <a href="../io/LocationLoggingReadable.html" class="extype" name="com.eharmony.aloha.io.LocationLoggingReadable">LocationLoggingReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]]</h3>
+            </div><div class="parent" name="com.eharmony.aloha.io.GZippedReadable">
+              <h3>Inherited from <a href="../io/GZippedReadable.html" class="extype" name="com.eharmony.aloha.io.GZippedReadable">GZippedReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]]</h3>
+            </div><div class="parent" name="com.eharmony.aloha.io.ReadableByString">
+              <h3>Inherited from <a href="../io/ReadableByString.html" class="extype" name="com.eharmony.aloha.io.ReadableByString">ReadableByString</a>[<span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]]</h3>
+            </div><div class="parent" name="com.eharmony.aloha.io.FileReadableByInputStream">
+              <h3>Inherited from <a href="../io/FileReadableByInputStream.html" class="extype" name="com.eharmony.aloha.io.FileReadableByInputStream">FileReadableByInputStream</a>[<span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]]</h3>
+            </div><div class="parent" name="com.eharmony.aloha.io.AlohaReadable">
+              <h3>Inherited from <a href="../io/AlohaReadable.html" class="extype" name="com.eharmony.aloha.io.AlohaReadable">AlohaReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]]</h3>
+            </div><div class="parent" name="com.eharmony.aloha.io.NonFileReadable">
+              <h3>Inherited from <a href="../io/NonFileReadable.html" class="extype" name="com.eharmony.aloha.io.NonFileReadable">NonFileReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]]</h3>
+            </div><div class="parent" name="com.eharmony.aloha.io.FileReadable">
+              <h3>Inherited from <a href="../io/FileReadable.html" class="extype" name="com.eharmony.aloha.io.FileReadable">FileReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<a href="../models/Model.html" class="extype" name="com.eharmony.aloha.models.Model">Model</a>[<span class="extype" name="com.eharmony.aloha.factory.ModelFactory.A">A</span>, <span class="extype" name="com.eharmony.aloha.factory.ModelFactory.B">B</span>]]]</h3>
+            </div><div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+            </div>
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>

@@ -1,0 +1,359 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>compiled - com.eharmony.aloha.semantics.compiled</title>
+          <meta name="description" content="compiled - com.eharmony.aloha.semantics.compiled" />
+          <meta name="keywords" content="compiled com.eharmony.aloha.semantics.compiled" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../../index.html';
+            var hash = 'com.eharmony.aloha.semantics.compiled.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img alt="Package" src="../../../../../lib/package_big.png" />
+        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.eharmony">eharmony</a>.<a href="../../package.html" class="extype" name="com.eharmony.aloha">aloha</a>.<a href="../package.html" class="extype" name="com.eharmony.aloha.semantics">semantics</a></p>
+        <h1>compiled</h1><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.semantics.compiled.package" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">compiled</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="com.eharmony.aloha.semantics.compiled.CompiledSemantics" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="CompiledSemantics[A]extendsCompiledSemanticsLike[A]withMorphableSemantics[com.eharmony.aloha.semantics.compiled.CompiledSemantics,A]withErrorEnrichingSemantics[A]withLoggingwithProductwithSerializable"></a>
+      <a id="CompiledSemantics[A]:CompiledSemantics[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="CompiledSemantics.html"><span class="name">CompiledSemantics</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="compiler">compiler: <a href="../../io/ContainerReadable.html" class="extype" name="com.eharmony.aloha.io.ContainerReadable">ContainerReadable</a>[<span class="extype" name="scala.util.Try">Try</span>]</span>, <span name="plugin">plugin: <a href="CompiledSemanticsPlugin.html" class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemanticsPlugin">CompiledSemanticsPlugin</a>[<span class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemantics.A">A</span>]</span>, <span name="imports">imports: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="provideSemanticsUdfException">provideSemanticsUdfException: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ec">ec: <span class="extype" name="scala.concurrent.ExecutionContext">ExecutionContext</span></span>)</span><span class="result"> extends <a href="CompiledSemanticsLike.html" class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemanticsLike">CompiledSemanticsLike</a>[<span class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemantics.A">A</span>] with <a href="../MorphableSemantics.html" class="extype" name="com.eharmony.aloha.semantics.MorphableSemantics">MorphableSemantics</a>[<a href="CompiledSemantics.html" class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemantics">CompiledSemantics</a>, <span class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemantics.A">A</span>] with <a href="../ErrorEnrichingSemantics.html" class="extype" name="com.eharmony.aloha.semantics.ErrorEnrichingSemantics">ErrorEnrichingSemantics</a>[<span class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemantics.A">A</span>] with <a href="../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.semantics.compiled.package@CompiledSemantics[A]extendsCompiledSemanticsLike[A]withMorphableSemantics[com.eharmony.aloha.semantics.compiled.CompiledSemantics,A]withErrorEnrichingSemantics[A]withLoggingwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A semantics that can interpret complicated expressions by compiling the expressions.</p><div class="fullcomment"><div class="comment cmt"><p>A semantics that can interpret complicated expressions by compiling the expressions.  This semantics constructs
+actual working scala code (see the format below).</p><p>Notice from the code that is constructed that it calls a function
+in <a href="../func/GenFunc$.html" class="extype" name="com.eharmony.aloha.semantics.func.GenFunc">com.eharmony.aloha.semantics.func.GenFunc</a>.  The function that is called is based on the input arity.
+Aside from the f0 function, f<sub>i</sub> has <i>i</i> arguments in the first argument list and two arguments in the second
+argument list.  The first argument list represents the definition of the accessor functions.  These are the
+functions created to extract data from the domain object.
+<a href="CompiledSemanticsPlugin.html" class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemanticsPlugin">com.eharmony.aloha.semantics.compiled.CompiledSemanticsPlugin</a> objects are responsible for constructing
+the function bodies.  For instance, <code>(_:Map[String, Long]).get(&quot;user.match.TaxBrackets&quot;)</code> in the first example.  The
+CompiledSemantics class is responsible for wrapping this code appropriately, constructing the aggregation function
+and finally putting everything together and compiling it.</p><h3> Examples </h3><p><b>E.g. 1</b>:  Two variables are both optional (not necessarily in the input type passed to the model):
+- user.match.TaxBrackets
+- cand.taxBracket</p><pre><span class="kw">val</span> spec1 = <span class="lit">"Seq(${user.match.TaxBrackets}) contains ${cand.taxBracket}"</span>
+<span class="kw">val</span> f1 = s.createFunction[<span class="std">Boolean</span>](spec1, <span class="std">Some</span>(<span class="kw">false</span>)).right.get
+
+<span class="cmt">// Equivalent to:</span>
+<span class="cmt">//    val f1a =</span>
+<span class="cmt">//      com.eharmony.aloha.semantics.compiled.GenFunc.f2(           // f2 b/c 2 variables.</span>
+<span class="cmt">//        com.eharmony.aloha.semantics.compiled.GeneratedAccessor(  // Optional Accessor:</span>
+<span class="cmt">//          "user.match.TaxBrackets",</span>
+<span class="cmt">//          (_:Map[String, Long]).get("user.match.TaxBrackets"),             // <-- get produces Option[Long]</span>
+<span class="cmt">//          Some("(_:Map[String, Long]).get(\"user.match.TaxBrackets\")")),</span>
+<span class="cmt">//        com.eharmony.aloha.semantics.compiled.GeneratedAccessor(  // Optional Accessor:</span>
+<span class="cmt">//          "cand.taxBracket",</span>
+<span class="cmt">//          (_:Map[String, Long]).get("cand.taxBracket"),                    // <-- get produces Option[Long]</span>
+<span class="cmt">//          Some("(_:Map[String, Long]).get(\"cand.taxBracket\")"))</span>
+<span class="cmt">//      )(</span>
+<span class="cmt">//        "Seq(${user.match.TaxBrackets}) contains ${cand.taxBracket}",</span>
+<span class="cmt">//        (o0, o1) => for {</span>
+<span class="cmt">//          _user__match__TaxBrackets <- o0                                  // Optional fields in for comprehension</span>
+<span class="cmt">//          _cand__taxBracket <- o1</span>
+<span class="cmt">//        } yield {</span>
+<span class="cmt">//          Seq(_user__match__TaxBrackets) contains _cand__taxBracket        // Transformed function spec</span>
+<span class="cmt">//        }</span>
+<span class="cmt">//      )</span>
+<span class="cmt">//</span>
+<span class="cmt">//    val f1 = com.eharmony.aloha.semantics.compiled.OptionalFunc(f1a, false)</span></pre><p><b>E.g. 2</b>: Two variables (one required, one optional):
+- user.inboundComm (required)
+- user.pageViews   (optional)</p><pre><span class="kw">val</span> spec2 = <span class="lit">"${user.inboundComm} / ${user.pageViews}.toDouble"</span>
+<span class="kw">val</span> f2 = s.createFunction[<span class="std">Double</span>](spec2, <span class="std">Some</span>(<span class="std">Double</span>.NaN)).right.get
+
+<span class="cmt">// Equivalent to:</span>
+<span class="cmt">//    val f2a =</span>
+<span class="cmt">//      com.eharmony.aloha.semantics.compiled.GenFunc.f2(           // f2 b/c 2 variables.</span>
+<span class="cmt">//        com.eharmony.aloha.semantics.compiled.GeneratedAccessor(  // Optional Accessor:</span>
+<span class="cmt">//          "user.pageViews",</span>
+<span class="cmt">//          (_:Map[String, Long]).get("user.pageViews"),                     // <-- get produces Option[Long]</span>
+<span class="cmt">//          Some("(_:Map[String, Long]).get(\"user.pageViews\")")),</span>
+<span class="cmt">//        com.eharmony.aloha.semantics.compiled.GeneratedAccessor(  // Required Accessor:</span>
+<span class="cmt">//          "user.inboundComm",</span>
+<span class="cmt">//          (_:Map[String, Long]).apply("user.inboundComm"),                 // <-- apply produces Long</span>
+<span class="cmt">//          Some("(_:Map[String, Long]).apply(\"user.inboundComm\")"))</span>
+<span class="cmt">//      )(</span>
+<span class="cmt">//        "${user.inboundComm} / ${user.pageViews}.toDouble",</span>
+<span class="cmt">//        (o0, _user__inboundComm) => for {</span>
+<span class="cmt">//          _user__pageViews <- o0                                           // Optional field in for comprehension</span>
+<span class="cmt">//        } yield {</span>
+<span class="cmt">//          _user__inboundComm / _user__pageViews.toDouble                   // Transformed function spec</span>
+<span class="cmt">//        }</span>
+<span class="cmt">//      )</span>
+<span class="cmt">//</span>
+<span class="cmt">//    val f2 = com.eharmony.aloha.semantics.compiled.OptionalFunc(f2a, Double.NaN)</span></pre><p><b>E.g. 3</b>: Three required variables (one, two, three):</p><pre><span class="kw">val</span> spec3 = <span class="lit">"List(${one}, ${two}, ${three}).sum.toInt"</span>
+<span class="kw">val</span> f3 = s.createFunction[<span class="std">Int</span>](spec3).right.get
+
+<span class="cmt">// Equivalent to:</span>
+<span class="cmt">//    val f3 =</span>
+<span class="cmt">//      com.eharmony.aloha.semantics.compiled.GenFunc.f3(           // f3 b/c 3 variables.</span>
+<span class="cmt">//        com.eharmony.aloha.semantics.compiled.GeneratedAccessor(</span>
+<span class="cmt">//          "one",</span>
+<span class="cmt">//          (_:Map[String, Long]).apply("one"),</span>
+<span class="cmt">//          Some("(_:Map[String, Long]).apply(\"one\")")),</span>
+<span class="cmt">//        com.eharmony.aloha.semantics.compiled.GeneratedAccessor(</span>
+<span class="cmt">//          "two",</span>
+<span class="cmt">//          (_:Map[String, Long]).apply("two"),</span>
+<span class="cmt">//          Some("(_:Map[String, Long]).apply(\"two\")")),</span>
+<span class="cmt">//        com.eharmony.aloha.semantics.compiled.GeneratedAccessor(</span>
+<span class="cmt">//          "three",</span>
+<span class="cmt">//          (_:Map[String, Long]).apply("three"),</span>
+<span class="cmt">//          Some("(_:Map[String, Long]).apply(\"three\")"))</span>
+<span class="cmt">//      )(</span>
+<span class="cmt">//        "List(${one}, ${two}, ${three}).sum.toInt",</span>
+<span class="cmt">//        (_one, _two, _three) => {                  // Notice simplified expression when all params are required.</span>
+<span class="cmt">//          List(_one, _two, _three).sum.toInt       // Variable names are in the param list so no need for temp</span>
+<span class="cmt">//        }                                          // variables.</span>
+<span class="cmt">//      )</span></pre><p><b>E.g. 4</b>: Invariant function (not dependent on any input variables).</p><pre><span class="kw">val</span> spec4 = <span class="lit">"new util.Random(System.nanoTime).nextLong"</span>
+<span class="kw">val</span> f = s.createFunction[<span class="std">Long</span>](spec4).right.get         <span class="cmt">// f(null) is OK b/c not reliant on input value.</span>
+
+<span class="cmt">// Equivalent to:</span>
+<span class="cmt">//    val f4 =</span>
+<span class="cmt">//      com.eharmony.aloha.semantics.compiled.GenFunc.f0( // f0 b/c input arity is 0</span>
+<span class="cmt">//        "new util.Random(System.nanoTime).nextLong",</span>
+<span class="cmt">//        (_:Any) => new util.Random(System.nanoTime).nextLong     // Notice input is Any</span>
+<span class="cmt">//      )                                                          // OK b/c of Function1 1st arg contravariance.</span></pre></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>the input type to the functions that are to be generated.  Said another way, this is domain type of the
+          models that will be generated by the ModelFactory to which this
+          <a href="../Semantics.html" class="extype" name="com.eharmony.aloha.semantics.Semantics">com.eharmony.aloha.semantics.Semantics</a> will be passed.</p></dd><dt class="param">compiler</dt><dd class="cmt"><p>a compiler capable of compiling real scala code and generating real instances that work at full speed.</p></dd><dt class="param">plugin</dt><dd class="cmt"><p>a plugin that can make sense of the variable specifications and generate code to extract data from them.</p></dd><dt class="param">imports</dt><dd class="cmt"><p>a list of imports.</p></dd><dt class="param">provideSemanticsUdfException</dt><dd class="cmt"><p>whether we should provide <a href="../SemanticsUdfException.html" class="extype" name="com.eharmony.aloha.semantics.SemanticsUdfException">com.eharmony.aloha.semantics.SemanticsUdfException</a>
+                                    instead of raw exceptions in the case that a feature produces an exception.  The
+                                    perceived benefit of this seems to drastically outweigh the performance hit, so
+                                    this defaults to true (as this is suggested).</p></dd><dt class="param">ec</dt><dd class="cmt"><p>an execution context in which to run the Futures that are used in the cache.</p></dd></dl></div>
+    </li><li name="com.eharmony.aloha.semantics.compiled.CompiledSemanticsLike" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="CompiledSemanticsLike[A]extendsSemantics[A]withEitherHelperswithLogging"></a>
+      <a id="CompiledSemanticsLike[A]:CompiledSemanticsLike[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="CompiledSemanticsLike.html"><span class="name">CompiledSemanticsLike</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="../Semantics.html" class="extype" name="com.eharmony.aloha.semantics.Semantics">Semantics</a>[<span class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemanticsLike.A">A</span>] with <a href="../../util/EitherHelpers.html" class="extype" name="com.eharmony.aloha.util.EitherHelpers">EitherHelpers</a> with <a href="../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.semantics.compiled.package@CompiledSemanticsLike[A]extendsSemantics[A]withEitherHelperswithLogging" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.semantics.compiled.CompiledSemanticsPlugin" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="CompiledSemanticsPlugin[A]extendsAnyRef"></a>
+      <a id="CompiledSemanticsPlugin[A]:CompiledSemanticsPlugin[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="CompiledSemanticsPlugin.html"><span class="name">CompiledSemanticsPlugin</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.semantics.compiled.package@CompiledSemanticsPlugin[A]extendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A semantics object is responsible for parsing a variable accessor specification inside a dollar sign-curly brace
+expression (that may be embedded in a larger expression).</p><div class="fullcomment"><div class="comment cmt"><p>A semantics object is responsible for parsing a variable accessor specification inside a dollar sign-curly brace
+expression (that may be embedded in a larger expression).  For instance, in the variable accessor specification:
+<b><code>${a.b[0].c}</code></b>, the semantics is responsible for transforming the string <b><code>a.b[0].c</code></b> into Scala code
+for a function that pulls the data out of an object of type A.  The output type of the function need not
+be stated explicitly because Scala's type inference mechanism will be used at the time the generated function
+is compiled.</p></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>the input type to a model</p></dd></dl></div>
+    </li><li name="com.eharmony.aloha.semantics.compiled.OptionalAccessorCode" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="OptionalAccessorCodeextendsVariableAccessorCodewithProductwithSerializable"></a>
+      <a id="OptionalAccessorCode:OptionalAccessorCode"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="OptionalAccessorCode.html"><span class="name">OptionalAccessorCode</span></a><span class="params">(<span name="body">body: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="VariableAccessorCode.html" class="extype" name="com.eharmony.aloha.semantics.compiled.VariableAccessorCode">VariableAccessorCode</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.semantics.compiled.package@OptionalAccessorCodeextendsVariableAccessorCodewithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.semantics.compiled.RequiredAccessorCode" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="RequiredAccessorCodeextendsVariableAccessorCodewithProductwithSerializable"></a>
+      <a id="RequiredAccessorCode:RequiredAccessorCode"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="RequiredAccessorCode.html"><span class="name">RequiredAccessorCode</span></a><span class="params">(<span name="body">body: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="VariableAccessorCode.html" class="extype" name="com.eharmony.aloha.semantics.compiled.VariableAccessorCode">VariableAccessorCode</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.semantics.compiled.package@RequiredAccessorCodeextendsVariableAccessorCodewithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.semantics.compiled.VariableAccessorCode" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="VariableAccessorCodeextendsAnyRef"></a>
+      <a id="VariableAccessorCode:VariableAccessorCode"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="VariableAccessorCode.html"><span class="name">VariableAccessorCode</span></a><span class="result"> extends <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.semantics.compiled.package@VariableAccessorCodeextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="com.eharmony.aloha.semantics.compiled.CompiledSemantics" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CompiledSemantics"></a>
+      <a id="CompiledSemantics:CompiledSemantics"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CompiledSemantics$.html"><span class="name">CompiledSemantics</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.semantics.compiled.package@CompiledSemantics" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Companion class containing canonical class names for wrapper classes uses in compilation.</p>
+    </li><li name="com.eharmony.aloha.semantics.compiled.compiler" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="compiler"></a>
+      <a id="compiler:compiler"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="compiler/package.html"><span class="name">compiler</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.semantics.compiled.package@compiler" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.semantics.compiled.plugin" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="plugin"></a>
+      <a id="plugin:plugin"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="plugin/package.html"><span class="name">plugin</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.semantics.compiled.package@plugin" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>

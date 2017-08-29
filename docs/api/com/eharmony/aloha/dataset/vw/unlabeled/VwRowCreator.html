@@ -1,0 +1,1017 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>VwRowCreator - com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator</title>
+          <meta name="description" content="VwRowCreator - com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator" />
+          <meta name="keywords" content="VwRowCreator com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../../../index.html';
+            var hash = 'com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="type">
+      <div id="definition">
+        <a href="VwRowCreator$.html" title="See companion object"><img alt="Class/Object" src="../../../../../../lib/class_to_object_big.png" /></a>
+        <p id="owner"><a href="../../../../../package.html" class="extype" name="com">com</a>.<a href="../../../../package.html" class="extype" name="com.eharmony">eharmony</a>.<a href="../../../package.html" class="extype" name="com.eharmony.aloha">aloha</a>.<a href="../../package.html" class="extype" name="com.eharmony.aloha.dataset">dataset</a>.<a href="../package.html" class="extype" name="com.eharmony.aloha.dataset.vw">vw</a>.<a href="package.html" class="extype" name="com.eharmony.aloha.dataset.vw.unlabeled">unlabeled</a></p>
+        <h1><a href="VwRowCreator$.html" title="See companion object">VwRowCreator</a></h1><h3><span class="morelinks"><div>
+            Related Docs:
+            <a href="VwRowCreator$.html" title="See companion object">object VwRowCreator</a>
+            | <a href="package.html" class="extype" name="com.eharmony.aloha.dataset.vw.unlabeled">package unlabeled</a>
+          </div></span></h3><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <span class="name">VwRowCreator</span><span class="tparams">[<span name="A">-A</span>]</span><span class="result"> extends <a href="../../RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a>[<span class="extype" name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator.A">A</span>] with <span class="extype" name="java.io.Serializable">Serializable</span> with <a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A Spec to create VW input.</p></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>input type from which features is extracted.</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="&quot;If any value {0, 1, ..., featuresFunction.features.size - 1} is not mapped to defaultNamespace or namespaces.&quot;">...</span>
+    </span>)</span>
+              
+        </dd></dl><div class="toggleContainer block">
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent"><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a>, <a href="../../RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a>[<span class="extype" name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator.A">A</span>], <span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, (<span class="extype" name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator.A">A</span>) ⇒ (<a href="../../MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <span class="extype" name="java.lang.CharSequence">CharSequence</span>), <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+        </div><div class="toggleContainer block">
+            <span class="toggle">Known Subclasses</span>
+            <div class="subClasses hiddenContent"><a href="../cb/VwContextualBanditRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.vw.cb.VwContextualBanditRowCreator">VwContextualBanditRowCreator</a>, <a href="../labeled/VwLabelRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.vw.labeled.VwLabelRowCreator">VwLabelRowCreator</a></div>
+          </div></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        <div id="order">
+              <span class="filtertype">Ordering</span>
+              <ol>
+                
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By Inheritance</span></li>
+              </ol>
+            </div>
+        <div id="ancestors">
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator"><span>VwRowCreator</span></li><li class="in" name="com.eharmony.aloha.util.Logging"><span>Logging</span></li><li class="in" name="com.eharmony.aloha.dataset.RowCreator"><span>RowCreator</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Function1"><span>Function1</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show All</span></li>
+            </ol>
+          </div>
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        <div id="constructors" class="members">
+              <h3>Instance Constructors</h3>
+              <ol><li name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="&lt;init&gt;(featuresFunction:com.eharmony.aloha.dataset.FeatureExtractorFunction[A,com.eharmony.aloha.dataset.density.Sparse],defaultNamespace:List[Int],namespaces:List[(String,List[Int])],normalizer:Option[CharSequence=&gt;CharSequence],includeZeroValues:Boolean):com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator[A]"></a>
+      <a id="&lt;init&gt;:VwRowCreator[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">new</span>
+      </span>
+      <span class="symbol">
+        <span class="name">VwRowCreator</span><span class="params">(<span name="featuresFunction">featuresFunction: <a href="../../FeatureExtractorFunction.html" class="extype" name="com.eharmony.aloha.dataset.FeatureExtractorFunction">FeatureExtractorFunction</a>[<span class="extype" name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator.A">A</span>, <span class="extype" name="com.eharmony.aloha.dataset.density.Sparse">Sparse</span>]</span>, <span name="defaultNamespace">defaultNamespace: <a href="../../../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="namespaces">namespaces: <a href="../../../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[(<span class="extype" name="scala.Predef.String">String</span>, <a href="../../../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<span class="extype" name="scala.Int">Int</span>])]</span>, <span name="normalizer">normalizer: <span class="extype" name="scala.Option">Option</span>[(<span class="extype" name="java.lang.CharSequence">CharSequence</span>) ⇒ <span class="extype" name="java.lang.CharSequence">CharSequence</span>]</span>, <span name="includeZeroValues">includeZeroValues: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@&lt;init&gt;(featuresFunction:com.eharmony.aloha.dataset.FeatureExtractorFunction[A,com.eharmony.aloha.dataset.density.Sparse],defaultNamespace:List[Int],namespaces:List[(String,List[Int])],normalizer:Option[CharSequence=&gt;CharSequence],includeZeroValues:Boolean):com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator[A]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">featuresFunction</dt><dd class="cmt"><p>function to create covariate data.</p></dd><dt class="param">defaultNamespace</dt><dd class="cmt"><p>indices of features.  This is where features with no associated namespace are pigeonholed.</p></dd><dt class="param">namespaces</dt><dd class="cmt"><p>index mapping from namespace name to feature index.</p></dd><dt class="param">normalizer</dt><dd class="cmt"><p>a function that can alter the output.</p></dd><dt class="param">includeZeroValues</dt><dd class="cmt"><p>whether to include key-value pairs in VW input whose the values are equal to zero.</p></dd></dl></div>
+    </li></ol>
+            </div>
+
+        
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="!=(x$1:Any):Boolean"></a>
+      <a id="!=(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@!=(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="##():Int"></a>
+      <a id="##():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@##():Int" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="==(x$1:Any):Boolean"></a>
+      <a id="==(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@==(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.Function1#andThen" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="andThen[A](g:R=&gt;A):T1=&gt;A"></a>
+      <a id="andThen[A](((MissingAndErroneousFeatureInfo,CharSequence))⇒A):(A)⇒A"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">andThen</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="g">g: ((<a href="../../MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <span class="extype" name="java.lang.CharSequence">CharSequence</span>)) ⇒ <span class="extype" name="scala.Function1.andThen.A">A</span></span>)</span><span class="result">: (<span class="extype" name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator.A">A</span>) ⇒ <span class="extype" name="scala.Function1.andThen.A">A</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@andThen[A](g:R=&gt;A):T1=&gt;A" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Function1</dd><dt>Annotations</dt><dd>
+                <span class="name">@unspecialized</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply(data:A):(com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo,CharSequence)"></a>
+      <a id="apply(A):(MissingAndErroneousFeatureInfo,CharSequence)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="data">data: <span class="extype" name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator.A">A</span></span>)</span><span class="result">: (<a href="../../MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <span class="extype" name="java.lang.CharSequence">CharSequence</span>)</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@apply(data:A):(com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo,CharSequence)" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator">VwRowCreator</a> → Function1</dd></dl></div>
+    </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asInstanceOf[T0]:T0"></a>
+      <a id="asInstanceOf[T0]:T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@asInstanceOf[T0]:T0" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="clone():Object"></a>
+      <a id="clone():AnyRef"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@clone():Object" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.Function1#compose" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="compose[A](g:A=&gt;T1):A=&gt;R"></a>
+      <a id="compose[A]((A)⇒A):(A)⇒(MissingAndErroneousFeatureInfo,CharSequence)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">compose</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="g">g: (<span class="extype" name="scala.Function1.compose.A">A</span>) ⇒ <span class="extype" name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator.A">A</span></span>)</span><span class="result">: (<span class="extype" name="scala.Function1.compose.A">A</span>) ⇒ (<a href="../../MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <span class="extype" name="java.lang.CharSequence">CharSequence</span>)</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@compose[A](g:A=&gt;T1):A=&gt;R" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Function1</dd><dt>Annotations</dt><dd>
+                <span class="name">@unspecialized</span><span class="args">()</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#debug" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="debug(msg:=&gt;Any,t:=&gt;Throwable):Unit"></a>
+      <a id="debug(⇒Any,⇒Throwable):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">debug</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>, <span name="t">t: ⇒ <a href="../../../../../../scala/package.html#Throwable=Throwable" class="extmbr" name="scala.Throwable">Throwable</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@debug(msg:=&gt;Any,t:=&gt;Throwable):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a debug logging message, with an exception.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a debug logging message, with an exception.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd><dt class="param">t</dt><dd class="cmt"><p>the exception to include with the logged message.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#debug" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="debug(msg:=&gt;Any):Unit"></a>
+      <a id="debug(⇒Any):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">debug</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@debug(msg:=&gt;Any):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a debug logging message.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a debug logging message.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator#defaultNamespace" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="defaultNamespace:List[Int]"></a>
+      <a id="defaultNamespace:List[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">defaultNamespace</span><span class="result">: <a href="../../../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@defaultNamespace:List[Int]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">indices of features.</p><div class="fullcomment"><div class="comment cmt"><p>indices of features.  This is where features with no associated namespace are pigeonholed.</p></div></div>
+    </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="eq(x$1:AnyRef):Boolean"></a>
+      <a id="eq(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(x$1:Any):Boolean"></a>
+      <a id="equals(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@equals(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#error" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="error(msg:=&gt;Any,t:=&gt;Throwable):Unit"></a>
+      <a id="error(⇒Any,⇒Throwable):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">error</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>, <span name="t">t: ⇒ <a href="../../../../../../scala/package.html#Throwable=Throwable" class="extmbr" name="scala.Throwable">Throwable</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@error(msg:=&gt;Any,t:=&gt;Throwable):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a error logging message, with an exception.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a error logging message, with an exception.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd><dt class="param">t</dt><dd class="cmt"><p>the exception to include with the logged message.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#error" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="error(msg:=&gt;Any):Unit"></a>
+      <a id="error(⇒Any):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">error</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@error(msg:=&gt;Any):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a error logging message.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a error logging message.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator#featuresFunction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="featuresFunction:com.eharmony.aloha.dataset.FeatureExtractorFunction[A,com.eharmony.aloha.dataset.density.Sparse]"></a>
+      <a id="featuresFunction:FeatureExtractorFunction[A,Sparse]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">featuresFunction</span><span class="result">: <a href="../../FeatureExtractorFunction.html" class="extype" name="com.eharmony.aloha.dataset.FeatureExtractorFunction">FeatureExtractorFunction</a>[<span class="extype" name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator.A">A</span>, <span class="extype" name="com.eharmony.aloha.dataset.density.Sparse">Sparse</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@featuresFunction:com.eharmony.aloha.dataset.FeatureExtractorFunction[A,com.eharmony.aloha.dataset.density.Sparse]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">function to create covariate data.</p>
+    </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="finalize():Unit"></a>
+      <a id="finalize():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@finalize():Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getClass():Class[_]"></a>
+      <a id="getClass():Class[_]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@getClass():Class[_]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode():Int"></a>
+      <a id="hashCode():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@hashCode():Int" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator#includeZeroValues" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="includeZeroValues:Boolean"></a>
+      <a id="includeZeroValues:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">includeZeroValues</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@includeZeroValues:Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">whether to include key-value pairs in VW input whose the values are equal to zero.</p>
+    </li><li name="com.eharmony.aloha.util.Logging#info" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="info(msg:=&gt;Any,t:=&gt;Throwable):Unit"></a>
+      <a id="info(⇒Any,⇒Throwable):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">info</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>, <span name="t">t: ⇒ <a href="../../../../../../scala/package.html#Throwable=Throwable" class="extmbr" name="scala.Throwable">Throwable</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@info(msg:=&gt;Any,t:=&gt;Throwable):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a info logging message, with an exception.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a info logging message, with an exception.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd><dt class="param">t</dt><dd class="cmt"><p>the exception to include with the logged message.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#info" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="info(msg:=&gt;Any):Unit"></a>
+      <a id="info(⇒Any):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">info</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@info(msg:=&gt;Any):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a info logging message.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a info logging message.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#isDebugEnabled" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isDebugEnabled:Boolean"></a>
+      <a id="isDebugEnabled:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isDebugEnabled</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@isDebugEnabled:Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Determine whether debug logging is enabled.</p><div class="fullcomment"><div class="comment cmt"><p>Determine whether debug logging is enabled.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#isErrorEnabled" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isErrorEnabled:Boolean"></a>
+      <a id="isErrorEnabled:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isErrorEnabled</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@isErrorEnabled:Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Determine whether error logging is enabled.</p><div class="fullcomment"><div class="comment cmt"><p>Determine whether error logging is enabled.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#isInfoEnabled" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isInfoEnabled:Boolean"></a>
+      <a id="isInfoEnabled:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isInfoEnabled</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@isInfoEnabled:Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Determine whether info logging is enabled.</p><div class="fullcomment"><div class="comment cmt"><p>Determine whether info logging is enabled.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#isTraceEnabled" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isTraceEnabled:Boolean"></a>
+      <a id="isTraceEnabled:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isTraceEnabled</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@isTraceEnabled:Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Determine whether trace logging is enabled.</p><div class="fullcomment"><div class="comment cmt"><p>Determine whether trace logging is enabled.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#isWarnEnabled" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isWarnEnabled:Boolean"></a>
+      <a id="isWarnEnabled:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isWarnEnabled</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@isWarnEnabled:Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Determine whether warn logging is enabled.</p><div class="fullcomment"><div class="comment cmt"><p>Determine whether warn logging is enabled.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#logger" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="logger:org.slf4j.Logger"></a>
+      <a id="logger:Logger"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">logger</span><span class="result">: <span class="extype" name="org.slf4j.Logger">Logger</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@logger:org.slf4j.Logger" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">The logger is a <code>@transient lazy val</code> to enable proper working with Spark.</p><div class="fullcomment"><div class="comment cmt"><p>The logger is a <code>@transient lazy val</code> to enable proper working with Spark.
+The logger will not be serialized with the rest of the class with which this
+trait is mixed-in.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#loggerInitName" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="loggerInitName():String"></a>
+      <a id="loggerInitName():String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">loggerInitName</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@loggerInitName():String" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">The name with which the logger is initialized.</p><div class="fullcomment"><div class="comment cmt"><p>The name with which the logger is initialized.  This can be overridden in a derived class.</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#loggerName" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="loggerName:String"></a>
+      <a id="loggerName:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">loggerName</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@loggerName:String" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Get the name associated with this logger.</p><div class="fullcomment"><div class="comment cmt"><p>Get the name associated with this logger.
+</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the name.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator#namespaces" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="namespaces:List[(String,List[Int])]"></a>
+      <a id="namespaces:List[(String,List[Int])]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">namespaces</span><span class="result">: <a href="../../../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[(<span class="extype" name="scala.Predef.String">String</span>, <a href="../../../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<span class="extype" name="scala.Int">Int</span>])]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@namespaces:List[(String,List[Int])]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">index mapping from namespace name to feature index.</p>
+    </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ne(x$1:AnyRef):Boolean"></a>
+      <a id="ne(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator#normalizer" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="normalizer:Option[CharSequence=&gt;CharSequence]"></a>
+      <a id="normalizer:Option[(CharSequence)⇒CharSequence]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">normalizer</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[(<span class="extype" name="java.lang.CharSequence">CharSequence</span>) ⇒ <span class="extype" name="java.lang.CharSequence">CharSequence</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@normalizer:Option[CharSequence=&gt;CharSequence]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">a function that can alter the output.</p>
+    </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notify():Unit"></a>
+      <a id="notify():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@notify():Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#notifyAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notifyAll():Unit"></a>
+      <a id="notifyAll():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@notifyAll():Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
+      <a id="synchronized[T0](⇒T0):T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.Function1#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toString():String"></a>
+      <a id="toString():String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@toString():String" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Function1 → AnyRef → Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#trace" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="trace(msg:=&gt;Any,t:=&gt;Throwable):Unit"></a>
+      <a id="trace(⇒Any,⇒Throwable):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">trace</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>, <span name="t">t: ⇒ <a href="../../../../../../scala/package.html#Throwable=Throwable" class="extmbr" name="scala.Throwable">Throwable</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@trace(msg:=&gt;Any,t:=&gt;Throwable):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a trace logging message, with an exception.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a trace logging message, with an exception.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd><dt class="param">t</dt><dd class="cmt"><p>the exception to include with the logged message.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#trace" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="trace(msg:=&gt;Any):Unit"></a>
+      <a id="trace(⇒Any):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">trace</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@trace(msg:=&gt;Any):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a trace logging message.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a trace logging message.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator#unlabeledVwInput" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="unlabeledVwInput(features:IndexedSeq[com.eharmony.aloha.dataset.density.Sparse]):CharSequence"></a>
+      <a id="unlabeledVwInput(IndexedSeq[Sparse]):CharSequence"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">unlabeledVwInput</span><span class="params">(<span name="features">features: <a href="../../../../../../scala/package.html#IndexedSeq[+A]=IndexedSeq[A]" class="extmbr" name="scala.IndexedSeq">IndexedSeq</a>[<span class="extype" name="com.eharmony.aloha.dataset.density.Sparse">Sparse</span>]</span>)</span><span class="result">: <span class="extype" name="java.lang.CharSequence">CharSequence</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@unlabeledVwInput(features:IndexedSeq[com.eharmony.aloha.dataset.density.Sparse]):CharSequence" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Each namespace will only be present if it contains at least one feature in the namespace.</p><div class="fullcomment"><div class="comment cmt"><p>Each namespace will only be present if it contains at least one feature in the namespace.</p></div><dl class="paramcmts block"><dt class="param">features</dt><dd class="cmt"><p>features to insert into VW input line.</p></dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait():Unit"></a>
+      <a id="wait():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@wait():Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long,x$2:Int):Unit"></a>
+      <a id="wait(Long,Int):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long):Unit"></a>
+      <a id="wait(Long):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@wait(x$1:Long):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#warn" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="warn(msg:=&gt;Any,t:=&gt;Throwable):Unit"></a>
+      <a id="warn(⇒Any,⇒Throwable):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">warn</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>, <span name="t">t: ⇒ <a href="../../../../../../scala/package.html#Throwable=Throwable" class="extmbr" name="scala.Throwable">Throwable</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@warn(msg:=&gt;Any,t:=&gt;Throwable):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a warn logging message, with an exception.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a warn logging message, with an exception.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd><dt class="param">t</dt><dd class="cmt"><p>the exception to include with the logged message.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.util.Logging#warn" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="warn(msg:=&gt;Any):Unit"></a>
+      <a id="warn(⇒Any):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">warn</span><span class="params">(<span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator@warn(msg:=&gt;Any):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Issue a warn logging message.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a warn logging message.
+</p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
+            to a loggable string.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        <div class="parent" name="com.eharmony.aloha.util.Logging">
+              <h3>Inherited from <a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></h3>
+            </div><div class="parent" name="com.eharmony.aloha.dataset.RowCreator">
+              <h3>Inherited from <a href="../../RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a>[<span class="extype" name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator.A">A</span>]</h3>
+            </div><div class="parent" name="scala.Serializable">
+              <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="java.io.Serializable">
+              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="scala.Function1">
+              <h3>Inherited from (<span class="extype" name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator.A">A</span>) ⇒ (<a href="../../MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <span class="extype" name="java.lang.CharSequence">CharSequence</span>)</h3>
+            </div><div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+            </div>
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>

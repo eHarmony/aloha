@@ -1,0 +1,208 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>avro - com.eharmony.aloha.factory.avro</title>
+          <meta name="description" content="avro - com.eharmony.aloha.factory.avro" />
+          <meta name="keywords" content="avro com.eharmony.aloha.factory.avro" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../../index.html';
+            var hash = 'com.eharmony.aloha.factory.avro.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img alt="Package" src="../../../../../lib/package_big.png" />
+        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.eharmony">eharmony</a>.<a href="../../package.html" class="extype" name="com.eharmony.aloha">aloha</a>.<a href="../package.html" class="extype" name="com.eharmony.aloha.factory">factory</a></p>
+        <h1>avro</h1><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.factory.avro.package" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">avro</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="com.eharmony.aloha.factory.avro.FactoryConfig" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="FactoryConfigextendsAnyRef"></a>
+      <a id="FactoryConfig:FactoryConfig"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="FactoryConfig.html"><span class="name">FactoryConfig</span></a><span class="result"> extends <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.factory.avro.package@FactoryConfigextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A configuration object for Avro model factories.</p>
+    </li><li name="com.eharmony.aloha.factory.avro.SchemaConfig" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="SchemaConfigextendsFactoryConfigwithProductwithSerializable"></a>
+      <a id="SchemaConfig:SchemaConfig"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="SchemaConfig.html"><span class="name">SchemaConfig</span></a><span class="params">(<span name="schema">schema: <span class="extype" name="org.apache.avro.Schema">Schema</span></span>, <span name="modelCodomainRefInfoStr">modelCodomainRefInfoStr: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="imports">imports: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol">Nil</span></span>, <span name="classCacheDir">classCacheDir: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="java.io.File">File</span>] = <span class="symbol"><span class="name"><a href="../../../../../scala/package.html">None</a></span></span></span>, <span name="dereferenceAsOptional">dereferenceAsOptional: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="result"> extends <a href="FactoryConfig.html" class="extype" name="com.eharmony.aloha.factory.avro.FactoryConfig">FactoryConfig</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.factory.avro.package@SchemaConfigextendsFactoryConfigwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Provides an easy interface for creating ModelFactory instances that both take and
+return Avro objects.</p><div class="fullcomment"><div class="comment cmt"><p>Provides an easy interface for creating ModelFactory instances that both take and
+return Avro objects.</p><p>This is especially useful for creating factories in generic services because the
+<code>modelCodomainRefInfoStr</code> is a string rather than <code>RefInfo</code> so it can come from a
+property file.
+</p></div><dl class="paramcmts block"><dt class="param">schema</dt><dd class="cmt"><p>an Avro Schema that represents the data passed to models created by this factory.</p></dd><dt class="param">modelCodomainRefInfoStr</dt><dd class="cmt"><p>A string representation of a <code>com.eharmony.aloha.reflect.RefInfo</code>.</p></dd><dt class="param">imports</dt><dd class="cmt"><p>imports to be injected into feature functions synthesized by the factory.</p></dd><dt class="param">classCacheDir</dt><dd class="cmt"><p>a cache directory on the local machine used to cache class files of
+                     the created feature functions used in the models produced by the
+                     factory.</p></dd><dt class="param">dereferenceAsOptional</dt><dd class="cmt"><p>whether to treat the dereferencing of repeated variables as
+                             an optional type.  This avoids index out of bounds exceptions
+                             and is safer but slightly slower.</p></dd></dl></div>
+    </li><li name="com.eharmony.aloha.factory.avro.UrlConfig" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="UrlConfigextendsFactoryConfigwithProductwithSerializable"></a>
+      <a id="UrlConfig:UrlConfig"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="UrlConfig.html"><span class="name">UrlConfig</span></a><span class="params">(<span name="vfs">vfs: <a href="../../io/vfs/Vfs.html" class="extype" name="com.eharmony.aloha.io.vfs.Vfs">Vfs</a></span>, <span name="modelCodomainRefInfoStr">modelCodomainRefInfoStr: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="imports">imports: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol">Nil</span></span>, <span name="classCacheDir">classCacheDir: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="java.io.File">File</span>] = <span class="symbol"><span class="name"><a href="../../../../../scala/package.html">None</a></span></span></span>, <span name="dereferenceAsOptional">dereferenceAsOptional: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>)</span><span class="result"> extends <a href="FactoryConfig.html" class="extype" name="com.eharmony.aloha.factory.avro.FactoryConfig">FactoryConfig</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.factory.avro.package@UrlConfigextendsFactoryConfigwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Provides an easy interface for creating ModelFactory instances that both take and
+return Avro objects.</p><div class="fullcomment"><div class="comment cmt"><p>Provides an easy interface for creating ModelFactory instances that both take and
+return Avro objects.</p><p>This is especially useful for creating factories in generic services because the
+<code>modelCodomainRefInfoStr</code> is a string rather than <code>RefInfo</code> so it can come from a
+property file.
+</p></div><dl class="paramcmts block"><dt class="param">vfs</dt><dd class="cmt"><p>A <a href="../../io/vfs/Vfs.html" class="extype" name="com.eharmony.aloha.io.vfs.Vfs">com.eharmony.aloha.io.vfs.Vfs</a> wrapper around a URL pointing to a JSON Avro
+           Schema that represents the data passed to models created by this factory.</p></dd><dt class="param">modelCodomainRefInfoStr</dt><dd class="cmt"><p>A string representation of a <code>com.eharmony.aloha.reflect.RefInfo</code>.</p></dd><dt class="param">imports</dt><dd class="cmt"><p>imports to be injected into feature functions synthesized by the factory.</p></dd><dt class="param">classCacheDir</dt><dd class="cmt"><p>a cache directory on the local machine used to cache class files of
+                     the created feature functions used in the models produced by the
+                     factory.</p></dd><dt class="param">dereferenceAsOptional</dt><dd class="cmt"><p>whether to treat the dereferencing of repeated variables as
+                             an optional type.  This avoids index out of bounds exceptions
+                             and is safer but slightly slower.</p></dd></dl></div>
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="com.eharmony.aloha.factory.avro.FactoryConfig" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="FactoryConfig"></a>
+      <a id="FactoryConfig:FactoryConfig"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="FactoryConfig$.html"><span class="name">FactoryConfig</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.factory.avro.package@FactoryConfig" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.factory.avro.StdAvroModelFactory" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="StdAvroModelFactory"></a>
+      <a id="StdAvroModelFactory:StdAvroModelFactory"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="StdAvroModelFactory$.html"><span class="name">StdAvroModelFactory</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.factory.avro.package@StdAvroModelFactory" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Created by deak on 3/2/17.</p>
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>
