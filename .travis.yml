@@ -45,7 +45,7 @@ before_install:
 
 # These are all sbt-microsites requirements
 install:
-  - bash travis-install-microsite-deps.sh
+  - source travis-install-microsite-deps.sh
 
 env:
   global:
