@@ -58,4 +58,4 @@ env:
 # Only publish docs for one Scala version (latest).
 after_success:
   - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then sbt ++$TRAVIS_SCALA_VERSION publish; fi
-  - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" -a "$TRAVIS_SCALA_VERSION" = "2.11.8" ]; then bash travis-publish-microsite.sh; fi
+  - if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_SCALA_VERSION" == "2.11.8" ]]; then bash travis-publish-microsite.sh; fi
