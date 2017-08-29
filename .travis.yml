@@ -40,7 +40,7 @@ before_install:
   - bash travis-install-aloha-proto.sh
   - if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then
       bash travis-decrypt-keys.sh;
-      green "Key SHA-512   $(openssl dgst -sha512 ~/.ssh/id_rsa | sed 's/.*  *//g')"
+      green "Key SHA-512   $(openssl dgst -sha512 ~/.ssh/id_rsa | sed 's/.*  *//g')";
     fi
   - export PATH=${PATH}:./vendor/bundle
 
