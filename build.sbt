@@ -316,7 +316,6 @@ releaseProcess := Seq[ReleaseStep](
 // enablePlugins(GhpagesPlugin)
 git.remoteRepo := "git@github.com:eHarmony/aloha.git"
 
-
 lazy val docsMappingsAPIDir = settingKey[String]("Name of subdirectory in site target directory for api docs")
 
 lazy val docSettings = Seq(
