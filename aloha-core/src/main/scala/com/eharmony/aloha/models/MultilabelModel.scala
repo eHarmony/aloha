@@ -5,11 +5,15 @@ import com.eharmony.aloha.factory._
 import com.eharmony.aloha.id.ModelIdentity
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import com.eharmony.aloha.semantics.Semantics
+import com.eharmony.aloha.semantics.func.GenAggFunc
 import spray.json.{JsonFormat, JsonReader}
 
-sealed trait LabelExtraction[-A, K]
+import scala.collection.{immutable, immutable => sci}
+
+
+sealed trait LabelExtraction[-A, +K]
 final case class KnownLabelExtraction[K](labels: Seq[K]) extends LabelExtraction[Any, K]
-final case class PerExampleLabelExtraction[A, K](extractor: A => Seq[K]) extends LabelExtraction[A, K]
+final case class PerExampleLabelExtraction[A, K](extractor: GenAggFunc[A, sci.IndexedSeq[K]]) extends LabelExtraction[A, K]
 
 /**
   * Created by ryan.deak on 8/29/17.
@@ -26,12 +30,19 @@ final case class PerExampleLabelExtraction[A, K](extractor: A => Seq[K]) extends
   * @tparam A input type of the model
   * @tparam B output type of the model.
   */
+
+/*
+  featureNames: sci.IndexedSeq[String],
+  featureFunctions: sci.IndexedSeq[GenAggFunc[A, Iterable[(String, Double)]]],
+ */
 case class MultilabelModel[U, F, K, -A, +B <: U](
     modelId: ModelIdentity,
     labelExtraction: LabelExtraction[A, K],
-    labelDependentFeatures: Seq[K => F],
-    featureExtraction: Seq[A => F],
-    predictorProducer: () => (Seq[F], Seq[K]) => Map[K, Double],
+    labelDependentFeatures: sci.IndexedSeq[GenAggFunc[K, F]],
+    featureExtraction: sci.IndexedSeq[GenAggFunc[A, F]],
+
+    // TODO: Make this a type alias or trait or something.
+    predictorProducer: () => (Seq[F], Seq[K], Seq[sci.IndexedSeq[F]]) => Map[K, Double],
     auditor: Auditor[U, Map[K, Double], B]
 )
 extends SubmodelBase[U, Map[K, Double], A, B] {
@@ -48,21 +59,29 @@ extends SubmodelBase[U, Map[K, Double], A, B] {
     case _ => None
   }
 
-  private[this] def applyLdf(labels: Seq[K]): Seq[Seq[F]] =
+  private[this] def applyLdf(labels: Seq[K]): Seq[sci.IndexedSeq[F]] =
     labels.map(label => labelDependentFeatures.map(f => f(label)))
 
   override def subvalue(a: A): Subvalue[B, Map[K, Double]] = {
+
+    // Get the labels for which predictions should be produced.
     val labels = labelExtraction match {
-      case KnownLabelExtraction(ls) => ls
+      case KnownLabelExtraction(constLabels) => constLabels
       case PerExampleLabelExtraction(extractor) => extractor(a)
     }
 
     // Get the label-dependent features.
-    val ldf = globalLdf getOrElse applyLdf(labels)
+    // TODO: Handle missing data in the extraction process like in RegressionFeatures.constructFeatures
+    val ldf: Seq[sci.IndexedSeq[F]] = globalLdf getOrElse applyLdf(labels)
 
-    val features = featureExtraction.map(f => f(a))
-    val natural = predictor(features, labels)
-    val aud = auditor.success(modelId, natural)
+    // TODO: Handle missing data in the extraction process like in RegressionFeatures.constructFeatures
+    val features: sci.IndexedSeq[F] = featureExtraction.map(f => f(a))
+
+    // predictor is responsible for getting the data into the correct type and applying
+    // it within the underlying ML library to produce a prediction.  The mapping back to
+    // (K, Double) pairs is also its responsibility.
+    val natural: Map[K, Double] = predictor(features, labels, ldf)
+    val aud: B = auditor.success(modelId, natural)
     Subvalue(aud, Option(natural))
   }
 }
