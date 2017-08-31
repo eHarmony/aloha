@@ -1,48 +1,46 @@
 package com.eharmony.aloha.models
 
 import com.eharmony.aloha.audit.Auditor
+import com.eharmony.aloha.dataset.density.Sparse
 import com.eharmony.aloha.factory._
 import com.eharmony.aloha.id.ModelIdentity
+import com.eharmony.aloha.models.multilabel.SparsePredictorProducer
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.semantics.func.GenAggFunc
 import spray.json.{JsonFormat, JsonReader}
 
-import scala.collection.{immutable, immutable => sci}
+import scala.collection.{immutable => sci}
 
-
-sealed trait LabelExtraction[-A, +K]
-final case class KnownLabelExtraction[K](labels: Seq[K]) extends LabelExtraction[Any, K]
-final case class PerExampleLabelExtraction[A, K](extractor: GenAggFunc[A, sci.IndexedSeq[K]]) extends LabelExtraction[A, K]
 
 /**
+  *
   * Created by ryan.deak on 8/29/17.
   *
   * @param modelId
-  * @param labelExtraction
+  * @param labelInTrainingSet
+  * @param labelsOfInterest
+  * @param featureNames
+  * @param featureFunctions
   * @param labelDependentFeatures
-  * @param featureExtraction
   * @param predictorProducer
   * @param auditor
   * @tparam U upper bound on model output type `B`
-  * @tparam F type of features produced
   * @tparam K type of label or class
   * @tparam A input type of the model
   * @tparam B output type of the model.
   */
-
-/*
-  featureNames: sci.IndexedSeq[String],
-  featureFunctions: sci.IndexedSeq[GenAggFunc[A, Iterable[(String, Double)]]],
- */
-case class MultilabelModel[U, F, K, -A, +B <: U](
+case class MultilabelModel[U, K, -A, +B <: U](
     modelId: ModelIdentity,
-    labelExtraction: LabelExtraction[A, K],
-    labelDependentFeatures: sci.IndexedSeq[GenAggFunc[K, F]],
-    featureExtraction: sci.IndexedSeq[GenAggFunc[A, F]],
+    labelInTrainingSet: Seq[K],
 
-    // TODO: Make this a type alias or trait or something.
-    predictorProducer: () => (Seq[F], Seq[K], Seq[sci.IndexedSeq[F]]) => Map[K, Double],
+    labelsOfInterest: Option[GenAggFunc[A, sci.IndexedSeq[K]]],
+
+    featureNames: sci.IndexedSeq[String],
+    featureFunctions: sci.IndexedSeq[GenAggFunc[A, Sparse]],
+    labelDependentFeatures: sci.IndexedSeq[GenAggFunc[A, sci.IndexedSeq[Sparse]]],
+
+    predictorProducer: SparsePredictorProducer[K],
     auditor: Auditor[U, Map[K, Double], B]
 )
 extends SubmodelBase[U, Map[K, Double], A, B] {
@@ -53,6 +51,13 @@ extends SubmodelBase[U, Map[K, Double], A, B] {
     // Force predictor eagerly
     predictor
   }
+
+  // TODO: Create the label dependent features once and then select them based on the labels created from the example.
+  // This is going to be very difficult when the label dependent feature functions are produced by the factory
+  // because we don't have a Semantics[K], we only have a semantics[A].  So, if we want to cut down on computation
+  // time, we can cache the features using a scala.collection.concurrent.TrieMap or a
+  // java.util.concurrent.ConcurrentHashMap.  This should be fine AS LONG AS the functions in labelDependentFeatures
+  // are idempotent.  That should be a stated in the documentation for that parameter.
 
   private val globalLdf = labelExtraction match {
     case KnownLabelExtraction(labels) => Option(applyLdf(labels))
