@@ -29,10 +29,10 @@ package object multilabel {
   private type Labels[K] = sci.IndexedSeq[K]
 
   /**
-    * Features related to the labels.  Other outer sequence aligns with the `Labels` and `LabelIndices`
+    * Sparse features related to the labels.  Other outer sequence aligns with the `Labels` and `LabelIndices`
     * sequences meaning `SparseLabelDepFeatures[i]` relates to the features of `Labels[i]`.
     */
-  private type SparseLabelDepFeatures = sci.IndexedSeq[sci.IndexedSeq[Sparse]]
+  private type SparseLabelDepFeatures = Labels[SparseFeatures]
 
   /**
     * A sparse multi-label predictor takes:
