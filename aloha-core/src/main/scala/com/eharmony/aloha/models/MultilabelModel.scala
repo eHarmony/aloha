@@ -38,6 +38,28 @@ case class MultilabelModel[U, K, -A, +B <: U](
 
     featureNames: sci.IndexedSeq[String],
     featureFunctions: sci.IndexedSeq[GenAggFunc[A, Sparse]],
+
+    // Here is a problem.  B/C we only have a Semantics[A] (and not a Semantics[K]) in the factory,
+    // we can't produce sci.IndexedSeq[GenAggFunc[K, Sparse]] representing the many feature functions
+    // that will be applied to each label to produce the sparse values.  We CAN produce a
+    // sci.IndexedSeq[GenAggFunc[A, sci.IndexedSeq[Sparse]]] where sci.IndexedSeq[Sparse] is the result
+    // of one feature applied to all applicable labels.  Many feature definitions
+    // are possible and that's why there is a sci.IndexedSeq[GenAggFunc[...]].  But the issue arises
+    // of how to link the indices of sci.IndexedSeq[Sparse] to the indices of labelsOfInterest,
+    // especially if labelsOfInterest is an Option and not required.
+    //
+    // We can have an "honor system" based approach where we kindly ask the caller to behave and make
+    // the sequences line up, but that always seems like a recipe for disaster.
+    //
+    // We could do sci.IndexedSeq[GenAggFunc[A, sci.IndexedSeq[(K, Sparse)]]] and remove the honor
+    // system approach but that seems like a lot of computational overhead.
+    //
+    // It would be nice if we could use MorphableSemantics to change Semantics[A] into Semantics[K]
+    // but this is fraught with problems.  For instance, with the Avro semantics, we have to supply
+    // parameters to create a CompiledSemanticsAvroPlugin.  Therefore, we'd have to use reflection
+    // to see how K relates to A, and it's not guaranteed that K is embedded in A and that K is a
+    // GenericRecord.
+    //
     labelDependentFeatures: sci.IndexedSeq[GenAggFunc[A, sci.IndexedSeq[Sparse]]],
 
     predictorProducer: SparsePredictorProducer[K],
