@@ -49,9 +49,11 @@ package object multilabel {
     *
     * and returns a Map from the labels passed in, to the prediction associated with the label.
     *
+    * '''NOTE''': This is exposed as package private for testing.
+    *
     * @tparam K the type of labels (or classes in the machine learning literature).
     */
-  private type SparseMultiLabelPredictor[K] =
+  private[multilabel] type SparseMultiLabelPredictor[K] =
     (SparseFeatures, Labels[K], LabelIndices, SparseLabelDepFeatures) => Map[K, Double]
 
   /**
