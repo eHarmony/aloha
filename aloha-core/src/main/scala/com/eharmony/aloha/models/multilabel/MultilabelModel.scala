@@ -1,10 +1,10 @@
-package com.eharmony.aloha.models
+package com.eharmony.aloha.models.multilabel
 
 import com.eharmony.aloha.audit.Auditor
 import com.eharmony.aloha.dataset.density.Sparse
 import com.eharmony.aloha.factory._
 import com.eharmony.aloha.id.ModelIdentity
-import com.eharmony.aloha.models.multilabel.SparsePredictorProducer
+import com.eharmony.aloha.models._
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.semantics.func.GenAggFunc
@@ -97,7 +97,7 @@ extends SubmodelBase[U, Map[K, Double], A, B] {
 
 object MultilabelModel extends ParserProviderCompanion {
 
-  protected[models] def labelsForPrediction[A, K](
+  protected[multilabel] def labelsForPrediction[A, K](
       a: A,
       labelsOfInterest: GenAggFunc[A, sci.IndexedSeq[K]],
       labelToInd: Map[K, Int]
