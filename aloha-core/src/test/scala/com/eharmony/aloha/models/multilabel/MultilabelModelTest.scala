@@ -152,10 +152,7 @@ object MultilabelModelTest {
   // TODO: Use this label type and Auditor.
 
   private type Label = String
-  private val Auditor = RootedTreeAuditor.noUpperBound[Map[Label, Double]](
-    accumulateErrors = false,
-    accumulateMissingFeatures = false
-  )
+  private val Auditor = RootedTreeAuditor.noUpperBound[Map[Label, Double]]()
 
 // TODO: Access information returned in audited value by using the following functions:
   //    val aud: RootedTree[Any, Map[Label, Double]] = ???
