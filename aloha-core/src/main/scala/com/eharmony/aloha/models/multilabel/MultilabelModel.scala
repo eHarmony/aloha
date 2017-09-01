@@ -159,7 +159,7 @@ object MultilabelModel extends ParserProviderCompanion {
     * @tparam B
     * @return
     */
-  protected[multilabel] def reportTooManyMissing[U, K, B](
+  protected[multilabel] def reportTooManyMissing[U, K, B <: U](
       modelId: ModelIdentity,
       labelInfo: LabelsAndInfo[K],
       missing: scm.Map[String, Seq[String]],
@@ -180,7 +180,7 @@ object MultilabelModel extends ParserProviderCompanion {
     * @tparam B
     * @return
     */
-  protected[multilabel] def reportNoPrediction[U, K, B](
+  protected[multilabel] def reportNoPrediction[U, K, B <: U](
       modelId: ModelIdentity,
       labelInfo: LabelsAndInfo[K],
       auditor: Auditor[U, Map[K, Double], B]
@@ -202,7 +202,7 @@ object MultilabelModel extends ParserProviderCompanion {
     * @tparam B
     * @return
     */
-  protected[multilabel] def reportSuccess[U, K, B](
+  protected[multilabel] def reportSuccess[U, K, B <: U](
       modelId: ModelIdentity,
       labelInfo: LabelsAndInfo[K],
       missing: scm.Map[String, Seq[String]],
@@ -233,7 +233,7 @@ object MultilabelModel extends ParserProviderCompanion {
     * @tparam B
     * @return
     */
-  protected[multilabel] def reportPredictorError[U, K, B](
+  protected[multilabel] def reportPredictorError[U, K, B <: U](
       modelId: ModelIdentity,
       labelInfo: LabelsAndInfo[K],
       missing: scm.Map[String, Seq[String]],
