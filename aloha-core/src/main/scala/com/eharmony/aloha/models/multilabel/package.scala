@@ -11,8 +11,12 @@ package object multilabel {
 
   /**
     * Features about the input value (NOT including features based on labels).
+    * This should probably be a `sci.IndexedSeq[Sparse]` but `RegressionFeatures`
+    * returns a `collection.IndexedSeq` and using
+    * [[com.eharmony.aloha.models.reg.RegressionFeatures.constructFeatures]] is
+    * preferable and will provide consistent results across many model types.
     */
-  private type SparseFeatures = sci.IndexedSeq[Sparse]
+  private type SparseFeatures = IndexedSeq[Sparse]
 
   /**
     * Indices of the labels for which predictions should be produced into the
