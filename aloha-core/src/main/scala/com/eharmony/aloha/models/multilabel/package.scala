@@ -1,7 +1,5 @@
 package com.eharmony.aloha.models
 
-import java.io.Closeable
-
 import com.eharmony.aloha.dataset.density.Sparse
 
 import scala.collection.{immutable => sci}
@@ -50,7 +48,7 @@ package object multilabel {
     * @tparam K the type of labels (or classes in the machine learning literature).
     */
   private type SparseMultiLabelPredictor[K] =
-    ((SparseFeatures, Labels[K], LabelIndices, SparseLabelDepFeatures) => Map[K, Double]) with Closeable
+    (SparseFeatures, Labels[K], LabelIndices, SparseLabelDepFeatures) => Map[K, Double]
 
   /**
     * A lazy version of a sparse multi-label predictor.  It is a curried zero-arg function that

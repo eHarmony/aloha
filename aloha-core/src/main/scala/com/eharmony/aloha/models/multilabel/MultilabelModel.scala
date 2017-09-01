@@ -1,5 +1,7 @@
 package com.eharmony.aloha.models.multilabel
 
+import java.io.Closeable
+
 import com.eharmony.aloha.audit.Auditor
 import com.eharmony.aloha.dataset.density.Sparse
 import com.eharmony.aloha.factory._
@@ -92,7 +94,11 @@ extends SubmodelBase[U, Map[K, Double], A, B] {
     Subvalue(aud, Option(natural))
   }
 
-  override def close(): Unit = predictor.close()
+  override def close(): Unit =
+    predictor match {
+      case closeable: Closeable => closeable.close()
+      case _ =>
+    }
 }
 
 object MultilabelModel extends ParserProviderCompanion {
