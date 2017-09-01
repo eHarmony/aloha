@@ -45,7 +45,9 @@ import scala.util.{Failure, Success, Try}
   * @param predictorProducer the function produced when calling this function is responsible for
   *                          getting the data into the correct type and using it within an
   *                          underlying ML library to produce a prediction.  The mapping back to
-  *                          (K, Double) pairs is also its responsibility.
+  *                          (K, Double) pairs is also its responsibility.  If the predictor
+  *                          produced by predictorProducer is Closeable, it will be closed when
+  *                          MultilabelModel's close method is called.
   * @param numMissingThreshold if provided, we check whether the threshold is exceeded.  If so,
   *                            return an error instead of the computed score.  This is for missing
   *                            data situations.
