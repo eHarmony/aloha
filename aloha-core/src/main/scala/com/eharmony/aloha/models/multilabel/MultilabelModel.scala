@@ -30,7 +30,7 @@ import scala.collection.{immutable => sci}
   * @tparam B output type of the model.
   */
 // TODO: When adding label-dep features, a Seq[GenAggFunc[K, Sparse]] will be needed.
-// TODO: To create a Seq[GenAggFunc[K, Sparse]], a Semantics[K] will need to derived a from Semantics[A].
+// TODO: To create a Seq[GenAggFunc[K, Sparse]], a Semantics[K] needs to be derived from a Semantics[A].
 // TODO: MorphableSemantics provides this.  If K is *embedded inside* A, it should be possible in some cases.
 case class MultilabelModel[U, K, -A, +B <: U](
     modelId: ModelIdentity,
