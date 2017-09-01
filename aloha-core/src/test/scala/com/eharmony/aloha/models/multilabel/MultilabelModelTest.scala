@@ -12,7 +12,7 @@ import org.junit.runners.BlockJUnit4ClassRunner
   */
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class MultilabelModelTest extends ModelSerializationTestHelper {
-
+  import MultilabelModelTest._
 
   // TODO: Fill in the test implementation and delete comments once done.
 
