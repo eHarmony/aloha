@@ -9,6 +9,8 @@ import scala.collection.{immutable => sci}
   */
 package object multilabel {
 
+  // All but the last type are package private, for testing.  The last is public.
+
   /**
     * Features about the input value (NOT including features based on labels).
     * This should probably be a `sci.IndexedSeq[Sparse]` but `RegressionFeatures`
@@ -69,3 +71,4 @@ package object multilabel {
     */
   type SparsePredictorProducer[K] = () => SparseMultiLabelPredictor[K]
 }
+

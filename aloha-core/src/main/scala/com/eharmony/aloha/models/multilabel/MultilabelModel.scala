@@ -1,6 +1,6 @@
 package com.eharmony.aloha.models.multilabel
 
-import java.io.Closeable
+import java.io.{Closeable, PrintWriter, StringWriter}
 
 import com.eharmony.aloha.audit.Auditor
 import com.eharmony.aloha.dataset.density.Sparse
@@ -29,7 +29,7 @@ import scala.util.{Failure, Success, Try}
   *
   * Created by ryan.deak on 8/29/17.
   *
-  * @param modelId An identifier for the model.  User in score and error reporting.
+  * @param modelId An identifier for the model.  Used in score and error reporting.
   * @param featureNames feature names (parallel to featureFunctions)
   * @param featureFunctions feature extracting functions.
   * @param labelsInTrainingSet a sequence of all labels encountered during training. Note: the
@@ -78,11 +78,18 @@ extends SubmodelBase[U, Map[K, Double], A, B]
   @transient private[this] lazy val predictor = predictorProducer()
   predictor // Force predictor eagerly
 
+  /**
+    * Cache this in case labelsOfInterest is None.  In that case, we don't want to repeatedly
+    * create this because it could create a GC burden for no real reason.
+    */
+  @transient private[this] lazy val defaultLabelInfo =
+    LabelsAndInfo(labelsInTrainingSet.indices, labelsInTrainingSet, Seq.empty, None)
+
   private[this] val labelToInd: Map[K, Int] =
     labelsInTrainingSet.zipWithIndex.map { case (label, i) => label -> i }(collection.breakOut)
 
   override def subvalue(a: A): Subvalue[B, Map[K, Double]] = {
-    val li = labelsAndInfo(a, labelsInTrainingSet, labelsOfInterest, labelToInd)
+    val li = labelsAndInfo(a, labelsOfInterest, labelToInd, defaultLabelInfo)
 
     if (li.labels.isEmpty)
       reportNoPrediction(modelId, li, auditor)
@@ -113,53 +120,80 @@ extends SubmodelBase[U, Map[K, Double], A, B]
 object MultilabelModel extends ParserProviderCompanion {
 
   /**
-    *
-    * @param indices
-    * @param labels
-    * @param missingLabels
-    * @param problems
-    * @tparam K
+    * Contains information about the labels to be used for predictions, and problems encountered
+    * while trying to get those labels.
+    * @param indices indices into the sequence of all labels seen during training.  These should
+    *                be sorted in ascending order.
+    * @param labels labels for which a prediction should be produced.  labels are parallel to
+    *               indices so `indices(i)` is the index associated with `labels(i)`.
+    * @param missingLabels a sequence of labels derived from the input data that could not be
+    *                      found in the sequence of all labels seen during training.
+    * @param problems any problems encountered when trying to get the labels.  This should only
+    *                 be present when the caller indicates labels should be embedded in the
+    *                 input data passed to the prediction function in the MultilabelModel.
+    * @tparam K type of label or class
     */
   protected[multilabel] case class LabelsAndInfo[K](
       indices: sci.IndexedSeq[Int],
       labels: sci.IndexedSeq[K],
       missingLabels: Seq[K],
       problems: Option[GenAggFuncAccessorProblems]
-  )
-
-  /**
-    *
-    * @param a
-    * @param labelsInTrainingSet
-    * @param labelsOfInterest
-    * @param labelToInd
-    * @tparam A
-    * @tparam K
-    * @return
-    */
-  protected[multilabel] def labelsAndInfo[A, K](
-      a: A,
-      labelsInTrainingSet: sci.IndexedSeq[K],
-      labelsOfInterest: Option[GenAggFunc[A, sci.IndexedSeq[K]]],
-      labelToInd: Map[K, Int]
-  ): LabelsAndInfo[K] = {
-    // TODO: Is this good enough?  Are we tracking enough missing information?  Probably not.
-    labelsOfInterest.map ( labelFn =>
-      labelsForPrediction(a, labelFn, labelToInd)
-    ) getOrElse {
-      LabelsAndInfo(labelsInTrainingSet.indices, labelsInTrainingSet, Seq.empty, None)
+  ) {
+    def missingVarNames: Seq[String] = problems.map(p => p.missing).getOrElse(Nil)
+    def errorMsgs: Seq[String] = {
+      missingLabels.map { lab => s"Label not in training labels: $lab" } ++
+      problems.map(p => p.errors).getOrElse(Nil)
     }
   }
 
+  private[multilabel] val NumLinesToKeepInStackTrace = 20
+
+  private[multilabel] val TooManyMissingError =
+    "Too many missing features encountered to produce prediction."
+
+  private[multilabel] val NoLabelsError = "No labels found in training set."
+
   /**
-    *
-    * @param modelId
-    * @param missing
-    * @param auditor
-    * @tparam U
-    * @tparam K
-    * @tparam B
-    * @return
+    * Get the labels and information about the labels.
+    * @param a an input from which label information should be derived if labelsOfInterest is not empty.
+    * @param labelsOfInterest an optional function used to extract label information from the input `a`.
+    * @param labelToInd a mapping from label to index into the sequence of all labels seen during training.
+    * @param defaultLabelInfo label information related to all labels seen at training time.  If
+    *                         `labelsOfInterest` is not provided, this information will be used.
+    * @tparam A input type of the model
+    * @tparam K type of label or class
+    * @return labels and information about the labels.
+    */
+  protected[multilabel] def labelsAndInfo[A, K](
+      a: A,
+      labelsOfInterest: Option[GenAggFunc[A, sci.IndexedSeq[K]]],
+      labelToInd: Map[K, Int],
+      defaultLabelInfo: LabelsAndInfo[K]
+  ): LabelsAndInfo[K] =
+    labelsOfInterest.fold(defaultLabelInfo)(f => labelsForPrediction(a, f, labelToInd))
+
+  /**
+    * Combine the missing variables found into a set.
+    * @param labelInfo labels and information about the labels.
+    * @param missing missing features from
+    * @tparam K type of label or class
+    * @return a set of missing features
+    */
+  protected[multilabel] def combineMissing[K](
+      labelInfo: LabelsAndInfo[K],
+      missing: scm.Map[String, Seq[String]]
+  ): Set[String] = missing.values.flatten.toSet ++ labelInfo.missingVarNames
+
+  /**
+    * Report that a prediction could not be made because too many missing features were encountered.
+    * @param modelId An identifier for the model.  Used in error reporting.
+    * @param labelInfo labels and information about the labels.
+    * @param missing missing features from
+    * @param auditor an auditor used to audit the output.
+    * @tparam U upper bound on model output type `B`
+    * @tparam K type of label or class
+    * @tparam B output type of the model.
+    * @return a SubValue indicating failure.
     */
   protected[multilabel] def reportTooManyMissing[U, K, B <: U](
       modelId: ModelIdentity,
@@ -167,42 +201,50 @@ object MultilabelModel extends ParserProviderCompanion {
       missing: scm.Map[String, Seq[String]],
       auditor: Auditor[U, Map[K, Double], B]
   ): Subvalue[B, Nothing] = {
-    // TODO: Fill in the errors.
-    val aud = auditor.failure(modelId, missingVarNames = missing.values.flatten.toSet)
+
+    // TODO: Check that missing.values.flatten.toSet AND labelInfo.missingFeatures have the same format.
+    val aud = auditor.failure(
+      modelId,
+      errorMsgs = TooManyMissingError +: labelInfo.errorMsgs,
+      missingVarNames = combineMissing(labelInfo, missing)
+    )
     Subvalue(aud, None)
   }
 
   /**
-    *
-    * @param modelId
-    * @param labelInfo
-    * @param auditor
-    * @tparam U
-    * @tparam K
-    * @tparam B
-    * @return
+    * Report that no prediction attempt was made because of issues with the labels.
+    * @param modelId An identifier for the model.  Used in error reporting.
+    * @param labelInfo labels and information about the labels.
+    * @param auditor an auditor used to audit the output.
+    * @tparam U upper bound on model output type `B`
+    * @tparam K type of label or class
+    * @tparam B output type of the model.
+    * @return a SubValue indicating failure.
     */
   protected[multilabel] def reportNoPrediction[U, K, B <: U](
       modelId: ModelIdentity,
       labelInfo: LabelsAndInfo[K],
       auditor: Auditor[U, Map[K, Double], B]
   ): Subvalue[B, Nothing] = {
-    // TODO: Fill in the errors.
-    val aud = auditor.failure(modelId)
+    val aud = auditor.failure(
+      modelId,
+      errorMsgs = NoLabelsError +: labelInfo.errorMsgs,
+      missingVarNames = labelInfo.missingVarNames.toSet
+    )
     Subvalue(aud, None)
   }
 
   /**
-    *
-    * @param modelId
-    * @param labelInfo
-    * @param missing
-    * @param prediction
-    * @param auditor
-    * @tparam U
-    * @tparam K
-    * @tparam B
-    * @return
+    * Report that the model succeeded.
+    * @param modelId An identifier for the model.  Used in score reporting.
+    * @param labelInfo labels and information about the labels.
+    * @param missing missing features from
+    * @param prediction the prediction(s) made by the embedded predictor.
+    * @param auditor an auditor used to audit the output.
+    * @tparam U upper bound on model output type `B`
+    * @tparam K type of label or class
+    * @tparam B output type of the model.
+    * @return a SubValue indicating success.
     */
   protected[multilabel] def reportSuccess[U, K, B <: U](
       modelId: ModelIdentity,
@@ -212,28 +254,27 @@ object MultilabelModel extends ParserProviderCompanion {
       auditor: Auditor[U, Map[K, Double], B]
   ): Subvalue[B, Map[K, Double]] = {
 
-    val errors =
-      if (labelInfo.missingLabels.nonEmpty)
-        Seq(s"Labels provide for which a prediction could not be produced: ${labelInfo.missingLabels.mkString(", ")}.")
-      else Seq.empty
-
-    // TODO: Incorporate missing data reporting.
-    val aud: B = auditor.success(modelId, prediction, errorMsgs = errors)
+    val aud = auditor.success(
+      modelId,
+      prediction,
+      errorMsgs = labelInfo.errorMsgs,
+      missingVarNames = combineMissing(labelInfo, missing)
+    )
 
     Subvalue(aud, Option(prediction))
   }
 
   /**
-    *
-    * @param modelId
-    * @param labelInfo
-    * @param missing
-    * @param throwable
-    * @param auditor
-    * @tparam U
-    * @tparam K
-    * @tparam B
-    * @return
+    * Report that a `Throwable` was thrown while invoking the predictor
+    * @param modelId An identifier for the model.  Used in error reporting.
+    * @param labelInfo labels and information about the labels.
+    * @param missing missing features from
+    * @param throwable the error the occurred in the predictor.
+    * @param auditor an auditor used to audit the output.
+    * @tparam U upper bound on model output type `B`
+    * @tparam K type of label or class
+    * @tparam B output type of the model.
+    * @return a SubValue indicating failure.
     */
   protected[multilabel] def reportPredictorError[U, K, B <: U](
       modelId: ModelIdentity,
@@ -243,27 +284,36 @@ object MultilabelModel extends ParserProviderCompanion {
       auditor: Auditor[U, Map[K, Double], B]
   ): Subvalue[B, Nothing] = {
 
-    // TODO: Fill in.
-    val aud = auditor.failure(modelId)
+    val pw = new PrintWriter(new StringWriter)
+    throwable.printStackTrace(pw)
+    val stackTrace = pw.toString.split("\n").take(NumLinesToKeepInStackTrace).mkString("\n")
+
+    val aud = auditor.failure(
+      modelId,
+      errorMsgs = stackTrace +: labelInfo.errorMsgs,
+      missingVarNames = combineMissing(labelInfo, missing)
+    )
     Subvalue(aud, None)
   }
 
   /**
-    *
-    * @param a
-    * @param labelsOfInterest
-    * @param labelToInd
-    * @tparam A
-    * @tparam K
-    * @return
+    * Get labels from the input for which a prediction should be produced.
+    * @param example the example provided to the model
+    * @param labelsOfInterest a function used to extract labels for which a
+    *                         prediction should be produced.
+    * @param labelToInd mapping from Label to index into the sequence of all
+    *                   labels seen in the training set.
+    * @tparam A input type of the model
+    * @tparam K type of label or class
+    * @return labels and information about the labels.
     */
   protected[multilabel] def labelsForPrediction[A, K](
-      a: A,
+      example: A,
       labelsOfInterest: GenAggFunc[A, sci.IndexedSeq[K]],
       labelToInd: Map[K, Int]
   ): LabelsAndInfo[K] = {
 
-    val labelsShouldPredict = labelsOfInterest(a)
+    val labelsShouldPredict = labelsOfInterest(example)
 
     val unsorted =
       for {
@@ -273,7 +323,7 @@ object MultilabelModel extends ParserProviderCompanion {
 
     val problems =
       if (labelsShouldPredict.nonEmpty) None
-      else Option(labelsOfInterest.accessorOutputProblems(a))
+      else Option(labelsOfInterest.accessorOutputProblems(example))
 
     val noPrediction =
       if (unsorted.size == labelsShouldPredict.size) Seq.empty
