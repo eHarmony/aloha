@@ -146,6 +146,12 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
 
     fail()
   }
+
+  @Test def testExceptionsThrownInFeatureFunctionsAreNotCaught(): Unit = {
+    // NOTE: This is by design.
+
+    fail()
+  }
 }
 
 object MultilabelModelTest {
