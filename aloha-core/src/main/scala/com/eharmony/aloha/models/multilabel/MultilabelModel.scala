@@ -49,6 +49,10 @@ case class MultilabelModel[U, K, -A, +B <: U](
 extends SubmodelBase[U, Map[K, Double], A, B] {
   import MultilabelModel._
 
+  /**
+    * predictory is transient lazy value because we don't need to worry about serialization.
+    * We don't care about the lazy property.  It should be created eagerly.
+    */
   @transient private[this] lazy val predictor = predictorProducer()
 
   {
