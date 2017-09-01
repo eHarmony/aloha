@@ -25,21 +25,13 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
     // Assuming all parameters passed to the MultilabelModel constructor are
     // Serializable, MultilabelModel should also be Serializable.
 
-    final case class ConstantMultiLabelPredictor[K](returnVal: Map[K, Double])
-      extends SparseMultiLabelPredictor[K] {
-      override def apply(v1: SparseFeatures,
-        v2: Labels[K],
-        v3: LabelIndices,
-        v4: SparseLabelDepFeatures): Map[K, Double] = returnVal
-    }
-
     val model = MultilabelModel(
       ModelId(),
       sci.IndexedSeq(),
       sci.IndexedSeq[GenAggFunc[Int, Sparse]](),
       sci.IndexedSeq[Label](),
       None,
-      () => ConstantMultiLabelPredictor(Map[Label, Double]()),
+      Lazy(ConstantPredictor[Label]()),
       None,
       Auditor
     )
@@ -181,6 +173,18 @@ object MultilabelModelTest {
 
   private type Label = String
   private val Auditor = RootedTreeAuditor.noUpperBound[Map[Label, Double]]()
+
+  case class ConstantPredictor[K](prediction: Double = 0d) extends SparseMultiLabelPredictor[K]
+  with Serializable {
+    override def apply(v1: SparseFeatures,
+      v2: Labels[K],
+      v3: LabelIndices,
+      v4: SparseLabelDepFeatures): Map[K, Double] = v2.map(_ -> prediction).toMap
+  }
+
+  case class Lazy[A](value: A) extends (() => A) {
+    override def apply(): A = value
+  }
 
 // TODO: Access information returned in audited value by using the following functions:
   //    val aud: RootedTree[Any, Map[Label, Double]] = ???
