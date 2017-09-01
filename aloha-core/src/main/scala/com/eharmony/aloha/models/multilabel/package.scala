@@ -9,6 +9,8 @@ import scala.collection.{immutable => sci}
   */
 package object multilabel {
 
+  // All but the last type are package private, for testing.  The last is public.
+
   /**
     * Features about the input value (NOT including features based on labels).
     * This should probably be a `sci.IndexedSeq[Sparse]` but `RegressionFeatures`
@@ -16,13 +18,13 @@ package object multilabel {
     * [[com.eharmony.aloha.models.reg.RegressionFeatures.constructFeatures]] is
     * preferable and will provide consistent results across many model types.
     */
-  private type SparseFeatures = IndexedSeq[Sparse]
+  private[multilabel] type SparseFeatures = IndexedSeq[Sparse]
 
   /**
     * Indices of the labels for which predictions should be produced into the
     * sequence of all labels.  Indices will be sorted in ascending order.
     */
-  private type LabelIndices = sci.IndexedSeq[Int]
+  private[multilabel] type LabelIndices = sci.IndexedSeq[Int]
 
   /**
     * Labels for which predictions should be produced.  This can be an improper subset of all labels.
@@ -31,13 +33,13 @@ package object multilabel {
     *
     * @tparam K the type of labels (or classes in the machine learning literature).
     */
-  private type Labels[K] = sci.IndexedSeq[K]
+  private[multilabel] type Labels[K] = sci.IndexedSeq[K]
 
   /**
     * Sparse features related to the labels.  Other outer sequence aligns with the `Labels` and `LabelIndices`
     * sequences meaning `SparseLabelDepFeatures[i]` relates to the features of `Labels[i]`.
     */
-  private type SparseLabelDepFeatures = Labels[SparseFeatures]
+  private[multilabel] type SparseLabelDepFeatures = Labels[SparseFeatures]
 
   /**
     * A sparse multi-label predictor takes:
@@ -69,3 +71,4 @@ package object multilabel {
     */
   type SparsePredictorProducer[K] = () => SparseMultiLabelPredictor[K]
 }
+
