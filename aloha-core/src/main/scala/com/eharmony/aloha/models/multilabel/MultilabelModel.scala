@@ -85,6 +85,9 @@ extends SubmodelBase[U, Map[K, Double], A, B]
   @transient private[this] lazy val defaultLabelInfo =
     LabelsAndInfo(labelsInTrainingSet.indices, labelsInTrainingSet, Seq.empty, None)
 
+  /**
+    * Making from label to index into the sequence of all labels encountered during training.
+    */
   private[this] val labelToInd: Map[K, Int] =
     labelsInTrainingSet.zipWithIndex.map { case (label, i) => label -> i }(collection.breakOut)
 
