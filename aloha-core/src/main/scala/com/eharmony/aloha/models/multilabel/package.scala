@@ -55,7 +55,7 @@ package object multilabel {
     *
     * @tparam K the type of labels (or classes in the machine learning literature).
     */
-  private[multilabel] type SparseMultiLabelPredictor[K] =
+  type SparseMultiLabelPredictor[K] =
     (SparseFeatures, Labels[K], LabelIndices, SparseLabelDepFeatures) => Map[K, Double]
 
   /**
