@@ -1,22 +1,25 @@
 package com.eharmony.aloha.models.multilabel
 
+import java.io.{PrintWriter, StringWriter}
+
 import com.eharmony.aloha.ModelSerializationTestHelper
 import com.eharmony.aloha.audit.impl.tree.RootedTreeAuditor
 import com.eharmony.aloha.dataset.density.Sparse
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.semantics.func.GenAggFunc
-import org.junit.Assert._
 import org.junit.Test
+import org.junit.Assert._
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 
-import scala.collection.{immutable => sci}
+import scala.collection.{immutable => sci, mutable => scm}
 
 /**
   * Created by ryan.deak on 9/1/17.
   */
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class MultilabelModelTest extends ModelSerializationTestHelper {
+  import MultilabelModel._
   import MultilabelModelTest._
 
   // TODO: Fill in the test implementation and delete comments once done.
@@ -25,19 +28,8 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
     // Assuming all parameters passed to the MultilabelModel constructor are
     // Serializable, MultilabelModel should also be Serializable.
 
-    val model = MultilabelModel(
-      ModelId(),
-      sci.IndexedSeq(),
-      sci.IndexedSeq[GenAggFunc[Int, Sparse]](),
-      sci.IndexedSeq[Label](),
-      None,
-      Lazy(ConstantPredictor[Label]()),
-      None,
-      Auditor
-    )
-
-    val modelRoundTrip = serializeDeserializeRoundTrip(model)
-    assertEquals(model, modelRoundTrip)
+    val modelRoundTrip = serializeDeserializeRoundTrip(modelNoFeatures)
+    assertEquals(modelNoFeatures, modelRoundTrip)
   }
 
 //  @Test def testModelCloseClosesPredictor(): Unit = {
@@ -81,21 +73,89 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
 //    fail()
 //  }
 //
-//  @Test def testReportNoPrediction(): Unit = {
-//    // Make sure Subvalue.natural == None
-//    // Check the values of Subvalue.audited and make sure they are as expected.
-//    // Subvalue.audited.value should be None.  Check the errors and missing values.
-//
-//    fail()
-//  }
-//
-//  @Test def testReportPredictorError(): Unit = {
-//    // Make sure Subvalue.natural == None
-//    // Check the values of Subvalue.audited and make sure they are as expected.
-//    // Subvalue.audited.value should be None.  Check the errors and missing values.
-//
-//    fail()
-//  }
+  @Test def testReportNoPrediction(): Unit = {
+    // Make sure Subvalue.natural == None
+    // Check the values of Subvalue.audited and make sure they are as expected.
+    // Subvalue.audited.value should be None.  Check the errors and missing values.
+
+    val labelInfo = LabelsAndInfo(
+      indices = sci.IndexedSeq[Int](),
+      labels = sci.IndexedSeq[Label](),
+      missingLabels = Seq[Label](),
+      problems = None
+    )
+
+    val report = reportNoPrediction(
+      ModelId(1, "a"),
+      labelInfo,
+      Auditor
+    )
+
+    // TODO: check labelInfo values
+    assertEquals(Vector(NoLabelsError), report.audited.errorMsgs.take(1))
+    assertEquals(None, report.audited.value)
+  }
+
+  @Test def testReportNoPredictionMissingLabelsDoNotExist(): Unit = {
+    // Make sure Subvalue.natural == None
+    // Check the values of Subvalue.audited and make sure they are as expected.
+    // Subvalue.audited.value should be None.  Check the errors and missing values.
+
+    val labelInfo = LabelsAndInfo(
+      indices = sci.IndexedSeq[Int](),
+      labels = sci.IndexedSeq[Label](),
+      missingLabels = missingLabels,
+      problems = None
+    )
+
+    val report = reportNoPrediction(
+      ModelId(1, "a"),
+      labelInfo,
+      Auditor
+    )
+
+    // TODO: look into problems
+    assertEquals(Vector(NoLabelsError) ++ errorMessages, report.audited.errorMsgs)
+    assertEquals(None, report.audited.value)
+  }
+
+
+  @Test def testReportPredictorError(): Unit = {
+    // Make sure Subvalue.natural == None
+    // Check the values of Subvalue.audited and make sure they are as expected.
+    // Subvalue.audited.value should be None.  Check the errors and missing values.
+
+    val labelInfo = LabelsAndInfo(
+      indices = sci.IndexedSeq[Int](),
+      labels = sci.IndexedSeq[Label](),
+      missingLabels = missingLabels,
+      problems = None
+    )
+
+    // TODO: is this a good example of a throwable?
+    val throwable = new RuntimeException("error")
+    val pw = new PrintWriter(new StringWriter)
+    throwable.printStackTrace(pw)
+    val stackTrace = pw.toString.split("\n").take(NumLinesToKeepInStackTrace).mkString("\n")
+
+    // TODO: understand why this is a map
+    val missing = scm.Map("x" -> missingLabels)
+
+    val report = reportPredictorError(
+      ModelId(-1, "x"),
+      labelInfo,
+      missing,
+      throwable,
+      Auditor
+    )
+
+    // TODO: stack trace seems to be a reference and therefore not the same
+    // assertEquals(Vector(stackTrace) ++ errorMessages, report.audited.errorMsgs)
+
+    assertEquals(missingLabels.toSet, report.audited.missingVarNames)
+    assertEquals(None, report.natural)
+    assertEquals(None, report.audited.value)
+  }
 //
 //  @Test def testReportSuccess(): Unit = {
 //    // Make sure Subvalue.natural == Some(value)
@@ -185,6 +245,25 @@ object MultilabelModelTest {
   case class Lazy[A](value: A) extends (() => A) {
     override def apply(): A = value
   }
+
+  val missingLabels: Seq[Label] = Seq("a", "b")
+
+  val modelNoFeatures = MultilabelModel(
+    ModelId(),
+    sci.IndexedSeq(),
+    sci.IndexedSeq[GenAggFunc[Int, Sparse]](),
+    sci.IndexedSeq[Label](),
+    None,
+    Lazy(ConstantPredictor[Label]()),
+    None,
+    Auditor
+  )
+
+  val aud = RootedTreeAuditor[Any, Map[Label, Double]]()
+  // private val failure = aud.failure()
+
+  val baseErrorMessage = Stream.continually("Label not in training labels: ")
+  val errorMessages = baseErrorMessage.zip(missingLabels).map{ case(msg, label) => s"$msg$label" }
 
 // TODO: Access information returned in audited value by using the following functions:
   //    val aud: RootedTree[Any, Map[Label, Double]] = ???
