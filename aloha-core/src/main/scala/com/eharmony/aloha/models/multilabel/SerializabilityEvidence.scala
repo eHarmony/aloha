@@ -11,7 +11,6 @@ object SerializabilityEvidence {
   implicit def anyValEvidence[A <: AnyVal]: SerializabilityEvidence[A] =
     new SerializabilityEvidence[A]{}
 
-  implicit def serializableEvidence[A <: Serializable]: SerializabilityEvidence[A] =
+  implicit def javaSerializableEvidence[A <: java.io.Serializable]: SerializabilityEvidence[A] =
     new SerializabilityEvidence[A]{}
 }
-
