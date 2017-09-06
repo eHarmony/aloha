@@ -287,9 +287,10 @@ object MultilabelModel extends ParserProviderCompanion {
       auditor: Auditor[U, Map[K, Double], B]
   ): Subvalue[B, Nothing] = {
 
-    val pw = new PrintWriter(new StringWriter)
+    val sw = new StringWriter
+    val pw = new PrintWriter(sw)
     throwable.printStackTrace(pw)
-    val stackTrace = pw.toString.split("\n").take(NumLinesToKeepInStackTrace).mkString("\n")
+    val stackTrace = sw.toString.split("\n").take(NumLinesToKeepInStackTrace).mkString("\n")
 
     val aud = auditor.failure(
       modelId,

@@ -13,6 +13,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 
 import scala.collection.{immutable => sci, mutable => scm}
+import scala.util.Try
 
 /**
   * Created by ryan.deak on 9/1/17.
@@ -132,27 +133,26 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
       problems = None
     )
 
-    // TODO: is this a good example of a throwable?
-    val throwable = new RuntimeException("error")
-    val pw = new PrintWriter(new StringWriter)
+    val throwable = Try(throw new Exception("error")).failed.get
+    val sw = new StringWriter
+    val pw = new PrintWriter(sw)
     throwable.printStackTrace(pw)
-    val stackTrace = pw.toString.split("\n").take(NumLinesToKeepInStackTrace).mkString("\n")
+    val stackTrace = sw.toString.split("\n").take(NumLinesToKeepInStackTrace).mkString("\n")
 
-    // TODO: understand why this is a map
-    val missing = scm.Map("x" -> missingLabels)
+    // This is missing variables for a features
+    val missingVariables = Seq("a", "b")
+    val missingFeatureMap = scm.Map("x" -> missingVariables)
 
     val report = reportPredictorError(
       ModelId(-1, "x"),
       labelInfo,
-      missing,
+      missingFeatureMap,
       throwable,
       Auditor
     )
 
-    // TODO: stack trace seems to be a reference and therefore not the same
-    // assertEquals(Vector(stackTrace) ++ errorMessages, report.audited.errorMsgs)
-
-    assertEquals(missingLabels.toSet, report.audited.missingVarNames)
+    assertEquals(Vector(stackTrace) ++ errorMessages, report.audited.errorMsgs)
+    assertEquals(missingVariables.toSet, report.audited.missingVarNames)
     assertEquals(None, report.natural)
     assertEquals(None, report.audited.value)
   }
@@ -253,8 +253,7 @@ object MultilabelModelTest {
   private type Label = String
   private val Auditor = RootedTreeAuditor.noUpperBound[Map[Label, Double]]()
 
-  case class ConstantPredictor[K](prediction: Double = 0d) extends SparseMultiLabelPredictor[K]
-  with Serializable {
+  case class ConstantPredictor[K](prediction: Double = 0d) extends SparseMultiLabelPredictor[K] {
     override def apply(v1: SparseFeatures,
       v2: Labels[K],
       v3: LabelIndices,
