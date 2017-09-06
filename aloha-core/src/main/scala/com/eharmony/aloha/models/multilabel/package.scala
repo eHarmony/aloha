@@ -9,7 +9,7 @@ import scala.collection.{immutable => sci}
   */
 package object multilabel {
 
-  // All but the last type are package private, for testing.  The last is public.
+  // All but the last two types are package private, for testing.  The others are public.
 
   /**
     * Features about the input value (NOT including features based on labels).
