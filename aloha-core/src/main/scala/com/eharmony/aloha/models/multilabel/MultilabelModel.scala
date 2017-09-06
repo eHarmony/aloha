@@ -11,6 +11,7 @@ import com.eharmony.aloha.models.reg.RegressionFeatures
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.semantics.func.{GenAggFunc, GenAggFuncAccessorProblems}
+
 import spray.json.{JsonFormat, JsonReader}
 
 import scala.collection.{immutable => sci, mutable => scm}
@@ -52,6 +53,7 @@ import scala.util.{Failure, Success, Try}
   *                            return an error instead of the computed score.  This is for missing
   *                            data situations.
   * @param auditor transforms a `Map[K, Double]` to a `B`.  Reports successes and errors.
+  * @param ev evidence that `K` is serializable.
   * @tparam U upper bound on model output type `B`
   * @tparam K type of label or class
   * @tparam A input type of the model
@@ -66,6 +68,7 @@ case class MultilabelModel[U, K, -A, +B <: U](
     predictorProducer: SparsePredictorProducer[K],
     numMissingThreshold: Option[Int],
     auditor: Auditor[U, Map[K, Double], B])
+(implicit ev: SerializabilityEvidence[K])
 extends SubmodelBase[U, Map[K, Double], A, B]
    with RegressionFeatures[A] {
 
@@ -82,7 +85,9 @@ extends SubmodelBase[U, Map[K, Double], A, B]
     * Cache this in case labelsOfInterest is None.  In that case, we don't want to repeatedly
     * create this because it could create a GC burden for no real reason.
     */
-  @transient private[this] lazy val defaultLabelInfo =
+  private[this] val defaultLabelInfo =
+    // Hopefully, making this non-transient doesn't increase the serialized size much.
+    // labelsInTrainingSet isn't serialized twice is it?
     LabelsAndInfo(labelsInTrainingSet.indices, labelsInTrainingSet, Seq.empty, None)
 
   /**
@@ -113,6 +118,10 @@ extends SubmodelBase[U, Map[K, Double], A, B]
     }
   }
 
+  /**
+    * When the `predictor` passed to the constructor is a java.io.Closeable, its `close`
+    * method is called.
+    */
   override def close(): Unit =
     predictor match {
       case closeable: Closeable => closeable.close()
