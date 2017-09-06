@@ -5,4 +5,4 @@ git config --global user.email "opensource@eharmony.com"
 git config --global user.name "eHarmony"
 git config --global push.default simple
 
-sbt docs/publishMicrosite
+sbt -J-Xss2m docs/publishMicrosite
