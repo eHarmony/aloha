@@ -156,17 +156,36 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
     assertEquals(None, report.natural)
     assertEquals(None, report.audited.value)
   }
-//
-//  @Test def testReportSuccess(): Unit = {
-//    // Make sure Subvalue.natural == Some(value)
-//    // Check the values of Subvalue.audited and make sure they are as expected.
-//    // Subvalue.audited.value should be Some(value2).
-//    // 'value' should equal 'value2'.
-//    // Check the errors and missing values.
-//
-//    fail()
-//  }
-//
+
+  @Test def testReportSuccess(): Unit = {
+    // Make sure Subvalue.natural == Some(value)
+    // Check the values of Subvalue.audited and make sure they are as expected.
+    // Subvalue.audited.value should be Some(value2).
+    // 'value' should equal 'value2'.
+    // Check the errors and missing values.
+
+    // TODO: refactor this?
+    val labelInfo = LabelsAndInfo(
+      indices = sci.IndexedSeq[Int](),
+      labels = sci.IndexedSeq[Label](),
+      missingLabels = missingLabels,
+      problems = None
+    )
+    val predictions = Map("label1" -> 1.0)
+
+    val report = reportSuccess(
+      ModelId(0, "ModelId"),
+      labelInfo,
+      scm.Map("x" -> missingLabels),
+      predictions,
+      Auditor
+    )
+
+    assertEquals(Some(predictions), report.natural)
+    assertEquals(Some(predictions), report.audited.value)
+    assertEquals(report.natural, report.audited.value)
+  }
+
 //  @Test def testLabelsForPredictionContainsProblemsWhenLabelsIsEmpty(): Unit = {
 //    // Test this:
 //    //    val problems =
