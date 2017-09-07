@@ -217,8 +217,8 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
     val labelsAndInfoNoLabels = labelsForPrediction(exampleNoLabels,
       labelsOfInterestExtractor,
       labelToInt)
-    val problemsNoLabels = Option(GenAggFuncAccessorProblems(Seq(), Seq()))
-    assertEquals(problemsNoLabels, labelsAndInfoNoLabels.problems)
+    val problemsNoLabelsExpected = Option(GenAggFuncAccessorProblems(Seq(), Seq()))
+    assertEquals(problemsNoLabelsExpected, labelsAndInfoNoLabels.problems)
   }
 
   @Test def testLabelsForPredictionProvidesLabelsThatCantBePredicted(): Unit = {
