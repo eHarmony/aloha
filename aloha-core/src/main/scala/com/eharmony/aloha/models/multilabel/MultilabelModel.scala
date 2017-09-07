@@ -5,14 +5,15 @@ import java.io.{Closeable, PrintWriter, StringWriter}
 import com.eharmony.aloha.audit.Auditor
 import com.eharmony.aloha.dataset.density.Sparse
 import com.eharmony.aloha.factory._
+import com.eharmony.aloha.factory.ri2jf.RefInfoToJsonFormat
 import com.eharmony.aloha.id.ModelIdentity
 import com.eharmony.aloha.models._
 import com.eharmony.aloha.models.reg.RegressionFeatures
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.semantics.func.{GenAggFunc, GenAggFuncAccessorProblems}
-
-import spray.json.{JsonFormat, JsonReader}
+import com.eharmony.aloha.util.SerializabilityEvidence
+import spray.json.{JsValue, JsonFormat, JsonReader}
 
 import scala.collection.{immutable => sci, mutable => scm}
 import scala.util.{Failure, Success, Try}
@@ -280,7 +281,7 @@ object MultilabelModel extends ParserProviderCompanion {
     * Report that a `Throwable` was thrown while invoking the predictor
     * @param modelId An identifier for the model.  Used in error reporting.
     * @param labelInfo labels and information about the labels.
-    * @param missing missing features from
+    * @param missingFeatureMap missing features from RegressionFeatures
     * @param throwable the error the occurred in the predictor.
     * @param auditor an auditor used to audit the output.
     * @tparam U upper bound on model output type `B`
@@ -291,19 +292,20 @@ object MultilabelModel extends ParserProviderCompanion {
   protected[multilabel] def reportPredictorError[U, K, B <: U](
       modelId: ModelIdentity,
       labelInfo: LabelsAndInfo[K],
-      missing: scm.Map[String, Seq[String]],
+      missingFeatureMap: scm.Map[String, Seq[String]],
       throwable: Throwable,
       auditor: Auditor[U, Map[K, Double], B]
   ): Subvalue[B, Nothing] = {
 
-    val pw = new PrintWriter(new StringWriter)
+    val sw = new StringWriter
+    val pw = new PrintWriter(sw)
     throwable.printStackTrace(pw)
-    val stackTrace = pw.toString.split("\n").take(NumLinesToKeepInStackTrace).mkString("\n")
+    val stackTrace = sw.toString.split("\n").take(NumLinesToKeepInStackTrace).mkString("\n")
 
     val aud = auditor.failure(
       modelId,
       errorMsgs = stackTrace +: labelInfo.errorMsgs,
-      missingVarNames = combineMissing(labelInfo, missing)
+      missingVarNames = combineMissing(labelInfo, missingFeatureMap)
     )
     Subvalue(aud, None)
   }
@@ -346,6 +348,8 @@ object MultilabelModel extends ParserProviderCompanion {
     LabelsAndInfo(ind, lab, noPrediction, problems)
   }
 
+  private[multilabel] lazy val plugins: Map[String, MultilabelModelParserPlugin] =
+    MultilabelModelParserPlugin.plugins().map(p => p.name -> p).toMap
 
   override def parser: ModelParser = Parser
 
@@ -371,26 +375,94 @@ object MultilabelModel extends ParserProviderCompanion {
       if (!RefInfoOps.isSubType[N, Map[_, Double]])
         None
       else {
-        // Because N is a subtype of map, it "should" have two type parameters.
-        // This is obviously not true in all cases, like with LongMap
-        // http://scala-lang.org/files/archive/api/2.11.8/#scala.collection.immutable.LongMap
-        // TODO: Make this more robust.
-        val refInfoK = RefInfoOps.typeParams(r).head
+        val readerAttempt =
+          for {
+            refInfoK     <- getRefInfoK[N, Any](r).right
+            jsonFormatK  <- getJsonFormatK(factory, refInfoK).right
+            serEvK       <- getSerializableEvidenceK(refInfoK).right
+          } yield {
+            MultiLabelModelReader(
+              refInfoK,
+              jsonFormatK,
+              serEvK,
+              semantics,
+              auditor,
+              plugins
+            )
+          }
 
-        // To allow custom class (key) types, we'll need to create a custom ModelFactoryImpl instance
-        // with a specialized RefInfoToJsonFormat.
-        //
-        // type: Option[JsonFormat[_]]
-        val jsonFormatK = factory.jsonFormat(refInfoK)
-
-        // TODO: parse the label extraction
-
-        // TODO: parse the feature extraction
-
-        // TODO: parse the native submodel from the wrapped ML library.  This involves plugins
-
-        ???
+        readerAttempt match {
+          case Left(err) =>
+            // TODO: Log err
+            None
+          case Right(reader) => Option(reader)
+        }
       }
+    }
+  }
+
+  def getSerializableEvidenceK[K](refInfoK: RefInfo[K]): Either[String, SerializabilityEvidence[K]] = {
+    val serEv =
+      if (RefInfoOps.isSubType(refInfoK, RefInfo.JavaSerializable))
+        Option(SerializabilityEvidence.serializableEvidence[java.io.Serializable])
+      else if (RefInfoOps.isSubType(refInfoK, RefInfo.AnyVal))
+        Option(SerializabilityEvidence.anyValEvidence[AnyVal])
+      else None
+
+    val serEvK = serEv.asInstanceOf[Option[SerializabilityEvidence[K]]]
+
+    serEvK.toRight(s"Couldn't produce evidence that ${RefInfoOps.toString(refInfoK)} is Serializable.")
+  }
+
+  def getRefInfoK[N, K](rin: RefInfo[N]): Either[String, RefInfo[K]] = {
+    // Because N is a subtype of map, it "should" have two type parameters.
+    // This is obviously not true in all cases, like with LongMap
+    // http://scala-lang.org/files/archive/api/2.11.8/#scala.collection.immutable.LongMap
+    // TODO: Make this more robust.
+
+    Option(RefInfoOps.typeParams(rin).head).asInstanceOf[Option[RefInfo[K]]]
+      .toRight(s"Couldn't extract key type from natural type: ${RefInfoOps.toString(rin)}")
+  }
+
+  def getJsonFormatK[U, A, K](factory: SubmodelFactory[U, A], refInfoK: RefInfo[K]): Either[String, JsonFormat[K]] = {
+    // To allow custom class (key) types, we'll need to create a custom ModelFactoryImpl instance
+    // with a specialized RefInfoToJsonFormat.
+    factory.jsonFormat(refInfoK)
+      .toRight(s"Couldn't find a JSON Format for ${RefInfoOps.toString(refInfoK)}.  Consider using a different ${classOf[RefInfoToJsonFormat].getCanonicalName}.")
+  }
+
+  case class MultiLabelModelReader[U, N, K, A, B <: U](
+      refInfoK: RefInfo[K],
+      jsonFormatK: JsonFormat[K],
+      serEvK: SerializabilityEvidence[K],
+      semantics: Semantics[A],
+      auditor: Auditor[U, N, B],
+      plugins: Map[String, MultilabelModelParserPlugin]
+  ) extends JsonReader[MultilabelModel[U, K, A, B]] {
+    override def read(json: JsValue): MultilabelModel[U, K, A, B] = {
+
+      /*
+          val aud = auditor.asInstanceOf[Auditor[U, Double, B]]
+
+          // Get the metadata necessary to create the model.
+          val d = json.convertTo[RegData]
+
+          // Turn the map of features into a Seq to fix the order for all subsequent operations because they
+          // need a common understanding of the indices for the features.
+          val featureMap: Seq[(String, Spec)] = d.features.toSeq
+          val featureNameToIndex: Map[String, Int] = featureMap.map(_._1).zipWithIndex.toMap
+
+          // This is the weight vector.
+          val beta = getBeta(d.features.size, d.weights, higherOrderFeatures(d, featureNameToIndex))
+
+          val (featureNames, featureFns) = features(featureMap, semantics).fold(f => throw new DeserializationException(f.mkString("\n")), identity).toIndexedSeq.unzip
+
+          val m = RegressionModel(d.modelId, featureNames, featureFns, beta, identity, d.spline, d.numMissingThreshold, aud)
+          m
+
+       */
+
+      ???
     }
   }
 }
