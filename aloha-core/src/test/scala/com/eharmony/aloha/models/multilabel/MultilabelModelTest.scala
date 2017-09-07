@@ -6,7 +6,7 @@ import com.eharmony.aloha.ModelSerializationTestHelper
 import com.eharmony.aloha.audit.impl.tree.RootedTreeAuditor
 import com.eharmony.aloha.dataset.density.Sparse
 import com.eharmony.aloha.id.ModelId
-import com.eharmony.aloha.semantics.func.GenAggFunc
+import com.eharmony.aloha.semantics.func._
 import org.junit.Test
 import org.junit.Assert._
 import org.junit.runner.RunWith
@@ -186,23 +186,49 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
     assertEquals(report.natural, report.audited.value)
   }
 
-//  @Test def testLabelsForPredictionContainsProblemsWhenLabelsIsEmpty(): Unit = {
-//    // Test this:
-//    //    val problems =
-//    //      if (labelsShouldPredict.nonEmpty) None
-//    //      else Option(labelsOfInterest.accessorOutputProblems(a))
-//
-//    fail()
-//  }
-//
-//  @Test def testLabelsForPredictionProvidesLabelsThatCantBePredicted(): Unit = {
-//    // Test this:
-//    //    val noPrediction =
-//    //      if (unsorted.size == labelsShouldPredict.size) Seq.empty
-//    //      else labelsShouldPredict.filterNot(labelToInd.contains)
-//
-//    fail()
-//  }
+  @Test def testLabelsForPredictionContainsProblemsWhenLabelsIsEmpty(): Unit = {
+    def extractLabelsOutOfExample(example: Map[String, String]) =
+      example.filterKeys(_.startsWith("label")).toSeq.unzip._2.sorted.toIndexedSeq
+
+    // Example with no problems
+    val example: Map[String, String] = Map(
+      "feature1" -> "1",
+      "feature2" -> "2",
+      "feature3" -> "2",
+      "label1"   -> "a",
+      "label2"   -> "b"
+    )
+    val allLabels = sci.IndexedSeq("a", "b", "c")
+    val labelToInt = allLabels.zipWithIndex.toMap
+    val labelsOfInterestExtractor = GenFunc0("empty spec", extractLabelsOutOfExample)
+    val labelsAndInfo = labelsForPrediction(example, labelsOfInterestExtractor, labelToInt)
+    assertEquals(None, labelsAndInfo.problems)
+
+    // Example with 1 missing label
+    val exampleMissingOneLabel = Map("feature1" -> "1", "label1" -> "a")
+    val labelsAndInfoMissingOneLabel = labelsForPrediction(
+      exampleMissingOneLabel,
+      labelsOfInterestExtractor,
+      labelToInt)
+    assertEquals(None, labelsAndInfoMissingOneLabel.problems)
+
+    // Example with no labels
+    val exampleNoLabels = Map("feature1" -> "1", "feature2" -> "2")
+    val labelsAndInfoNoLabels = labelsForPrediction(exampleNoLabels,
+      labelsOfInterestExtractor,
+      labelToInt)
+    val problemsNoLabels = Option(GenAggFuncAccessorProblems(Seq(), Seq()))
+    assertEquals(problemsNoLabels, labelsAndInfoNoLabels.problems)
+  }
+
+  @Test def testLabelsForPredictionProvidesLabelsThatCantBePredicted(): Unit = {
+    // Test this:
+    //    val noPrediction =
+    //      if (unsorted.size == labelsShouldPredict.size) Seq.empty
+    //      else labelsShouldPredict.filterNot(labelToInd.contains)
+
+    fail()
+  }
 //
 //  @Test def testLabelsForPredictionReturnsLabelsSortedByIndex(): Unit = {
 //    // Test this:
@@ -277,11 +303,13 @@ object MultilabelModelTest {
     Auditor
   )
 
-  val aud = RootedTreeAuditor[Any, Map[Label, Double]]()
+  val aud: RootedTreeAuditor[Any, Map[Label, Double]] = RootedTreeAuditor[Any, Map[Label, Double]]()
   // private val failure = aud.failure()
 
-  val baseErrorMessage = Stream.continually("Label not in training labels: ")
-  val errorMessages = baseErrorMessage.zip(missingLabels).map{ case(msg, label) => s"$msg$label" }
+  val baseErrorMessage: Seq[String] = Stream.continually("Label not in training labels: ")
+  val errorMessages: Seq[String] = baseErrorMessage.zip(missingLabels).map {
+    case(msg, label) => s"$msg$label"
+  }
 
 // TODO: Access information returned in audited value by using the following functions:
   //    val aud: RootedTree[Any, Map[Label, Double]] = ???
