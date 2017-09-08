@@ -8,12 +8,13 @@ import com.eharmony.aloha.factory._
 import com.eharmony.aloha.factory.ri2jf.RefInfoToJsonFormat
 import com.eharmony.aloha.id.ModelIdentity
 import com.eharmony.aloha.models._
+import com.eharmony.aloha.models.multilabel.json.MultilabelModelReader
 import com.eharmony.aloha.models.reg.RegressionFeatures
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.semantics.func.{GenAggFunc, GenAggFuncAccessorProblems}
-import com.eharmony.aloha.util.SerializabilityEvidence
-import spray.json.{JsValue, JsonFormat, JsonReader}
+import com.eharmony.aloha.util.{Logging, SerializabilityEvidence}
+import spray.json.{JsonFormat, JsonReader}
 
 import scala.collection.{immutable => sci, mutable => scm}
 import scala.util.{Failure, Success, Try}
@@ -353,7 +354,7 @@ object MultilabelModel extends ParserProviderCompanion {
 
   override def parser: ModelParser = Parser
 
-  object Parser extends ModelSubmodelParsingPlugin {
+  object Parser extends ModelSubmodelParsingPlugin with Logging {
     override val modelType: String = "multilabel-sparse"
 
     // TODO: Figure if a Option[JsonReader[MultilabelModel[U, _, A, B]]] can be returned.
@@ -371,29 +372,34 @@ object MultilabelModel extends ParserProviderCompanion {
         auditor: Auditor[U, N, B])(implicit
         r: RefInfo[N],
         jf: JsonFormat[N]
-    ): Option[JsonReader[_ <: Model[A, B] with Submodel[_, A, B]]] = {
-      if (!RefInfoOps.isSubType[N, Map[_, Double]])
+    ): Option[JsonReader[Model[A, B] with Submodel[N, A, B]]] = {
+
+      // If the type N is a Map with Double values, we can specify a key type (call it K).
+      // Then the necessary type classes related to K are *instantiated* and a reader is
+      // created using types N and K.  Ultimately, the reader consumes the type `K` but
+      // only the type N is exposed in the returned reader.
+      if (!RefInfoOps.isSubType[N, Map[_, Double]]) {
+        warn(s"N=${RefInfoOps.toString[N]} is not a Map[K, Double]. Cannot create a JsonReader for MultilabelModel.")
         None
+      }
+      else if (2 != RefInfoOps.typeParams(r).size) {
+        warn(s"N=${RefInfoOps.toString[N]} does not have 2 type parameters. Cannot infer label type K needed create a JsonReader for MultilabelModel.")
+        None
+      }
       else {
+        // This would be a prime candidate for the WriterT monad transformer:
+        // type Result[A] = WriterT[Option, Vector[String], A]
+        // https://github.com/typelevel/cats/blob/0.7.x/core/src/main/scala/cats/data/WriterT.scala#L8
         val readerAttempt =
           for {
-            refInfoK     <- getRefInfoK[N, Any](r).right
-            jsonFormatK  <- getJsonFormatK(factory, refInfoK).right
-            serEvK       <- getSerializableEvidenceK(refInfoK).right
-          } yield {
-            MultiLabelModelReader(
-              refInfoK,
-              jsonFormatK,
-              serEvK,
-              semantics,
-              auditor,
-              plugins
-            )
-          }
+            ri <- refInfoOrError[N, Any](r).right    // Force type of K = Any
+            jf <- jsonFormatOrError(factory, ri).right
+            se <- serializableEvidenceOrError(ri).right
+          } yield reader(semantics, auditor, ri, jf, se)
 
         readerAttempt match {
           case Left(err) =>
-            // TODO: Log err
+            warn(err)
             None
           case Right(reader) => Option(reader)
         }
@@ -401,7 +407,49 @@ object MultilabelModel extends ParserProviderCompanion {
     }
   }
 
-  def getSerializableEvidenceK[K](refInfoK: RefInfo[K]): Either[String, SerializabilityEvidence[K]] = {
+  /**
+    * Produce the reader.
+    *
+    * '''NOTE''': This function should only be applied after we know `N` equals `Map[K, Double]`
+    * for some `K`.
+    *
+    * @param semantics semantics to use for compiling specifications.
+    * @param auditor an auditor of type `Auditor[U, N, B]`.  It's not of type
+    *                `Auditor[U, Map[K, Double], B]`, but because we know the relationship
+    *                between `N` and `Map[K, Double]`, we can cast `N` to `Map[K, Double]`.
+    * @param ri reflection information about `K`.
+    * @param jf a JSON format that can translate JSON ASTs to and from `K`s.
+    * @param se evidence that `K` is `Serializable`.
+    * @tparam U upper bound on model output type `B`
+    * @tparam N the expected natural output type the model that will be produced by the
+    *           JSON reader.  This should be isomorphic to `Map[K, Double]`.
+    * @tparam K type of label or class
+    * @tparam A input type of the model.
+    * @tparam B output type of the model.
+    * @return a JSON reader capable of producing a [[MultilabelModel]] from a JSON definition.
+    */
+  private[multilabel] def reader[U, N, K, A, B <: U](
+      semantics: Semantics[A],
+      auditor: Auditor[U, N, B],
+      ri: RefInfo[K],
+      jf: JsonFormat[K],
+      se: SerializabilityEvidence[K]): JsonReader[Model[A, B] with Submodel[N, A, B]] = {
+    // At this point, N = Map[K, Double], so we are just casting to itself essentially.
+    val aud = auditor.asInstanceOf[Auditor[U, Map[K, Double], B]]
+
+    // Create a cast from Map[K, Double] to N.  Ideally, this would be a Map[K, Double] <:< N
+    // rather than a Map[K, Double] => N.  But it's hard (with good reason) to create a <:<
+    // and easy to create a function.
+    implicit val cast = (m: Map[K, Double]) => m.asInstanceOf[N]
+
+    // MultilabelModelReader can produce a MultilabelModel.  But there's a problem returning
+    // the proper type because the compiler doesn't have compile-time evidence that N is
+    // Map[K, Double] so, a less specific type (Model[A, B] with Submodel[N, A, B]) is
+    // returned.
+    MultilabelModelReader(semantics, aud, plugins)(ri, jf, se).untypedReader[N]
+  }
+
+  private[multilabel] def serializableEvidence[K](refInfoK: RefInfo[K]) = {
     val serEv =
       if (RefInfoOps.isSubType(refInfoK, RefInfo.JavaSerializable))
         Option(SerializabilityEvidence.serializableEvidence[java.io.Serializable])
@@ -409,60 +457,37 @@ object MultilabelModel extends ParserProviderCompanion {
         Option(SerializabilityEvidence.anyValEvidence[AnyVal])
       else None
 
-    val serEvK = serEv.asInstanceOf[Option[SerializabilityEvidence[K]]]
-
-    serEvK.toRight(s"Couldn't produce evidence that ${RefInfoOps.toString(refInfoK)} is Serializable.")
+    serEv.asInstanceOf[Option[SerializabilityEvidence[K]]]
   }
 
-  def getRefInfoK[N, K](rin: RefInfo[N]): Either[String, RefInfo[K]] = {
-    // Because N is a subtype of map, it "should" have two type parameters.
-    // This is obviously not true in all cases, like with LongMap
-    // http://scala-lang.org/files/archive/api/2.11.8/#scala.collection.immutable.LongMap
-    // TODO: Make this more robust.
+  private[multilabel] def serializableEvidenceOrError[K](refInfoK: RefInfo[K]) = {
+    serializableEvidence(refInfoK)
+      .toRight(s"Couldn't produce evidence that ${RefInfoOps.toString(refInfoK)} is Serializable.")
+  }
 
-    Option(RefInfoOps.typeParams(rin).head).asInstanceOf[Option[RefInfo[K]]]
+  /**
+    * Get reflection information about the label type `K` for the [[MultilabelModel]] to be produced.
+    *
+    * At the time of application, we should already know N is a subtype of Map with 2 type parameters.
+    * This will preclude things like
+    * [[http://scala-lang.org/files/archive/api/2.11.8/#scala.collection.immutable.LongMap scala.collection.immutable.LongMap]].
+    * @param rin reflection information about `N`.
+    * @tparam N natural output type of the model. `N` should equal `Map[K, Double]`.
+    * @tparam K label type of the [[MultilabelModel]]
+    * @return reflection information about K.
+    */
+  private[multilabel] def refInfo[N, K](rin: RefInfo[N]) =
+    RefInfoOps.typeParams(rin).headOption.asInstanceOf[Option[RefInfo[K]]]
+
+  private[multilabel] def refInfoOrError[N, K](rin: RefInfo[N]) = {
+    refInfo[N, K](rin)
       .toRight(s"Couldn't extract key type from natural type: ${RefInfoOps.toString(rin)}")
   }
 
-  def getJsonFormatK[U, A, K](factory: SubmodelFactory[U, A], refInfoK: RefInfo[K]): Either[String, JsonFormat[K]] = {
+  private[multilabel] def jsonFormatOrError[U, A, K](factory: SubmodelFactory[U, A], refInfoK: RefInfo[K]): Either[String, JsonFormat[K]] = {
     // To allow custom class (key) types, we'll need to create a custom ModelFactoryImpl instance
     // with a specialized RefInfoToJsonFormat.
     factory.jsonFormat(refInfoK)
       .toRight(s"Couldn't find a JSON Format for ${RefInfoOps.toString(refInfoK)}.  Consider using a different ${classOf[RefInfoToJsonFormat].getCanonicalName}.")
-  }
-
-  case class MultiLabelModelReader[U, N, K, A, B <: U](
-      refInfoK: RefInfo[K],
-      jsonFormatK: JsonFormat[K],
-      serEvK: SerializabilityEvidence[K],
-      semantics: Semantics[A],
-      auditor: Auditor[U, N, B],
-      plugins: Map[String, MultilabelModelParserPlugin]
-  ) extends JsonReader[MultilabelModel[U, K, A, B]] {
-    override def read(json: JsValue): MultilabelModel[U, K, A, B] = {
-
-      /*
-          val aud = auditor.asInstanceOf[Auditor[U, Double, B]]
-
-          // Get the metadata necessary to create the model.
-          val d = json.convertTo[RegData]
-
-          // Turn the map of features into a Seq to fix the order for all subsequent operations because they
-          // need a common understanding of the indices for the features.
-          val featureMap: Seq[(String, Spec)] = d.features.toSeq
-          val featureNameToIndex: Map[String, Int] = featureMap.map(_._1).zipWithIndex.toMap
-
-          // This is the weight vector.
-          val beta = getBeta(d.features.size, d.weights, higherOrderFeatures(d, featureNameToIndex))
-
-          val (featureNames, featureFns) = features(featureMap, semantics).fold(f => throw new DeserializationException(f.mkString("\n")), identity).toIndexedSeq.unzip
-
-          val m = RegressionModel(d.modelId, featureNames, featureFns, beta, identity, d.spline, d.numMissingThreshold, aud)
-          m
-
-       */
-
-      ???
-    }
   }
 }

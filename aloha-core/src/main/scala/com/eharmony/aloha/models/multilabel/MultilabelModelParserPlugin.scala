@@ -1,6 +1,5 @@
 package com.eharmony.aloha.models.multilabel
 
-import com.eharmony.aloha.models.multilabel.json.MultilabelModelAst
 import com.eharmony.aloha.reflect.{RefInfo, RuntimeClasspathScanning}
 import spray.json.{JsonFormat, JsonReader}
 
@@ -19,14 +18,14 @@ trait MultilabelModelParserPlugin {
 
   /**
     * Provide a JSON reader that can translate JSON ASTs to a `SparsePredictorProducer`.
-    * @param ast information about the multi-label model
+    * @param info information about the multi-label model passed to the plugin.
     * @param ri reflection information about the label type
     * @param jf a JSON format representing a bidirectional mapping between instances of
     *           `K` and JSON ASTs.
     * @tparam K the label or class type to be produced by the multi-label model.
     * @return a JSON reader that can create `SparsePredictorProducer[K]` from JSON ASTs.
     */
-  def parser[K](ast: MultilabelModelAst)
+  def parser[K](info: PluginInfo)
                (implicit ri: RefInfo[K], jf: JsonFormat[K]): JsonReader[SparsePredictorProducer[K]]
 }
 
