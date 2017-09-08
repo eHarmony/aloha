@@ -1,5 +1,6 @@
 package com.eharmony.aloha.models.reg
 
+import com.eharmony.aloha.dataset.density.Sparse
 import com.eharmony.aloha.models.reg.json.Spec
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.semantics.func.GenAggFunc
@@ -23,7 +24,7 @@ trait RegFeatureCompiler { self: EitherHelpers =>
   protected[this] def features[A](featureMap: Seq[(String, Spec)], semantics: Semantics[A]): ENS[Seq[(String, GenAggFunc[A, Iterable[(String, Double)]])]] =
     mapSeq(featureMap) {
       case (k, Spec(spec, default)) =>
-        semantics.createFunction[Iterable[(String, Double)]](spec, default).
+        semantics.createFunction[Sparse](spec, default).
           left.map { Seq(s"Error processing spec '$spec'") ++ _ }. // Add the spec that errored.
           right.map { f => (k, f) }
     }
