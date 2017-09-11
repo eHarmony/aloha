@@ -17,7 +17,7 @@ import com.eharmony.aloha.util.{Logging, SerializabilityEvidence}
 import spray.json.{JsonFormat, JsonReader}
 
 import scala.collection.{immutable => sci, mutable => scm}
-import scala.util.{Failure, Success, Try}
+import scala.util.{Failure, Success}
 
 
 // TODO: When adding label-dep features, a Seq[GenAggFunc[K, Sparse]] will be needed.
@@ -110,7 +110,7 @@ extends SubmodelBase[U, Map[K, Double], A, B]
         reportTooManyMissing(modelId, li, missing, auditor)
       else {
         // TODO: To support label-dependent features, fill last parameter with a valid value.
-        val predictionTry = Try { predictor(x, li.labels, li.indices, sci.IndexedSeq.empty) }
+        val predictionTry = predictor(x, li.labels, li.indices, sci.IndexedSeq.empty)
 
         predictionTry match {
           case Success(pred) => reportSuccess(modelId, li, missing, pred, auditor)
