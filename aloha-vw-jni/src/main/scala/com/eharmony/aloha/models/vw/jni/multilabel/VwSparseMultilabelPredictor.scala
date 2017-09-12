@@ -57,7 +57,7 @@ extends SparseMultiLabelPredictor[K]
   ): Try[Map[K, Double]] = {
     val x = multiLabelClassifierInput(features, indices, defaultNs, namespaces)
     val pred = Try { vwModel.predict(x) }
-    val yOut = pred.map { y => produceOutput(y, labels, indices) }
+    val yOut = pred.map { y => produceOutput(y, labels) }
     yOut
   }
 
@@ -65,13 +65,7 @@ extends SparseMultiLabelPredictor[K]
 }
 
 object VwSparseMultilabelPredictor {
-  private val DummyClassNS = "y"
   private val ClassNS = "Y"
-  private val NegDummyClass = Int.MaxValue.toLong + 1
-  private val PosDummyClass = NegDummyClass + 1
-  private val NegDummyClassLine = s"$NegDummyClass:1 |$DummyClassNS _C${NegDummyClass}_"
-  private val PosDummyClassLine = s"$PosDummyClass:0 |$DummyClassNS _C${PosDummyClass}_"
-
 
   private[multilabel] def multiLabelClassifierInput(
       features: IndexedSeq[Sparse],
@@ -80,12 +74,9 @@ object VwSparseMultilabelPredictor {
       namespaces: List[(String, List[Int])]
   ): Array[String] = {
     val n = indices.size
-    // The length of the output array is n + 3.  The first row is the shared features.
-    // These are features that are not label dependent.  Then we have two dummy classes.
-    //
-    // The class at the index 1 (0-based) is one that is always negative.  The class at
-    // index 2 is one that is always positive.  These dummy classes are required to make
-    // the probabilities work out for multi-label classifier.
+    // The length of the output array is n + 1.  The first row is the shared features.
+    // These are features that are not label dependent.  Then come the features for the
+    // n labels.
     val x = new Array[String](n + 1)
 
     val shared = VwRowCreator.unlabeledVwInput(features, defaultNs, namespaces, false)
@@ -96,37 +87,23 @@ object VwSparseMultilabelPredictor {
     // This is mutable because we want speed.
     var i = 0
 
-    // This is fantastic!
-    // TODO: It appears that we don't have to add the dummy classes at test time.  Double check.
     while (i < n) {
       val labelInd = indices(i)
       x(i + 1) = s"$labelInd:0 |$ClassNS _C${labelInd}_"
       i += 1
     }
 
-//    x(n + 1) = NegDummyClassLine
-//    x(n + 2) = PosDummyClassLine
-
     x
   }
 
-  private[multilabel] def produceOutput[K](
-      pred: ActionScores,
-      labels: sci.IndexedSeq[K],
-      indices: sci.IndexedSeq[Int]
-  ): Map[K, Double] = {
-
-    // TODO: Possibly update the interface to pass this in (possibly non-strictly).
-    val indToLabel: Map[Int, K] = indices.zip(labels)(collection.breakOut)
+  private[multilabel] def produceOutput[K](pred: ActionScores, labels: sci.IndexedSeq[K]): Map[K, Double] = {
 
     // The last two action IDs in the action scores array are the dummy actions.
-    val y: Map[K, Double] = (for {
+    (for {
       as    <- pred.getActionScores // if as.getAction < indices.size if we need to deal with dummy classes.
-      label <- indToLabel.get(as.getAction).toIterable
+      label  = labels(as.getAction)
       pred   = modifiedLogistic(as.getScore)
     } yield label -> pred)(collection.breakOut)
-
-    y
   }
 
   /**
