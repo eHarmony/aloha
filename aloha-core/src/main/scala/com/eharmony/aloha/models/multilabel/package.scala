@@ -3,6 +3,7 @@ package com.eharmony.aloha.models
 import com.eharmony.aloha.dataset.density.Sparse
 
 import scala.collection.{immutable => sci}
+import scala.util.Try
 
 /**
   * Created by ryan.deak on 8/31/17.
@@ -56,7 +57,7 @@ package object multilabel {
     * @tparam K the type of labels (or classes in the machine learning literature).
     */
   type SparseMultiLabelPredictor[K] =
-    (SparseFeatures, Labels[K], LabelIndices, SparseLabelDepFeatures) => Map[K, Double]
+    (SparseFeatures, Labels[K], LabelIndices, SparseLabelDepFeatures) => Try[Map[K, Double]]
 
   /**
     * A lazy version of a sparse multi-label predictor.  It is a curried zero-arg function that

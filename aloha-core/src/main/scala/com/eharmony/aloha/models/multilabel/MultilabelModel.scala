@@ -5,17 +5,19 @@ import java.io.{Closeable, PrintWriter, StringWriter}
 import com.eharmony.aloha.audit.Auditor
 import com.eharmony.aloha.dataset.density.Sparse
 import com.eharmony.aloha.factory._
+import com.eharmony.aloha.factory.ri2jf.RefInfoToJsonFormat
 import com.eharmony.aloha.id.ModelIdentity
 import com.eharmony.aloha.models._
+import com.eharmony.aloha.models.multilabel.json.MultilabelModelReader
 import com.eharmony.aloha.models.reg.RegressionFeatures
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.semantics.func.{GenAggFunc, GenAggFuncAccessorProblems}
-
+import com.eharmony.aloha.util.{Logging, SerializabilityEvidence}
 import spray.json.{JsonFormat, JsonReader}
 
 import scala.collection.{immutable => sci, mutable => scm}
-import scala.util.{Failure, Success, Try}
+import scala.util.{Failure, Success}
 
 
 // TODO: When adding label-dep features, a Seq[GenAggFunc[K, Sparse]] will be needed.
@@ -108,7 +110,7 @@ extends SubmodelBase[U, Map[K, Double], A, B]
         reportTooManyMissing(modelId, li, missing, auditor)
       else {
         // TODO: To support label-dependent features, fill last parameter with a valid value.
-        val predictionTry = Try { predictor(x, li.labels, li.indices, sci.IndexedSeq.empty) }
+        val predictionTry = predictor(x, li.labels, li.indices, sci.IndexedSeq.empty)
 
         predictionTry match {
           case Success(pred) => reportSuccess(modelId, li, missing, pred, auditor)
@@ -280,7 +282,7 @@ object MultilabelModel extends ParserProviderCompanion {
     * Report that a `Throwable` was thrown while invoking the predictor
     * @param modelId An identifier for the model.  Used in error reporting.
     * @param labelInfo labels and information about the labels.
-    * @param missing missing features from
+    * @param missingFeatureMap missing features from RegressionFeatures
     * @param throwable the error the occurred in the predictor.
     * @param auditor an auditor used to audit the output.
     * @tparam U upper bound on model output type `B`
@@ -291,7 +293,7 @@ object MultilabelModel extends ParserProviderCompanion {
   protected[multilabel] def reportPredictorError[U, K, B <: U](
       modelId: ModelIdentity,
       labelInfo: LabelsAndInfo[K],
-      missing: scm.Map[String, Seq[String]],
+      missingFeatureMap: scm.Map[String, Seq[String]],
       throwable: Throwable,
       auditor: Auditor[U, Map[K, Double], B]
   ): Subvalue[B, Nothing] = {
@@ -304,7 +306,7 @@ object MultilabelModel extends ParserProviderCompanion {
     val aud = auditor.failure(
       modelId,
       errorMsgs = stackTrace +: labelInfo.errorMsgs,
-      missingVarNames = combineMissing(labelInfo, missing)
+      missingVarNames = combineMissing(labelInfo, missingFeatureMap)
     )
     Subvalue(aud, None)
   }
@@ -347,10 +349,12 @@ object MultilabelModel extends ParserProviderCompanion {
     LabelsAndInfo(ind, lab, noPrediction, problems)
   }
 
+  private[multilabel] lazy val plugins: Map[String, MultilabelModelParserPlugin] =
+    MultilabelModelParserPlugin.plugins().map(p => p.name -> p).toMap
 
   override def parser: ModelParser = Parser
 
-  object Parser extends ModelSubmodelParsingPlugin {
+  object Parser extends ModelSubmodelParsingPlugin with Logging {
     override val modelType: String = "multilabel-sparse"
 
     // TODO: Figure if a Option[JsonReader[MultilabelModel[U, _, A, B]]] can be returned.
@@ -368,30 +372,122 @@ object MultilabelModel extends ParserProviderCompanion {
         auditor: Auditor[U, N, B])(implicit
         r: RefInfo[N],
         jf: JsonFormat[N]
-    ): Option[JsonReader[_ <: Model[A, B] with Submodel[_, A, B]]] = {
-      if (!RefInfoOps.isSubType[N, Map[_, Double]])
+    ): Option[JsonReader[Model[A, B] with Submodel[N, A, B]]] = {
+
+      // If the type N is a Map with Double values, we can specify a key type (call it K).
+      // Then the necessary type classes related to K are *instantiated* and a reader is
+      // created using types N and K.  Ultimately, the reader consumes the type `K` but
+      // only the type N is exposed in the returned reader.
+      if (!RefInfoOps.isSubType[N, Map[_, Double]]) {
+        warn(s"N=${RefInfoOps.toString[N]} is not a Map[K, Double]. Cannot create a JsonReader for MultilabelModel.")
         None
+      }
+      else if (2 != RefInfoOps.typeParams(r).size) {
+        warn(s"N=${RefInfoOps.toString[N]} does not have 2 type parameters. Cannot infer label type K needed create a JsonReader for MultilabelModel.")
+        None
+      }
       else {
-        // Because N is a subtype of map, it "should" have two type parameters.
-        // This is obviously not true in all cases, like with LongMap
-        // http://scala-lang.org/files/archive/api/2.11.8/#scala.collection.immutable.LongMap
-        // TODO: Make this more robust.
-        val refInfoK = RefInfoOps.typeParams(r).head
+        // This would be a prime candidate for the WriterT monad transformer:
+        // type Result[A] = WriterT[Option, Vector[String], A]
+        // https://github.com/typelevel/cats/blob/0.7.x/core/src/main/scala/cats/data/WriterT.scala#L8
+        val readerAttempt =
+          for {
+            ri <- refInfoOrError[N, Any](r).right    // Force type of K = Any
+            jf <- jsonFormatOrError(factory, ri).right
+            se <- serializableEvidenceOrError(ri).right
+          } yield reader(semantics, auditor, ri, jf, se)
 
-        // To allow custom class (key) types, we'll need to create a custom ModelFactoryImpl instance
-        // with a specialized RefInfoToJsonFormat.
-        //
-        // type: Option[JsonFormat[_]]
-        val jsonFormatK = factory.jsonFormat(refInfoK)
-
-        // TODO: parse the label extraction
-
-        // TODO: parse the feature extraction
-
-        // TODO: parse the native submodel from the wrapped ML library.  This involves plugins
-
-        ???
+        readerAttempt match {
+          case Left(err) =>
+            warn(err)
+            None
+          case Right(reader) => Option(reader)
+        }
       }
     }
+  }
+
+  /**
+    * Produce the reader.
+    *
+    * '''NOTE''': This function should only be applied after we know `N` equals `Map[K, Double]`
+    * for some `K`.
+    *
+    * @param semantics semantics to use for compiling specifications.
+    * @param auditor an auditor of type `Auditor[U, N, B]`.  It's not of type
+    *                `Auditor[U, Map[K, Double], B]`, but because we know the relationship
+    *                between `N` and `Map[K, Double]`, we can cast `N` to `Map[K, Double]`.
+    * @param ri reflection information about `K`.
+    * @param jf a JSON format that can translate JSON ASTs to and from `K`s.
+    * @param se evidence that `K` is `Serializable`.
+    * @tparam U upper bound on model output type `B`
+    * @tparam N the expected natural output type the model that will be produced by the
+    *           JSON reader.  This should be isomorphic to `Map[K, Double]`.
+    * @tparam K type of label or class
+    * @tparam A input type of the model.
+    * @tparam B output type of the model.
+    * @return a JSON reader capable of producing a [[MultilabelModel]] from a JSON definition.
+    */
+  private[multilabel] def reader[U, N, K, A, B <: U](
+      semantics: Semantics[A],
+      auditor: Auditor[U, N, B],
+      ri: RefInfo[K],
+      jf: JsonFormat[K],
+      se: SerializabilityEvidence[K]): JsonReader[Model[A, B] with Submodel[N, A, B]] = {
+    // At this point, N = Map[K, Double], so we are just casting to itself essentially.
+    val aud = auditor.asInstanceOf[Auditor[U, Map[K, Double], B]]
+
+    // Create a cast from Map[K, Double] to N.  Ideally, this would be a Map[K, Double] <:< N
+    // rather than a Map[K, Double] => N.  But it's hard (with good reason) to create a <:<
+    // and easy to create a function.
+    implicit val cast = (m: Map[K, Double]) => m.asInstanceOf[N]
+
+    // MultilabelModelReader can produce a MultilabelModel.  But there's a problem returning
+    // the proper type because the compiler doesn't have compile-time evidence that N is
+    // Map[K, Double] so, a less specific type (Model[A, B] with Submodel[N, A, B]) is
+    // returned.
+    MultilabelModelReader(semantics, aud, plugins)(ri, jf, se).untypedReader[N]
+  }
+
+  private[multilabel] def serializableEvidence[K](refInfoK: RefInfo[K]) = {
+    val serEv =
+      if (RefInfoOps.isSubType(refInfoK, RefInfo.JavaSerializable))
+        Option(SerializabilityEvidence.serializableEvidence[java.io.Serializable])
+      else if (RefInfoOps.isSubType(refInfoK, RefInfo.AnyVal))
+        Option(SerializabilityEvidence.anyValEvidence[AnyVal])
+      else None
+
+    serEv.asInstanceOf[Option[SerializabilityEvidence[K]]]
+  }
+
+  private[multilabel] def serializableEvidenceOrError[K](refInfoK: RefInfo[K]) = {
+    serializableEvidence(refInfoK)
+      .toRight(s"Couldn't produce evidence that ${RefInfoOps.toString(refInfoK)} is Serializable.")
+  }
+
+  /**
+    * Get reflection information about the label type `K` for the [[MultilabelModel]] to be produced.
+    *
+    * At the time of application, we should already know N is a subtype of Map with 2 type parameters.
+    * This will preclude things like
+    * [[http://scala-lang.org/files/archive/api/2.11.8/#scala.collection.immutable.LongMap scala.collection.immutable.LongMap]].
+    * @param rin reflection information about `N`.
+    * @tparam N natural output type of the model. `N` should equal `Map[K, Double]`.
+    * @tparam K label type of the [[MultilabelModel]]
+    * @return reflection information about K.
+    */
+  private[multilabel] def refInfo[N, K](rin: RefInfo[N]) =
+    RefInfoOps.typeParams(rin).headOption.asInstanceOf[Option[RefInfo[K]]]
+
+  private[multilabel] def refInfoOrError[N, K](rin: RefInfo[N]) = {
+    refInfo[N, K](rin)
+      .toRight(s"Couldn't extract key type from natural type: ${RefInfoOps.toString(rin)}")
+  }
+
+  private[multilabel] def jsonFormatOrError[U, A, K](factory: SubmodelFactory[U, A], refInfoK: RefInfo[K]): Either[String, JsonFormat[K]] = {
+    // To allow custom class (key) types, we'll need to create a custom ModelFactoryImpl instance
+    // with a specialized RefInfoToJsonFormat.
+    factory.jsonFormat(refInfoK)
+      .toRight(s"Couldn't find a JSON Format for ${RefInfoOps.toString(refInfoK)}.  Consider using a different ${classOf[RefInfoToJsonFormat].getCanonicalName}.")
   }
 }
