@@ -6,6 +6,7 @@ import com.eharmony.aloha.ModelSerializationTestHelper
 import com.eharmony.aloha.audit.impl.tree.RootedTreeAuditor
 import com.eharmony.aloha.dataset.density.Sparse
 import com.eharmony.aloha.id.ModelId
+import com.eharmony.aloha.semantics.SemanticsUdfException
 import com.eharmony.aloha.semantics.func._
 import org.junit.Test
 import org.junit.Assert._
@@ -187,7 +188,7 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
   }
 
   @Test def testLabelsForPredictionContainsProblemsWhenLabelsIsEmpty(): Unit = {
-    def extractLabelsOutOfExample(example: Map[String, String]) =
+    def extractLabelsOutOfExample(example: Map[String, String]): sci.IndexedSeq[String] =
       example.filterKeys(_.startsWith("label")).toSeq.unzip._2.sorted.toIndexedSeq
 
     // Example with no problems
@@ -214,11 +215,70 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
 
     // Example with no labels
     val exampleNoLabels = Map("feature1" -> "1", "feature2" -> "2")
-    val labelsAndInfoNoLabels = labelsForPrediction(exampleNoLabels,
+    val labelsAndInfoNoLabels = labelsForPrediction(
+      exampleNoLabels,
       labelsOfInterestExtractor,
       labelToInt)
     val problemsNoLabelsExpected = Option(GenAggFuncAccessorProblems(Seq(), Seq()))
     assertEquals(problemsNoLabelsExpected, labelsAndInfoNoLabels.problems)
+
+    // missing labels
+    def badFunction(example: Map[String, String]) = example.get("feature1")
+    val gen1 = GenFunc1("concat _1", (m: Option[String]) => sci.IndexedSeq(s"${m}_1"),
+      GeneratedAccessor("extract feature 1", badFunction, None))
+
+    val labelsExtractor =
+      (m: Map[String, String]) => m.get("labels") match {
+        case ls: sci.IndexedSeq[_] if ls.forall { x: String => x.isInstanceOf[Label] } =>
+          Option(ls.asInstanceOf[sci.IndexedSeq[Label]])
+        case _ => None
+      }
+
+    val f1 =
+      GenFunc.f1(GeneratedAccessor("labels", labelsExtractor, None))(
+        "def omitted", _ getOrElse sci.IndexedSeq.empty[Label]
+      )
+
+    val labelsAndInfoNoLabelsGen1 = labelsForPrediction(
+      Map[String, String](),
+      f1,
+      labelToInt)
+    val problemsNoLabelsExpectedGen1 = Option(GenAggFuncAccessorProblems(Seq("labels"), Seq()))
+    assertEquals(problemsNoLabelsExpectedGen1, labelsAndInfoNoLabelsGen1.problems)
+
+    // TODO: figre this out
+    // error
+    val labelsExtractorError: (Map[String, String]) => Option[sci.IndexedSeq[Label]] =
+      (m: Map[String, String]) => m.get("labels") match {
+        case ls: sci.IndexedSeq[_] if ls.forall { x: String => x.isInstanceOf[Label] } =>
+          Option(ls.asInstanceOf[sci.IndexedSeq[Label]])
+        case _ => throw new Exception("labels does not exist")
+      }
+
+    val f2 =
+      GenFunc.f1(GeneratedAccessor("labels",
+        ((m: Map[String, String]) => throw new Exception("errmsg")) : Map[String, String] =>
+          Option[sci.IndexedSeq[String]]
+        , None))(
+        "def omitted", _ getOrElse sci.IndexedSeq.empty[Label]
+      )
+    val f2Wrapped = EnrichedErrorGenAggFunc(f2)
+
+    new SemanticsUdfException[Any](null, null, null, null, null, null)
+
+    val problemsNoLabelsExpectedGen2 = Option(GenAggFuncAccessorProblems(Seq(), Seq("labels")))
+    Try(
+    labelsForPrediction(
+      Map[String, String](),
+      f2Wrapped,
+      labelToInt)
+    ).failed.get match {
+      case ex: SemanticsUdfException[_] =>
+        assertEquals(ex.accessorsInErr, labelsAndInfoNoLabelsGen2.problems)
+    }
+
+
+    // assertEquals(problemsNoLabelsExpectedGen2, labelsAndInfoNoLabelsGen2.problems)
   }
 
   @Test def testLabelsForPredictionProvidesLabelsThatCantBePredicted(): Unit = {
@@ -227,24 +287,84 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
     //      if (unsorted.size == labelsShouldPredict.size) Seq.empty
     //      else labelsShouldPredict.filterNot(labelToInd.contains)
 
+    def extractLabelsOutOfExample(example: Map[String, String]) =
+      example.filterKeys(_.startsWith("label")).toSeq.unzip._2.sorted.toIndexedSeq
+
+    val example: Map[String, String] = Map(
+      "feature1" -> "1",
+      "feature2" -> "2",
+      "feature3" -> "2",
+      "label1"   -> "a",
+      "label2"   -> "b"
+    )
+    val allLabels = sci.IndexedSeq("a", "b", "c")
+    val labelToInt = allLabels.zipWithIndex.toMap
+    val labelsOfInterestExtractor = GenFunc0("empty spec", extractLabelsOutOfExample)
+    val labelsAndInfo = labelsForPrediction(example, labelsOfInterestExtractor, labelToInt)
+    val missingLabels = labelsAndInfo.missingLabels
+    assertEquals(Seq(), missingLabels)
+
+    // Extra label not in the list
+    val example2 = Map("label4" -> "d")
+    val labelsAndInfo2 = labelsForPrediction(example2, labelsOfInterestExtractor, labelToInt)
+    val missingLabels2 = labelsAndInfo2.missingLabels
+    assertEquals(Seq("d"), missingLabels2)
+
+    // No labels
+    val example3 = Map("feature2" -> "5")
+    val labelsAndInfo3 = labelsForPrediction(example3, labelsOfInterestExtractor, labelToInt)
+    val missingLabels3 = labelsAndInfo3.missingLabels
+    assertEquals(Seq(), missingLabels3)
+  }
+
+  @Test def testLabelsForPredictionReturnsLabelsSortedByIndex(): Unit = {
+    // Test this:
+    //    val (ind, lab) = unsorted.sortBy{ case (i, _) => i }.unzip
+
+    def extractLabelsOutOfExample(example: Map[String, String]) =
+      example.filterKeys(_.startsWith("label")).toSeq.unzip._2.sorted.toIndexedSeq
+
+    val example: Map[String, String] = Map(
+      "feature1" -> "1",
+      "feature2" -> "2",
+      "feature3" -> "2",
+      "label1"   -> "a",
+      "label2"   -> "b",
+      "label3"   -> "l23",
+      "label4"   -> "100",
+      "label5"   -> "235",
+      "label6"   -> "c",
+      "label7"   -> "1",
+      "label8"   -> "l1"
+    )
+
+    val allLabels = sci.IndexedSeq("a", "b", "c", "235", "1", "l1", "l23", "100")
+    val labelToInt = allLabels.zipWithIndex.toMap
+    val labelsOfInterestExtractor = GenFunc0("empty spec", extractLabelsOutOfExample)
+    val labelsAndInfo = labelsForPrediction(example, labelsOfInterestExtractor, labelToInt)
+
+    assertEquals(allLabels, labelsAndInfo.labels)
+    assertEquals(allLabels.indices, labelsAndInfo.indices)
+  }
+
+  @Test def testSubvalueReportsNoPredictionWhenNoLabelsAreProvided(): Unit = {
+    // Test this:
+    //    if (li.labels.isEmpty)
+    //      reportNoPrediction(modelId, li, auditor)
+    def extractLabelsOutOfExample(example: Map[String, String]) =
+      example.filterKeys(_.startsWith("label")).toSeq.unzip._2.sorted.toIndexedSeq
+
+    val example = Map("" -> "")
+    val allLabels = sci.IndexedSeq("a", "b", "c")
+    val labelToInt = allLabels.zipWithIndex.toMap
+    val labelsOfInterestExtractor = GenFunc0("empty spec", extractLabelsOutOfExample)
+
+
+    // labelsAndInfo(example,)
+
     fail()
   }
-//
-//  @Test def testLabelsForPredictionReturnsLabelsSortedByIndex(): Unit = {
-//    // Test this:
-//    //    val (ind, lab) = unsorted.sortBy{ case (i, _) => i }.unzip
-//
-//    fail()
-//  }
-//
-//  @Test def testSubvalueReportsNoPredictionWhenNoLabelsAreProvided(): Unit = {
-//    // Test this:
-//    //    if (li.labels.isEmpty)
-//    //      reportNoPrediction(modelId, li, auditor)
-//
-//    fail()
-//  }
-//
+
 //  @Test def testSubvalueReportsTooManyMissingWhenThereAreTooManyMissingFeatures(): Unit = {
 //    // When the amount of missing data exceeds the threshold, reportTooManyMissing should be
 //    // called and its value should be returned.  Instantiate a MultilabelModel and
