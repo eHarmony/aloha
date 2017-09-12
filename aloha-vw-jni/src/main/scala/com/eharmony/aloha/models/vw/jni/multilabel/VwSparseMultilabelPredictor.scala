@@ -69,8 +69,8 @@ object VwSparseMultilabelPredictor {
   private val ClassNS = "Y"
   private val NegDummyClass = Int.MaxValue.toLong + 1
   private val PosDummyClass = NegDummyClass + 1
-  private val NegDummyClassLine = s"$NegDummyClass |$DummyClassNS _C${NegDummyClass}_"
-  private val PosDummyClassLine = s"$PosDummyClass |$DummyClassNS _C${PosDummyClass}_"
+  private val NegDummyClassLine = s"$NegDummyClass:1 |$DummyClassNS _C${NegDummyClass}_"
+  private val PosDummyClassLine = s"$PosDummyClass:0 |$DummyClassNS _C${PosDummyClass}_"
 
 
   private[multilabel] def multiLabelClassifierInput(
@@ -86,23 +86,26 @@ object VwSparseMultilabelPredictor {
     // The class at the index 1 (0-based) is one that is always negative.  The class at
     // index 2 is one that is always positive.  These dummy classes are required to make
     // the probabilities work out for multi-label classifier.
-    val x = new Array[String](n + 3)
+    val x = new Array[String](n + 1)
 
     val shared = VwRowCreator.unlabeledVwInput(features, defaultNs, namespaces, false)
     // "shared" is a special keyword in VW multi-class (multi-row) format.
     // See:  https://www.umiacs.umd.edu/%7Ehal/tmp/multiclassVW.html
     x(0) = "shared " + shared
-    x(1) = NegDummyClassLine
-    x(2) = PosDummyClassLine
 
-    // This is mutable because we want speed
-    // and there is nothing
+    // This is mutable because we want speed.
     var i = 0
+
+    // This is fantastic!
+    // TODO: It appears that we don't have to add the dummy classes at test time.  Double check.
     while (i < n) {
       val labelInd = indices(i)
-      x(i + 3) = s"$labelInd |$ClassNS _C${labelInd}_"
+      x(i + 1) = s"$labelInd:0 |$ClassNS _C${labelInd}_"
       i += 1
     }
+
+//    x(n + 1) = NegDummyClassLine
+//    x(n + 2) = PosDummyClassLine
 
     x
   }
@@ -116,15 +119,25 @@ object VwSparseMultilabelPredictor {
     // TODO: Possibly update the interface to pass this in (possibly non-strictly).
     val indToLabel: Map[Int, K] = indices.zip(labels)(collection.breakOut)
 
+    // The last two action IDs in the action scores array are the dummy actions.
     val y: Map[K, Double] = (for {
-      as    <- pred.getActionScores
+      as    <- pred.getActionScores // if as.getAction < indices.size if we need to deal with dummy classes.
       label <- indToLabel.get(as.getAction).toIterable
-      pred   = as.getScore.toDouble
+      pred   = modifiedLogistic(as.getScore)
     } yield label -> pred)(collection.breakOut)
 
     y
   }
 
+  /**
+    * A modified logistic function where the sign of the exponent is opposite the usual
+    * definition.  Since CSOAA in VW employs costs, it changes the sign of the normal
+    * logistic function so the definition becomes `1 / (1 + exp(x))`.
+    *
+    * @param x an input produced by a VW CSOAA prediction.
+    * @return a probability.
+    */
+  @inline final private def modifiedLogistic(x: Float) = 1 / (1 + math.exp(x))
 
   /**
     * Update the parameters with the
