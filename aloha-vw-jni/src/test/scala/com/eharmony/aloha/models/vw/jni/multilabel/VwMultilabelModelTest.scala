@@ -57,8 +57,14 @@ class VwMultilabelModelTest {
   ): Unit = y.value match {
     case None => fail()
     case Some(labelMap) =>
+      // Should that model gives back all the keys that were request.
       assertEquals(labels, labelMap.keySet)
+
+      // The expected return value.  We check keys first to make sure the model
+      // doesn't return extraneous key-value pairs.
       val exp = expectedMarginalDist.filterKeys(label => labels contains label)
+
+      // Check that the values returned are correct.
       exp foreach { case (label, expPr) =>
         assertEquals(expPr, labelMap(label), 0.01)
       }
