@@ -198,13 +198,12 @@ object VwMultilabelModelTest {
       s"shared |X $FeatureName\n2147483648:0.0 |y _C2147483648_\n2147483649:-0.224 |y _C2147483649_\n1:-0.224 |Y _C1_\n0:-0.224 |Y _C0_\n2:0.0 |Y _C2_",
       s"shared |X $FeatureName\n2147483648:0.0 |y _C2147483648_\n2147483649:-0.036 |y _C2147483649_\n1:0.0 |Y _C1_\n0:0.0 |Y _C0_\n2:-0.036 |Y _C2_",
       s"shared |X $FeatureName\n2147483648:0.0 |y _C2147483648_\n2147483649:-0.096 |y _C2147483649_\n1:-0.096 |Y _C1_\n0:0.0 |Y _C0_\n2:0.0 |Y _C2_"
-    ).map(_.split(raw"\n"))
+    ).map(_.split("\n"))
 
   private lazy val TrainedModel: ModelSource = {
     val modelFile = tmpFile()
     val params = vwTrainingParams(modelFile)
     val learner = VWLearners.create[VWActionScoresLearner](params)
-
     for {
       _ <- 1 to TrainingEpochs
       d <- TrainingData
