@@ -25,7 +25,7 @@ import scala.util.{Failure, Success, Try}
  *                  [[http://en.wikipedia.org/wiki/Chain-of-responsibility_pattern chain of responsibility pattern]].
  *                  Therefore, '''the order is important'''.
  * @tparam A the result type produced by reading from one of the readable formats.
- * @tparam Impl the implementation of Spec[A] used.
+ * @tparam Impl the implementation of [[RowCreator]].
  */
 final case class RowCreatorBuilder[A, B, Impl <: RowCreator[A, B]](
         semantics: CompiledSemantics[A],
@@ -122,7 +122,7 @@ object RowCreatorBuilder {
      * @param semantics used to generate the features in the spec.
      * @param producers a Java List of SpecProducers.
      * @tparam A type of semantics
-     * @tparam Impl subtype of Spec objects produced by the SpecBuilder.
+     * @tparam Impl the implementation of [[RowCreator]].
      * @return a new Spec builder.
      */
     def apply[A, B, Impl <: RowCreator[A, B]](
