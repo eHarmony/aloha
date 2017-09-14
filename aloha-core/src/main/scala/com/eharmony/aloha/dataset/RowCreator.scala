@@ -1,3 +1,3 @@
 package com.eharmony.aloha.dataset
 
-trait RowCreator[-A] extends (A => (MissingAndErroneousFeatureInfo, CharSequence)) with Serializable
+trait RowCreator[-A, +B] extends (A => (MissingAndErroneousFeatureInfo, B)) with Serializable

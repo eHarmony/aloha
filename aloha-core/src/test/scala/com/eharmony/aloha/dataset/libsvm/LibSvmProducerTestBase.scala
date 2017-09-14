@@ -13,7 +13,7 @@ import org.junit.Assert._
 
 trait LibSvmProducerTestBase {
 
-    def test[A <: LibSvmRowCreator[CsvLine]](prod: RowCreatorProducer[CsvLine, A], label: String = "") {
+    def test[A <: LibSvmRowCreator[CsvLine]](prod: RowCreatorProducer[CsvLine, CharSequence, A], label: String = "") {
         val bits = 31
         val mask = (1 << bits) - 1
         val f1 = "f1"
