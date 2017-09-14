@@ -31,7 +31,7 @@ class VwRowCreator[-A](
         val namespaces: List[(String, List[Int])],
         val normalizer: Option[CharSequence => CharSequence],
         val includeZeroValues: Boolean = false)
-extends RowCreator[A, CharSequence]
+extends CharSeqRowCreator[A]
    with java.io.Serializable
    with Logging {
 

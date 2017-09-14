@@ -5,4 +5,6 @@ package com.eharmony.aloha
  *
  * @author R M Deak
  */
-package object dataset {}
+package object dataset {
+  type CharSeqRowCreator[-A] = RowCreator[A, CharSequence]
+}

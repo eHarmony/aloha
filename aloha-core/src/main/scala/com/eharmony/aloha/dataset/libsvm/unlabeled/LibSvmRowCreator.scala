@@ -15,7 +15,7 @@ class LibSvmRowCreator[-A](
         covariates: FeatureExtractorFunction[A, Sparse],
         hash: HashFunction,
         numBits: Int = LibSvmRowCreator.DefaultBits
-) extends RowCreator[A, CharSequence] {
+) extends CharSeqRowCreator[A] {
     require(1 <= numBits && numBits <= 31, s"numBits must be in {1, 2, ..., 31}.  Found $numBits")
 
     private[this] val mask = (1 << numBits) - 1

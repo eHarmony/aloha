@@ -22,7 +22,7 @@ import scala.util.{Failure, Success, Try}
  * @tparam A the input type that is transformed into CSV output.
  */
 final case class CsvRowCreator[-A](features: FeatureExtractorFunction[A, String], headers: Vector[String], separator: String = ",")
-    extends RowCreator[A, CharSequence] {
+    extends CharSeqRowCreator[A] {
     def apply(data: A): (MissingAndErroneousFeatureInfo, String) = {
         val (missing, values) = features(data)
         (missing, values.mkString(separator))
