@@ -18,15 +18,17 @@ import scala.util.{Failure, Success, Try}
 
 
 /**
- * Given a semantics, json specification and an ordered sequence of RowCreatorProducers, ''find the first producer''
- * that applies to creating a Spec from the json specification and use it to instantiate the RowCreator object.
- * @param semantics a Semantics to be used for creating the RowCreator.
- * @param producers an ordered sequence of RowCreatorProducers.  These producers form the basis of a
- *                  [[http://en.wikipedia.org/wiki/Chain-of-responsibility_pattern chain of responsibility pattern]].
- *                  Therefore, '''the order is important'''.
- * @tparam A the result type produced by reading from one of the readable formats.
- * @tparam Impl the implementation of [[RowCreator]].
- */
+  * Given a semantics, json specification and an ordered sequence of RowCreatorProducers, ''find the first producer''
+  * that applies to creating a Spec from the json specification and use it to instantiate the RowCreator object.
+  * @param semantics a Semantics to be used for creating the RowCreator.
+  * @param producers an ordered sequence of RowCreatorProducers.  These producers form the basis of a
+  *                  [[http://en.wikipedia.org/wiki/Chain-of-responsibility_pattern chain of responsibility pattern]].
+  *                  Therefore, '''the order is important'''.
+  * @tparam A the type consumed by the [[RowCreator]] produced by this Readable.
+  * @tparam B the type produced by the [[RowCreator]] produced by this Readable.
+  *
+  * @tparam Impl the implementation of [[RowCreator]].
+  */
 final case class RowCreatorBuilder[A, B, Impl <: RowCreator[A, B]](
         semantics: CompiledSemantics[A],
         producers: List[RowCreatorProducer[A, B, Impl]])
@@ -117,13 +119,14 @@ extends AlohaReadable[Try[Impl]]
 object RowCreatorBuilder {
 
     /**
-     * This is a factory to be used from Java.  Since java.util.List is invariant, we provide a different signature
-     * that accommodates a Java list created by Arrays.asList(...).
-     * @param semantics used to generate the features in the spec.
-     * @param producers a Java List of SpecProducers.
-     * @tparam A type of semantics
-     * @tparam Impl the implementation of [[RowCreator]].
-     * @return a new Spec builder.
+      * This is a factory to be used from Java.  Since java.util.List is invariant, we provide a different signature
+      * that accommodates a Java list created by Arrays.asList(...).
+      * @param semantics used to generate the features in the spec.
+      * @param producers a Java List of SpecProducers.
+      * @tparam A the type consumed by the [[RowCreator]] produced by Builder.
+      * @tparam B the type produced by the [[RowCreator]] produced by Builder.
+      * @tparam Impl the implementation of [[RowCreator]].
+      * @return a new Spec builder.
      */
     def apply[A, B, Impl <: RowCreator[A, B]](
             semantics: CompiledSemantics[A],
