@@ -4,7 +4,7 @@ import com.eharmony.aloha.FileLocations
 import com.eharmony.aloha.dataset.vw.cb.VwContextualBanditRowCreator
 import com.eharmony.aloha.dataset.vw.labeled.VwLabelRowCreator
 import com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator
-import com.eharmony.aloha.dataset.{RowCreator, RowCreatorBuilder, RowCreatorProducer}
+import com.eharmony.aloha.dataset.{CharSeqRowCreator, RowCreatorBuilder, RowCreatorProducer}
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import com.eharmony.aloha.semantics.compiled.plugin.csv.{CompiledSemanticsCsvPlugin, CsvLine, CsvLines, CsvTypes}
@@ -46,7 +46,7 @@ class VwParsingAndChainOfRespTest {
         test[VwContextualBanditRowCreator[CsvLine], VwContextualBanditRowCreator.Producer[CsvLine]]("com/eharmony/aloha/dataset/simpleCbSpec.json")
 
 
-    def test[S <: RowCreator[CsvLine]: ClassTag, P <: RowCreatorProducer[CsvLine, S]: ClassTag](jsonResourceLoc: String) {
+    def test[S <: CharSeqRowCreator[CsvLine]: ClassTag, P <: RowCreatorProducer[CsvLine, CharSequence, S]: ClassTag](jsonResourceLoc: String) {
         val producers = List(
             new VwContextualBanditRowCreator.Producer[CsvLine],
             new VwLabelRowCreator.Producer[CsvLine],
@@ -62,7 +62,7 @@ class VwParsingAndChainOfRespTest {
         }
     }
 
-    private[this] def verifySpecType[A, S <: RowCreator[A]: ClassTag, P <: RowCreatorProducer[A, S]: ClassTag](producers: Seq[RowCreatorProducer[A, VwRowCreator[A]]], spec: VwRowCreator[A]) {
+    private[this] def verifySpecType[A, S <: CharSeqRowCreator[A]: ClassTag, P <: RowCreatorProducer[A, CharSequence, S]: ClassTag](producers: Seq[RowCreatorProducer[A, CharSequence, VwRowCreator[A]]], spec: VwRowCreator[A]) {
         val unlabeled = producers.indexWhere(_.name == classOf[VwRowCreator[A]].getSimpleName + "." + classOf[VwRowCreator.Producer[A]].getSimpleName)
         assertTrue(classOf[VwRowCreator.Producer[A]].getSimpleName + " not found in producers", unlabeled != -1)
 

@@ -54,7 +54,7 @@ extends VwRowCreator[A](featuresFunction, defaultNamespace, namespaces, normaliz
 
 final object VwContextualBanditRowCreator {
   final class Producer[A]
-    extends RowCreatorProducer[A, VwContextualBanditRowCreator[A]]
+    extends RowCreatorProducer[A, CharSequence, VwContextualBanditRowCreator[A]]
        with RowCreatorProducerName
        with VwCovariateProducer[A]
        with DvProducer
