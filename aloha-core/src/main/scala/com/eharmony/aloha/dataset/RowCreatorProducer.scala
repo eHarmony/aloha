@@ -5,15 +5,19 @@ import spray.json.JsValue
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 
 /**
- * SpecProducer is used to create different kinds of [[RowCreator]] instances.  '''Classes that extend SpecProducer should
- * only have zero-arg constructors.'''  This is because Spec instances should only be parametrized by the JSON
- * specification.  Otherwise, one JSON specification could produce non-equivalent Spec instances in different
- * environments.  It is a design goal for this not to happen.
- *
- * @tparam A type of input passed to the spec.
- * @tparam B implementation of the Spec[A] that is returned by the getSpec function.
- */
-trait RowCreatorProducer[A, +B <: RowCreator[A]] {
+  * [[RowCreatorProducer]] is used to create different kinds of [[RowCreator]] instances.
+  * '''Classes that extend [[RowCreatorProducer]] should only have zero-arg constructors.'''
+  * This is because Spec instances should only be parametrized by the JSON
+  * specification.  Otherwise, one JSON specification could produce non-equivalent
+  * Spec instances in different environments.
+  *
+  * '''It is a design goal for this not to happen.'''
+  *
+  * @tparam A type of input passed to the [[RowCreator]].
+  * @tparam B type of output returned from the [[RowCreator]].
+  * @tparam Impl implementation of the Spec[A] that is returned by the `getRowCreator` function.
+  */
+trait RowCreatorProducer[A, +B , +Impl <: RowCreator[A, B]] {
 
     /**
      * Type of parsed JSON object.
@@ -39,5 +43,5 @@ trait RowCreatorProducer[A, +B <: RowCreator[A]] {
      * @param jsonSpec a JSON specification to transform into a RowCreator.
      * @return
      */
-    def getRowCreator(semantics: CompiledSemantics[A], jsonSpec: JsonType): Try[B]
+    def getRowCreator(semantics: CompiledSemantics[A], jsonSpec: JsonType): Try[Impl]
 }

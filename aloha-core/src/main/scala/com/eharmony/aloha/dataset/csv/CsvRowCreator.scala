@@ -22,8 +22,8 @@ import scala.util.{Failure, Success, Try}
  * @tparam A the input type that is transformed into CSV output.
  */
 final case class CsvRowCreator[-A](features: FeatureExtractorFunction[A, String], headers: Vector[String], separator: String = ",")
-    extends RowCreator[A] {
-    def apply(data: A) = {
+    extends RowCreator[A, CharSequence] {
+    def apply(data: A): (MissingAndErroneousFeatureInfo, String) = {
         val (missing, values) = features(data)
         (missing, values.mkString(separator))
     }
@@ -31,10 +31,10 @@ final case class CsvRowCreator[-A](features: FeatureExtractorFunction[A, String]
     /**
      * @return A string containing all the headers associated with the CSV rows created by this [[RowCreator]].
      */
-    def headerString = headers.mkString(separator)
+    def headerString: String = headers.mkString(separator)
 }
 
-final object CsvRowCreator {
+object CsvRowCreator {
 
     /**
      * Tab is the default separator to be consistent with *nix tools like cut, paste.
@@ -44,9 +44,9 @@ final object CsvRowCreator {
     private[this] val Encoding = encoding.Encoding.regular
 
     final case class Producer[A]()
-        extends RowCreatorProducer[A, CsvRowCreator[A]]
-        with RowCreatorProducerName
-        with CompilerFailureMessages {
+             extends RowCreatorProducer[A, CharSequence, CsvRowCreator[A]]
+                with RowCreatorProducerName
+                with CompilerFailureMessages {
 
         type JsonType = CsvJson
         def parse(json: JsValue): Try[CsvJson] = Try { json.convertTo[CsvJson] }

@@ -13,7 +13,7 @@ import org.apache.commons.{vfs, vfs2}
 import spray.json._
 
 import scala.annotation.tailrec
-import scala.collection.JavaConversions.asScalaBuffer
+import scala.collection.JavaConverters.asScalaBufferConverter
 import scala.util.{Failure, Success, Try}
 
 
@@ -25,12 +25,12 @@ import scala.util.{Failure, Success, Try}
  *                  [[http://en.wikipedia.org/wiki/Chain-of-responsibility_pattern chain of responsibility pattern]].
  *                  Therefore, '''the order is important'''.
  * @tparam A the result type produced by reading from one of the readable formats.
- * @tparam B the implementation of Spec[A] used.
+ * @tparam Impl the implementation of Spec[A] used.
  */
-final case class RowCreatorBuilder[A, B <: RowCreator[A]](
+final case class RowCreatorBuilder[A, B, Impl <: RowCreator[A, B]](
         semantics: CompiledSemantics[A],
-        producers: List[RowCreatorProducer[A, B]])
-extends AlohaReadable[Try[B]]
+        producers: List[RowCreatorProducer[A, B, Impl]])
+extends AlohaReadable[Try[Impl]]
    with Logging {
 
     /**
@@ -43,21 +43,21 @@ extends AlohaReadable[Try[B]]
      *   https://issues.scala-lang.org/browse/SI-8905
      */
     // TODO: Determine if Serializable is necessary to serialize SpecBuilder.
-    private[this] val rowCreatorReadable = new ReadableByString[Try[B]] {
+    private[this] val rowCreatorReadable = new ReadableByString[Try[Impl]] {
         override def fromString(s: String) = fromJson(s.parseJson)
     }
 
-    def fromFile(f: File): Try[B] = rowCreatorReadable.fromFile(f)
-    def fromUrl(u: URL): Try[B] = rowCreatorReadable.fromUrl(u)
-    def fromVfs1(foVfs1: vfs.FileObject): Try[B] = rowCreatorReadable.fromVfs1(foVfs1)
-    def fromVfs2(foVfs2: vfs2.FileObject): Try[B] = rowCreatorReadable.fromVfs2(foVfs2)
-    def fromResource(r: String): Try[B] = rowCreatorReadable.fromResource(r)
-    def fromClasspathResource(r: String): Try[B] = rowCreatorReadable.fromClasspathResource(r)
-    def fromInputStream(is: InputStream): Try[B] = rowCreatorReadable.fromInputStream(is)
-    def fromReader(r: Reader): Try[B] = rowCreatorReadable.fromReader(r)
-    def fromString(s: String): Try[B] = rowCreatorReadable.fromString(s)
+    def fromFile(f: File): Try[Impl] = rowCreatorReadable.fromFile(f)
+    def fromUrl(u: URL): Try[Impl] = rowCreatorReadable.fromUrl(u)
+    def fromVfs1(foVfs1: vfs.FileObject): Try[Impl] = rowCreatorReadable.fromVfs1(foVfs1)
+    def fromVfs2(foVfs2: vfs2.FileObject): Try[Impl] = rowCreatorReadable.fromVfs2(foVfs2)
+    def fromResource(r: String): Try[Impl] = rowCreatorReadable.fromResource(r)
+    def fromClasspathResource(r: String): Try[Impl] = rowCreatorReadable.fromClasspathResource(r)
+    def fromInputStream(is: InputStream): Try[Impl] = rowCreatorReadable.fromInputStream(is)
+    def fromReader(r: Reader): Try[Impl] = rowCreatorReadable.fromReader(r)
+    def fromString(s: String): Try[Impl] = rowCreatorReadable.fromString(s)
 
-    def fromJson(json: JsValue): Try[B] = {
+    def fromJson(json: JsValue): Try[Impl] = {
 
         /**
          * Attempt to find a spec that can be instantiated.  Along the way, aggregate the failures so they can be
@@ -68,7 +68,7 @@ extends AlohaReadable[Try[B]]
          * @return failures and a possible success.
          */
         @tailrec
-        def find(prod: List[RowCreatorProducer[A, B]], failures: List[Failure[B]]): (List[Failure[B]], Option[B]) = {
+        def find(prod: List[RowCreatorProducer[A, B, Impl]], failures: List[Failure[Impl]]): (List[Failure[Impl]], Option[Impl]) = {
             prod match {
                 case Nil => (failures.reverse, None)
                 case p :: tail =>
@@ -92,7 +92,7 @@ extends AlohaReadable[Try[B]]
         possibleSuccess map {s => Try(s)} getOrElse fail(failures)
     }
 
-    private[this] def fail(failures: List[Failure[B]]): Failure[B] = {
+    private[this] def fail(failures: List[Failure[Impl]]): Failure[Impl] = {
       val s = if (failures.size == 1) "" else "s" // Pluralization
       info {
         val stackMsgs = producers.zip(failures).zipWithIndex.map{ case ((p, e), i) =>
@@ -122,11 +122,11 @@ object RowCreatorBuilder {
      * @param semantics used to generate the features in the spec.
      * @param producers a Java List of SpecProducers.
      * @tparam A type of semantics
-     * @tparam B subtype of Spec objects produced by the SpecBuilder.
+     * @tparam Impl subtype of Spec objects produced by the SpecBuilder.
      * @return a new Spec builder.
      */
-    def apply[A, B <: RowCreator[A]](
+    def apply[A, B, Impl <: RowCreator[A, B]](
             semantics: CompiledSemantics[A],
-            producers: ju.List[_ <: RowCreatorProducer[A, _ <: B]]): RowCreatorBuilder[A, B] =
-        RowCreatorBuilder[A, B](semantics, producers.toList)
+            producers: ju.List[_ <: RowCreatorProducer[A, B, _ <: Impl]]): RowCreatorBuilder[A, B, Impl] =
+        new RowCreatorBuilder[A, B, Impl](semantics, producers.asScala.toList)
 }

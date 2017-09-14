@@ -18,21 +18,21 @@ class LibSvmLabelRowCreator[-A](
         hash: HashFunction,
         numBits: Int = LibSvmRowCreator.DefaultBits)
 extends LibSvmRowCreator[A](covariates, hash, numBits)
-   with LabelRowCreator[A] {
+   with LabelRowCreator[A, CharSequence] {
 
-    override def apply(data: A) = {
+    override def apply(data: A): (MissingAndErroneousFeatureInfo, CharSequence) = {
         val (missing, iv) = super.apply(data)
         val lab = label(data)
         val sb = new StringBuilder().append(lab).append(" ").append(iv)
         (missing, sb)
     }
 
-    override def stringLabel = label.andThenGenAggFunc(Option.apply)
+    override def stringLabel: GenAggFunc[A, Option[String]] = label.andThenGenAggFunc(Option.apply)
 }
 
-final object LibSvmLabelRowCreator {
+object LibSvmLabelRowCreator {
     final case class Producer[A]()
-        extends RowCreatorProducer[A, LibSvmLabelRowCreator[A]]
+        extends RowCreatorProducer[A, CharSequence, LibSvmLabelRowCreator[A]]
         with RowCreatorProducerName
         with SparseCovariateProducer
         with DvProducer

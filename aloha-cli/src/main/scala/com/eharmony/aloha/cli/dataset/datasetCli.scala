@@ -123,7 +123,7 @@ object DatasetCli extends Logging {
         }
     }
 
-    private case class LineWriter[A](extractor: String => A, rowCreator: RowCreator[A], out: PrintStream, closeStream: Boolean) extends (String => LineWriter[A]) with Closeable {
+    private case class LineWriter[A](extractor: String => A, rowCreator: RowCreator[A, CharSequence], out: PrintStream, closeStream: Boolean) extends (String => LineWriter[A]) with Closeable {
         override def apply(a: String): this.type = {
             out.println(rowCreator(extractor(a))._2)
             this
@@ -136,7 +136,7 @@ object DatasetCli extends Logging {
     }
 
     private object LineWriter {
-        def apply[A](extractor: String => A, rowCreator: RowCreator[A], outFile: Option[FileObject]): LineWriter[A] = {
+        def apply[A](extractor: String => A, rowCreator: RowCreator[A, CharSequence], outFile: Option[FileObject]): LineWriter[A] = {
             val (out, close) = outStream(outFile)
             new LineWriter(extractor, rowCreator, out, close)
         }
@@ -323,7 +323,7 @@ object DatasetCli extends Logging {
         val vw, vw_labeled, vw_cb, libsvm, libsvm_labeled, csv = Value
 
         implicit class DatasetTypeOps(val v: DatasetType) extends AnyVal {
-            def rowCreatorProducer[A]: RowCreatorProducer[A, RowCreator[A]] = v match {
+            def rowCreatorProducer[A]: RowCreatorProducer[A, CharSequence, RowCreator[A, CharSequence]] = v match {
                 case `vw`             => new VwRowCreator.Producer[A]
                 case `vw_labeled`     => new VwLabelRowCreator.Producer[A]
                 case `vw_cb`          => new VwContextualBanditRowCreator.Producer[A]

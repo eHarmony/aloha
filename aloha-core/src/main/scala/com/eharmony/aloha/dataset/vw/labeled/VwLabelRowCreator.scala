@@ -23,9 +23,9 @@ final case class VwLabelRowCreator[-A](
         tag: GenAggFunc[A, Option[String]],
         override val includeZeroValues: Boolean = false)
 extends VwRowCreator[A](featuresFunction, defaultNamespace, namespaces, normalizer, includeZeroValues)
-   with LabelRowCreator[A]
+   with LabelRowCreator[A, CharSequence]
    with Logging {
-    override def apply(data: A) = {
+    override def apply(data: A): (MissingAndErroneousFeatureInfo, CharSequence) = {
         val (missing, iv) = super.apply(data)
 
         // If importance or label is missing, this will return None.
@@ -54,12 +54,13 @@ extends VwRowCreator[A](featuresFunction, defaultNamespace, namespaces, normaliz
         (missing, line)
     }
 
-    override val stringLabel = label.andThenGenAggFunc(labOpt => labOpt.map(lab => VwRowCreator.LabelDecimalFormatter.format(lab)))
+    override val stringLabel: GenAggFunc[A, Option[String]] =
+        label.andThenGenAggFunc(labOpt => labOpt.map(lab => VwRowCreator.LabelDecimalFormatter.format(lab)))
 }
 
 final object VwLabelRowCreator {
     final class Producer[A]
-        extends RowCreatorProducer[A, VwLabelRowCreator[A]]
+        extends RowCreatorProducer[A, CharSequence, VwLabelRowCreator[A]]
         with RowCreatorProducerName
         with VwCovariateProducer[A]
         with DvProducer

@@ -29,10 +29,10 @@ public class SpecBuilderJavaTest {
     public void testCallWithJavaList() {
 
         @SuppressWarnings("unchecked")
-        final List<? extends RowCreatorProducer<CsvLine, ? extends VwRowCreator<CsvLine>>> specProducers =
+        final List<? extends RowCreatorProducer<CsvLine, CharSequence, ? extends VwRowCreator<CsvLine>>> specProducers =
                 Arrays.asList(new VwContextualBanditRowCreator.Producer<CsvLine>(), new VwLabelRowCreator.Producer<CsvLine>());
 
-        final RowCreatorBuilder<CsvLine, VwRowCreator<CsvLine>> sb = RowCreatorBuilder.apply(
+        final RowCreatorBuilder<CsvLine, CharSequence, VwRowCreator<CsvLine>> sb = RowCreatorBuilder.apply(
                 VwParsingAndChainOfRespTest.semantics(),
                 specProducers
         );

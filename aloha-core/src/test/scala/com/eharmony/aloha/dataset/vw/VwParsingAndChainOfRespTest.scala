@@ -46,7 +46,7 @@ class VwParsingAndChainOfRespTest {
         test[VwContextualBanditRowCreator[CsvLine], VwContextualBanditRowCreator.Producer[CsvLine]]("com/eharmony/aloha/dataset/simpleCbSpec.json")
 
 
-    def test[S <: RowCreator[CsvLine]: ClassTag, P <: RowCreatorProducer[CsvLine, S]: ClassTag](jsonResourceLoc: String) {
+    def test[S <: RowCreator[CsvLine, CharSequence]: ClassTag, P <: RowCreatorProducer[CsvLine, CharSequence, S]: ClassTag](jsonResourceLoc: String) {
         val producers = List(
             new VwContextualBanditRowCreator.Producer[CsvLine],
             new VwLabelRowCreator.Producer[CsvLine],
@@ -56,13 +56,14 @@ class VwParsingAndChainOfRespTest {
         producers.permutations foreach { prod =>
             val sb = RowCreatorBuilder(semantics, prod)
             sb.fromResource(jsonResourceLoc) match {
+                // (VwRowCreator[CsvLine]) forSome {type T >: T <: VwRowCreator[CsvLine]}
                 case Success(s) => verifySpecType[CsvLine, S, P](prod, s)
                 case Failure(f) => fail(s"A Spec instance couldn't be produced for $jsonResourceLoc.  Error: $f")
             }
         }
     }
 
-    private[this] def verifySpecType[A, S <: RowCreator[A]: ClassTag, P <: RowCreatorProducer[A, S]: ClassTag](producers: Seq[RowCreatorProducer[A, VwRowCreator[A]]], spec: VwRowCreator[A]) {
+    private[this] def verifySpecType[A, S <: RowCreator[A, CharSequence]: ClassTag, P <: RowCreatorProducer[A, CharSequence, S]: ClassTag](producers: Seq[RowCreatorProducer[A, CharSequence, VwRowCreator[A]]], spec: VwRowCreator[A]) {
         val unlabeled = producers.indexWhere(_.name == classOf[VwRowCreator[A]].getSimpleName + "." + classOf[VwRowCreator.Producer[A]].getSimpleName)
         assertTrue(classOf[VwRowCreator.Producer[A]].getSimpleName + " not found in producers", unlabeled != -1)
 

@@ -2,11 +2,10 @@ package com.eharmony.aloha.dataset.vw.unlabeled
 
 import java.text.DecimalFormat
 
+import com.eharmony.aloha.dataset._
 import com.eharmony.aloha.dataset.density.Sparse
 import com.eharmony.aloha.dataset.vw.VwCovariateProducer
-import com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator.{DefaultVwNamespaceName, inEpsilonInterval}
 import com.eharmony.aloha.dataset.vw.unlabeled.json.VwUnlabeledJson
-import com.eharmony.aloha.dataset._
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.util.Logging
 import spray.json._
@@ -32,7 +31,7 @@ class VwRowCreator[-A](
         val namespaces: List[(String, List[Int])],
         val normalizer: Option[CharSequence => CharSequence],
         val includeZeroValues: Boolean = false)
-extends RowCreator[A]
+extends RowCreator[A, CharSequence]
    with java.io.Serializable
    with Logging {
 
@@ -49,59 +48,74 @@ extends RowCreator[A]
         collect { case s if s.nonEmpty => s.toVector.sorted.mkString(", ") }.
         foreach { empty => info(s"The following namespaces were empty: $empty.") }
 
+    def unlabeledVwInput(features: IndexedSeq[Sparse]): CharSequence = {
+        val vwLine = VwRowCreator.unlabeledVwInput(features, defaultNamespace, nonEmptyNamespaces, includeZeroValues)
+        val out = normalizer.map(n => n(vwLine)).getOrElse(vwLine)
+        out
+    }
 
     def apply(data: A): (MissingAndErroneousFeatureInfo, CharSequence) = {
         val (extractionInfo, features) = featuresFunction(data)
         val vwIn = unlabeledVwInput(features)
         (extractionInfo, vwIn)
     }
+}
 
+object VwRowCreator {
+
+    private[vw] val DefaultVwNamespaceName = ""
     /**
-     * Each namespace will only be present if it contains at least one feature in the namespace.
-     * @param features features to insert into VW input line.
-     * @return
+     * The reason to choose 17 digits is that
+     1 1 == (1 - 1.0e-17)
+     1 0.9999999999999999 == (1 - 1.0e-16).
+     * We want to retain as much information as possible without allowing long trailing sequences of zeroes.
      */
-    def unlabeledVwInput(features: IndexedSeq[Sparse]) = {
+    private[vw] val LabelDecimalDigits = 17
+    private[vw] val LabelDecimalFormatter = new DecimalFormat(List.fill(LabelDecimalDigits)("#").mkString("0.", "", ""))
+    private[this] val labelEps = math.pow(10, -LabelDecimalDigits) / 2
+    private[this] val labelNegEps = -labelEps
+    private[vw] def labelInEpsilonInterval(label: Double) = labelNegEps < label && label < labelEps
 
-        // RMD 2015-06-12: GOD I HATE THIS CODE!!!  Maybe functionalize it in the future!
+    private[vw] val FeatureDecimalDigits = 6
+    private[vw] val DecimalFormatter = new DecimalFormat(List.fill(FeatureDecimalDigits)("#").mkString("0.", "", ""))
+    private[this] val eps = math.pow(10, -FeatureDecimalDigits) / 2
+    private[this] val negEps = -eps
+    private[vw] def inEpsilonInterval(x: Double) = negEps < x && x < eps
 
-        val sb = new StringBuilder
+    final class Producer[A]
+        extends RowCreatorProducer[A, CharSequence, VwRowCreator[A]]
+           with RowCreatorProducerName
+           with VwCovariateProducer[A]
+           with SparseCovariateProducer
+           with CompilerFailureMessages {
 
-        // Whether a namespace has been added previously.
-        var nsAlreadyInserted = false
-
-        if (defaultNamespace.nonEmpty)
-            nsAlreadyInserted = addNamespaceFeaturesToVwLine(sb, nsAlreadyInserted, DefaultVwNamespaceName, defaultNamespace, features, includeZeroValues = includeZeroValues)
-
-        var nss: List[(String, List[Int])] = nonEmptyNamespaces
-        while (nss.nonEmpty) {
-            val ns = nss.head
-            nsAlreadyInserted = addNamespaceFeaturesToVwLine(sb, nsAlreadyInserted, ns._1, ns._2, features, includeZeroValues)
-            nss = nss.tail
+        type JsonType = VwUnlabeledJson
+        def parse(json: JsValue): Try[VwUnlabeledJson] = Try { json.convertTo[VwUnlabeledJson] }
+        def getRowCreator(semantics: CompiledSemantics[A], jsonSpec: VwUnlabeledJson): Try[VwRowCreator[A]] = {
+            val (covariates, default, nss, normalizer) = getVwData(semantics, jsonSpec)
+            val spec = covariates.map(c => new VwRowCreator(c, default, nss, normalizer))
+            spec
         }
-
-        // If necessary, apply the normalizer.
-        val vwLine = normalizer.map(n => n(sb)).getOrElse(sb)
-        vwLine
     }
 
+
     /**
-     * Add data from a namespace to the VW line.  Data comes in the form of an iterable sequence of key-value pairs
-     * where keys are strings and values are doubles.  The values are truncated according to
-     * [[VwRowCreator.DecimalFormatter]].  If the truncated value is the integer, 1, then the value is omitted from the
-     * output (as is allowed by VW).  If the truncated value is zero, then the feature is included only if
-     * ''includeZeroValues'' is true.
-     *
-     * @param sb string builder into which data is
-     * @param previousNsInserted Whether a namespace has previously been inserted
-     * @param nsName the namespace name.
-     * @param nsFeatureIndices the feature indices included in the referenced namespace.
-     * @param features the entire list of features (across all namespaces).  Since this is an ''IndexedSeq'', lookup
-     *                 by index is constant or near-constant time.
-     * @param includeZeroValues whether to include key-value pairs in the VW output whose values are zero.
-     * @return
-     */
-    private[this] def addNamespaceFeaturesToVwLine(
+      * Add data from a namespace to the VW line.  Data comes in the form of an iterable sequence of key-value pairs
+      * where keys are strings and values are doubles.  The values are truncated according to
+      * [[VwRowCreator.DecimalFormatter]].  If the truncated value is the integer, 1, then the value is omitted from the
+      * output (as is allowed by VW).  If the truncated value is zero, then the feature is included only if
+      * ''includeZeroValues'' is true.
+      *
+      * @param sb string builder into which data is
+      * @param previousNsInserted Whether a namespace has previously been inserted
+      * @param nsName the namespace name.
+      * @param nsFeatureIndices the feature indices included in the referenced namespace.
+      * @param features the entire list of features (across all namespaces).  Since this is an ''IndexedSeq'', lookup
+      *                 by index is constant or near-constant time.
+      * @param includeZeroValues whether to include key-value pairs in the VW output whose values are zero.
+      * @return
+      */
+    private[unlabeled] def addNamespaceFeaturesToVwLine(
             sb: StringBuilder,
             previousNsInserted: Boolean,
             nsName: String,
@@ -125,18 +139,18 @@ extends RowCreator[A]
 
                 while(it.hasNext) {
                     val (feature, value) = it.next()
-                        if (VwRowCreator.inEpsilonInterval(value - 1)) {
-                            if (ins) sb.append(" ")
-                            sb.append(feature)
-                        }
-                        else if (!inEpsilonInterval(value) || includeZeroValues) {
-                            // For double values, format it to 6 decimals.  VW seems to not handle crazy long
-                            // numbers too well.  Note that for super large numbers, this DecimalFormat will
-                            // spit out very large strings of numbers. i don't think very large weights occur
-                            // that often with VW so for now i'm not addressing that (potential) issue.
-                            if (ins) sb.append(" ")
-                            sb.append(feature).append(":").append(VwRowCreator.DecimalFormatter.format(value))
-                        }
+                    if (VwRowCreator.inEpsilonInterval(value - 1)) {
+                        if (ins) sb.append(" ")
+                        sb.append(feature)
+                    }
+                    else if (!inEpsilonInterval(value) || includeZeroValues) {
+                        // For double values, format it to 6 decimals.  VW seems to not handle crazy long
+                        // numbers too well.  Note that for super large numbers, this DecimalFormat will
+                        // spit out very large strings of numbers. i don't think very large weights occur
+                        // that often with VW so for now i'm not addressing that (potential) issue.
+                        if (ins) sb.append(" ")
+                        sb.append(feature).append(":").append(VwRowCreator.DecimalFormatter.format(value))
+                    }
                 }
 
                 h(indices.tail, ins, nameIns)
@@ -145,42 +159,42 @@ extends RowCreator[A]
 
         h(nsFeatureIndices, previousNsInserted, nameAlreadyInserted = false)
     }
-}
 
-final object VwRowCreator {
-
-    private[vw] val DefaultVwNamespaceName = ""
     /**
-     * The reason to choose 17 digits is that
-     1 1 == (1 - 1.0e-17)
-     1 0.9999999999999999 == (1 - 1.0e-16).
-     * We want to retain as much information as possible without allowing long trailing sequences of zeroes.
-     */
-    private[vw] val LabelDecimalDigits = 17
-    private[vw] val LabelDecimalFormatter = new DecimalFormat(List.fill(LabelDecimalDigits)("#").mkString("0.", "", ""))
-    private[this] val labelEps = math.pow(10, -LabelDecimalDigits) / 2
-    private[this] val labelNegEps = -labelEps
-    private[vw] def labelInEpsilonInterval(label: Double) = labelNegEps < label && label < labelEps
+      *
+      * Each namespace will only be present if it contains at least one feature in the namespace.
+      * @param features features to insert into VW input line.
+      * @param defaultNamespace
+      * @param nonEmptyNamespaces
+      * @param includeZeroValues
+      * @return
+      */
+    private[aloha] def unlabeledVwInput(
+            features: IndexedSeq[Sparse],
+            defaultNamespace: List[Int],
+            nonEmptyNamespaces: List[(String, List[Int])],
+            includeZeroValues: Boolean): CharSequence = {
 
-    private[vw] val FeatureDecimalDigits = 6
-    private[vw] val DecimalFormatter = new DecimalFormat(List.fill(FeatureDecimalDigits)("#").mkString("0.", "", ""))
-    private[this] val eps = math.pow(10, -FeatureDecimalDigits) / 2
-    private[this] val negEps = -eps
-    private[vw] def inEpsilonInterval(x: Double) = negEps < x && x < eps
+        // RMD 2015-06-12: GOD I HATE THIS CODE!!!  Maybe functionalize it in the future!
 
-    final class Producer[A]
-        extends RowCreatorProducer[A, VwRowCreator[A]]
-        with RowCreatorProducerName
-        with VwCovariateProducer[A]
-        with SparseCovariateProducer
-        with CompilerFailureMessages {
+        val sb = new StringBuilder
 
-        type JsonType = VwUnlabeledJson
-        def parse(json: JsValue): Try[VwUnlabeledJson] = Try { json.convertTo[VwUnlabeledJson] }
-        def getRowCreator(semantics: CompiledSemantics[A], jsonSpec: VwUnlabeledJson): Try[VwRowCreator[A]] = {
-            val (covariates, default, nss, normalizer) = getVwData(semantics, jsonSpec)
-            val spec = covariates.map(c => new VwRowCreator(c, default, nss, normalizer))
-            spec
+        // Whether a namespace has been added previously.
+        var nsAlreadyInserted = false
+
+        if (defaultNamespace.nonEmpty)
+            nsAlreadyInserted = addNamespaceFeaturesToVwLine(
+                sb, nsAlreadyInserted, DefaultVwNamespaceName, defaultNamespace,
+                features, includeZeroValues = includeZeroValues)
+
+        var nss: List[(String, List[Int])] = nonEmptyNamespaces
+        while (nss.nonEmpty) {
+            val ns = nss.head
+            nsAlreadyInserted = addNamespaceFeaturesToVwLine(
+                sb, nsAlreadyInserted, ns._1, ns._2, features, includeZeroValues)
+            nss = nss.tail
         }
+
+        sb
     }
 }
