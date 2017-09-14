@@ -27,6 +27,9 @@ import com.eharmony.aloha.semantics.compiled.CompiledSemantics
   * `{true, false}`), the label set isn't known ''a priori'' (because each problem codomain
   * might be different).  Therefore, we might ask for the set of labels to expect.
   *
+  * '''NOTE''': `com.eharmony.aloha.dataset.RowCreatorProducerTest` will be used to control
+  * which [[RowCreatorProducer]]s can accept parameters.
+  *
   * @tparam A type of input passed to the [[RowCreator]].
   * @tparam B type of output returned from the [[RowCreator]].
   * @tparam Impl implementation of the [[RowCreator]] that is returned by the
