@@ -165,7 +165,7 @@ object MultilabelModel extends ParserProviderCompanion {
   private[multilabel] val TooManyMissingError =
     "Too many missing features encountered to produce prediction."
 
-  private[multilabel] val NoLabelsError = "No labels found in training set."
+  private[multilabel] val NoLabelsError = "No labels provided. Cannot produce a prediction."
 
   /**
     * Get the labels and information about the labels.

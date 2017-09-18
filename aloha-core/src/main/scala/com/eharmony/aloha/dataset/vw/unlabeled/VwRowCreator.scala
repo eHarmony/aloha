@@ -31,7 +31,7 @@ class VwRowCreator[-A](
         val namespaces: List[(String, List[Int])],
         val normalizer: Option[CharSequence => CharSequence],
         val includeZeroValues: Boolean = false)
-extends RowCreator[A]
+extends CharSeqRowCreator[A]
    with java.io.Serializable
    with Logging {
 
@@ -83,11 +83,11 @@ object VwRowCreator {
     private[vw] def inEpsilonInterval(x: Double) = negEps < x && x < eps
 
     final class Producer[A]
-        extends RowCreatorProducer[A, VwRowCreator[A]]
-        with RowCreatorProducerName
-        with VwCovariateProducer[A]
-        with SparseCovariateProducer
-        with CompilerFailureMessages {
+        extends RowCreatorProducer[A, CharSequence, VwRowCreator[A]]
+           with RowCreatorProducerName
+           with VwCovariateProducer[A]
+           with SparseCovariateProducer
+           with CompilerFailureMessages {
 
         type JsonType = VwUnlabeledJson
         def parse(json: JsValue): Try[VwUnlabeledJson] = Try { json.convertTo[VwUnlabeledJson] }

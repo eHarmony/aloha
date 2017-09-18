@@ -11,7 +11,11 @@ import spray.json.JsValue
 import scala.collection.{immutable => sci}
 import scala.util.Try
 
-class LibSvmRowCreator[-A](covariates: FeatureExtractorFunction[A, Sparse], hash: HashFunction, numBits: Int = LibSvmRowCreator.DefaultBits) extends RowCreator[A] {
+class LibSvmRowCreator[-A](
+        covariates: FeatureExtractorFunction[A, Sparse],
+        hash: HashFunction,
+        numBits: Int = LibSvmRowCreator.DefaultBits
+) extends CharSeqRowCreator[A] {
     require(1 <= numBits && numBits <= 31, s"numBits must be in {1, 2, ..., 31}.  Found $numBits")
 
     private[this] val mask = (1 << numBits) - 1
@@ -48,7 +52,7 @@ final object LibSvmRowCreator {
     val DefaultBits = 18
 
     final case class Producer[A]()
-        extends RowCreatorProducer[A, LibSvmRowCreator[A]]
+        extends RowCreatorProducer[A, CharSequence, LibSvmRowCreator[A]]
         with RowCreatorProducerName
         with SparseCovariateProducer
         with CompilerFailureMessages

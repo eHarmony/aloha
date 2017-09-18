@@ -16,7 +16,7 @@ class RowCreatorProducerTest {
 
     @Test def testAllRowCreatorProducersHaveOnlyZeroArgConstructors() {
         val reflections = new Reflections(scanPkg)
-        val specProdClasses = reflections.getSubTypesOf(classOf[RowCreatorProducer[_, _]]).toSet
+        val specProdClasses = reflections.getSubTypesOf(classOf[RowCreatorProducer[_, _, _]]).toSet
         specProdClasses.foreach { clazz =>
             val cons = clazz.getConstructors
             assertTrue(s"There should only be one constructor for ${clazz.getCanonicalName}.  Found ${cons.length} constructors.", cons.length <= 1)
@@ -35,7 +35,7 @@ class RowCreatorProducerTest {
     // TODO: Report the above bug!
     @Ignore @Test def testAllRowCreatorProducersAreFinalClasses() {
         val reflections = new Reflections(scanPkg)
-        val specProdClasses = reflections.getSubTypesOf(classOf[RowCreatorProducer[_, _]]).toSet
+        val specProdClasses = reflections.getSubTypesOf(classOf[RowCreatorProducer[_, _, _]]).toSet
         specProdClasses.foreach { clazz =>
             assertTrue(s"${clazz.getCanonicalName} needs to be declared final.", Modifier.isFinal(clazz.getModifiers))
         }
