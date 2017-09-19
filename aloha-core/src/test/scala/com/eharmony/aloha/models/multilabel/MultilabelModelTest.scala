@@ -1,12 +1,11 @@
 package com.eharmony.aloha.models.multilabel
 
-import java.io.{PrintWriter, StringWriter}
+import java.io.{Closeable, PrintWriter, StringWriter}
 
 import com.eharmony.aloha.ModelSerializationTestHelper
 import com.eharmony.aloha.audit.impl.tree.RootedTreeAuditor
 import com.eharmony.aloha.dataset.density.Sparse
 import com.eharmony.aloha.id.ModelId
-import com.eharmony.aloha.models.Model
 import com.eharmony.aloha.semantics.SemanticsUdfException
 import com.eharmony.aloha.semantics.func._
 import org.junit.Test
@@ -32,47 +31,105 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
     assertEquals(modelNoFeatures, modelRoundTrip)
   }
 
-//  @Test def testModelCloseClosesPredictor(): Unit = {
-//    // Make the predictorProducer passed to the constructor be a
-//    //   'SparsePredictorProducer[K] with Closeable'.
-//    // predictorProducer should track whether it is closed (using an AtomicBoolean or something).
-//    // Call close on the MultilabelModel instance and ensure that the underlying predictor is
-//    // also closed.
+  @Test def testModelCloseClosesPredictor(): Unit = {
+    // Make the predictorProducer passed to the constructor be a
+    //   'SparsePredictorProducer[K] with Closeable'.
+    // predictorProducer should track whether it is closed (using an AtomicBoolean or something).
+    // Call close on the MultilabelModel instance and ensure that the underlying predictor is
+    // also closed.
+
+    case class ConstantPredictorClosable[K](prediction: Double = 0d) extends
+      SparseMultiLabelPredictor[K] with Closeable {
+      override def apply(v1: SparseFeatures,
+        v2: Labels[K],
+        v3: LabelIndices,
+        v4: SparseLabelDepFeatures): Try[Map[K, Double]] = Try(v2.map(_ -> prediction).toMap)
+
+      def close(): Unit = println("closing")
+    }
+
+    val model = MultilabelModel(
+      ModelId(),
+      sci.IndexedSeq(),
+      sci.IndexedSeq[GenAggFunc[Int, Sparse]](),
+      sci.IndexedSeq[Label](),
+      None,
+      Lazy(ConstantPredictorClosable[Label]()),
+      None,
+      Auditor
+    )
+
+    // TODO: How do I test this?
+    model.close()
+    model.predictorProducer.apply()
+
+    fail()
+  }
+
+  @Test def testLabelsOfInterestOmitted(): Unit = {
+    // Test labelsAndInfo[A, K] function.
+    //
+    // When labelsOfInterest = None, labelsAndInfo should return:
+    //   LabelsAndInfo[K](
+    //     indices = labelsInTrainingSet.indices,
+    //     labels = labelsInTrainingSet,
+    //     missingLabels = Seq.empty[K],
+    //     problems = None
+    //   )
+
+    val indices = sci.IndexedSeq[Int](1, 2, 3)
+    val labels = sci.IndexedSeq[Label]("label1", "label2", "label3")
+    val labelInfo = LabelsAndInfo(
+      indices = indices,
+      labels = labels,
+      missingLabels = Seq[Label](),
+      problems = None
+    )
+
+    val actual: LabelsAndInfo[String] = labelsAndInfo[Map[String, String], String](
+      Map("label1" -> "label1"),
+      None,
+      Map("label1" -> 1),
+      labelInfo
+    )
+
+    assertEquals(indices, actual.indices)
+    assertEquals(labels, actual.labels)
+    assertEquals(Seq.empty[String], actual.missingLabels)
+    assertEquals(None, actual.problems)
+  }
+
+  @Test def testLabelsOfInterestProvided(): Unit = {
+    // Test labelsAndInfo[A, K] function.
+    //
+    // labelsAndInfo(a, labelsInTrainingSet, labelsOfInterest, labelToInd) ==
+    // labelsForPrediction(a, labelsOfInterest.get, labelToInd)
+
+    // TODO: has the signature changed??? still appropriate?
+  }
 //
-//    fail()
-//  }
-//
-//  @Test def testLabelsOfInterestOmitted(): Unit = {
-//    // Test labelsAndInfo[A, K] function.
-//    //
-//    // When labelsOfInterest = None, labelsAndInfo should return:
-//    //   LabelsAndInfo[K](
-//    //     indices = labelsInTrainingSet.indices,
-//    //     labels = labelsInTrainingSet,
-//    //     missingLabels = Seq.empty[K],
-//    //     problems = None
-//    //   )
-//
-//    fail()
-//  }
-//
-//  @Test def testLabelsOfInterestProvided(): Unit = {
-//    // Test labelsAndInfo[A, K] function.
-//    //
-//    // labelsAndInfo(a, labelsInTrainingSet, labelsOfInterest, labelToInd) ==
-//    // labelsForPrediction(a, labelsOfInterest.get, labelToInd)
-//
-//    fail()
-//  }
-//
-//  @Test def testReportTooManyMissing(): Unit = {
-//    // Make sure Subvalue.natural == None
-//    // Check the values of Subvalue.audited and make sure they are as expected.
-//    // Subvalue.audited.value should be None.  Check the errors and missing values.
-//
-//    fail()
-//  }
-//
+  @Test def testReportTooManyMissing(): Unit = {
+    // Make sure Subvalue.natural == None
+    // Check the values of Subvalue.audited and make sure they are as expected.
+    // Subvalue.audited.value should be None.  Check the errors and missing values.
+
+    val labelInfo = LabelsAndInfo(
+      indices = sci.IndexedSeq[Int](),
+      labels = sci.IndexedSeq[Label](),
+      missingLabels = Seq[Label]("a"),
+      problems = None
+    )
+
+    val report = reportNoPrediction(
+      ModelId(1, "a"),
+      labelInfo,
+      Auditor
+    )
+
+    assertEquals(Vector(NoLabelsError), report.audited.errorMsgs.take(1))
+    assertEquals(None, report.audited.value)
+  }
+
   @Test def testReportNoPrediction(): Unit = {
     // Make sure Subvalue.natural == None
     // Check the values of Subvalue.audited and make sure they are as expected.
@@ -92,7 +149,7 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
     )
 
     // TODO: check labelInfo values
-    assertEquals(Vector(NoLabelsError), report.audited.errorMsgs.take(1))
+    assertEquals(None, report.natural)
     assertEquals(None, report.audited.value)
   }
 
@@ -114,9 +171,9 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
       Auditor
     )
 
-    // TODO: look into problems
     assertEquals(Vector(NoLabelsError) ++ errorMessages, report.audited.errorMsgs)
     assertEquals(None, report.audited.value)
+    assertEquals(Set(), report.audited.missingVarNames)
   }
 
 
@@ -163,7 +220,6 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
     // 'value' should equal 'value2'.
     // Check the errors and missing values.
 
-    // TODO: refactor this?
     val labelInfo = LabelsAndInfo(
       indices = sci.IndexedSeq[Int](),
       labels = sci.IndexedSeq[Label](),
