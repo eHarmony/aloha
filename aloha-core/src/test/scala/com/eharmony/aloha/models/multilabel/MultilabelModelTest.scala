@@ -1,6 +1,7 @@
 package com.eharmony.aloha.models.multilabel
 
 import java.io.{Closeable, PrintWriter, StringWriter}
+import java.util.concurrent.atomic.AtomicBoolean
 
 import com.eharmony.aloha.ModelSerializationTestHelper
 import com.eharmony.aloha.audit.impl.tree.RootedTreeAuditor
@@ -14,7 +15,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 
 import scala.collection.{immutable => sci, mutable => scm}
-import scala.util.Try
+import scala.util.{Failure, Random, Success, Try}
 
 /**
   * Created by ryan.deak on 9/1/17.
@@ -45,25 +46,26 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
         v3: LabelIndices,
         v4: SparseLabelDepFeatures): Try[Map[K, Double]] = Try(v2.map(_ -> prediction).toMap)
 
-      def close(): Unit = println("closing")
+      private[this] val closed = new AtomicBoolean(false)
+      override def close(): Unit = closed.set(true)
+      def isClosed: Boolean = closed.get()
     }
 
+    val pred = ConstantPredictorClosable[Label]()
     val model = MultilabelModel(
       ModelId(),
       sci.IndexedSeq(),
       sci.IndexedSeq[GenAggFunc[Int, Sparse]](),
       sci.IndexedSeq[Label](),
       None,
-      Lazy(ConstantPredictorClosable[Label]()),
+      Lazy(pred),
       None,
       Auditor
     )
 
     // TODO: How do I test this?
     model.close()
-    model.predictorProducer.apply()
-
-    fail()
+    assertTrue(pred.isClosed)
   }
 
   @Test def testLabelsOfInterestOmitted(): Unit = {
@@ -86,17 +88,14 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
       problems = None
     )
 
-    val actual: LabelsAndInfo[String] = labelsAndInfo[Map[String, String], String](
-      Map("label1" -> "label1"),
-      None,
-      Map("label1" -> 1),
+    val actual: LabelsAndInfo[Label] = labelsAndInfo[Unit, Label](
+      a = (),
+      labelsOfInterest = None,
+      Map.empty,
       labelInfo
     )
 
-    assertEquals(indices, actual.indices)
-    assertEquals(labels, actual.labels)
-    assertEquals(Seq.empty[String], actual.missingLabels)
-    assertEquals(None, actual.problems)
+    assertEquals(labelInfo, actual)
   }
 
   @Test def testLabelsOfInterestProvided(): Unit = {
@@ -105,7 +104,27 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
     // labelsAndInfo(a, labelsInTrainingSet, labelsOfInterest, labelToInd) ==
     // labelsForPrediction(a, labelsOfInterest.get, labelToInd)
 
-    // TODO: has the signature changed??? still appropriate?
+    val indices = sci.IndexedSeq[Int](1, 2, 3)
+    val labels = sci.IndexedSeq[Label]("label1", "label2", "label3")
+
+    val labelInfo = LabelsAndInfo(
+      indices = indices,
+      labels = labels,
+      missingLabels = Seq[Label](),
+      problems = None
+    )
+
+    val labelsOfInterest = Some(GenFunc0[Unit, sci.IndexedSeq[Label]]("", _ => labels))
+    val actual: LabelsAndInfo[Label] = labelsAndInfo[Unit, Label](
+      a = (),
+      labelsOfInterest = labelsOfInterest,
+      Map.empty,
+      labelInfo
+    )
+
+    val expected = labelsForPrediction((), labelsOfInterest.get, Map.empty[Label, Int])
+
+    assertEquals(expected, actual)
   }
 //
   @Test def testReportTooManyMissing(): Unit = {
@@ -120,6 +139,7 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
       problems = None
     )
 
+    // TODO: reportTooManyMissing
     val report = reportNoPrediction(
       ModelId(1, "a"),
       labelInfo,
@@ -128,6 +148,9 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
 
     assertEquals(Vector(NoLabelsError), report.audited.errorMsgs.take(1))
     assertEquals(None, report.audited.value)
+    assertEquals(None, report.natural)
+
+    fail()
   }
 
   @Test def testReportNoPrediction(): Unit = {
@@ -148,7 +171,7 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
       Auditor
     )
 
-    // TODO: check labelInfo values
+    assertEquals(Vector(NoLabelsError), report.audited.errorMsgs)
     assertEquals(None, report.natural)
     assertEquals(None, report.audited.value)
   }
@@ -157,6 +180,8 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
     // Make sure Subvalue.natural == None
     // Check the values of Subvalue.audited and make sure they are as expected.
     // Subvalue.audited.value should be None.  Check the errors and missing values.
+
+    // The missing labels are reported in the error message
 
     val labelInfo = LabelsAndInfo(
       indices = sci.IndexedSeq[Int](),
@@ -245,6 +270,8 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
     def extractLabelsOutOfExample(example: Map[String, String]): sci.IndexedSeq[String] =
       example.filterKeys(_.startsWith("label")).toSeq.unzip._2.sorted.toIndexedSeq
 
+    // TODO: break this up
+
     // Example with no problems
     val example: Map[String, String] = Map(
       "feature1" -> "1",
@@ -273,6 +300,8 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
       exampleNoLabels,
       labelsOfInterestExtractor,
       labelToInt)
+    // No problems are actually found
+    // But the important thing is that problemsNoLabelsExpected is a Some and not a None
     val problemsNoLabelsExpected = Option(GenAggFuncAccessorProblems(Seq(), Seq()))
     assertEquals(problemsNoLabelsExpected, labelsAndInfoNoLabels.problems)
 
@@ -288,8 +317,9 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
         case _ => None
       }
 
+    val featureWithMissingValue = "feature not present"
     val f1 =
-      GenFunc.f1(GeneratedAccessor("labels", labelsExtractor, None))(
+      GenFunc.f1(GeneratedAccessor(featureWithMissingValue, labelsExtractor, None))(
         "def omitted", _ getOrElse sci.IndexedSeq.empty[Label]
       )
 
@@ -297,37 +327,27 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
       Map[String, String](),
       f1,
       labelToInt)
-    val problemsNoLabelsExpectedGen1 = Option(GenAggFuncAccessorProblems(Seq("labels"), Seq()))
+    val problemsNoLabelsExpectedGen1 = Option(GenAggFuncAccessorProblems(Seq(featureWithMissingValue), Seq()))
     assertEquals(problemsNoLabelsExpectedGen1, labelsAndInfoNoLabelsGen1.problems)
 
     // error
-    val labelsExtractorError: (Map[String, String]) => Option[sci.IndexedSeq[Label]] =
-      (m: Map[String, String]) => m.get("labels") match {
-        case ls: sci.IndexedSeq[_] if ls.forall { x: String => x.isInstanceOf[Label] } =>
-          Option(ls.asInstanceOf[sci.IndexedSeq[Label]])
-        case _ => throw new Exception("labels does not exist")
-      }
-
+    val featureWithError = "feature has error"
     val f2 =
-      GenFunc.f1(GeneratedAccessor("labels",
-        ((m: Map[String, String]) => throw new Exception("errmsg")) : Map[String, String] =>
-          Option[sci.IndexedSeq[String]]
-        , None))(
+      GenFunc.f1(GeneratedAccessor(featureWithError,
+        ( _ => throw new Exception("errmsg")) : Map[String, String] => Option[sci.IndexedSeq[String]], None))(
         "def omitted", _ getOrElse sci.IndexedSeq.empty[Label]
       )
     val f2Wrapped = EnrichedErrorGenAggFunc(f2)
 
-    new SemanticsUdfException[Any](null, null, null, null, null, null)
-
-    val problemsNoLabelsExpectedGen2 = Option(GenAggFuncAccessorProblems(Seq(), Seq("labels")))
+    val problemsNoLabelsExpectedGen2 = Option(GenAggFuncAccessorProblems(Seq(), Seq(featureWithError)))
     Try(
     labelsForPrediction(
       Map[String, String](),
       f2Wrapped,
       labelToInt)
     ).failed.get match {
-      case ex: SemanticsUdfException[_] =>
-        assertEquals(ex.accessorsInErr, problemsNoLabelsExpectedGen2.get.errors)
+      case SemanticsUdfException(_, _, _, accessorsInErr, _, _) => assertEquals(accessorsInErr,
+        problemsNoLabelsExpectedGen2.get.errors)
     }
   }
 
@@ -365,6 +385,9 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
     val labelsAndInfo3 = labelsForPrediction(example3, labelsOfInterestExtractor, labelToInt)
     val missingLabels3 = labelsAndInfo3.missingLabels
     assertEquals(Seq(), missingLabels3)
+
+    // TODO: add these as a different test at the model.apply(.) level
+    // assertEquals(None, modelNew(Vector("1")))
   }
 
   @Test def testLabelsForPredictionReturnsLabelsSortedByIndex(): Unit = {
@@ -372,7 +395,7 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
     //    val (ind, lab) = unsorted.sortBy{ case (i, _) => i }.unzip
 
     def extractLabelsOutOfExample(example: Map[String, String]) =
-      example.filterKeys(_.startsWith("label")).toSeq.unzip._2.sorted.toIndexedSeq
+      example.filterKeys(_.startsWith("label")).toSeq.unzip._2.toIndexedSeq //  sorted.toIndexedSeq
 
     val example: Map[String, String] = Map(
       "feature1" -> "1",
@@ -388,30 +411,24 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
       "label8"   -> "l1"
     )
 
-    val allLabels = sci.IndexedSeq("a", "b", "c", "235", "1", "l1", "l23", "100")
-    val labelToInt = allLabels.zipWithIndex.toMap
-    val labelsOfInterestExtractor = GenFunc0("empty spec", extractLabelsOutOfExample)
-    val labelsAndInfo = labelsForPrediction(example, labelsOfInterestExtractor, labelToInt)
+    val allLabels = extractLabelsOutOfExample(example).sorted
+    val labelToInt: Map[String, Int] = allLabels.zipWithIndex.toMap
 
-    assertEquals(allLabels, labelsAndInfo.labels)
-    assertEquals(allLabels.indices, labelsAndInfo.indices)
+    val rng = new Random(seed=0)
+    (1 to 10).foreach { _ =>
+      val ex = rng.shuffle(example.toVector).take(rng.nextInt(example.size)).toMap
+      val labelsOfInterestExtractor = GenFunc0("empty spec", extractLabelsOutOfExample)
+      val labelsAndInfo = labelsForPrediction(ex, labelsOfInterestExtractor, labelToInt)
+      assertEquals(labelsAndInfo.indices.sorted, labelsAndInfo.indices)
+    }
   }
 
   @Test def testSubvalueReportsNoPredictionWhenNoLabelsAreProvided(): Unit = {
     // Test this:
     //    if (li.labels.isEmpty)
     //      reportNoPrediction(modelId, li, auditor)
-    def extractLabelsOutOfExample(example: Map[String, String]) =
-      example.filterKeys(_.startsWith("label")).toSeq.unzip._2.sorted.toIndexedSeq
 
-    val example = Map("" -> "")
-    val allLabels = sci.IndexedSeq("a", "b", "c")
-    val labelToInd = allLabels.zipWithIndex.toMap
-    val labelsOfInterestExtractor = GenFunc0("empty spec", extractLabelsOutOfExample)
-    val defaultLabelInfo = LabelsAndInfo(allLabels.indices, allLabels, Seq.empty, None)
-    val li = labelsAndInfo(example, Option(labelsOfInterestExtractor), labelToInd, defaultLabelInfo)
-    val report = reportNoPrediction(ModelId(), li, aud)
-    assertEquals(Vector(NoLabelsError), report.audited.errorMsgs)
+    assertEquals(None, modelNew.subvalue(Vector.empty).natural)
   }
 
   @Test def testSubvalueReportsTooManyMissingWhenThereAreTooManyMissingFeatures(): Unit = {
@@ -419,22 +436,16 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
     // called and its value should be returned.  Instantiate a MultilabelModel and
     // call apply with some missing data required by the features.
 
-    // TODO: this is a terrible setup
     val EmptyIndicatorFn: GenAggFunc[Map[String, String], Iterable[(String, Double)]] =
-      GenFunc0("""Iterable(("", 1d))""",
-        (x: Map[String, String]) => if (x.keys.toVector.contains("a")) {
-          Iterable((x.keys.head, 1d))
-      } else {
-          Iterable()
-      })
+      GenFunc0("", _ => Iterable())
 
-    val featureFunctions = Vector.fill(4)(EmptyIndicatorFn)
+    val featureFunctions = Vector(EmptyIndicatorFn)
 
     val modelWithThreshold = MultilabelModel(
       modelId             = ModelId(1, "model1"),
-      featureNames        = sci.IndexedSeq("a", "b", "c", "d"),
+      featureNames        = sci.IndexedSeq("a"),
       featureFunctions    = featureFunctions,
-      labelsInTrainingSet = sci.IndexedSeq[Label]("label1", "label2", "label3", "label4"),
+      labelsInTrainingSet = sci.IndexedSeq[Label]("label1", "label2"),
       labelsOfInterest    = None,
       predictorProducer   = Lazy(ConstantPredictor[Label]()),
       numMissingThreshold = Option(0),
@@ -449,90 +460,84 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
     // Create a predictorProducer that throws.  Check that the model still returns a value
     // and that the error message is incorporated appropriately.
 
-    val EmptyIndicatorFn: GenAggFunc[Map[String, String], Iterable[(String, Double)]] =
-      GenFunc0("""Iterable(("", 1d))""",
-        (x: Map[String, String]) => if (x.keys.toVector.contains("a")) {
-          Iterable((x.keys.head, 1d))
-        } else {
-          Iterable()
-        })
-
-    val featureFunctions = Vector.fill(4)(EmptyIndicatorFn)
-
-    case class PredictorThatThrows[K](prediction: Double = 0d) extends
-      SparseMultiLabelPredictor[K] {
+    case object PredictorThatThrows extends
+      SparseMultiLabelPredictor[Label] {
       override def apply(v1: SparseFeatures,
-        v2: Labels[K],
+        v2: Labels[Label],
         v3: LabelIndices,
-        v4: SparseLabelDepFeatures): Try[Map[K, Double]] = Try(throw new Exception("error"))
+        v4: SparseLabelDepFeatures): Try[Map[Label, Double]] = Try(throw new Exception("error"))
     }
+
     val modelWithThrowingPredictorProducer = MultilabelModel(
       modelId             = ModelId(1, "model1"),
-      featureNames        = sci.IndexedSeq("a", "b", "c", "d"),
-      featureFunctions    = featureFunctions,
-      labelsInTrainingSet = sci.IndexedSeq[Label]("label1", "label2", "label3", "label4"),
+      featureNames        = sci.IndexedSeq.empty,
+      featureFunctions    = sci.IndexedSeq.empty,
+      labelsInTrainingSet = sci.IndexedSeq(""),  // we need at least 1 label to get the error
       labelsOfInterest    = None,
-      predictorProducer   = Lazy(PredictorThatThrows[Label]()),
+      predictorProducer   = Lazy(PredictorThatThrows),
       numMissingThreshold = None,
       auditor             = Auditor
     )
+
     val result = modelWithThrowingPredictorProducer(Map())
     assertEquals(None, result.value)
-    assert(result.errorMsgs.head.contains("java.lang.Exception: error"))
+    assertEquals("java.lang.Exception: error", result.errorMsgs.head.split("\n").head)
   }
 
   @Test def testSubvalueSuccess(): Unit = {
     // Test the happy path by calling model.apply. Check the value, missing data, and error
     // messages.
 
-    val EmptyIndicatorFn: GenAggFunc[Map[String, String], Iterable[(String, Double)]] =
-      GenFunc0("""Iterable(("", 1d))""", (_: Any) => Iterable(("", 1d)))
-
-    val featureFunctions = Vector.fill(4)(EmptyIndicatorFn)
-
     def extractLabelsOutOfExample(example: Map[String, String]) =
       example.filterKeys(_.startsWith("label")).toSeq.unzip._2.sorted.toIndexedSeq
 
     val labelsOfInterestExtractor = GenFunc0("empty spec", extractLabelsOutOfExample)
 
+    val scoreToReturn = 5d
+
     val modelSuccess = MultilabelModel(
       modelId             = ModelId(1, "model1"),
-      featureNames        = sci.IndexedSeq("a", "b", "c", "d"),
-      featureFunctions    = featureFunctions,
+      featureNames        = sci.IndexedSeq.empty,
+      featureFunctions    = sci.IndexedSeq.empty,
       labelsInTrainingSet = sci.IndexedSeq[Label]("label1", "label2", "label3", "label4"),
       labelsOfInterest    = Option(labelsOfInterestExtractor),
-      predictorProducer   = Lazy(ConstantPredictor[Label]()),
+      predictorProducer   = Lazy(ConstantPredictor[Label](scoreToReturn)),
       numMissingThreshold = None,
       auditor             = Auditor
     )
     val result = modelSuccess(Map("a" -> "b", "label1" -> "label1", "label2" -> "label2"))
     assertEquals(Vector(), result.errorMsgs)
     assertEquals(Set(), result.missingVarNames)
-    assertEquals(Option(Map("label1" -> 0.0, "label2" -> 0.0)), result.value)
+    assertEquals(Option(Map("label1" -> scoreToReturn, "label2" -> scoreToReturn)), result.value)
   }
 
   @Test def testExceptionsThrownInFeatureFunctionsAreNotCaught(): Unit = {
     // NOTE: This is by design.
 
-    // TODO: this actually throws
+    val exception = new Exception("error")
     val EmptyIndicatorFn: GenAggFunc[Map[String, String], Iterable[(String, Double)]] =
-      GenFunc0("""Iterable(("", 1d))""", (x: Map[String, String]) => Iterable((x("hello"), 1d)))
+      GenFunc0("", _ => throw exception)
 
-    val featureFunctions = Vector.fill(4)(EmptyIndicatorFn)
+    val featureFunctions = Vector(EmptyIndicatorFn)
 
     val modelSuccess = MultilabelModel(
       modelId             = ModelId(1, "model1"),
-      featureNames        = sci.IndexedSeq("a", "b", "c", "d"),
+      featureNames        = sci.IndexedSeq("throwing feature"),
       featureFunctions    = featureFunctions,
-      labelsInTrainingSet = sci.IndexedSeq[Label]("label1", "label2", "label3", "label4"),
+      labelsInTrainingSet = sci.IndexedSeq[Label](""),
       labelsOfInterest    = None,
       predictorProducer   = Lazy(ConstantPredictor[Label]()),
       numMissingThreshold = None,
       auditor             = Auditor
     )
-    val result = modelSuccess(Map("a" -> "b", "label1" -> "label1", "label2" -> "label2"))
 
-    println(result.value)
+    modelSuccess.copy(modelId=ModelId(1, "b"))
+
+    val result = Try(modelSuccess(Map()))
+    result match {
+      case Success(_) => fail()
+      case Failure(ex) => assertEquals(exception, ex)
+    }
   }
 }
 
@@ -543,10 +548,10 @@ object MultilabelModelTest {
   private val Auditor = RootedTreeAuditor.noUpperBound[Map[Label, Double]]()
 
   case class ConstantPredictor[K](prediction: Double = 0d) extends SparseMultiLabelPredictor[K] {
-    override def apply(v1: SparseFeatures,
-      v2: Labels[K],
-      v3: LabelIndices,
-      v4: SparseLabelDepFeatures): Try[Map[K, Double]] = Try(v2.map(_ -> prediction).toMap)
+    override def apply(featuresUnused: SparseFeatures,
+      labels: Labels[K],
+      indicesUnused: LabelIndices,
+      ldfUnused: SparseLabelDepFeatures): Try[Map[K, Double]] = Try(labels.map(_ -> prediction).toMap)
   }
 
   case class Lazy[A](value: A) extends (() => A) {
@@ -561,6 +566,18 @@ object MultilabelModelTest {
     sci.IndexedSeq[GenAggFunc[Int, Sparse]](),
     sci.IndexedSeq[Label](),
     None,
+    Lazy(ConstantPredictor[Label]()),
+    None,
+    Auditor
+  )
+
+  val modelNew =
+    MultilabelModel(
+    ModelId(),
+    sci.IndexedSeq(),
+    sci.IndexedSeq[GenAggFunc[Vector[String], Sparse]](),
+    sci.IndexedSeq[Label]("a", "b", "c"),
+    Some(GenFunc0("", (a: Vector[String]) => a)),
     Lazy(ConstantPredictor[Label]()),
     None,
     Auditor
