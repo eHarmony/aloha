@@ -27,6 +27,8 @@ import spray.json.{JsonFormat, JsonReader}
   */
 case class VwSparseMultilabelPredictorProducer[K](
     modelSource: ModelSource,
+
+    // TODO: Should we remove this. If not, it must contain the --ring_size [training labels + 10].
     params: String,
     defaultNs: List[Int],
     namespaces: List[(String, List[Int])])
