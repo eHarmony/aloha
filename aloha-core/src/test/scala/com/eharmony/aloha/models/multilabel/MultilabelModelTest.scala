@@ -28,6 +28,7 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
   @Test def testSerialization(): Unit = {
     // Assuming all parameters passed to the MultilabelModel constructor are
     // Serializable, MultilabelModel should also be Serializable.
+
     val modelRoundTrip = serializeDeserializeRoundTrip(modelNoFeatures)
     assertEquals(modelNoFeatures, modelRoundTrip)
   }
@@ -39,33 +40,23 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
     // Call close on the MultilabelModel instance and ensure that the underlying predictor is
     // also closed.
 
-    case class ConstantPredictorClosable[K](prediction: Double = 0d) extends
-      SparseMultiLabelPredictor[K] with Closeable {
-      override def apply(v1: SparseFeatures,
+    case class PredictorClosable[K](prediction: Double = 0d)
+      extends SparseMultiLabelPredictor[K] with Closeable {
+      def apply(
+        v1: SparseFeatures,
         v2: Labels[K],
         v3: LabelIndices,
-        v4: SparseLabelDepFeatures): Try[Map[K, Double]] = Try(v2.map(_ -> prediction).toMap)
-
+        v4: SparseLabelDepFeatures) = Try(Map())
       private[this] val closed = new AtomicBoolean(false)
       override def close(): Unit = closed.set(true)
       def isClosed: Boolean = closed.get()
     }
 
-    val pred = ConstantPredictorClosable[Label]()
-    val model = MultilabelModel(
-      ModelId(),
-      sci.IndexedSeq(),
-      sci.IndexedSeq[GenAggFunc[Int, Sparse]](),
-      sci.IndexedSeq[Label](),
-      None,
-      Lazy(pred),
-      None,
-      Auditor
-    )
+    val predictor = PredictorClosable[Label]()
+    val model = modelNoFeatures.copy(predictorProducer = Lazy(predictor))
 
-    // TODO: How do I test this?
     model.close()
-    assertTrue(pred.isClosed)
+    assertTrue(predictor.isClosed)
   }
 
   @Test def testLabelsOfInterestOmitted(): Unit = {
@@ -531,7 +522,6 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
       auditor             = Auditor
     )
 
-    modelSuccess.copy(modelId=ModelId(1, "b"))
 
     val result = Try(modelSuccess(Map()))
     result match {
@@ -561,26 +551,20 @@ object MultilabelModelTest {
   val missingLabels: Seq[Label] = Seq("a", "b")
 
   val modelNoFeatures = MultilabelModel(
-    ModelId(),
-    sci.IndexedSeq(),
-    sci.IndexedSeq[GenAggFunc[Int, Sparse]](),
-    sci.IndexedSeq[Label](),
-    None,
-    Lazy(ConstantPredictor[Label]()),
-    None,
-    Auditor
+    modelId             = ModelId(),
+    featureNames        = sci.IndexedSeq(),
+    featureFunctions    = sci.IndexedSeq[GenAggFunc[Int, Sparse]](),
+    labelsInTrainingSet = sci.IndexedSeq[Label](),
+    labelsOfInterest    = None,
+    predictorProducer   = Lazy(ConstantPredictor[Label]()),
+    numMissingThreshold = None,
+    auditor             = Auditor
   )
 
-  val modelNew =
-    MultilabelModel(
-    ModelId(),
-    sci.IndexedSeq(),
-    sci.IndexedSeq[GenAggFunc[Vector[String], Sparse]](),
-    sci.IndexedSeq[Label]("a", "b", "c"),
-    Some(GenFunc0("", (a: Vector[String]) => a)),
-    Lazy(ConstantPredictor[Label]()),
-    None,
-    Auditor
+  val modelNew = modelNoFeatures.copy(
+    featureFunctions    = sci.IndexedSeq[GenAggFunc[Vector[String], Sparse]](),
+    labelsInTrainingSet = sci.IndexedSeq[Label]("a", "b", "c"),
+    labelsOfInterest    = Some(GenFunc0("", (a: Vector[String]) => a))
   )
 
   val aud: RootedTreeAuditor[Any, Map[Label, Double]] = RootedTreeAuditor[Any, Map[Label, Double]]()
