@@ -90,7 +90,7 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
     val report  = reportTooManyMissing(
       modelId   = ModelId(),
       labelInfo = labelsAndInfoEmpty,
-      missing   = scm.Map("" -> missingLabels),
+      missing   = scm.Map("" -> labelsNotInTrainingSet),
       auditor   = auditor
     )
 
@@ -120,7 +120,7 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
     val missingVariables = Seq("a", "b")
     val report = reportPredictorError(
       ModelId(),
-      labelsAndInfoEmpty.copy(labelsNotInTrainingSet = missingLabels),
+      labelsAndInfoEmpty.copy(labelsNotInTrainingSet = labelsNotInTrainingSet),
       scm.Map("" -> missingVariables),
       throwable,
       Auditor
@@ -135,8 +135,8 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
     val predictions = Map("label" -> 1.0)
     val report   = reportSuccess(
       modelId    = ModelId(),
-      labelInfo  = labelsAndInfoEmpty.copy(labelsNotInTrainingSet = missingLabels),
-      missing    = scm.Map("" -> missingLabels),
+      labelInfo  = labelsAndInfoEmpty.copy(labelsNotInTrainingSet = labelsNotInTrainingSet),
+      missing    = scm.Map("" -> labelsNotInTrainingSet),
       prediction = predictions,
       auditor    = Auditor
     )
@@ -204,8 +204,7 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
     val labelNotInTrainingSet = "d"
     val labelsAndInfo = labelsForPrediction(Map("label" -> labelNotInTrainingSet),
       labelsOfInterestExtractor, labelsInTrainingSetToIndex)
-    val missingLabels2 = labelsAndInfo.labelsNotInTrainingSet
-    assertEquals(Seq(labelNotInTrainingSet), missingLabels2)
+    assertEquals(Seq(labelNotInTrainingSet), labelsAndInfo.labelsNotInTrainingSet)
   }
 
   @Test def testLabelsForPredictionReturnsLabelsSortedByIndex(): Unit = {
@@ -327,9 +326,9 @@ object MultilabelModelTest {
   // Common input
   val labelsInTrainingSet: sci.IndexedSeq[Label] = sci.IndexedSeq[Label]("a", "b", "c")
   val labelsInTrainingSetToIndex: Map[Label, Int] =labelsInTrainingSet.zipWithIndex.toMap
-  val missingLabels: Seq[Label] = Seq("a", "b")
+  val labelsNotInTrainingSet: Seq[Label] = Seq("a", "b")
   val baseErrorMessage: Seq[String] = Stream.continually("Label not in training labels: ")
-  val errorMessages: Seq[String] = baseErrorMessage.zip(missingLabels).map {
+  val errorMessages: Seq[String] = baseErrorMessage.zip(labelsNotInTrainingSet).map {
     case(msg, label) => s"$msg$label"
   }
   val auditor: RootedTreeAuditor[Any, Map[Label, Double]] =
@@ -368,7 +367,7 @@ object MultilabelModelTest {
     problems = None
   )
   val labelsAndInfoMissingLabels: LabelsAndInfo[Label] =
-    labelsAndInfoEmpty.copy(labelsNotInTrainingSet = missingLabels)
+    labelsAndInfoEmpty.copy(labelsNotInTrainingSet = labelsNotInTrainingSet)
 
   // Reports
   val reportNoPredictionPartial:
