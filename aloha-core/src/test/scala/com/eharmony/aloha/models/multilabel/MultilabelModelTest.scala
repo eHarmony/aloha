@@ -120,7 +120,7 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
     val missingVariables = Seq("a", "b")
     val report = reportPredictorError(
       ModelId(),
-      labelsAndInfoEmpty.copy(missingLabels = missingLabels),
+      labelsAndInfoEmpty.copy(labelsNotInTrainingSet = missingLabels),
       scm.Map("" -> missingVariables),
       throwable,
       Auditor
@@ -135,7 +135,7 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
     val predictions = Map("label" -> 1.0)
     val report   = reportSuccess(
       modelId    = ModelId(),
-      labelInfo  = labelsAndInfoEmpty.copy(missingLabels = missingLabels),
+      labelInfo  = labelsAndInfoEmpty.copy(labelsNotInTrainingSet = missingLabels),
       missing    = scm.Map("" -> missingLabels),
       prediction = predictions,
       auditor    = Auditor
@@ -206,9 +206,6 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
     //      if (unsorted.size == labelsShouldPredict.size) Seq.empty
     //      else labelsShouldPredict.filterNot(labelToInd.contains)
 
-    def extractLabelsOutOfExample(example: Map[String, String]) =
-      example.filterKeys(_.startsWith("label")).toSeq.unzip._2.sorted.toIndexedSeq
-
     val example: Map[String, String] = Map(
       "feature1" -> "1",
       "feature2" -> "2",
@@ -220,19 +217,19 @@ class MultilabelModelTest extends ModelSerializationTestHelper {
     val labelToInt = allLabels.zipWithIndex.toMap
     val labelsOfInterestExtractor = GenFunc0("empty spec", extractLabelsOutOfExample)
     val labelsAndInfo = labelsForPrediction(example, labelsOfInterestExtractor, labelToInt)
-    val missingLabels = labelsAndInfo.missingLabels
+    val missingLabels = labelsAndInfo.labelsNotInTrainingSet
     assertEquals(Seq(), missingLabels)
 
     // Extra label not in the list
     val example2 = Map("label4" -> "d")
     val labelsAndInfo2 = labelsForPrediction(example2, labelsOfInterestExtractor, labelToInt)
-    val missingLabels2 = labelsAndInfo2.missingLabels
+    val missingLabels2 = labelsAndInfo2.labelsNotInTrainingSet
     assertEquals(Seq("d"), missingLabels2)
 
     // No labels
     val example3 = Map("feature2" -> "5")
     val labelsAndInfo3 = labelsForPrediction(example3, labelsOfInterestExtractor, labelToInt)
-    val missingLabels3 = labelsAndInfo3.missingLabels
+    val missingLabels3 = labelsAndInfo3.labelsNotInTrainingSet
     assertEquals(Seq(), missingLabels3)
 
     // TODO: add these as a different test at the model.apply(.) level
@@ -395,11 +392,11 @@ object MultilabelModelTest {
   val labelsAndInfoEmpty = LabelsAndInfo(
     indices = sci.IndexedSeq.empty,
     labels = sci.IndexedSeq.empty,
-    missingLabels = Seq[Label](),
+    labelsNotInTrainingSet = Seq[Label](),
     problems = None
   )
   val labelsAndInfoMissingLabels: LabelsAndInfo[Label] =
-    labelsAndInfoEmpty.copy(missingLabels = missingLabels)
+    labelsAndInfoEmpty.copy(labelsNotInTrainingSet = missingLabels)
 
   // Reports
   val reportNoPredictionPartial:
