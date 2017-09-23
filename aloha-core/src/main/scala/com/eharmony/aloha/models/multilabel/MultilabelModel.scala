@@ -140,8 +140,8 @@ object MultilabelModel extends ParserProviderCompanion {
     *                be sorted in ascending order.
     * @param labels labels for which a prediction should be produced.  labels are parallel to
     *               indices so `indices(i)` is the index associated with `labels(i)`.
-    * @param missingLabels a sequence of labels derived from the input data that could not be
-    *                      found in the sequence of all labels seen during training.
+    * @param labelsNotInTrainingSet a sequence of labels derived from the input data that could
+    *                               not be found in the sequence of all labels seen during training.
     * @param problems any problems encountered when trying to get the labels.  This should only
     *                 be present when the caller indicates labels should be embedded in the
     *                 input data passed to the prediction function in the MultilabelModel.
@@ -150,12 +150,12 @@ object MultilabelModel extends ParserProviderCompanion {
   protected[multilabel] case class LabelsAndInfo[K](
       indices: sci.IndexedSeq[Int],
       labels: sci.IndexedSeq[K],
-      missingLabels: Seq[K],
+      labelsNotInTrainingSet: Seq[K],
       problems: Option[GenAggFuncAccessorProblems]
   ) {
     def missingVarNames: Seq[String] = problems.map(p => p.missing).getOrElse(Nil)
     def errorMsgs: Seq[String] = {
-      missingLabels.map { lab => s"Label not in training labels: $lab" } ++
+      labelsNotInTrainingSet.map { lab => s"Label not in training labels: $lab" } ++
       problems.map(p => p.errors).getOrElse(Nil)
     }
   }
