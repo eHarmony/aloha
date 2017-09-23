@@ -184,12 +184,14 @@ object VwMultilabelRowCreator {
     * @param features (non-label dependent) features shared across all labels.
     * @param indices the indices `labels` into the sequence of all labels encountered
     *                during training.
+    * @param positiveLabelIndices a predicate telling whether the example should be positively
+    *                             associated with a label.
     * @param defaultNs the indices into `features` that should be placed in VW's default
     *                  namespace.
     * @param namespaces the indices into `features` that should be associated with each
     *                   namespace.
-    * @param classNamespace
-    * @param dummyClassNamespace
+    * @param classNs a namespace for features associated with class labels
+    * @param dummyClassNs a namespace for features associated with dummy class labels
     * @return an array to be passed directly to an underlying `VWActionScoresLearner`.
     */
   private[aloha] def trainingInput(
@@ -244,15 +246,15 @@ object VwMultilabelRowCreator {
     *                  namespace.
     * @param namespaces the indices into `features` that should be associated with each
     *                   namespace.
-    * @param classNamespace
+    * @param classNs a namespace for features associated with class labels
     * @return an array to be passed directly to an underlying `VWActionScoresLearner`.
     */
   private[aloha] def predictionInput(
-    features: IndexedSeq[Sparse],
-    indices: sci.IndexedSeq[Int],
-    defaultNs: List[Int],
-    namespaces: List[(String, List[Int])],
-    classNamespace: String
+      features: IndexedSeq[Sparse],
+      indices: sci.IndexedSeq[Int],
+      defaultNs: List[Int],
+      namespaces: List[(String, List[Int])],
+      classNs: String
   ): Array[String] = {
 
     val n = indices.size
@@ -268,7 +270,7 @@ object VwMultilabelRowCreator {
     var i = 0
     while (i < n) {
       val labelInd = indices(i)
-      x(i + 1) = s"$labelInd:0 |$classNamespace _$labelInd"
+      x(i + 1) = s"$labelInd:0 |$classNs _$labelInd"
       i += 1
     }
 

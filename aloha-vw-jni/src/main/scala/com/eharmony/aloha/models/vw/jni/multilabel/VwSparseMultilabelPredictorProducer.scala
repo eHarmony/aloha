@@ -31,8 +31,9 @@ case class VwSparseMultilabelPredictorProducer[K](
     // TODO: Should we remove this. If not, it must contain the --ring_size [training labels + 10].
     params: String,
     defaultNs: List[Int],
-    namespaces: List[(String, List[Int])])
-extends SparsePredictorProducer[K] {
+    namespaces: List[(String, List[Int])],
+    labelNamespace: String
+) extends SparsePredictorProducer[K] {
   override def apply(): VwSparseMultilabelPredictor[K] =
     VwSparseMultilabelPredictor[K](modelSource, params, defaultNs, namespaces)
 }
