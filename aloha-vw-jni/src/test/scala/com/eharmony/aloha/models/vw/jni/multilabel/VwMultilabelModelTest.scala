@@ -98,7 +98,7 @@ object VwMultilabelModelTest {
 
   private lazy val Model: Model[Domain, RootedTree[Any, Map[Label, Double]]] = {
     val featureNames = Vector(FeatureName)
-    val features = Vector(GenFunc0("", (_: Domain) => Iterable(("", 1d))))
+    val features     = Vector(GenFunc0("", (_: Domain) => Iterable(("", 1d))))
 
     // Get the list of labels from the comma-separated list passed in the input string.
     val labelsOfInterestFn =
