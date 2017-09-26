@@ -1,6 +1,6 @@
 package com.eharmony.aloha.dataset.vw.multilabel
 
-import com.eharmony.aloha.dataset.SparseFeatureExtractorFunction
+import com.eharmony.aloha.dataset.{MissingAndErroneousFeatureInfo, SparseFeatureExtractorFunction}
 import com.eharmony.aloha.semantics.func.{GenAggFunc, GenFunc0}
 import org.junit.Assert._
 import org.junit.Test
@@ -14,31 +14,25 @@ import org.junit.runners.BlockJUnit4ClassRunner
 class VwMultilabelRowCreatorTest {
   import VwMultilabelRowCreatorTest._
 
-  // TODO: Test that shared doesn't occur when there are no shared features.
-  @Test def testSharedOmittedWhenNoSharedFeaturesExist(): Unit = {
-    fail()
+  @Test def testSharedIsPresentWhenNoFeaturesSpecified(): Unit = {
+    val rc = rowCreator(0)
+    val a = output(rc(X))
+    val expected = SharedPrefix +: (DummyLabels ++ AllNegative)
+    assertEquals(expected, a.toList)
   }
 
   @Test def testOneFeatureNoPos(): Unit = {
-    val nFeatures = 1
-    val shared = List("shared | f1")  // One feature because nFeatures = 1
+    val rc = rowCreator(numFeatures = 1)
+    val a = output(rc(X))
 
-    val dummy = List(
-      s"$NegDummyClass:$NegVal |y neg",
-      s"$PosDummyClass:$PosVal |y pos"
-    )
-
-    // Only negative labels because no positive labels.
-    val classLabels = LabelsInTrainingSet.indices.map(i => s"$i:$NegVal |Y _$i")
-
-    val rc = rowCreator(nFeatures)
-    val (missing, arr) = rc(Map.empty)
-    assertEquals(shared ++ dummy ++ classLabels, arr.toList)
+    val shared = s"$SharedPrefix| f1"
+    val expected = shared +: (DummyLabels ++ AllNegative)
+    assertEquals(expected, a.toList)
   }
 }
 
 object VwMultilabelRowCreatorTest {
-  private type Domain = Map[String, String]
+  private type Domain = Map[String, Any]
   private type Label = String
   private val Omitted = ""
   private val LabelsInTrainingSet = Vector("zero", "one", "two")
@@ -46,6 +40,18 @@ object VwMultilabelRowCreatorTest {
   private val PosDummyClass = NegDummyClass + 1
   private val PosVal = -1
   private val NegVal = 0
+  private val X = Map.empty[String, Any]
+  private val SharedPrefix = "shared "
+
+  private val DummyLabels = List(
+    s"$NegDummyClass:$NegVal |y N",
+    s"$PosDummyClass:$PosVal |y P"
+  )
+
+  private val AllNegative = LabelsInTrainingSet.indices.map(i => s"$i:$NegVal |Y _$i")
+
+
+  private def output(out: (MissingAndErroneousFeatureInfo, Array[String])) = out._2
 
   private[this] val featureFns = SparseFeatureExtractorFunction[Domain](Vector(
     "f1" -> GenFunc0(Omitted, _ => Seq(("", 1d))),

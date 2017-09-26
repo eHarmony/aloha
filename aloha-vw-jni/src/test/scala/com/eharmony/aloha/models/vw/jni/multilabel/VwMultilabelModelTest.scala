@@ -3,6 +3,7 @@ package com.eharmony.aloha.models.vw.jni.multilabel
 import java.io.File
 
 import com.eharmony.aloha.audit.impl.tree.{RootedTree, RootedTreeAuditor}
+import com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.io.sources.{ExternalSource, ModelSource}
 import com.eharmony.aloha.io.vfs.Vfs
@@ -110,11 +111,16 @@ object VwMultilabelModelTest {
            .toVector
       )
 
+    val namespaces = List(("X", List(0)))
+    val labelNs = VwMultilabelRowCreator.determineLabelNamespaces(namespaces.unzip._1.toSet).get._1
+
+
     val predProd = VwSparseMultilabelPredictorProducer[Label](
       modelSource = TrainedModel,
       params      = "", // to see the output:  "-p /dev/stdout",
       defaultNs   = List.empty[Int],
-      namespaces  = List(("X", List(0)))
+      namespaces  = namespaces,
+      labelNamespace = labelNs
     )
 
     MultilabelModel(
@@ -133,6 +139,8 @@ object VwMultilabelModelTest {
     f.deleteOnExit()
     f
   }
+
+  private val (labelNs, dummyLabelNs) = VwMultilabelRowCreator.determineLabelNamespaces(Set.empty).get
 
   private def vwTrainingParams(modelFile: File = tmpFile()) = {
 
@@ -161,17 +169,17 @@ object VwMultilabelModelTest {
     //     "smaller is better".  So, to get the probability, one must do `1/(1 + exp(-1 * -y))`
     //     or simply `1/(1 + exp(y))`.
     val flags =
-      """
-        | --quiet
-        | --csoaa_ldf mc
-        | --csoaa_rank
-        | --loss_function logistic
-        | -q YX
-        | --noconstant
-        | --ignore_linear X
-        | --ignore y
-        | -f
-      """.stripMargin.trim
+      s"""
+         | --quiet
+         | --csoaa_ldf mc
+         | --csoaa_rank
+         | --loss_function logistic
+         | -q ${labelNs}X
+         | --noconstant
+         | --ignore_linear X
+         | --ignore $dummyLabelNs
+         | -f
+       """.stripMargin.trim
 
     (flags + " " + modelFile.getCanonicalPath).split("\n").map(_.trim).mkString(" ")
   }
@@ -180,24 +188,25 @@ object VwMultilabelModelTest {
 
   /**
     * A dataset that creates the following marginal distribution.
-    - Pr[seven] = 0.7  where seven is _C0_
-    - Pr[eight] = 0.8  where eight is _C1_
-    - Pr[six]   = 0.6  where six   is _C2_
+    - Pr[seven] = 0.7  where seven is _0
+    - Pr[eight] = 0.8  where eight is _1
+    - Pr[six]   = 0.6  where six   is _2
     *
-    * The observant reader may notice these are oddly ordered.  On each line C1 appears first,
-    * then C0, then C2.  This is done to show ordering doesn't matter.  What matters is the
+    * The observant reader may notice these are oddly ordered.  On each line _1 appears first,
+    * then _0, then _2.  This is done to show ordering doesn't matter.  What matters is the
     * class '''indices'''.
     */
   private val TrainingData =
+
     Vector(
-      s"shared |X $FeatureName\n2147483648:0.0 |y _C2147483648_\n2147483649:-0.084 |y _C2147483649_\n1:0.0 |Y _C1_\n0:-0.084 |Y _C0_\n2:-0.084 |Y _C2_",
-      s"shared |X $FeatureName\n2147483648:0.0 |y _C2147483648_\n2147483649:-0.024 |y _C2147483649_\n1:0.0 |Y _C1_\n0:0.0 |Y _C0_\n2:0.0 |Y _C2_",
-      s"shared |X $FeatureName\n2147483648:0.0 |y _C2147483648_\n2147483649:-0.336 |y _C2147483649_\n1:-0.336 |Y _C1_\n0:-0.336 |Y _C0_\n2:-0.336 |Y _C2_",
-      s"shared |X $FeatureName\n2147483648:0.0 |y _C2147483648_\n2147483649:-0.056 |y _C2147483649_\n1:0.0 |Y _C1_\n0:-0.056 |Y _C0_\n2:0.0 |Y _C2_",
-      s"shared |X $FeatureName\n2147483648:0.0 |y _C2147483648_\n2147483649:-0.144 |y _C2147483649_\n1:-0.144 |Y _C1_\n0:0.0 |Y _C0_\n2:-0.144 |Y _C2_",
-      s"shared |X $FeatureName\n2147483648:0.0 |y _C2147483648_\n2147483649:-0.224 |y _C2147483649_\n1:-0.224 |Y _C1_\n0:-0.224 |Y _C0_\n2:0.0 |Y _C2_",
-      s"shared |X $FeatureName\n2147483648:0.0 |y _C2147483648_\n2147483649:-0.036 |y _C2147483649_\n1:0.0 |Y _C1_\n0:0.0 |Y _C0_\n2:-0.036 |Y _C2_",
-      s"shared |X $FeatureName\n2147483648:0.0 |y _C2147483648_\n2147483649:-0.096 |y _C2147483649_\n1:-0.096 |Y _C1_\n0:0.0 |Y _C0_\n2:0.0 |Y _C2_"
+      s"shared |X $FeatureName\n2147483648:0.0 |$dummyLabelNs neg\n2147483649:-0.084 |$dummyLabelNs pos\n1:0.0    |$labelNs _1\n0:-0.084 |$labelNs _0\n2:-0.084 |$labelNs _2",
+      s"shared |X $FeatureName\n2147483648:0.0 |$dummyLabelNs neg\n2147483649:-0.024 |$dummyLabelNs pos\n1:0.0    |$labelNs _1\n0:0.0    |$labelNs _0\n2:0.0    |$labelNs _2",
+      s"shared |X $FeatureName\n2147483648:0.0 |$dummyLabelNs neg\n2147483649:-0.336 |$dummyLabelNs pos\n1:-0.336 |$labelNs _1\n0:-0.336 |$labelNs _0\n2:-0.336 |$labelNs _2",
+      s"shared |X $FeatureName\n2147483648:0.0 |$dummyLabelNs neg\n2147483649:-0.056 |$dummyLabelNs pos\n1:0.0    |$labelNs _1\n0:-0.056 |$labelNs _0\n2:0.0    |$labelNs _2",
+      s"shared |X $FeatureName\n2147483648:0.0 |$dummyLabelNs neg\n2147483649:-0.144 |$dummyLabelNs pos\n1:-0.144 |$labelNs _1\n0:0.0    |$labelNs _0\n2:-0.144 |$labelNs _2",
+      s"shared |X $FeatureName\n2147483648:0.0 |$dummyLabelNs neg\n2147483649:-0.224 |$dummyLabelNs pos\n1:-0.224 |$labelNs _1\n0:-0.224 |$labelNs _0\n2:0.0    |$labelNs _2",
+      s"shared |X $FeatureName\n2147483648:0.0 |$dummyLabelNs neg\n2147483649:-0.036 |$dummyLabelNs pos\n1:0.0    |$labelNs _1\n0:0.0    |$labelNs _0\n2:-0.036 |$labelNs _2",
+      s"shared |X $FeatureName\n2147483648:0.0 |$dummyLabelNs neg\n2147483649:-0.096 |$dummyLabelNs pos\n1:-0.096 |$labelNs _1\n0:0.0    |$labelNs _0\n2:0.0    |$labelNs _2"
     ).map(_.split("\n"))
 
   private lazy val TrainedModel: ModelSource = {

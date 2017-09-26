@@ -88,7 +88,7 @@ object VwMultilabelRowCreator {
     * As such, the ''reward'' of a positive example is designated to be one,
     * so the cost (or negative reward) is -1.
     */
-  private[this] val Positive = (-1).toString
+  private[this] val PositiveCost = (-1).toString
 
   /**
     * Since VW CSOAA stands for '''COST''' ''Sensitive One Against All'', the
@@ -96,7 +96,11 @@ object VwMultilabelRowCreator {
     * As such, the ''reward'' of a negative example is designated to be zero,
     * so the cost (or negative reward) is 0.
     */
-  private[this] val Negative = 0.toString
+  private[this] val NegativeCost = 0.toString
+
+  private[this] val PositiveDummyClassFeature = "P"
+
+  private[this] val NegativeDummyClassFeature = "N"
 
 
   /**
@@ -219,8 +223,8 @@ object VwMultilabelRowCreator {
     // These string interpolations are computed over and over but will always be the same
     // for a given dummyClassNs.
     // TODO: Precompute these in a class instance and pass in as parameters.
-    x(1) = s"$NegDummyClassId:0 |$dummyClassNs neg"
-    x(2) = s"$PosDummyClassId:-1 |$dummyClassNs pos"
+    x(1) = s"$NegDummyClassId:$NegativeCost |$dummyClassNs $NegativeDummyClassFeature"
+    x(2) = s"$PosDummyClassId:$PositiveCost |$dummyClassNs $PositiveDummyClassFeature"
 
     // This is mutable because we want speed.
     var i = 0
@@ -228,7 +232,7 @@ object VwMultilabelRowCreator {
       val labelInd = indices(i)
 
       // TODO or positives.contains(labelInd)?
-      val dv = if (positiveLabelIndices(i)) Positive else Negative
+      val dv = if (positiveLabelIndices(i)) PositiveCost else NegativeCost
       x(i + 3) = s"$labelInd:$dv |$classNs _$labelInd"
       i += 1
     }
