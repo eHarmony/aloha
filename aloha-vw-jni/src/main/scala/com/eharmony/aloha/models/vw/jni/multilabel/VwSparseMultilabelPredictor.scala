@@ -34,6 +34,8 @@ import scala.util.Try
 // TODO: Comment this function.  It requires a lot of assumptions.  Make those known.
 case class VwSparseMultilabelPredictor[K](
     modelSource: ModelSource,
+
+    // TODO: Should these be removed?  I don't think so but could be, w/o harm, in limited cases.
     params: String,
     defaultNs: List[Int],
     namespaces: List[(String, List[Int])],
@@ -43,8 +45,12 @@ extends SparseMultiLabelPredictor[K]
 
   import VwSparseMultilabelPredictor._
 
-  @transient private[multilabel] lazy val vwModel =
-    createLearner(modelSource, params, numLabelsInTrainingSet).get
+  @transient private[this] lazy val paramsAndVwModel =
+    createLearner(modelSource, params, numLabelsInTrainingSet)
+
+  @transient private[this] lazy val updatedParams = paramsAndVwModel._1
+  @transient private[multilabel] lazy val vwModel = paramsAndVwModel._2.get
+
 
   {
     val emptyNss = namespaces collect { case (ns, ind) if ind.isEmpty => ns }
@@ -56,6 +62,12 @@ extends SparseMultiLabelPredictor[K]
     // Force creation.
     require(vwModel != null)
   }
+
+  /**
+    * Get the VW parameters used to invoke the underlying VW model.
+    * @return VW parameters.
+    */
+  def vwParams(): String = updatedParams
 
   /**
     * Given the input, form a VW example, and delegate to the underlying ''CSOAA LDF'' VW model.
@@ -142,8 +154,8 @@ object VwSparseMultilabelPredictor {
     *
     * val ex = str.split("\n")
     * }}}
-    * @param modelSource
-    * @param params
+    * @param modelSource location of a VW model.
+    * @param params the parameters passed to the model to which additional parameters will be added.
     * @return
     */
   // TODO: How much of the parameter setup is up to the caller versus this function?
@@ -152,7 +164,7 @@ object VwSparseMultilabelPredictor {
       params: String,
       numLabelsInTrainingSet: Int
   ): String = {
-    val ringSize = (numLabelsInTrainingSet + AddlVwRingSize)
+    val ringSize = numLabelsInTrainingSet + AddlVwRingSize
     s"$params -i ${modelSource.getCanonicalPath} --ring_size $ringSize --testonly --quiet"
   }
 
@@ -160,9 +172,10 @@ object VwSparseMultilabelPredictor {
       modelSource: ModelSource,
       params: String,
       numLabelsInTrainingSet: Int
-  ): Try[VWActionScoresLearner] = {
+  ): (String, Try[VWActionScoresLearner]) = {
     val modelFile = modelSource.localVfs.replicatedToLocal()
     val updatedParams = paramsWithSource(modelFile.fileObj, params, numLabelsInTrainingSet)
-    Try { VWLearners.create[VWActionScoresLearner](updatedParams) }
+    val learner = Try { VWLearners.create[VWActionScoresLearner](updatedParams) }
+    (updatedParams, learner)
   }
 }
