@@ -1,7 +1,6 @@
 package com.eharmony.aloha.models.vw.jni.multilabel.json
 
-import com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator
-import com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator.determineLabelNamespaces
+import com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator.{LabelNamespaces, determineLabelNamespaces}
 import com.eharmony.aloha.models.multilabel.SparsePredictorProducer
 import com.eharmony.aloha.models.vw.jni.Namespaces
 import com.eharmony.aloha.models.vw.jni.multilabel.VwSparseMultilabelPredictorProducer
@@ -23,7 +22,7 @@ import scala.collection.immutable.ListMap
   * @param featureNames feature names from the multi-label model.
   * @tparam K label type for the predictions outputted by the
   */
-case class VwMultilabelModelPluginJsonReader[K](featureNames: Seq[String])
+case class VwMultilabelModelPluginJsonReader[K](featureNames: Seq[String], numLabelsInTrainingSet: Int)
    extends JsonReader[SparsePredictorProducer[K]]
       with VwMultilabelModelJson
       with Namespaces
@@ -44,9 +43,9 @@ case class VwMultilabelModelPluginJsonReader[K](featureNames: Seq[String])
     val labelAndDummyLabelNss = determineLabelNamespaces(namespaceNames)
 
     labelAndDummyLabelNss match {
-      case Some((labelNs, _)) =>
+      case Some(LabelNamespaces(labelNs, _)) =>
         // TODO: Should we remove this. If not, it must contain the --ring_size [training labels + 10].
-        VwSparseMultilabelPredictorProducer[K](ast.modelSource, params, defaultNs, namespaces, labelNs)
+        VwSparseMultilabelPredictorProducer[K](ast.modelSource, params, defaultNs, namespaces, labelNs, numLabelsInTrainingSet)
       case _ =>
         throw new DeserializationException(
           "Could not determine label namespace.  Found namespaces: " +
@@ -59,8 +58,8 @@ case class VwMultilabelModelPluginJsonReader[K](featureNames: Seq[String])
 object VwMultilabelModelPluginJsonReader extends Logging {
   private val JsonErrStrLength = 100
 
-  private[multilabel] def vwParams(params: Either[Seq[String], String]): String =
-    params.fold(_ mkString " ", identity).trim
+  private[multilabel] def vwParams(params: Option[Either[Seq[String], String]]): String =
+    params.fold("")(e => e.fold(ps => ps.mkString(" "), identity[String])).trim
 
   private[multilabel] def notObjErr(json: JsValue): String = {
     val str = json.prettyPrint

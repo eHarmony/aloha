@@ -25,7 +25,7 @@ trait MultilabelModelParserPlugin {
     * @tparam K the label or class type to be produced by the multi-label model.
     * @return a JSON reader that can create `SparsePredictorProducer[K]` from JSON ASTs.
     */
-  def parser[K](info: PluginInfo)
+  def parser[K](info: PluginInfo[K])
                (implicit ri: RefInfo[K], jf: JsonFormat[K]): JsonReader[SparsePredictorProducer[K]]
 }
 

@@ -7,6 +7,7 @@ import scala.collection.immutable.ListMap
 /**
   * Created by ryan.deak on 9/7/17.
   */
-trait PluginInfo {
+trait PluginInfo[K] {
   def features: ListMap[String, Spec]
+  def labelsInTrainingSet: Vector[K]
 }

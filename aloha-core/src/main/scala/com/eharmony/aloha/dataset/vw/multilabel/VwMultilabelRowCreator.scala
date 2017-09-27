@@ -12,7 +12,7 @@ import com.eharmony.aloha.semantics.func.GenAggFunc
 import spray.json.JsValue
 
 import scala.collection.{breakOut, immutable => sci}
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 
 /**
   * Created by ryan.deak on 9/13/17.
@@ -24,24 +24,14 @@ final case class VwMultilabelRowCreator[-A, K](
     namespaces: List[(String, List[Int])],
     normalizer: Option[CharSequence => CharSequence],
     positiveLabelsFunction: GenAggFunc[A, sci.IndexedSeq[K]],
+    classNs: String,
+    dummyClassNs: String,
     includeZeroValues: Boolean = false
 ) extends RowCreator[A, Array[String]] {
   import VwMultilabelRowCreator._
 
   @transient private[this] lazy val labelToInd = allLabelsInTrainingSet.zipWithIndex.toMap
 
-  @transient private[this] lazy val nss =
-    determineLabelNamespaces(namespaces.map{ case (ns, _) => ns}(breakOut)) getOrElse {
-      // If there are so many VW namespaces that all available Unicode characters are taken,
-      // then a memory error will probably already have occurred.
-      throw new AlohaException(
-        "Could not find any Unicode characters to as VW namespaces. Namespaces provided: " +
-        namespaces.unzip._1.mkString(", ")
-      )
-    }
-
-  @transient private[this] lazy val classNs = nss._1
-  @transient private[this] lazy val dummyClassNs = nss._2
 
   override def apply(a: A): (MissingAndErroneousFeatureInfo, Array[String]) = {
     val (missingAndErrs, features) = featuresFunction(a)
@@ -136,15 +126,15 @@ object VwMultilabelRowCreator {
     * @return the namespace for ''actual'' label information then the namespace for ''dummy''
     *         label information.  If two valid namespaces couldn't be produced, return None.
     */
-  private[aloha] def determineLabelNamespaces(usedNss: Set[String]): Option[(String, String)] = {
+  private[aloha] def determineLabelNamespaces(usedNss: Set[String]): Option[LabelNamespaces] = {
     val nss = nssToFirstCharBitSet(usedNss)
     preferredLabelNamespaces(nss) orElse bruteForceNsSearch(nss)
   }
 
-  private[multilabel] def preferredLabelNamespaces(nss: sci.BitSet): Option[(String, String)] = {
+  private[multilabel] def preferredLabelNamespaces(nss: sci.BitSet): Option[LabelNamespaces] = {
     PreferredLabelNamespaces collectFirst {
       case (actual, dummy) if !(nss contains actual.toInt) && !(nss contains dummy.toInt) =>
-        (actual.toString, dummy.toString)
+        LabelNamespaces(actual.toString, dummy.toString)
     }
   }
 
@@ -168,7 +158,7 @@ object VwMultilabelRowCreator {
     * @param usedNss the set of first characters in namespaces.
     * @return the namespace to use for the actual classes and dummy classes, respectively.
     */
-  private[multilabel] def bruteForceNsSearch(usedNss: sci.BitSet): Option[(String, String)] = {
+  private[multilabel] def bruteForceNsSearch(usedNss: sci.BitSet): Option[LabelNamespaces] = {
     val found =
       Stream
         .from(FirstValidCharacter)
@@ -177,7 +167,7 @@ object VwMultilabelRowCreator {
 
     found match {
       case actual #:: dummy #:: Stream.Empty =>
-        Option((actual.toChar.toString, dummy.toChar.toString))
+        Option(LabelNamespaces(actual.toChar.toString, dummy.toChar.toString))
       case _ => None
     }
   }
@@ -330,10 +320,28 @@ object VwMultilabelRowCreator {
       val spec = for {
         cov <- covariates
         pos <- positiveLabelsFn(semantics, jsonSpec.positiveLabels)
+        labelNs <- labelNamespaces(nss)
+        actualLabelNs = labelNs.labelNs
+        dummyLabelNs = labelNs.dummyLabelNs
         sem = addStringImplicitsToSemantics(semantics, jsonSpec.imports)
-      } yield new VwMultilabelRowCreator[A, K](allLabelsInTrainingSet, cov, default, nss, normalizer, pos)
+      } yield new VwMultilabelRowCreator[A, K](allLabelsInTrainingSet, cov, default, nss,
+                                               normalizer, pos, actualLabelNs, dummyLabelNs)
 
       spec
+    }
+
+    private[multilabel] def labelNamespaces(nss: List[(String, List[Int])]): Try[LabelNamespaces] = {
+      val nsNames: Set[String] = nss.map(_._1)(breakOut)
+      determineLabelNamespaces(nsNames) match {
+        case Some(ns) => Success(ns)
+
+        // If there are so many VW namespaces that all available Unicode characters are taken,
+        // then a memory error will probably already have occurred.
+        case None => Failure(new AlohaException(
+          "Could not find any Unicode characters to as VW namespaces. Namespaces provided: " +
+          nsNames.mkString(", ")
+        ))
+      }
     }
 
     private[multilabel] def positiveLabelsFn(
@@ -343,4 +351,6 @@ object VwMultilabelRowCreator {
       getDv[A, sci.IndexedSeq[K]](
         semantics, "positiveLabels", Option(positiveLabels), Option(Vector.empty[K]))
   }
+
+  private[aloha] final case class LabelNamespaces(labelNs: String, dummyLabelNs: String)
 }

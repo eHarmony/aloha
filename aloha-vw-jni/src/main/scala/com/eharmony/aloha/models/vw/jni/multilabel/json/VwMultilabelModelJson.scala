@@ -15,7 +15,7 @@ trait VwMultilabelModelJson extends ScalaJsonFormats {
   private[multilabel] case class VwMultilabelAst(
       `type`: String,
       modelSource: ModelSource,
-      params: Either[Seq[String], String] = Right(""),
+      params: Option[Either[Seq[String], String]] = Option(Right("")),
       namespaces: Option[ListMap[String, Seq[String]]] = Some(ListMap.empty)
   )
 

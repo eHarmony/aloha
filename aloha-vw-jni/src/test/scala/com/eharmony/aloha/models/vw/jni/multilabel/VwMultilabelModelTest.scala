@@ -2,19 +2,25 @@ package com.eharmony.aloha.models.vw.jni.multilabel
 
 import java.io.File
 
+import com.eharmony.aloha.audit.impl.OptionAuditor
 import com.eharmony.aloha.audit.impl.tree.{RootedTree, RootedTreeAuditor}
 import com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator
+import com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator.LabelNamespaces
+import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.io.sources.{ExternalSource, ModelSource}
 import com.eharmony.aloha.io.vfs.Vfs
 import com.eharmony.aloha.models.Model
 import com.eharmony.aloha.models.multilabel.MultilabelModel
+import com.eharmony.aloha.semantics.compiled.CompiledSemanticsInstances
 import com.eharmony.aloha.semantics.func.GenFunc0
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
+import spray.json.{DefaultJsonProtocol, JsonWriter}
 import vowpalWabbit.learner.{VWActionScoresLearner, VWLearners}
+import spray.json.DefaultJsonProtocol.{StringJsonFormat, vectorFormat}
 
 import scala.annotation.tailrec
 
@@ -25,7 +31,7 @@ import scala.annotation.tailrec
 class VwMultilabelModelTest {
   import VwMultilabelModelTest._
 
-  @Test def test1(): Unit = {
+  @Test def testTrainedModelWorks(): Unit = {
     val model = Model
 
     try {
@@ -43,6 +49,71 @@ class VwMultilabelModelTest {
       model.close()
     }
   }
+
+  @Test def testTrainedModelCanBeParsedAndUsed(): Unit = {
+    val factory =
+      ModelFactory.defaultFactory(
+        CompiledSemanticsInstances.anyNameIdentitySemantics[Any],
+        OptionAuditor[Map[String, Double]]()
+      )
+
+    val json = modelJson(TrainedModel, AllLabels)
+    val modelTry = factory.fromString(json)
+    val model = modelTry.get  // : Model[Any, Option[Map[String, Double]]]
+    val x = ()
+    val y = model(x)
+    model.close()
+
+    y match {
+      case None => fail("Model should produce output.  Produced None.")
+      case Some(m) =>
+        assertEquals(ExpectedMarginalDist.keySet, m.keySet)
+
+        ExpectedMarginalDist foreach { case (k, v) =>
+          assertEquals(s"For key '$k':", v, m(k), 0.01)
+        }
+    }
+  }
+
+  private[this] def modelJson[K: JsonWriter](
+      modelSource: ModelSource,
+      labelsInTrainingSet: Vector[K],
+      labelsOfInterest: Option[String] = None) = {
+
+    implicit val vecWriter = vectorFormat(DefaultJsonProtocol.lift(implicitly[JsonWriter[K]]))
+
+    val loi = labelsOfInterest.fold(""){ f =>
+      val escaped = f.replaceAll("\"", "\\\"")
+      s""""labelsOfInterest": "$escaped",\n"""
+    }
+
+    val json =
+      s"""
+         |{
+         |  "modelType": "multilabel-sparse",
+         |  "modelId": { "id": 1, "name": "NONE" },
+         |  "features": {
+         |    "feature": "1"
+         |  },
+         |  "numMissingThreshold": 0,
+         |  "labelsInTrainingSet": ${toJsonString(labelsInTrainingSet)},
+         |$loi
+         |  "underlying": {
+         |    "type": "vw",
+         |    "modelSource": ${toJsonString(modelSource)},
+         |    "namespaces": {
+         |      "X": [
+         |        "feature"
+         |      ]
+         |    }
+         |  }
+         |}
+       """.stripMargin.trim
+    json
+  }
+
+  private[this] def toJsonString[A: JsonWriter](a: A): String =
+    implicitly[JsonWriter[A]].write(a).compactPrint
 
   private[this] def testEmpty(yEmpty: PredictionOutput): Unit = {
     assertEquals(None, yEmpty.value)
@@ -112,7 +183,7 @@ object VwMultilabelModelTest {
       )
 
     val namespaces = List(("X", List(0)))
-    val labelNs = VwMultilabelRowCreator.determineLabelNamespaces(namespaces.unzip._1.toSet).get._1
+    val labelNs = VwMultilabelRowCreator.determineLabelNamespaces(namespaces.unzip._1.toSet).get.labelNs
 
 
     val predProd = VwSparseMultilabelPredictorProducer[Label](
@@ -120,7 +191,8 @@ object VwMultilabelModelTest {
       params      = "", // to see the output:  "-p /dev/stdout",
       defaultNs   = List.empty[Int],
       namespaces  = namespaces,
-      labelNamespace = labelNs
+      labelNamespace = labelNs,
+      numLabelsInTrainingSet = AllLabels.size
     )
 
     MultilabelModel(
@@ -140,7 +212,8 @@ object VwMultilabelModelTest {
     f
   }
 
-  private val (labelNs, dummyLabelNs) = VwMultilabelRowCreator.determineLabelNamespaces(Set.empty).get
+  private val LabelNamespaces(labelNs, dummyLabelNs) =
+    VwMultilabelRowCreator.determineLabelNamespaces(Set.empty).get
 
   private def vwTrainingParams(modelFile: File = tmpFile()) = {
 

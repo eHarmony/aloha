@@ -36,13 +36,15 @@ case class VwSparseMultilabelPredictor[K](
     modelSource: ModelSource,
     params: String,
     defaultNs: List[Int],
-    namespaces: List[(String, List[Int])])
+    namespaces: List[(String, List[Int])],
+    numLabelsInTrainingSet: Int)
 extends SparseMultiLabelPredictor[K]
    with Closeable {
 
   import VwSparseMultilabelPredictor._
 
-  @transient private[multilabel] lazy val vwModel = createLearner(modelSource, params).get
+  @transient private[multilabel] lazy val vwModel =
+    createLearner(modelSource, params, numLabelsInTrainingSet).get
 
   {
     val emptyNss = namespaces collect { case (ns, ind) if ind.isEmpty => ns }
@@ -85,6 +87,7 @@ extends SparseMultiLabelPredictor[K]
 object VwSparseMultilabelPredictor {
   private val ClassNS = "Y"
 
+  private[this] val AddlVwRingSize = 10
 
   /**
     * Produce the output given VW's output, `pred`, and the labels provided to the `apply` function.
@@ -144,12 +147,22 @@ object VwSparseMultilabelPredictor {
     * @return
     */
   // TODO: How much of the parameter setup is up to the caller versus this function?
-  private[multilabel] def paramsWithSource(modelSource: File, params: String): String =
-    params + " -i" + modelSource.getCanonicalPath + " -t --quiet"
+  private[multilabel] def paramsWithSource(
+      modelSource: File,
+      params: String,
+      numLabelsInTrainingSet: Int
+  ): String = {
+    val ringSize = (numLabelsInTrainingSet + AddlVwRingSize)
+    s"$params -i ${modelSource.getCanonicalPath} --ring_size $ringSize --testonly --quiet"
+  }
 
-  private[multilabel] def createLearner(modelSource: ModelSource, params: String): Try[VWActionScoresLearner] = {
+  private[multilabel] def createLearner(
+      modelSource: ModelSource,
+      params: String,
+      numLabelsInTrainingSet: Int
+  ): Try[VWActionScoresLearner] = {
     val modelFile = modelSource.localVfs.replicatedToLocal()
-    val updatedParams = paramsWithSource(modelFile.fileObj, params)
+    val updatedParams = paramsWithSource(modelFile.fileObj, params, numLabelsInTrainingSet)
     Try { VWLearners.create[VWActionScoresLearner](updatedParams) }
   }
 }

@@ -32,10 +32,11 @@ case class VwSparseMultilabelPredictorProducer[K](
     params: String,
     defaultNs: List[Int],
     namespaces: List[(String, List[Int])],
-    labelNamespace: String
+    labelNamespace: String,
+    numLabelsInTrainingSet: Int
 ) extends SparsePredictorProducer[K] {
   override def apply(): VwSparseMultilabelPredictor[K] =
-    VwSparseMultilabelPredictor[K](modelSource, params, defaultNs, namespaces)
+    VwSparseMultilabelPredictor[K](modelSource, params, defaultNs, namespaces, numLabelsInTrainingSet)
 }
 
 object VwSparseMultilabelPredictorProducer extends MultilabelPluginProviderCompanion {
@@ -44,9 +45,9 @@ object VwSparseMultilabelPredictorProducer extends MultilabelPluginProviderCompa
   object Plugin extends MultilabelModelParserPlugin {
     override def name: String = "vw"
 
-    override def parser[K](info: PluginInfo)
+    override def parser[K](info: PluginInfo[K])
                           (implicit ri: RefInfo[K], jf: JsonFormat[K]): JsonReader[SparsePredictorProducer[K]] = {
-      VwMultilabelModelPluginJsonReader[K](info.features.keys.toVector)
+      VwMultilabelModelPluginJsonReader[K](info.features.keys.toVector, info.labelsInTrainingSet.size)
     }
   }
 }

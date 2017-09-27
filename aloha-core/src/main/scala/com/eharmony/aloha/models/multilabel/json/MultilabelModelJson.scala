@@ -33,7 +33,7 @@ trait MultilabelModelJson extends SpecJson with ScalaJsonFormats {
       labelsInTrainingSet: Vector[K],
       labelsOfInterest: Option[String],
       underlying: JsObject
-  ) extends PluginInfo
+  ) extends PluginInfo[K]
 
   protected[this] final implicit def multilabelDataJsonFormat[K: JsonFormat]: RootJsonFormat[MultilabelData[K]] =
     jsonFormat7(MultilabelData[K])
