@@ -62,6 +62,11 @@ class VwMultilabelModelTest {
   @Test def testTrainedModelCanBeParsedAndUsedWithNoLabels(): Unit =
     testModel(Option(Set.empty), modelShouldProduceOutput = false)
 
+  // This is really more of an integration test.
+  @Test def testTrainingAndTesting(): Unit = {
+    fail()
+  }
+
   /**
     *
     * @param desiredLabels Notice since this is a Set, label order doesn't matter.

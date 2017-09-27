@@ -98,7 +98,7 @@ extends SparseMultiLabelPredictor[K]
 object VwSparseMultilabelPredictor {
   private val ClassNS = "Y"
 
-  private[this] val AddlVwRingSize = 10
+  private[multilabel] val AddlVwRingSize = 10
 
   /**
     * Produce the output given VW's output, `pred`, and the labels provided to the `apply` function.
