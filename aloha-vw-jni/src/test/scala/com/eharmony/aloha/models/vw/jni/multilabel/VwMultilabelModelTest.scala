@@ -18,9 +18,9 @@ import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
+import spray.json.DefaultJsonProtocol.{StringJsonFormat, vectorFormat}
 import spray.json.{DefaultJsonProtocol, JsonWriter}
 import vowpalWabbit.learner.{VWActionScoresLearner, VWLearners}
-import spray.json.DefaultJsonProtocol.{StringJsonFormat, vectorFormat}
 
 import scala.annotation.tailrec
 
@@ -50,70 +50,69 @@ class VwMultilabelModelTest {
     }
   }
 
-  @Test def testTrainedModelCanBeParsedAndUsed(): Unit = {
+  @Test def testTrainedModelCanBeParsedAndUsed(): Unit =
+    testModel(None)
+
+  @Test def testTrainedModelCanBeParsedAndUsedWithLabels67(): Unit =
+    testModel(Option(Set(LabelSix, LabelSeven)))
+
+  @Test def testTrainedModelCanBeParsedAndUsedWithLabels678(): Unit =
+    testModel(Option(Set(LabelSix, LabelSeven, LabelEight)))
+
+  @Test def testTrainedModelCanBeParsedAndUsedWithNoLabels(): Unit =
+    testModel(Option(Set.empty), modelShouldProduceOutput = false)
+
+  /**
+    *
+    * @param desiredLabels Notice since this is a Set, label order doesn't matter.
+    * @param modelShouldProduceOutput whether the model is expected to
+    */
+  private[this] def testModel(
+      desiredLabels: Option[Set[Label]],
+      modelShouldProduceOutput: Boolean = true
+  ): Unit = {
+
     val factory =
       ModelFactory.defaultFactory(
-        CompiledSemanticsInstances.anyNameIdentitySemantics[Any],
-        OptionAuditor[Map[String, Double]]()
+        CompiledSemanticsInstances.anyNameIdentitySemantics[Set[Label]],
+        OptionAuditor[Map[Label, Double]]()
       )
 
-    val json = modelJson(TrainedModel, AllLabels)
+    // "${desired_labels_from_input}.toVector" returns the input passed to the model in
+    // the form of a Vector.  See anyNameIdentitySemantics for more information.
+    val desiredLabelFn = desiredLabels map (_ => "${desired_labels_from_input}.toVector")
+    val json = modelJson(TrainedModel, AllLabels, desiredLabelFn)
+
     val modelTry = factory.fromString(json)
-    val model = modelTry.get  // : Model[Any, Option[Map[String, Double]]]
-    val x = ()
+    val model = modelTry.get  // : Model[Set[Label], Option[Map[Label, Double]]]
+    val x = desiredLabels getOrElse Set.empty
     val y = model(x)
     model.close()
 
     y match {
-      case None => fail("Model should produce output.  Produced None.")
+      case None =>
+        if (modelShouldProduceOutput)
+          fail("Model should produce output.  Produced None.")
       case Some(m) =>
-        assertEquals(ExpectedMarginalDist.keySet, m.keySet)
+        if (!modelShouldProduceOutput)
+          fail(s"Model should not produce output.  Produced: $m")
+        else {
+          val expected = desiredLabels match {
+            case None         => ExpectedMarginalDist
+            case Some(labels) => ExpectedMarginalDist.filterKeys(labels.contains)
+          }
 
-        ExpectedMarginalDist foreach { case (k, v) =>
-          assertEquals(s"For key '$k':", v, m(k), 0.01)
+          // The keys should be the same set, not a super set.
+          assertEquals(expected.keySet, m.keySet)
+
+          // Test the value associated with the label.
+          expected foreach { case (k, v) =>
+            assertEquals(s"For key '$k':", v, m(k), 0.01)
+          }
         }
     }
   }
 
-  private[this] def modelJson[K: JsonWriter](
-      modelSource: ModelSource,
-      labelsInTrainingSet: Vector[K],
-      labelsOfInterest: Option[String] = None) = {
-
-    implicit val vecWriter = vectorFormat(DefaultJsonProtocol.lift(implicitly[JsonWriter[K]]))
-
-    val loi = labelsOfInterest.fold(""){ f =>
-      val escaped = f.replaceAll("\"", "\\\"")
-      s""""labelsOfInterest": "$escaped",\n"""
-    }
-
-    val json =
-      s"""
-         |{
-         |  "modelType": "multilabel-sparse",
-         |  "modelId": { "id": 1, "name": "NONE" },
-         |  "features": {
-         |    "feature": "1"
-         |  },
-         |  "numMissingThreshold": 0,
-         |  "labelsInTrainingSet": ${toJsonString(labelsInTrainingSet)},
-         |$loi
-         |  "underlying": {
-         |    "type": "vw",
-         |    "modelSource": ${toJsonString(modelSource)},
-         |    "namespaces": {
-         |      "X": [
-         |        "feature"
-         |      ]
-         |    }
-         |  }
-         |}
-       """.stripMargin.trim
-    json
-  }
-
-  private[this] def toJsonString[A: JsonWriter](a: A): String =
-    implicitly[JsonWriter[A]].write(a).compactPrint
 
   private[this] def testEmpty(yEmpty: PredictionOutput): Unit = {
     assertEquals(None, yEmpty.value)
@@ -297,6 +296,47 @@ object VwMultilabelModelTest {
   }
 
   private val Auditor = RootedTreeAuditor.noUpperBound[Map[Label, Double]]()
+
+  private[multilabel] def modelJson[K: JsonWriter](
+      modelSource: ModelSource,
+      labelsInTrainingSet: Vector[K],
+      labelsOfInterest: Option[String] = None) = {
+
+    implicit val vecWriter = vectorFormat(DefaultJsonProtocol.lift(implicitly[JsonWriter[K]]))
+
+    val loi = labelsOfInterest.fold(""){ f =>
+      val escaped = f.replaceAll("\"", "\\\"")
+      s""""labelsOfInterest": "$escaped",\n"""
+    }
+
+    val json =
+      s"""
+         |{
+         |  "modelType": "multilabel-sparse",
+         |  "modelId": { "id": 1, "name": "NONE" },
+         |  "features": {
+         |    "feature": "1"
+         |  },
+         |  "numMissingThreshold": 0,
+         |  "labelsInTrainingSet": ${toJsonString(labelsInTrainingSet)},
+         |$loi
+         |  "underlying": {
+         |    "type": "vw",
+         |    "modelSource": ${toJsonString(modelSource)},
+         |    "namespaces": {
+         |      "X": [
+         |        "feature"
+         |      ]
+         |    }
+         |  }
+         |}
+       """.stripMargin.trim
+    json
+  }
+
+  private[this] def toJsonString[A: JsonWriter](a: A): String =
+    implicitly[JsonWriter[A]].write(a).compactPrint
+
 
   /**
     * Creates the power set of the provided set.
