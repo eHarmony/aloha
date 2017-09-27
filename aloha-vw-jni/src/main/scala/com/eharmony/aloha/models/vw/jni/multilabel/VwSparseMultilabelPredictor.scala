@@ -86,7 +86,6 @@ extends SparseMultiLabelPredictor[K]
       labelDependentFeatures: sci.IndexedSeq[IndexedSeq[Sparse]]
   ): Try[Map[K, Double]] = {
 
-    // TODO: Pass ClassNS in via the constructor
     val x = VwMultilabelRowCreator.predictionInput(features, indices, defaultNs, namespaces, ClassNS)
     val pred = Try { vwModel.predict(x) }
     val yOut = pred.map { y => produceOutput(y, labels) }
