@@ -9,12 +9,14 @@ import com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator.LabelName
 import com.eharmony.aloha.dataset.vw.multilabel.json.VwMultilabeledJson
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
+import com.eharmony.aloha.io.StringReadable
 import com.eharmony.aloha.io.sources.{ExternalSource, ModelSource}
 import com.eharmony.aloha.io.vfs.Vfs
 import com.eharmony.aloha.models.Model
 import com.eharmony.aloha.models.multilabel.MultilabelModel
 import com.eharmony.aloha.semantics.compiled.CompiledSemanticsInstances
 import com.eharmony.aloha.semantics.func.GenFunc0
+import org.apache.commons.vfs2.VFS
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -81,17 +83,16 @@ class VwMultilabelModelTest {
     //  Dataset and test example set up.
     // ------------------------------------------------------------------------------------
 
-    // Marginal Prob Dist:                   Pr[ 8 ] = 0.80 = 20 / 25 = (12 + 8) / 25
-    //                                       Pr[ 4 ] = 0.40 = 10 / 25 =  (2 + 8) / 25
-    val unshuffledTrainingSet = Seq(         // JPD:
-      Vector(None,      None)       -> 3,    //   pr = 0.12 = 3  / 25
-      Vector(None,      Option(8))  -> 12,   //   pr = 0.48 = 12 / 25
-      Vector(Option(4), None)       -> 2,    //   pr = 0.08 = 2  / 25
-      Vector(Option(4), Option(8))  -> 8     //   pr = 0.32 = 8  / 25
+    // Marginal Distribution:          Pr[8] = 0.80 = 20 / 25 = (12 + 8) / 25
+    //                                 Pr[4] = 0.40 = 10 / 25 = ( 2 + 8) / 25
+    //
+    val unshuffledTrainingSet: Seq[Dom] = Seq(
+      Vector(    )  -> 3,   //            pr = 0.12 =  3 / 25   <-- JPD
+      Vector(   8)  -> 12,  //            pr = 0.48 = 12 / 25
+      Vector(4   )  -> 2,   //            pr = 0.08 =  2 / 25
+      Vector(4, 8)  -> 8    //            pr = 0.32 =  8 / 25
     ) flatMap {
-      case (k, n) =>
-        val flattened = k.flatten
-        Vector.fill(n)(flattened)
+      case (k, n) => Vector.fill(n)(k)
     }
 
     val trainingSet = new Random(0).shuffle(unshuffledTrainingSet)
@@ -109,22 +110,8 @@ class VwMultilabelModelTest {
     //  Prepare dataset specification and read training dataset.
     // ------------------------------------------------------------------------------------
 
-    val datasetJson =
-      """
-        |{
-        |  "imports": [
-        |    "com.eharmony.aloha.feature.BasicFunctions._"
-        |  ],
-        |  "features": [
-        |    { "name": "feature", "spec": "1" }
-        |  ],
-        |  "namespaces": [
-        |    { "name": "X", "features": [ "feature" ] }
-        |  ],
-        |  "normalizeFeatures": false,
-        |  "positiveLabels": "${labels_from_input}"
-        |}
-      """.stripMargin.parseJson.convertTo[VwMultilabeledJson]
+    val datasetSpec = VFS.getManager.resolveFile(EndToEndDatasetSpec)
+    val datasetJson = StringReadable.fromVfs2(datasetSpec).parseJson.convertTo[VwMultilabeledJson]
 
     val rc =
       new VwMultilabelRowCreator.Producer[Dom, Lab](labelsInTrainingSet).
@@ -135,12 +122,22 @@ class VwMultilabelModelTest {
     // ------------------------------------------------------------------------------------
 
 
-    val modelFile = File.createTempFile("vw_", ".bin.model")
-    modelFile.deleteOnExit()
+    val binaryVwModel = File.createTempFile("vw_", ".bin.model")
+    binaryVwModel.deleteOnExit()
 
     val cacheFile = File.createTempFile("vw_", ".cache")
     cacheFile.deleteOnExit()
 
+    // probs / costs
+    //   --csoaa_ldf mc  vs  m
+    //   --csoaa_rank
+    //   --loss_function logistic  add this
+    //   --noconstant
+    //   --ignore_linear X
+    //   --ignore $dummyLabelNs
+    //  turn first order features into quadratics
+    //  turn quadratic features into cubics
+    //
     val vwParams =
       s"""
          | --quiet
@@ -151,7 +148,7 @@ class VwMultilabelModelTest {
          | --noconstant
          | --ignore_linear X
          | --ignore $dummyLabelNs
-         | -f ${modelFile.getCanonicalPath}
+         | -f ${binaryVwModel.getCanonicalPath}
          | --passes 50
          | --cache_file ${cacheFile.getCanonicalPath}
          | --holdout_off
@@ -175,29 +172,16 @@ class VwMultilabelModelTest {
     //  Create Aloha model JSON
     // ------------------------------------------------------------------------------------
 
-    val modelSource: ModelSource = ExternalSource(Vfs.javaFileToAloha(modelFile))
-
-    val modelJson: String =
-      s"""
-         |{
-         |  "modelType": "multilabel-sparse",
-         |  "modelId": { "id": 1, "name": "NONE" },
-         |  "features": {
-         |    "feature": "1"
-         |  },
-         |  "numMissingThreshold": 0,
-         |  "labelsInTrainingSet": ${toJsonString(labelsInTrainingSet)},
-         |  "underlying": {
-         |    "type": "vw",
-         |    "modelSource": ${toJsonString(modelSource)},
-         |    "namespaces": {
-         |      "X": [
-         |        "feature"
-         |      ]
-         |    }
-         |  }
-         |}
-       """.stripMargin
+    val modelJson = VwMultilabelModel.json(
+      datasetSpec = Vfs.apacheVfs2ToAloha(datasetSpec),
+      binaryVwModel = Vfs.javaFileToAloha(binaryVwModel),
+      id = ModelId(1, "NONE"),
+      labelsInTrainingSet = labelsInTrainingSet,
+      labelsOfInterest = Option.empty[String],
+      vwArgs = Option.empty[String],
+      externalModel = false,
+      numMissingThreshold = Option(0)
+    )
 
 
     // ------------------------------------------------------------------------------------
@@ -205,7 +189,7 @@ class VwMultilabelModelTest {
     // ------------------------------------------------------------------------------------
 
     val factory = ModelFactory.defaultFactory(semantics, optAud)
-    val modelTry = factory.fromString(modelJson)
+    val modelTry = factory.fromString(modelJson.prettyPrint) // Use `.compactPrint` in prod.
     val model = modelTry.get
 
     // ------------------------------------------------------------------------------------
@@ -329,6 +313,9 @@ object VwMultilabelModelTest {
     - LabelSix   is _C2_ (index 2)
     */
   private val AllLabels = Vector(LabelSeven, LabelEight, LabelSix)
+
+  private val EndToEndDatasetSpec =
+    "res:com/eharmony/aloha/models/vw/jni/multilabel/dataset_spec.json"
 
   private lazy val Model: Model[Domain, RootedTree[Any, Map[Label, Double]]] = {
     val featureNames = Vector(FeatureName)
