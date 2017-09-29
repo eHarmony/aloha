@@ -72,9 +72,7 @@ class VwMultilabelModelTest {
     // ------------------------------------------------------------------------------------
 
     type Lab = Int
-
-    // Not abuse of notation.  Model domain is indeed a vector of labels.
-    type Dom = Vector[Lab]
+    type Dom = Vector[Lab]  // Not an abuse of notation.  Domain is indeed a vector of labels.
 
     val semantics = CompiledSemanticsInstances.anyNameIdentitySemantics[Dom]
     val optAud = OptionAuditor[Map[Lab, Double]]()
@@ -100,7 +98,7 @@ class VwMultilabelModelTest {
 
     val labelsInTrainingSet = trainingSet.flatten.toSet.toVector.sorted
 
-    val testExample = Vector.empty[Lab]
+    val testExample: Dom = Vector.empty
 
     val marginalDist = labelsInTrainingSet.map { label =>
       val z = trainingSet.size.toDouble
