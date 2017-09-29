@@ -6,6 +6,7 @@ import com.eharmony.aloha.audit.impl.OptionAuditor
 import com.eharmony.aloha.audit.impl.tree.{RootedTree, RootedTreeAuditor}
 import com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator
 import com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator.LabelNamespaces
+import com.eharmony.aloha.dataset.vw.multilabel.json.VwMultilabeledJson
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
 import com.eharmony.aloha.io.sources.{ExternalSource, ModelSource}
@@ -18,11 +19,12 @@ import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
-import spray.json.DefaultJsonProtocol.{StringJsonFormat, vectorFormat}
-import spray.json.{DefaultJsonProtocol, JsonWriter}
+import spray.json.DefaultJsonProtocol.{IntJsonFormat, StringJsonFormat}
+import spray.json.{DefaultJsonProtocol, JsonWriter, RootJsonFormat, pimpString}
 import vowpalWabbit.learner.{VWActionScoresLearner, VWLearners}
 
 import scala.annotation.tailrec
+import scala.util.Random
 
 /**
   * Created by ryan.deak on 9/11/17.
@@ -64,7 +66,165 @@ class VwMultilabelModelTest {
 
   // This is really more of an integration test.
   @Test def testTrainingAndTesting(): Unit = {
-    fail()
+
+    // ------------------------------------------------------------------------------------
+    //  Preliminaries
+    // ------------------------------------------------------------------------------------
+
+    type Lab = Int
+
+    // Not abuse of notation.  Model domain is indeed a vector of labels.
+    type Dom = Vector[Lab]
+
+    val semantics = CompiledSemanticsInstances.anyNameIdentitySemantics[Dom]
+    val optAud = OptionAuditor[Map[Lab, Double]]()
+
+    // ------------------------------------------------------------------------------------
+    //  Dataset and test example set up.
+    // ------------------------------------------------------------------------------------
+
+    // Marginal Prob Dist:                   Pr[ 8 ] = 0.80 = 20 / 25 = (12 + 8) / 25
+    //                                       Pr[ 4 ] = 0.40 = 10 / 25 =  (2 + 8) / 25
+    val unshuffledTrainingSet = Seq(         // JPD:
+      Vector(None,      None)       -> 3,    //   pr = 0.12 = 3  / 25
+      Vector(None,      Option(8))  -> 12,   //   pr = 0.48 = 12 / 25
+      Vector(Option(4), None)       -> 2,    //   pr = 0.08 = 2  / 25
+      Vector(Option(4), Option(8))  -> 8     //   pr = 0.32 = 8  / 25
+    ) flatMap {
+      case (k, n) =>
+        val flattened = k.flatten
+        Vector.fill(n)(flattened)
+    }
+
+    val trainingSet = new Random(0).shuffle(unshuffledTrainingSet)
+
+    val labelsInTrainingSet = trainingSet.flatten.toSet.toVector.sorted
+
+    val testExample = Vector.empty[Lab]
+
+    val marginalDist = labelsInTrainingSet.map { label =>
+      val z = trainingSet.size.toDouble
+      label -> trainingSet.count(row => row contains label) / z
+    }.toMap
+
+    // ------------------------------------------------------------------------------------
+    //  Prepare dataset specification and read training dataset.
+    // ------------------------------------------------------------------------------------
+
+    val datasetJson =
+      """
+        |{
+        |  "imports": [
+        |    "com.eharmony.aloha.feature.BasicFunctions._"
+        |  ],
+        |  "features": [
+        |    { "name": "feature", "spec": "1" }
+        |  ],
+        |  "namespaces": [
+        |    { "name": "X", "features": [ "feature" ] }
+        |  ],
+        |  "normalizeFeatures": false,
+        |  "positiveLabels": "${labels_from_input}"
+        |}
+      """.stripMargin.parseJson.convertTo[VwMultilabeledJson]
+
+    val rc =
+      new VwMultilabelRowCreator.Producer[Dom, Lab](labelsInTrainingSet).
+        getRowCreator(semantics, datasetJson).get
+
+    // ------------------------------------------------------------------------------------
+    //  Prepare parameters for VW model that will be trained.
+    // ------------------------------------------------------------------------------------
+
+
+    val modelFile = File.createTempFile("vw_", ".bin.model")
+    modelFile.deleteOnExit()
+
+    val cacheFile = File.createTempFile("vw_", ".cache")
+    cacheFile.deleteOnExit()
+
+    val vwParams =
+      s"""
+         | --quiet
+         | --csoaa_ldf mc
+         | --csoaa_rank
+         | --loss_function logistic
+         | -q ${labelNs}X
+         | --noconstant
+         | --ignore_linear X
+         | --ignore $dummyLabelNs
+         | -f ${modelFile.getCanonicalPath}
+         | --passes 50
+         | --cache_file ${cacheFile.getCanonicalPath}
+         | --holdout_off
+         | --learning_rate 5
+         | --decay_learning_rate 0.9
+       """.stripMargin.trim.replaceAll("\n", " ")
+
+
+    // ------------------------------------------------------------------------------------
+    //  Train VW model
+    // ------------------------------------------------------------------------------------
+
+    val vwLearner = VWLearners.create[VWActionScoresLearner](vwParams)
+    trainingSet foreach { row =>
+      val x = rc(row)._2
+      vwLearner.learn(x)
+    }
+    vwLearner.close()
+
+    // ------------------------------------------------------------------------------------
+    //  Create Aloha model JSON
+    // ------------------------------------------------------------------------------------
+
+    val modelSource: ModelSource = ExternalSource(Vfs.javaFileToAloha(modelFile))
+
+    val modelJson: String =
+      s"""
+         |{
+         |  "modelType": "multilabel-sparse",
+         |  "modelId": { "id": 1, "name": "NONE" },
+         |  "features": {
+         |    "feature": "1"
+         |  },
+         |  "numMissingThreshold": 0,
+         |  "labelsInTrainingSet": ${toJsonString(labelsInTrainingSet)},
+         |  "underlying": {
+         |    "type": "vw",
+         |    "modelSource": ${toJsonString(modelSource)},
+         |    "namespaces": {
+         |      "X": [
+         |        "feature"
+         |      ]
+         |    }
+         |  }
+         |}
+       """.stripMargin
+
+
+    // ------------------------------------------------------------------------------------
+    //  Instantiate Aloha Model
+    // ------------------------------------------------------------------------------------
+
+    val factory = ModelFactory.defaultFactory(semantics, optAud)
+    val modelTry = factory.fromString(modelJson)
+    val model = modelTry.get
+
+    // ------------------------------------------------------------------------------------
+    //  Test Aloha Model
+    // ------------------------------------------------------------------------------------
+
+    val output = model(testExample)
+    model.close()
+
+    output match {
+      case None => fail()
+      case Some(m) =>
+        assertEquals(marginalDist.keySet, m.keySet)
+        marginalDist foreach { case (k, v) =>
+          assertEquals(s"For key '$k':", v, m(k), 0.01)
+        }
+    }
   }
 
   /**
@@ -302,12 +462,15 @@ object VwMultilabelModelTest {
 
   private val Auditor = RootedTreeAuditor.noUpperBound[Map[Label, Double]]()
 
+  private implicit def vecWriter[K: JsonWriter]: RootJsonFormat[Vector[K]] =
+    DefaultJsonProtocol.vectorFormat(DefaultJsonProtocol.lift(implicitly[JsonWriter[K]]))
+
   private[multilabel] def modelJson[K: JsonWriter](
       modelSource: ModelSource,
       labelsInTrainingSet: Vector[K],
       labelsOfInterest: Option[String] = None) = {
 
-    implicit val vecWriter = vectorFormat(DefaultJsonProtocol.lift(implicitly[JsonWriter[K]]))
+//    implicit val vecWriter = vectorFormat(DefaultJsonProtocol.lift(implicitly[JsonWriter[K]]))
 
     val loi = labelsOfInterest.fold(""){ f =>
       val escaped = f.replaceAll("\"", "\\\"")
@@ -339,7 +502,7 @@ object VwMultilabelModelTest {
     json
   }
 
-  private[this] def toJsonString[A: JsonWriter](a: A): String =
+  private def toJsonString[A: JsonWriter](a: A): String =
     implicitly[JsonWriter[A]].write(a).compactPrint
 
 

@@ -378,7 +378,9 @@ object MultilabelModel extends ParserProviderCompanion {
       // Then the necessary type classes related to K are *instantiated* and a reader is
       // created using types N and K.  Ultimately, the reader consumes the type `K` but
       // only the type N is exposed in the returned reader.
-      if (!RefInfoOps.isSubType[N, Map[_, Double]]) {
+      //
+      // NOTE: The following is an not adequate check:    !RefInfoOps.isSubType[N, Map[_, Double]]
+      if (!RefInfoOps.isSubType[N, Map[Any, Double]]) {
         warn(s"N=${RefInfoOps.toString[N]} is not a Map[K, Double]. Cannot create a JsonReader for MultilabelModel.")
         None
       }

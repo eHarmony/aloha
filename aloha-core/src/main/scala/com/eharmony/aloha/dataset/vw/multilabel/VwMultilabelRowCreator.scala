@@ -288,7 +288,7 @@ object VwMultilabelRowCreator {
     * @tparam A type of input passed to the [[RowCreator]].
     * @tparam K the label type.
     */
-  final class Producer[A, K: RefInfo](allLabelsInTrainingSet: Vector[K])
+  final class Producer[A, K: RefInfo](allLabelsInTrainingSet: sci.IndexedSeq[K])
       extends RowCreatorProducer[A, Array[String], VwMultilabelRowCreator[A, K]]
          with RowCreatorProducerName
          with VwCovariateProducer[A]
