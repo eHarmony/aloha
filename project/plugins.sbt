@@ -21,7 +21,18 @@ addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.3")
 // To do resource filtering.
 addSbtPlugin("org.clapper" % "sbt-editsource" % "0.7.0")
 
-// For microsite
+// For microsite creation.
+// NOTE: up to and including, v0.7.2, sbt-microsites appears to use
+// org.tpolecat:tut-plugin:0.5.3 that contains a State monad implementation
+// that is not stack-safe.  0.5.5 is stack-safe but trying to include it
+// with an older version of sbt-microsites causes sbt-microsites to have
+// ClassNotFound errors.  I think that newer versions of sbt-microsites
+// use 0.6.1, but that is only with SBT 1.0+.  See
+//
+//   https://github.com/47deg/sbt-microsites/blob/f91a939a63e802080960ebbcc07dc6f14e70de02/project/ProjectPlugin.scala#L45
+//
+// Until Aloha is ready for SBT 1.0+, we roll the dice and bump -Xss to a
+// high number (4M) and the build will likely fail intermittently.
 addSbtPlugin("com.47deg"  % "sbt-microsites" % "0.5.3")
 
 // For unified scaladoc
