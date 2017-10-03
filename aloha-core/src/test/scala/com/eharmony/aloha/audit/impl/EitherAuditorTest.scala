@@ -21,10 +21,9 @@ class EitherAuditorTest {
     v1 match {
       case Right(_) => fail()
       case Left(e) =>
-        assertEquals(IdS, e.modelId)
+        assertEquals(IdS :: List(IdD, IdI), e.failureModelIds)
         assertEquals(E1 ++ E2 ++ E3, e.errorMsgs)
         assertEquals(M1 ++ M2 ++ M3, e.missingVarNames)
-//        assertEquals(Seq(v2.left.get, v3.left.get), e.subvaluesWithFailures)
     }
   }
 
@@ -36,10 +35,9 @@ class EitherAuditorTest {
     v1 match {
       case Right(_) => fail()
       case Left(e) =>
-        assertEquals(IdS, e.modelId)
+        assertEquals(IdS :: List(IdI), e.failureModelIds)
         assertEquals(E1 ++ E3, e.errorMsgs)
         assertEquals(M1 ++ M3, e.missingVarNames)
-//        assertEquals(Seq(v3.left.get), e.subvaluesWithFailures)
     }
   }
 
@@ -51,10 +49,9 @@ class EitherAuditorTest {
     v1 match {
       case Right(_) => fail()
       case Left(e) =>
-        assertEquals(IdS, e.modelId)
+        assertEquals(IdS :: List(IdD), e.failureModelIds)
         assertEquals(E1 ++ E2, e.errorMsgs)
         assertEquals(M1 ++ M2, e.missingVarNames)
-//        assertEquals(Seq(v2.left.get), e.subvaluesWithFailures)
     }
   }
 
@@ -66,21 +63,20 @@ class EitherAuditorTest {
     v1 match {
       case Right(_) => fail()
       case Left(e) =>
-        assertEquals(IdS, e.modelId)
+        assertEquals(IdS :: Nil, e.failureModelIds)
         assertEquals(E1, e.errorMsgs)
         assertEquals(M1, e.missingVarNames)
-//        assertEquals(Nil, e.subvaluesWithFailures)
     }
   }
 
-  @Test def testAggRootSucces(): Unit = {
+  @Test def testAggRootSuccess(): Unit = {
     val v2 = D.failure(IdD, E2, M2)
     val v3 = I.failure(IdI, E3, M3)
-    val v1 = S.success(IdS, "success", E1, M1)
+    val v1 = S.success(IdS, "success", E1, M1, Seq(v2, v3))
 
     v1 match {
       case Right(s) => assertEquals("success", s)
-      case Left(e) => fail() // No info
+      case Left(_) => fail() // No info
     }
   }
 
@@ -90,14 +86,12 @@ class EitherAuditorTest {
     val v1 = S.failure(IdS, E1, M1, subvalues = Seq(v2))
 
     v1 match {
-      case Right(s) => fail()
+      case Right(_) => fail()
       case Left(e) =>
-        assertEquals(IdS, e.modelId)
+        // Nil because v2 is successful, so it throws away all child info.
+        assertEquals(IdS :: Nil, e.failureModelIds)
         assertEquals(E1, e.errorMsgs)
         assertEquals(M1, e.missingVarNames)
-
-        // Nil because v2 is successful, so it throws away all child info.
-//        assertEquals(Nil, e.subvaluesWithFailures)
     }
   }
 
@@ -107,24 +101,15 @@ class EitherAuditorTest {
     val v1 = S.failure(IdS, E1, M1, subvalues = Seq(v2))
 
     v1 match {
-      case Right(s) => fail()
+      case Right(_) => fail()
       case Left(e) =>
-        assertEquals(IdS, e.modelId)
-        assertEquals(E1 ++ E2, e.errorMsgs)
-        assertEquals(M1 ++ M2, e.missingVarNames)
-
         // v3 is not included because it was successful.
         // None of its children would be included either.
-//        assertEquals(Seq(v2.left.get), e.subvaluesWithFailures)
+        assertEquals(IdS :: List(IdD), e.failureModelIds)
+        assertEquals(E1 ++ E2, e.errorMsgs)
+        assertEquals(M1 ++ M2, e.missingVarNames)
     }
   }
-
-
-
-
-
-
-
 
   @Test def testNoAggAllFailures(): Unit = {
     val v2 = DN.failure(IdD, E2, M2)
@@ -134,10 +119,9 @@ class EitherAuditorTest {
     v1 match {
       case Right(_) => fail()
       case Left(e) =>
-        assertEquals(IdS, e.modelId)
+        assertEquals(NoAggFailMidList, e.failureModelIds)
         assertEquals(E1, e.errorMsgs)
         assertEquals(M1, e.missingVarNames)
-//        assertEquals(Seq(v2.left.get, v3.left.get), e.subvaluesWithFailures)
     }
   }
 
@@ -149,10 +133,9 @@ class EitherAuditorTest {
     v1 match {
       case Right(_) => fail()
       case Left(e) =>
-        assertEquals(IdS, e.modelId)
+        assertEquals(NoAggFailMidList, e.failureModelIds)
         assertEquals(E1, e.errorMsgs)
         assertEquals(M1, e.missingVarNames)
-//        assertEquals(Seq(v3.left.get), e.subvaluesWithFailures)
     }
   }
 
@@ -164,10 +147,9 @@ class EitherAuditorTest {
     v1 match {
       case Right(_) => fail()
       case Left(e) =>
-        assertEquals(IdS, e.modelId)
+        assertEquals(NoAggFailMidList, e.failureModelIds)
         assertEquals(E1, e.errorMsgs)
         assertEquals(M1, e.missingVarNames)
-//        assertEquals(Seq(v2.left.get), e.subvaluesWithFailures)
     }
   }
 
@@ -179,21 +161,20 @@ class EitherAuditorTest {
     v1 match {
       case Right(_) => fail()
       case Left(e) =>
-        assertEquals(IdS, e.modelId)
+        assertEquals(NoAggFailMidList, e.failureModelIds)
         assertEquals(E1, e.errorMsgs)
         assertEquals(M1, e.missingVarNames)
-//        assertEquals(Nil, e.subvaluesWithFailures)
     }
   }
 
-  @Test def testNoAggRootSucces(): Unit = {
+  @Test def testNoAggRootSuccess(): Unit = {
     val v2 = DN.failure(IdD, E2, M2)
     val v3 = IN.failure(IdI, E3, M3)
-    val v1 = SN.success(IdS, "success", E1, M1)
+    val v1 = SN.success(IdS, "success", E1, M1, Seq(v2, v3))
 
     v1 match {
       case Right(s) => assertEquals("success", s)
-      case Left(e) => fail() // No info
+      case Left(_) => fail() // No info
     }
   }
 
@@ -203,14 +184,12 @@ class EitherAuditorTest {
     val v1 = SN.failure(IdS, E1, M1, subvalues = Seq(v2))
 
     v1 match {
-      case Right(s) => fail()
+      case Right(_) => fail()
       case Left(e) =>
-        assertEquals(IdS, e.modelId)
+        // Nil because v2 is successful, so it throws away all child info.
+        assertEquals(NoAggFailMidList, e.failureModelIds)
         assertEquals(E1, e.errorMsgs)
         assertEquals(M1, e.missingVarNames)
-
-        // Nil because v2 is successful, so it throws away all child info.
-//        assertEquals(Nil, e.subvaluesWithFailures)
     }
   }
 
@@ -220,16 +199,79 @@ class EitherAuditorTest {
     val v1 = SN.failure(IdS, E1, M1, subvalues = Seq(v2))
 
     v1 match {
-      case Right(s) => fail()
+      case Right(_) => fail()
       case Left(e) =>
-        assertEquals(IdS, e.modelId)
-        assertEquals(E1, e.errorMsgs)
-        assertEquals(M1, e.missingVarNames)
-
         // v3 is not included because it was successful.
         // None of its children would be included either.
-//        assertEquals(Seq(v2.left.get), e.subvaluesWithFailures)
+        assertEquals(NoAggFailMidList, e.failureModelIds)
+        assertEquals(E1, e.errorMsgs)
+        assertEquals(M1, e.missingVarNames)
     }
+  }
+
+  @Test def testDfsPreOrder(): Unit = {
+    val a = EitherAuditor[Int]
+
+    // Tree:
+    //
+    //   1 +- 2 +- 3
+    //     |    |
+    //     |    +- 4
+    //     |
+    //     +- 5 +- 6
+    //          |
+    //          +- 7
+    //
+    val v3 = a.failure(ModelId(3))
+    val v4 = a.failure(ModelId(4))
+    val v2 = a.failure(ModelId(2), subvalues = Seq(v3, v4))
+
+    val v6 = a.failure(ModelId(6))
+    val v7 = a.failure(ModelId(7))
+    val v5 = a.failure(ModelId(5), subvalues = Seq(v6, v7))
+
+    val v1 = a.failure(ModelId(1), subvalues = Seq(v2, v5))
+
+    val mids = v1.left.get.failureModelIds
+    assertEquals(1 to 7, mids.map(mid => mid.getId()))
+  }
+
+  @Test def testScaladocExample(): Unit = {
+    val a = EitherAuditor[Int]
+
+    // Tree:
+    //
+    //   1:F +-- 2:F +--  3:S
+    //       |       |
+    //       |       +--  4:F
+    //       |
+    //       +-- 5:S +--  6:F
+    //               |
+    //               +--  7:F
+    //
+    val v3 = a.success(ModelId(3), 3, Seq("e3"), Set("m3"))
+    val v4 = a.failure(ModelId(4), Seq("e4"), Set("m4"))
+    val v2 = a.failure(ModelId(2), Seq("e2"), Set("m2"), Seq(v3, v4))
+
+    val v6 = a.failure(ModelId(6), Seq("e6"), Set("m6"))
+    val v7 = a.failure(ModelId(7), Seq("e7"), Set("m7"))
+    val v5 = a.success(ModelId(5), 5, Seq("e5"), Set("m5"), Seq(v6, v7))
+
+    val v1 = a.failure(ModelId(1), Seq("e1"), Set("m1"), Seq(v2, v5))
+
+    // Expected values.  Notice that all information about the
+    // failures occurring deeper in the tree than a success are
+    // disregarded.
+    val dfsPreorder = Seq(1, 2, 4)
+    val expectedFailedModelIds = dfsPreorder.map(i => ModelId(i))
+    val expectedErrors         = dfsPreorder.map(i => s"e$i")
+    val expectedMissing        = dfsPreorder.map(i => s"m$i").toSet
+
+
+    val e = v1.left.get
+    assertEquals(expectedFailedModelIds, e.failureModelIds)
+    assertEquals(expectedErrors, e.errorMsgs)
+    assertEquals(expectedMissing, e.missingVarNames)
   }
 }
 
@@ -238,7 +280,7 @@ object EitherAuditorTest {
   private val I = S.changeType[Int].get
   private val D = S.changeType[Double].get
 
-  private val SN = EitherAuditor[String](aggregateErrsAndMissing = false)
+  private val SN = EitherAuditor[String](aggregateDiagnostics = false)
   private val IN = SN.changeType[Int].get
   private val DN = SN.changeType[Double].get
 
@@ -250,6 +292,8 @@ object EitherAuditorTest {
   private val M3 = Set("c", "d")
 
   private val IdS = ModelId(1, "String")
-  private val IdI = ModelId(2, "Int")
-  private val IdD = ModelId(3, "Double")
+  private val IdD = ModelId(2, "Double")
+  private val IdI = ModelId(3, "Int")
+
+  private val NoAggFailMidList = ::(IdS, Nil)
 }
