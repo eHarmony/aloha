@@ -82,7 +82,7 @@ object EitherAuditor {
 
   /**
     * Produce an [[EitherAuditor]].
-    * @param aggregateDiagnostics  If `true`, aggregate diagnostics; otherwise, only
+    * @param aggregateDiagnostics  If `true`, aggregate diagnostics; otherwise,
     *                              disregard submodel information in the
     *                              [[EitherAuditorError]] returned by the auditor.
     * @tparam A the type of value returned in the success case.
