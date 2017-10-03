@@ -33,7 +33,7 @@ addSbtPlugin("org.clapper" % "sbt-editsource" % "0.7.0")
 //
 // Until Aloha is ready for SBT 1.0+, we roll the dice and bump -Xss to a
 // high number (8M) and the build will likely fail intermittently.
-addSbtPlugin("com.47deg"  % "sbt-microsites" % "0.5.3")
+addSbtPlugin("com.47deg"  % "sbt-microsites" % "0.7.3")
 
 // For unified scaladoc
 addSbtPlugin("com.eed3si9n" % "sbt-unidoc" % "0.4.0")
