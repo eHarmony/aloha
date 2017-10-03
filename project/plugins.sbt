@@ -32,7 +32,7 @@ addSbtPlugin("org.clapper" % "sbt-editsource" % "0.7.0")
 //   https://github.com/47deg/sbt-microsites/blob/f91a939a63e802080960ebbcc07dc6f14e70de02/project/ProjectPlugin.scala#L45
 //
 // Until Aloha is ready for SBT 1.0+, we roll the dice and bump -Xss to a
-// high number (4M) and the build will likely fail intermittently.
+// high number (8M) and the build will likely fail intermittently.
 addSbtPlugin("com.47deg"  % "sbt-microsites" % "0.5.3")
 
 // For unified scaladoc
