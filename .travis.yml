@@ -58,7 +58,7 @@ env:
 # Think the version of sbt-microsites which pulls it in tut 0.5.5+ is v0.6.1
 # but it looks like that requires SBT v1.0+.
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION test && sbt -J-Xss4m ++$TRAVIS_SCALA_VERSION docs:tut
+  - sbt ++$TRAVIS_SCALA_VERSION test && sbt -v -J-Xss4m ++$TRAVIS_SCALA_VERSION docs:tut
 
 # Only publish docs for one Scala version (latest).
 after_success:
