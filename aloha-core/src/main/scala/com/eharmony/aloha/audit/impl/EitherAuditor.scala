@@ -5,6 +5,15 @@ import com.eharmony.aloha.id.ModelIdentity
 import com.eharmony.aloha.reflect.RefInfo
 
 /**
+  * An [[EitherAuditor]] encodes the idea of success of failure.  In the case of failure,
+  * diagnostic information is encoded in the form of an [[EitherAuditorError]].  No
+  * diagnostic information is emitted when a "''successful''" prediction is produced,
+  * even if compromises were made in order to produce the prediction or problems like
+  * missing data were encountered.
+  *
+  * If however, a model could not produce a prediction for some reason, diagnostic is
+  * provided, including the model ID.
+  *
   * Created by ryan.deak on 10/2/17.
   * @tparam A the type of value returned in the success case.
   */
