@@ -23,6 +23,17 @@ extends MultilabelModelJson
    with VwMultilabelModelJson {
 
   /**
+    * Add VW parameters to make the multilabel model work:
+    * @param vwParams current VW parameters passed to the VW JNI
+    * @param namespaceNames
+    * @return
+    */
+  def updatedVwParams(vwParams: String, namespaceNames: Set[String]): String = {
+
+    ???
+  }
+
+  /**
     * Create a JSON representation of an Aloha model.
     *
     * '''NOTE''': Because of the inclusion of the unrestricted `labelsOfInterest` parameter,
