@@ -8,7 +8,7 @@ VW_RELEASE_HASH=10bd09ab06f59291e04ad7805e88fd3e693b7159
 
 # The expected SHA-256 hash of the libvw_jni.so for the associated VW_RELEASE_HASH
 # when built by TravisCI.  This can be found by interrogating the 'before_install.3' logs.
-EXPECTED_VW_LIB_SHA256=a54ba4b035e2af676752ade121ccc78fb16cc661e6b80b42888f388930706a3d
+EXPECTED_VW_LIB_SHA256=476714cc030dc95640dc3ffaa2fa0c92fcca9e37f2edb7695e72af01d989537d
 
 # The concurrency level of the VW build.  VW typically uses all of the cores but this might be
 # bad on TravisCI since it's a shared environment.
