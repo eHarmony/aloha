@@ -12,7 +12,8 @@ jdk:
 # Use the container-based infrastructure.  Aloha only works on the container-based infrastructure
 # because currently, /proc/version in the non-container-based infrastructure doesn't match the VM
 # type.  The VM says Ubuntu 12 and /proc/version says redhat.
-dist: precise
+# dist: precise
+dist: trusty
 sudo: false
 
 cache:
@@ -51,6 +52,14 @@ env:
   global:
     - secure: FXO8gpf86zX6ElnorvWlfvnVKFCz6O4cpG7fN2zqE7ldg+WJxFI5ck73zGkwLuihPLv4JKMcRcqIiYZFkY8kw3rEaI7tRjw0bLTdxewNqmPD+oRx69WnVNuSgtD8v6Lhs4PEJhYMHNOIZHGhWauMqI6p65+vk9hdsDTh5XfW2A8dhIPJbnWdUuXxbQphCacdFwlhTR5RVnTO0i78JK47mA7poARMIDqZ2GaUmfxpoVt20mEKoIi44T2Ec95oCZ0eMHT893NDS1TD770SpFC6jDtrgpYkxZtUbMGzUn6DjGbtmrNhz8xAT9MyG0kJJv97TsP9aHgHDMT1EZqqmIR8e7aQJds7FCelyUuRWX7F5Bcb9wdduMHp2gIR49x3fHVYt9lgPU1Sk9fQ7VUcy8RJNVS5CNmOegcMjfYlo/yXpf/9MveFRBaW4UIVN4Nb9iZ1vB+oL7vy8GUHhGODygo+xOd8OzXHp/I/OUnNYKtXBxVCfZqeCl7j/iMfGJ+7aP0GjcaCFO+7LFBxkyoJJ47drVFVyxfIjAObAjKlKFO2nqw25A5J+XoN49rvVQTRQqzeik2MdRpXv5eqt+kUSIbT+s3xJIOmPpi5CVyFSCc4bDhTrnQnXwd52lvNVbTFqHiD2ikcSp2lUroaIo+snQHSAZD3uesTgQOCmO3hfXGJfXM=
     - secure: A93hW8ZDRHV23cgQWF5d5gUKDu4s1DqTiyN8f+p0eFzOpNh9hY2iBpdS6OZ4EIqzIrpX4pOWrX/olcxO0S37QHt+buhGb7xxhOfxMoWhy5Q0hCVbo4VGEnW7H0MucQUEOqrIrDgoBTeNoD5+hprINvCYSfZCRZuBCa3kewIUKbGBGVUclFK/uFcvTJm2+c2kQAaYuqKlXxAIFTL5wqs6p7kA8SBT20DxYBYoggir3rMJMMgemCXahYDYxy+kjuK4Eo+b6XFNuBOPVzE2W7cRrOFsspR2pPUohZQH7rcXbLS7m2I0Er6IjZovS8j71Loqygexron1WurgQ1RVv8/WjkZJFSq2bT7WshatXNNEkExkaQxM6sSxlSGIE3jAtRfc/XfyWn3twJMoAPU00XjSDXuNDJUGneBHjbyL1XkLx1UIKQVNbxqB90Y38nom3tRnOMawpAtxfc0zqqwA2bCZ4CZoN+8hgBu4SznZtUbI5jagTEqI371wRckYG88QF6GwwmzRz6UEiDQEaMz3ZUexGqoYJxli3Awmze8rPdkZroSgy6zIMuCZ+m2/LqNplXYsJEpiv1gxDhSlAiwKMQWAD13lpTYvl6Ld/zyowvka7l0IPyfmCE5XClGnG5zHWdS/9qqEhUxtoYC2ssmtCdie9clu4IvbC9bLoKyLhvRY7Bs=
+
+# Make sure the tests pass AND documentation compiles.  Added -J-Xss2m until
+# org.tpolecat:tut-plugin:0.5.5+ can be used.  That version incorporates a
+# stack-safe State monad which currently stack overflows with large files.  I
+# Think the version of sbt-microsites which pulls it in tut 0.5.5+ is v0.6.1
+# but it looks like that requires SBT v1.0+.
+script:
+  - sbt ++$TRAVIS_SCALA_VERSION test docs:tut
 
 # Only publish docs for one Scala version (latest).
 after_success:
