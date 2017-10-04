@@ -153,8 +153,8 @@ import com.eharmony.aloha.semantics.compiled.plugin.proto.CompiledSemanticsProto
 import com.eharmony.aloha.test.proto.Testing.UserProto
 import com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo
 
-def getRowCreator[T <: GeneratedMessage : RefInfo, S <: RowCreator[T]](
-    producers: List[RowCreatorProducer[T, S]], 
+def getRowCreator[T <: GeneratedMessage : RefInfo, S <: RowCreator[T, CharSequence]](
+    producers: List[RowCreatorProducer[T, CharSequence, S]],
     alohaJsonSpecFile: File,
     alohaCacheDir: Option[File] = None): Try[S] = {
   val plugin = CompiledSemanticsProtoPlugin[T]
