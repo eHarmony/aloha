@@ -100,6 +100,8 @@ object VwSparseMultilabelPredictor {
 
   private[multilabel] val AddlVwRingSize = 10
 
+  private[multilabel] type ExpectedLearner = VWActionScoresLearner
+
   /**
     * Produce the output given VW's output, `pred`, and the labels provided to the `apply` function.
     * @param pred predictions returned by the underlying VW ''CSOAA LDF'' model.
@@ -171,10 +173,10 @@ object VwSparseMultilabelPredictor {
       modelSource: ModelSource,
       params: String,
       numLabelsInTrainingSet: Int
-  ): (String, Try[VWActionScoresLearner]) = {
+  ): (String, Try[ExpectedLearner]) = {
     val modelFile = modelSource.localVfs.replicatedToLocal()
     val updatedParams = paramsWithSource(modelFile.fileObj, params, numLabelsInTrainingSet)
-    val learner = Try { VWLearners.create[VWActionScoresLearner](updatedParams) }
+    val learner = Try { VWLearners.create[ExpectedLearner](updatedParams) }
     (updatedParams, learner)
   }
 }

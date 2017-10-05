@@ -14,6 +14,7 @@ import com.eharmony.aloha.io.sources.{ExternalSource, ModelSource}
 import com.eharmony.aloha.io.vfs.Vfs
 import com.eharmony.aloha.models.Model
 import com.eharmony.aloha.models.multilabel.MultilabelModel
+import com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel.IncorrectLearner
 import com.eharmony.aloha.semantics.compiled.CompiledSemanticsInstances
 import com.eharmony.aloha.semantics.func.GenFunc0
 import org.apache.commons.vfs2.VFS
@@ -34,6 +35,21 @@ import scala.util.Random
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class VwMultilabelModelTest {
   import VwMultilabelModelTest._
+
+
+  @Test def testWrongLearner(): Unit = {
+    val args = "--csoaa_ldf mc"
+    VwMultilabelModel.updatedVwParams("--csoaa_ldf mc", Set.empty) match {
+      case Left(IncorrectLearner(o, _, c)) =>
+        assertEquals(args, o)
+        assertNotEquals(classOf[VwSparseMultilabelPredictor.ExpectedLearner].getCanonicalName, c)
+      case _ => fail()
+    }
+  }
+
+  // TODO: More VW argument augmentation tests!!!
+
+
 
   @Test def testTrainedModelWorks(): Unit = {
     val model = Model
