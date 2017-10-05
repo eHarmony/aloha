@@ -85,11 +85,7 @@ private[multilabel] trait VwMultilabelParamAugmentation {
   )
 
   private[multilabel] def removeParams(padded: String): String =
-    OptionsRemoved.foldLeft(padded){(s, r) =>
-      val v = r.replaceAllIn(s, " ")
-      println(s"after  $r:".padTo(70, ' ') + v)
-      v
-    }
+    OptionsRemoved.foldLeft(padded)((s, r) => r.replaceAllIn(s, " "))
 
   private[multilabel] def addParams(
       paramsAfterRemoved: String,
