@@ -24,8 +24,8 @@ final case class VwMultilabelRowCreator[-A, K](
     namespaces: List[(String, List[Int])],
     normalizer: Option[CharSequence => CharSequence],
     positiveLabelsFunction: GenAggFunc[A, sci.IndexedSeq[K]],
-    classNs: String,
-    dummyClassNs: String,
+    classNs: Char,
+    dummyClassNs: Char,
     includeZeroValues: Boolean = false
 ) extends RowCreator[A, Array[String]] {
   import VwMultilabelRowCreator._
@@ -134,7 +134,7 @@ object VwMultilabelRowCreator {
   private[multilabel] def preferredLabelNamespaces(nss: sci.BitSet): Option[LabelNamespaces] = {
     PreferredLabelNamespaces collectFirst {
       case (actual, dummy) if !(nss contains actual.toInt) && !(nss contains dummy.toInt) =>
-        LabelNamespaces(actual.toString, dummy.toString)
+        LabelNamespaces(actual, dummy)
     }
   }
 
@@ -167,7 +167,7 @@ object VwMultilabelRowCreator {
 
     found match {
       case actual #:: dummy #:: Stream.Empty =>
-        Option(LabelNamespaces(actual.toChar.toString, dummy.toChar.toString))
+        Option(LabelNamespaces(actual.toChar, dummy.toChar))
       case _ => None
     }
   }
@@ -194,8 +194,8 @@ object VwMultilabelRowCreator {
       positiveLabelIndices: Int => Boolean,
       defaultNs: List[Int],
       namespaces: List[(String, List[Int])],
-      classNs: String,
-      dummyClassNs: String
+      classNs: Char,
+      dummyClassNs: Char
   ): Array[String] = {
 
     val n = indices.size
@@ -352,5 +352,5 @@ object VwMultilabelRowCreator {
         semantics, "positiveLabels", Option(positiveLabels), Option(Vector.empty[K]))
   }
 
-  private[aloha] final case class LabelNamespaces(labelNs: String, dummyLabelNs: String)
+  private[aloha] final case class LabelNamespaces(labelNs: Char, dummyLabelNs: Char)
 }

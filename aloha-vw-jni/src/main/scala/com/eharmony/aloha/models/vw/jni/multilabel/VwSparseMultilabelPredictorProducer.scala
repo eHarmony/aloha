@@ -32,7 +32,7 @@ case class VwSparseMultilabelPredictorProducer[K](
     params: String,
     defaultNs: List[Int],
     namespaces: List[(String, List[Int])],
-    labelNamespace: String,
+    labelNamespace: Char,
     numLabelsInTrainingSet: Int
 ) extends SparsePredictorProducer[K] {
   override def apply(): VwSparseMultilabelPredictor[K] =

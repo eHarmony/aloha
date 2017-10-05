@@ -99,7 +99,7 @@ class VwMultilabelRowCreatorTest {
       expectedResults: Seq[Boolean],
       actualResults: Array[String],
       prefix: Seq[String],
-      labelNs: String
+      labelNs: Char
   ): Unit = {
 
     val suffix =

@@ -14,7 +14,6 @@ import com.eharmony.aloha.io.sources.{ExternalSource, ModelSource}
 import com.eharmony.aloha.io.vfs.Vfs
 import com.eharmony.aloha.models.Model
 import com.eharmony.aloha.models.multilabel.MultilabelModel
-import com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel.IncorrectLearner
 import com.eharmony.aloha.semantics.compiled.CompiledSemanticsInstances
 import com.eharmony.aloha.semantics.func.GenFunc0
 import org.apache.commons.vfs2.VFS
@@ -36,13 +35,47 @@ import scala.util.Random
 class VwMultilabelModelTest {
   import VwMultilabelModelTest._
 
+  @Test def testExpectedUnrecoverableFlags(): Unit = {
+    assertEquals(
+      "Unrecoverable flags has changed.",
+      Set("cubic", "redefine", "stage_poly", "ignore", "ignore_linear", "keep"),
+      VwMultilabelModel.UnrecoverableFlagSet
+    )
+  }
 
-  @Test def testWrongLearner(): Unit = {
+  @Test def testUnrecoverable(): Unit = {
+    val unrec = VwMultilabelModel.UnrecoverableFlagSet.iterator.map { f =>
+      VwMultilabelModel.updatedVwParams(s"--$f", Set.empty)
+    }
+
+    unrec foreach {
+      case Left(UnrecoverableParams(p, us)) => assertEquals(p, us.map(u => s"--$u").mkString(" "))
+      case _                                => fail()
+    }
+  }
+
+  @Test def testQuadraticCreation(): Unit = {
     val args = "--csoaa_ldf mc"
-    VwMultilabelModel.updatedVwParams("--csoaa_ldf mc", Set.empty) match {
-      case Left(IncorrectLearner(o, _, c)) =>
-        assertEquals(args, o)
-        assertNotEquals(classOf[VwSparseMultilabelPredictor.ExpectedLearner].getCanonicalName, c)
+
+    // Notice: ignore_linear and quadratics are in sorted order.
+    val exp  = "--csoaa_ldf mc --noconstant --csoaa_rank --ignore y " +
+               "--ignore_linear a --ignore_linear b -qYa -qYb"
+    VwMultilabelModel.updatedVwParams(args, Set("abc", "bcd")) match {
+      case Right(s) => assertEquals(exp, s)
+      case _ => fail()
+    }
+  }
+
+  @Test def testCubicCreation(): Unit = {
+    val args = "--csoaa_ldf mc -qab --quadratic cb"
+    val exp = "--csoaa_ldf mc --noconstant --csoaa_rank --ignore y " +
+              "--ignore_linear a --ignore_linear b --ignore_linear c " +
+              "-qYa -qYb -qYc " +
+              "--cubic Yab --cubic Ybc"
+
+    // Notice: ignore_linear and quadratics are in sorted order.
+    VwMultilabelModel.updatedVwParams(args, Set("abc", "bcd", "cde")) match {
+      case Right(s) => assertEquals(exp, s)
       case _ => fail()
     }
   }
