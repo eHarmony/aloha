@@ -99,7 +99,7 @@ private[multilabel] trait VwMultilabelParamAugmentation {
 
     val quadratics = q.toSeq.sorted.map{ case (y, x) => s"-q$y$x" }.mkString(" ")
     val cubics = c.toSeq.sorted.map{ case (y, x1, x2) => s"--cubic $y$x1$x2" }.mkString(" ")
-    val igLin = il.toSeq.sorted.map(n => s"--ignore_linear $n").mkString(" ")
+    val igLin = if (il.nonEmpty) il.toSeq.sorted.mkString("--ignore_linear ", "", "") else ""
     val ig = s"--ignore ${labelNs.dummyLabelNs}"
 
     (paramsAfterRemoved.trim + s" --noconstant --csoaa_rank $ig $igLin $quadratics $cubics").trim

@@ -59,7 +59,7 @@ class VwMultilabelModelTest {
 
     // Notice: ignore_linear and quadratics are in sorted order.
     val exp  = "--csoaa_ldf mc --noconstant --csoaa_rank --ignore y " +
-               "--ignore_linear a --ignore_linear b -qYa -qYb"
+               "--ignore_linear ab -qYa -qYb"
     VwMultilabelModel.updatedVwParams(args, Set("abc", "bcd")) match {
       case Right(s) => assertEquals(exp, s)
       case _ => fail()
@@ -69,12 +69,12 @@ class VwMultilabelModelTest {
   @Test def testCubicCreation(): Unit = {
     val args = "--csoaa_ldf mc -qab --quadratic cb"
     val exp = "--csoaa_ldf mc --noconstant --csoaa_rank --ignore y " +
-              "--ignore_linear a --ignore_linear b --ignore_linear c " +
-              "-qYa -qYb -qYc " +
+              "--ignore_linear abcd " +
+              "-qYa -qYb -qYc -qYd " +
               "--cubic Yab --cubic Ybc"
 
     // Notice: ignore_linear and quadratics are in sorted order.
-    VwMultilabelModel.updatedVwParams(args, Set("abc", "bcd", "cde")) match {
+    VwMultilabelModel.updatedVwParams(args, Set("abc", "bcd", "cde", "def")) match {
       case Right(s) => assertEquals(exp, s)
       case _ => fail()
     }
