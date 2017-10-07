@@ -131,8 +131,9 @@ protected trait VwMultilabelParamAugmentation {
     val ints = hos.toSeq.sorted.map(ho => s"--interactions $ho").mkString(" ")
     val igLin = if (il.nonEmpty) il.toSeq.sorted.mkString("--ignore_linear ", "", "") else ""
     val ig = s"--ignore ${i.mkString("")}"
-
-    (paramsAfterRemoved.trim + s" --noconstant --csoaa_rank $ig $igLin $quadratics $cubics $ints").trim
+    val additions = s" --noconstant --csoaa_rank $ig $igLin $quadratics $cubics $ints"
+        .replaceAll("\\s+", " ")
+    (paramsAfterRemoved.trim + additions).trim
   }
 
   protected def createLabelInteractions(

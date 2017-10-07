@@ -162,7 +162,7 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
                "--interactions Yabcd"
 
     VwMultilabelModel.updatedVwParams(args, nss) match {
-      case Right(s) => assertEquals(exp, s.replaceAll(" +", " "))
+      case Right(s) => assertEquals(exp, s)
       case _ => fail()
     }
   }
