@@ -35,55 +35,6 @@ import scala.util.Random
 class VwMultilabelModelTest {
   import VwMultilabelModelTest._
 
-  @Test def testExpectedUnrecoverableFlags(): Unit = {
-    assertEquals(
-      "Unrecoverable flags has changed.",
-      Set("cubic", "redefine", "stage_poly", "ignore", "ignore_linear", "keep"),
-      VwMultilabelModel.UnrecoverableFlagSet
-    )
-  }
-
-  @Test def testUnrecoverable(): Unit = {
-    val unrec = VwMultilabelModel.UnrecoverableFlagSet.iterator.map { f =>
-      VwMultilabelModel.updatedVwParams(s"--$f", Set.empty)
-    }
-
-    unrec foreach {
-      case Left(UnrecoverableParams(p, us)) => assertEquals(p, us.map(u => s"--$u").mkString(" "))
-      case _                                => fail()
-    }
-  }
-
-  @Test def testQuadraticCreation(): Unit = {
-    val args = "--csoaa_ldf mc"
-
-    // Notice: ignore_linear and quadratics are in sorted order.
-    val exp  = "--csoaa_ldf mc --noconstant --csoaa_rank --ignore y " +
-               "--ignore_linear ab -qYa -qYb"
-    VwMultilabelModel.updatedVwParams(args, Set("abc", "bcd")) match {
-      case Right(s) => assertEquals(exp, s)
-      case _ => fail()
-    }
-  }
-
-  @Test def testCubicCreation(): Unit = {
-    val args = "--csoaa_ldf mc -qab --quadratic cb"
-    val exp = "--csoaa_ldf mc --noconstant --csoaa_rank --ignore y " +
-              "--ignore_linear abcd " +
-              "-qYa -qYb -qYc -qYd " +
-              "--cubic Yab --cubic Ybc"
-
-    // Notice: ignore_linear and quadratics are in sorted order.
-    VwMultilabelModel.updatedVwParams(args, Set("abc", "bcd", "cde", "def")) match {
-      case Right(s) => assertEquals(exp, s)
-      case _ => fail()
-    }
-  }
-
-  // TODO: More VW argument augmentation tests!!!
-
-
-
   @Test def testTrainedModelWorks(): Unit = {
     val model = Model
 

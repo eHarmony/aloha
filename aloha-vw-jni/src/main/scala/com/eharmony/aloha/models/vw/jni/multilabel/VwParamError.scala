@@ -22,6 +22,14 @@ final case class UnrecoverableParams(
       s"\n\toriginal parameters: $originalParams"
 }
 
+final case class NotCsoaaOrWap(originalParams: String) extends VwParamError {
+  def modifiedParams: Option[String] = None
+  def errorMessage: String =
+    "Model must be a csoaa_ldf or wap_ldf model."
+      s"\n\toriginal parameters: $originalParams"
+}
+
+
 final case class IncorrectLearner(
     originalParams: String,
     modifiedPs: String,
@@ -73,13 +81,16 @@ final case class NamespaceError(
     val flagErrs =
       flagsReferencingMissingNss
         .toSeq.sortBy(_._1)
-        .map { case(f, s) => s"$f: ${s.mkString(",")}" }
+        .map { case(f, s) => s"--$f: ${s.mkString(",")}" }
         .mkString("; ")
     val nss = namespaceNames.toVector.sorted.mkString(", ")
     val vwNss = VwMultilabelModel.toVwNsSet(namespaceNames).toVector.sorted.mkString(",")
 
-    s"Detected flags referencing namespaces not in the provided set. $flagErrs" +
-      s".  Expected only $vwNss from provided namespaces: $nss." +
+    s"Detected flags referencing namespaces not in the provided set. $flagErrs.  " +
+      (
+        if (vwNss.isEmpty) "No namespaces provided."
+        else s"Expected only $vwNss from provided namespaces: $nss."
+      ) +
       s"\n\toriginal parameters: $originalParams"
   }
 }
