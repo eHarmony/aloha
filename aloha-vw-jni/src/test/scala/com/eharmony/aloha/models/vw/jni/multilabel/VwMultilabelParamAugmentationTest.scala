@@ -154,6 +154,19 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
     }
   }
 
+  @Test def testHigherOrderInteractions(): Unit = {
+    val args = "--csoaa_ldf mc --interactions abcd --ignore_linear abcd"
+    val nss  = Set("abc", "bcd", "cde", "def")
+    val exp  = "--csoaa_ldf mc --noconstant --csoaa_rank --ignore y " +
+               "--ignore_linear abcd " +
+               "--interactions Yabcd"
+
+    VwMultilabelModel.updatedVwParams(args, nss) match {
+      case Right(s) => assertEquals(exp, s.replaceAll(" +", " "))
+      case _ => fail()
+    }
+  }
+
   // TODO: More VW argument augmentation tests!!!
 
 }
