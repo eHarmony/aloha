@@ -20,8 +20,103 @@ protected trait VwMultilabelParamAugmentation {
   protected type VWNsCrossProdSet = Set[(Char, Char)]
 
   /**
-    * Add VW parameters to make the multilabel model work:
+    * Adds VW parameters to make the parameters work as an Aloha multilabel model.
     *
+    * The algorithm works as follows:
+    *
+    1. Ensure the VW `csoaa_ldf` or `wap_ldf` reduction is specified in the supplied VW
+       parameter list (''with the appropriate option for the flag'').
+    1. Ensure that no "''unrecoverable''" flags appear in the supplied VW parameter list.
+       See `UnrecoverableFlagSet` for flags whose appearance is considered
+       "''unrecoverable''".
+    1. Ensure that ''ignore'' and ''interaction'' flags (`--ignore`, `--ignore_linear`, `-q`,
+       `--quadratic`, `--cubic`) do not refer to namespaces not supplied in
+       the `namespaceNames` parameter.
+    1. Attempt to determine namespace names that can be used for the labels.  For more
+       information on the label namespace resolution algorithm, see:
+       `com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator.determineLabelNamespaces`.
+    1. Remove flags and options found in `FlagsToRemove`.
+    1. Add `--noconstant` and `--csoaa_rank` flags.  `--noconstant` is added because per-label
+       intercepts will be included and take the place of a single intercept.  `--csoaa_rank`
+       is added to make the `VWLearner` a `VWActionScoresLearner`.
+    1. Create interactions between features and the label namespaces created above.
+      a. If a namespace in `namespaceNames` appears as an option to VW's `ignore_linear` flag,
+         '''do not''' create a quadratic interaction between that namespace and the label
+         namespace.
+      a. For each interaction term (`-q`, `--quadratic`, `--cubic`, `--interactions`), replace it
+         with an interaction term also interacted with the label namespace.  This increases the
+         arity of the interaction by 1.
+    *
+    * ==Success Examples==
+    *
+    * {{{
+    * import com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel.updatedVwParams
+    *
+    * // This is a basic example. 'y' and 'Y' in the output are label
+    * // namespaces.  Notice all namespaces are quadratically interacted
+    * // with the label namespace.
+    * val uvw1 = updatedVwParams(
+    *   "--csoaa_ldf mc",
+    *   Set("a", "b", "c")
+    * )
+    * // Right("--csoaa_ldf mc --noconstant --csoaa_rank --ignore y " +
+    * //       "--ignore_linear abc -qYa -qYb -qYc")
+    *
+    * // Here since 'a' is in 'ignore_linear', no '-qYa' term appears
+    * // in the output.
+    * val uvw2 = updatedVwParams(
+    *   "--csoaa_ldf mc --ignore_linear a -qbc",
+    *   Set("a", "b", "c")
+    * )
+    * // Right("--csoaa_ldf mc --noconstant --csoaa_rank --ignore y " +
+    * //       "--ignore_linear abc -qYb -qYc --cubic Ybc)
+    *
+    * // 'a' is in 'ignore', so no terms with 'a' are emitted. 'b' is
+    * // in 'ignore_linear' so it does occur in any quadratic
+    * // interactions in the output, but can appear in interaction
+    * // terms of higher arity like the cubic interaction.
+    * val uvw3 = updatedVwParams(
+    *   "--csoaa_ldf mc --ignore a --ignore_linear b -qbc --cubic abc",
+    *   Set("a", "b", "c")
+    * )
+    * //  Right("--csoaa_ldf mc --noconstant --csoaa_rank --ignore ay " +
+    * //        "--ignore_linear bc -qYc --cubic Ybc")
+    * }}}
+    *
+    * ==Errors Examples==
+    *
+    * {{{
+    * import com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel.updatedVwParams
+    * import com.eharmony.aloha.models.vw.jni.multilabel.{
+    *   NotCsoaaOrWap,
+    *   NamespaceError
+    * }
+    *
+    * assert( updatedVwParams("", Set()) == Left(NotCsoaaOrWap("")) )
+    *
+    * assert(
+    *   updatedVwParams("--wap_ldf m -qaa", Set()) ==
+    *   Left(NamespaceError("--wap_ldf m -qaa",Set(),Map("quadratic" -> Set('a'))))
+    * )
+    *
+    * assert(
+    *   updatedVwParams(
+    *     "--wap_ldf m --ignore a -qbb -qbd --cubic bcd --interactions dde",
+    *     Set()
+    *   ) ==
+    *   Left(
+    *     NamespaceError(
+    *       "--wap_ldf m --ignore a -qbb -qbd --cubic bcd --interactions dde",
+    *       Set(),
+    *       Map(
+    *         "ignore"    -> Set('a'),
+    *         "quadratic" -> Set('b'),
+    *         "cubic"     -> Set('b', 'c', 'd', 'e')
+    *       )
+    *     )
+    *   )
+    * )
+    * }}}
     *
     * @param vwParams current VW parameters passed to the VW JNI
     * @param namespaceNames it is assumed that `namespaceNames` is a superset
@@ -60,28 +155,39 @@ protected trait VwMultilabelParamAugmentation {
     }
   }
 
+  /**
+    * VW Flags automatically resulting in an error.
+    */
   protected val UnrecoverableFlagSet: Set[String] =
     Set("redefine", "stage_poly", "keep", "permutations")
 
+  /**
+    * Use this to pad Regex instances ending in `\S+`.
+    * `findAllMatchesIn` finds non-overlapping matches.  Because of greediness
+    * in regex matching, the next character (if one exists) must be whitespace when
+    * a regex ends in `\S+`.
+    * @param s string representation of Regex to be left-padded w/ one whitespace.
+    * @return a whitespace left-padded version of `s`.
+    */
+  private[this] def leftPad(s: String) = "\\s" + s
   private[this] def pad(s: String) = "\\s" + s + "\\s"
   private[this] val NumRegex            = """-?(\d+(\.\d*)?|\d*\.\d+)([eE][+-]?\d+)?"""
   private[this] val ClassCastMsg        = """(\S+) cannot be cast to (\S+)""".r
   private[this] val CsoaaRank           = pad("--csoaa_rank").r
   private[this] val WapOrCsoaa          = pad("""--(csoaa|wap)_ldf\s+(mc?)""").r
   private[this] val Quiet               = pad("--quiet").r
-  private[this] val Keep                = pad("""--keep\s+(\S+)""").r
-  protected     val Ignore      : Regex = pad("""--ignore\s+(\S+)""").r
-  protected     val IgnoreLinear: Regex = pad("""--ignore_linear\s+(\S+)""").r
+  protected     val Ignore      : Regex = leftPad("""--ignore\s+(\S+)""").r
+  protected     val IgnoreLinear: Regex = leftPad("""--ignore_linear\s+(\S+)""").r
   private[this] val UnrecoverableFlags  = pad("--(" + UnrecoverableFlagSet.mkString("|") + ")").r
   private[this] val QuadraticsShort     = pad("""-q\s*([\S]{2})""").r
   private[this] val QuadraticsLong      = pad("""--quadratic\s+(\S{2})""").r
   private[this] val Cubics              = pad("""--cubic\s+(\S{3})""").r
-  private[this] val Interactions        = pad("""--interactions\s+(\S\S+)""").r
+  private[this] val Interactions        = leftPad("""--interactions\s+(\S\S+)""").r
   private[this] val NoConstant          = pad("""--noconstant""").r
   private[this] val ConstantShort       = pad("""-C\s*(""" + NumRegex + ")").r
   private[this] val ConstantLong        = pad("""--constant\s+(""" + NumRegex + ")").r
 
-  private[this] val OptionsRemoved = Seq(
+  private[this] val FlagsToRemove = Seq(
     QuadraticsShort,
     QuadraticsLong,
     Cubics,
@@ -94,17 +200,27 @@ protected trait VwMultilabelParamAugmentation {
     Ignore
   )
 
+  /**
+    * Remove flags (and options) for the flags listed in `FlagsToRemove`.
+    * @param padded a padded version of the params passed to `updateVwParams`.
+    * @return
+    */
   protected def removeParams(padded: String): String = {
+    // r.replaceAllIn replaces non-overlapping matches.  Since multiple regular
+    // expressions begin or end with whitespace there can be a whitespace character
+    // that is part of two matches.  To accommodate this, replaceAll keeps replacing
+    // the matches with whitespace until an equilibrium is reached.  Once equilibrium
+    // is reached, move on to the next Regex.
     @tailrec def replaceAll(s: String, r: Regex): String = {
-      val str = r.replaceAllIn(s, " ").trim
-      s" $str " match {
+      // Replace the matches with whitespace.  Trim and pad to avoid stack overflows.
+      val str = s" ${r.replaceAllIn(s, " ").trim} "
+      str match {
         case v if v == s => v
         case v           => replaceAll(v, r)
       }
     }
 
-    // TODO: Figure out why Regex.replaceAllIn doesn't replace all.
-    OptionsRemoved.foldLeft(padded)((s, r) => replaceAll(s, r))
+    FlagsToRemove.foldLeft(padded)(replaceAll)
   }
 
   protected def addParams(
@@ -116,7 +232,12 @@ protected trait VwMultilabelParamAugmentation {
       labelNs: LabelNamespaces
   ): String = {
     val i = oldIgnored + labelNs.dummyLabelNs
+
+    // Don't include namespaces that are ignored in ignore_linear.
     val il = (toVwNsSet(namespaceNames) ++ oldIgnoredLinear) -- i
+
+    // Don't turn a given namespace into quadratics interacted on label when the
+    // namespace is listed in the ignore_linear flag.
     val qs = il.flatMap(n =>
       if (oldIgnored.contains(n) || oldIgnoredLinear.contains(n)) Nil
       else List(s"${labelNs.labelNs}$n")
@@ -130,7 +251,11 @@ protected trait VwMultilabelParamAugmentation {
     val cubics = cs.toSeq.sorted.map(c => s"--cubic $c").mkString(" ")
     val ints = hos.toSeq.sorted.map(ho => s"--interactions $ho").mkString(" ")
     val igLin = if (il.nonEmpty) il.toSeq.sorted.mkString("--ignore_linear ", "", "") else ""
+
+    // This is non-empty b/c i is non-empty.
     val ig = s"--ignore ${i.mkString("")}"
+
+    // Consolidate whitespace because there shouldn't be whitespace in these flags' options.
     val additions = s" --noconstant --csoaa_rank $ig $igLin $quadratics $cubics $ints"
         .replaceAll("\\s+", " ")
     (paramsAfterRemoved.trim + additions).trim
@@ -143,68 +268,39 @@ protected trait VwMultilabelParamAugmentation {
       filter: Int => Boolean
   ): Set[String] =
     interactions.collect {
-      case i if filter(i.length) && !i.toCharArray.exists(ignored.contains) => s"${labelNs.labelNs}$i"
+      case i if filter(i.length) &&                         // Filter based on arity.
+                !i.toCharArray.exists(ignored.contains) =>  // Filter out ignored.
+        s"${labelNs.labelNs}$i"
     }
 
-  protected def interactions(padded: String): Set[String] = {
+  /**
+    * Get the set of interactions (encoded as Strings).  String length represents the
+    * interaction arity.
+    * @param padded the padded version of the original parameters based to `updatedVwParams`.
+    * @return
+    */
+  protected def interactions(padded: String): Set[String] =
     List(
       QuadraticsShort,
       QuadraticsLong,
       Cubics,
       Interactions
     ).foldLeft(Set.empty[String]){(is, r) =>
-      is ++ firstGroups(padded, r).map(s => s.sorted)
+      is ++ firstCaptureGroups(padded, r).map(s => s.sorted)
     }
-  }
-
-  protected def firstGroups(padded: String, regex: Regex): Iterator[String] =
-    regex.findAllMatchIn(padded).map(m => m.group(1))
-
-//  protected def setOfFirstGroup(padded: String, regex: Regex): Set[String] =
-//    regex.findAllMatchIn(padded).map(m => m.group(1)).toSet
-
-//  protected def setOfFirstGroups(padded: String, regexs: Regex*): Set[String] =
-//    regexs.aggregate(Set.empty[String])((_, r) => setOfFirstGroup(padded, r), _ ++ _)
-
-  protected def noconstant(padded: String): Boolean =
-    NoConstant.findFirstIn(padded).nonEmpty
-
-//  protected def constant(padded: String): Set[Double] =
-//    setOfFirstGroups(padded, ConstantShort, ConstantLong).map(s => s.toDouble)
-
-  protected def unorderedCross[A](a: A, b: A)(implicit o: Ordering[A]): (A, A) =
-    if (o.lt(a, b)) (a, b) else (b, a)
-
-  protected def firstThenOrderedCross[A](first: A, b: A, c: A)(implicit o: Ordering[A]): (A, A, A) = {
-    val (x, y) = unorderedCross(b, c)
-    (first, x, y)
-  }
-
-  protected def quad(r: Regex, chrSeq: CharSequence): VWNsCrossProdSet =
-    r.findAllMatchIn(chrSeq).map { m =>
-      val Seq(a, b) = (1 to 2).map(i => m.group(i).charAt(0))
-      unorderedCross(a, b)
-    }.toSet
-
-  protected def charsIn(r: Regex, chrSeq: CharSequence): VWNsSet =
-    r.findAllMatchIn(chrSeq).flatMap(m => m.group(1).toCharArray).toSet
 
   protected def unrecoverableFlags(padded: String): Set[String] =
     UnrecoverableFlags.findAllMatchIn(padded).map(m => m.group(1)).toSet
 
-  protected def quadratics(padded: String): VWNsCrossProdSet =
-    quad(QuadraticsShort, padded) ++ quad(QuadraticsLong, padded)
-
-  protected def crossToSet[A](cross: Set[(A, A)]): Set[A] =
-    cross flatMap { case (a, b) => Set(a, b) }
-
   protected def isQuiet(padded: String): Boolean = Quiet.findFirstIn(padded).nonEmpty
-
-//  protected def kept(padded: String): VWNsSet = charsIn(Keep, padded)
   protected def ignored(padded: String): VWNsSet = charsIn(Ignore, padded)
   protected def ignoredLinear(padded: String): VWNsSet = charsIn(IgnoreLinear, padded)
 
-  protected def handleClassCastException(orig: String, mod: String, ex: ClassCastException): VwParamError =
+  protected def handleClassCastException(
+      orig: String,
+      mod: String,
+      ex: ClassCastException
+  ): VwParamError =
     ex.getMessage match {
       case ClassCastMsg(from, _) => IncorrectLearner(orig, mod, from)
       case _                     => ClassCastErr(orig, mod, ex)
@@ -255,10 +351,11 @@ protected trait VwMultilabelParamAugmentation {
     }
   }
 
-  private[multilabel] def toVwNsSet(nsNames: Set[String]): VWNsSet =
-    nsNames.flatMap(_.take(1).toCharArray)
-
-  protected def validateVwParams(orig: String, mod: String, addQuiet: Boolean): Either[VwParamError, String] = {
+  protected def validateVwParams(
+      orig: String,
+      mod: String,
+      addQuiet: Boolean
+  ): Either[VwParamError, String] = {
     val ps = if (addQuiet) s"--quiet $mod" else mod
 
     Try { VWLearners.create[ExpectedLearner](ps) } match {
@@ -271,4 +368,21 @@ protected trait VwMultilabelParamAugmentation {
         Left(VwError(orig, mod, ex.getMessage))
     }
   }
+
+  // More general functions.
+
+  /**
+    * Find all of the regex matches and extract the first capture group from the match.
+    * @param padded the padded version of the original parameters based to `updatedVwParams`.
+    * @param regex with at least one capture group (this is unchecked).
+    * @return Iterator of the matches' first capture group.
+    */
+  protected def firstCaptureGroups(padded: String, regex: Regex): Iterator[String] =
+    regex.findAllMatchIn(padded).map(m => m.group(1))
+
+  protected def charsIn(r: Regex, chrSeq: CharSequence): VWNsSet =
+    r.findAllMatchIn(chrSeq).flatMap(m => m.group(1).toCharArray).toSet
+
+  private[multilabel] def toVwNsSet(nsNames: Set[String]): VWNsSet =
+    nsNames.flatMap(_.take(1).toCharArray)
 }

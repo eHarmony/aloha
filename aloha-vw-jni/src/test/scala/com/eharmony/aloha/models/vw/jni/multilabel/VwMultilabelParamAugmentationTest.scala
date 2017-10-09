@@ -142,9 +142,9 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
   @Test def testCubicWithInteractionsCreationIgnored(): Unit = {
     val args = "--csoaa_ldf mc --interactions ab --interactions cb --ignore c --ignore d"
     val nss  = Set("abc", "bcd", "cde", "def")
-    val exp  = "--csoaa_ldf mc --noconstant --csoaa_rank --ignore cy " +
-               "--ignore_linear abd " +
-               "-qYa -qYb -qYd " +
+    val exp  = "--csoaa_ldf mc --noconstant --csoaa_rank --ignore cdy " +
+               "--ignore_linear ab " +
+               "-qYa -qYb " +
                "--cubic Yab"
 
     // Notice: ignore_linear and quadratics are in sorted order.
@@ -167,6 +167,60 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
     }
   }
 
+  @Test def testMultipleInteractions(): Unit = {
+    val nss  = ('a' to 'e').map(_.toString).toSet
+
+    val args = s"--csoaa_ldf mc --interactions ab --interactions abc " +
+                "--interactions abcd --interactions abcde"
+
+    val exp = "--csoaa_ldf mc --noconstant --csoaa_rank --ignore y " +
+              "--ignore_linear abcde " +
+              "-qYa -qYb -qYc -qYd -qYe " +
+              "--cubic Yab " +
+              "--interactions Yabc " +
+              "--interactions Yabcd " +
+              "--interactions Yabcde"
+
+    VwMultilabelModel.updatedVwParams(args, nss) match {
+      case Right(s) => assertEquals(exp, s)
+      case _ => fail()
+    }
+  }
+
+  @Test def interactionsWithSelf(): Unit = {
+    val nss = Set("a")
+    val args = "--wap_ldf m -qaa --cubic aaa --interactions aaaa"
+    val exp = "--wap_ldf m --noconstant --csoaa_rank --ignore y --ignore_linear a " +
+              "-qYa " +
+              "--cubic Yaa " +
+              "--interactions Yaaa " +
+              "--interactions Yaaaa"
+
+    VwMultilabelModel.updatedVwParams(args, nss) match {
+      case Right(s) => assertEquals(exp, s)
+      case x => assertEquals("", x)
+    }
+  }
+
+//  @Test def adf(): Unit = {
+//    val args = "--wap_ldf m --ignore a -qbb -qbd --cubic bcd --interactions dde"
+//    val updated = updatedVwParams(args, Set())
+//
+//
+//    val exp = Left(
+//      NamespaceError(
+//        "--wap_ldf m --ignore a -qbb -qbd --cubic bcd --interactions dde",
+//        Set(),
+//        Map(
+//          "ignore"    -> Set('a'),
+//          "quadratic" -> Set('b', 'd'),
+//          "cubic"     -> Set('b', 'c', 'd', 'e')
+//        )
+//      )
+//    )
+//
+//    assertEquals(exp, updated)
+//  }
   // TODO: More VW argument augmentation tests!!!
 
 }
