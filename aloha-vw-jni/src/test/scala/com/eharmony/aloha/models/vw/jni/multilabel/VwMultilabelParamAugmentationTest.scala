@@ -30,7 +30,7 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
   @Test def testUnrecoverable(): Unit = {
     val unrec = UnrecoverableFlagSet.iterator.map { f =>
       VwMultilabelModel.updatedVwParams(s"--csoaa_ldf mc --$f", Set.empty)
-    }
+    }.toList
 
     unrec foreach {
       case Left(UnrecoverableParams(p, us)) =>
@@ -202,25 +202,29 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
     }
   }
 
-//  @Test def adf(): Unit = {
-//    val args = "--wap_ldf m --ignore a -qbb -qbd --cubic bcd --interactions dde"
-//    val updated = updatedVwParams(args, Set())
-//
-//
-//    val exp = Left(
-//      NamespaceError(
-//        "--wap_ldf m --ignore a -qbb -qbd --cubic bcd --interactions dde",
-//        Set(),
-//        Map(
-//          "ignore"    -> Set('a'),
-//          "quadratic" -> Set('b', 'd'),
-//          "cubic"     -> Set('b', 'c', 'd', 'e')
-//        )
-//      )
-//    )
-//
-//    assertEquals(exp, updated)
-//  }
+  @Test def testNamespaceErrors(): Unit = {
+    val args = "--wap_ldf m --ignore_linear b --ignore a -qbb -qbd " +
+               "--cubic bcd --interactions dde --interactions abcde"
+    val updated = updatedVwParams(args, Set())
+
+
+    val exp = Left(
+      NamespaceError(
+        "--wap_ldf m --ignore_linear b --ignore a -qbb -qbd --cubic bcd " +
+          "--interactions dde --interactions abcde",
+        Set(),
+        Map(
+          "ignore"        -> Set('a'),
+          "ignore_linear" -> Set('b'),
+          "quadratic"     -> Set('b', 'd'),
+          "cubic"         -> Set('b', 'c', 'd', 'e'),
+          "interactions"  -> Set('a', 'b', 'c', 'd', 'e')
+        )
+      )
+    )
+
+    assertEquals(exp, updated)
+  }
   // TODO: More VW argument augmentation tests!!!
 
 }

@@ -162,27 +162,37 @@ protected trait VwMultilabelParamAugmentation {
     Set("redefine", "stage_poly", "keep", "permutations")
 
   /**
-    * Use this to pad Regex instances ending in `\S+`.
-    * `findAllMatchesIn` finds non-overlapping matches.  Because of greediness
-    * in regex matching, the next character (if one exists) must be whitespace when
-    * a regex ends in `\S+`.
-    * @param s string representation of Regex to be left-padded w/ one whitespace.
-    * @return a whitespace left-padded version of `s`.
+    * This is the capture group containing the content when the regex has been
+    * padded with the pad function.
     */
-  private[this] def leftPad(s: String) = "\\s" + s
-  private[this] def pad(s: String) = "\\s" + s + "\\s"
+  private val CaptureGroupWithContent = 2
+
+
+  /**
+    * Pad the regular expression with a prefix and suffix that makes matching work.
+    * The prefix is `(^|\s)` and means the if there's a character preceding the main
+    * content in `s`, then that character should be whitespace.  The suffix is
+    * `(?=\s|$)` which means that if a character follows the main content matched by
+    * `s`, then that character should be whitespace '''AND''' ''that character should
+    * not'' be consumed by the Regex.  By allowing that character to be present for the
+    * next matching of a regex, it is consumable by the prefix of a regex padded with
+    * the `pad` function.
+    * @param s a string
+    * @return
+    */
+  private[this] def pad(s: String) = """(^|\s)""" + s + """(?=\s|$)"""
   private[this] val NumRegex            = """-?(\d+(\.\d*)?|\d*\.\d+)([eE][+-]?\d+)?"""
   private[this] val ClassCastMsg        = """(\S+) cannot be cast to (\S+)""".r
   private[this] val CsoaaRank           = pad("--csoaa_rank").r
   private[this] val WapOrCsoaa          = pad("""--(csoaa|wap)_ldf\s+(mc?)""").r
   private[this] val Quiet               = pad("--quiet").r
-  protected     val Ignore      : Regex = leftPad("""--ignore\s+(\S+)""").r
-  protected     val IgnoreLinear: Regex = leftPad("""--ignore_linear\s+(\S+)""").r
+  protected     val Ignore      : Regex = pad("""--ignore\s+(\S+)""").r
+  protected     val IgnoreLinear: Regex = pad("""--ignore_linear\s+(\S+)""").r
   private[this] val UnrecoverableFlags  = pad("--(" + UnrecoverableFlagSet.mkString("|") + ")").r
   private[this] val QuadraticsShort     = pad("""-q\s*([\S]{2})""").r
   private[this] val QuadraticsLong      = pad("""--quadratic\s+(\S{2})""").r
   private[this] val Cubics              = pad("""--cubic\s+(\S{3})""").r
-  private[this] val Interactions        = leftPad("""--interactions\s+(\S\S+)""").r
+  private[this] val Interactions        = pad("""--interactions\s+(\S{2,})""").r
   private[this] val NoConstant          = pad("""--noconstant""").r
   private[this] val ConstantShort       = pad("""-C\s*(""" + NumRegex + ")").r
   private[this] val ConstantLong        = pad("""--constant\s+(""" + NumRegex + ")").r
@@ -220,7 +230,8 @@ protected trait VwMultilabelParamAugmentation {
       }
     }
 
-    FlagsToRemove.foldLeft(padded)(replaceAll)
+//    FlagsToRemove.foldLeft(padded)(replaceAll)
+    FlagsToRemove.foldLeft(padded)((s, r) => r.replaceAllIn(s, " "))
   }
 
   protected def addParams(
@@ -290,7 +301,7 @@ protected trait VwMultilabelParamAugmentation {
     }
 
   protected def unrecoverableFlags(padded: String): Set[String] =
-    UnrecoverableFlags.findAllMatchIn(padded).map(m => m.group(1)).toSet
+    firstCaptureGroups(padded, UnrecoverableFlags).toSet
 
   protected def isQuiet(padded: String): Boolean = Quiet.findFirstIn(padded).nonEmpty
   protected def ignored(padded: String): VWNsSet = charsIn(Ignore, padded)
@@ -378,10 +389,10 @@ protected trait VwMultilabelParamAugmentation {
     * @return Iterator of the matches' first capture group.
     */
   protected def firstCaptureGroups(padded: String, regex: Regex): Iterator[String] =
-    regex.findAllMatchIn(padded).map(m => m.group(1))
+    regex.findAllMatchIn(padded).map(m => m.group(CaptureGroupWithContent))
 
   protected def charsIn(r: Regex, chrSeq: CharSequence): VWNsSet =
-    r.findAllMatchIn(chrSeq).flatMap(m => m.group(1).toCharArray).toSet
+    r.findAllMatchIn(chrSeq).flatMap(m => m.group(CaptureGroupWithContent).toCharArray).toSet
 
   private[multilabel] def toVwNsSet(nsNames: Set[String]): VWNsSet =
     nsNames.flatMap(_.take(1).toCharArray)
