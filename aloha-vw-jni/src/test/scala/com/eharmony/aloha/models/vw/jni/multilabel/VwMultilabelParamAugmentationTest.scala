@@ -67,6 +67,44 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
     }
   }
 
+  @Test def testNamespaceErrors(): Unit = {
+    val args = "--wap_ldf m --ignore_linear b --ignore a -qbb -qbd " +
+      "--cubic bcd --interactions dde --interactions abcde"
+    val updated = updatedVwParams(args, Set())
+
+    val exp = Left(
+      NamespaceError(
+        "--wap_ldf m --ignore_linear b --ignore a -qbb -qbd --cubic bcd " +
+          "--interactions dde --interactions abcde",
+        Set(),
+        Map(
+          "ignore"        -> Set('a'),
+          "ignore_linear" -> Set('b'),
+          "quadratic"     -> Set('b', 'd'),
+          "cubic"         -> Set('b', 'c', 'd', 'e'),
+          "interactions"  -> Set('a', 'b', 'c', 'd', 'e')
+        )
+      )
+    )
+
+    assertEquals(exp, updated)
+  }
+
+  @Test def testBadVwFlag(): Unit = {
+    val args = "--wap_ldf m --NO_A_VALID_VW_FLAG"
+
+    val exp = VwError(
+      args,
+      "--wap_ldf m --NO_A_VALID_VW_FLAG --noconstant --csoaa_rank --ignore y",
+      "unrecognised option '--NO_A_VALID_VW_FLAG'"
+    )
+
+    VwMultilabelModel.updatedVwParams(args, Set.empty) match {
+      case Left(e) => assertEquals(exp, e)
+      case _ => fail()
+    }
+  }
+
   @Test def testQuadraticCreation(): Unit = {
     val args = "--csoaa_ldf mc"
     val nss = Set("abc", "bcd")
@@ -201,30 +239,4 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
       case x => assertEquals("", x)
     }
   }
-
-  @Test def testNamespaceErrors(): Unit = {
-    val args = "--wap_ldf m --ignore_linear b --ignore a -qbb -qbd " +
-               "--cubic bcd --interactions dde --interactions abcde"
-    val updated = updatedVwParams(args, Set())
-
-
-    val exp = Left(
-      NamespaceError(
-        "--wap_ldf m --ignore_linear b --ignore a -qbb -qbd --cubic bcd " +
-          "--interactions dde --interactions abcde",
-        Set(),
-        Map(
-          "ignore"        -> Set('a'),
-          "ignore_linear" -> Set('b'),
-          "quadratic"     -> Set('b', 'd'),
-          "cubic"         -> Set('b', 'c', 'd', 'e'),
-          "interactions"  -> Set('a', 'b', 'c', 'd', 'e')
-        )
-      )
-    )
-
-    assertEquals(exp, updated)
-  }
-  // TODO: More VW argument augmentation tests!!!
-
 }

@@ -6,9 +6,8 @@ import com.eharmony.aloha.models.vw.jni.multilabel.VwSparseMultilabelPredictor.E
 import org.apache.commons.io.IOUtils
 import vowpalWabbit.learner.VWLearners
 
-import scala.annotation.tailrec
-import scala.util.{Failure, Success, Try}
 import scala.util.matching.Regex
+import scala.util.{Failure, Success, Try}
 
 
 /**
@@ -92,26 +91,30 @@ protected trait VwMultilabelParamAugmentation {
     *   NamespaceError
     * }
     *
-    * assert( updatedVwParams("", Set()) == Left(NotCsoaaOrWap("")) )
+    * assert( updatedVwParams("", Set())  ==  Left(NotCsoaaOrWap("")) )
     *
     * assert(
     *   updatedVwParams("--wap_ldf m -qaa", Set()) ==
-    *   Left(NamespaceError("--wap_ldf m -qaa",Set(),Map("quadratic" -> Set('a'))))
+    *   Left(NamespaceError("--wap_ldf m -qaa", Set(), Map("quadratic" -> Set('a'))))
     * )
     *
     * assert(
     *   updatedVwParams(
-    *     "--wap_ldf m --ignore a -qbb -qbd --cubic bcd --interactions dde",
+    *     "--wap_ldf m --ignore_linear b --ignore a -qbb -qbd " +
+            "--cubic bcd --interactions dde --interactions abcde",
     *     Set()
     *   ) ==
     *   Left(
     *     NamespaceError(
-    *       "--wap_ldf m --ignore a -qbb -qbd --cubic bcd --interactions dde",
+    *       "--wap_ldf m --ignore_linear b --ignore a -qbb -qbd --cubic bcd " +
+    *         "--interactions dde --interactions abcde",
     *       Set(),
     *       Map(
-    *         "ignore"    -> Set('a'),
-    *         "quadratic" -> Set('b'),
-    *         "cubic"     -> Set('b', 'c', 'd', 'e')
+    *         "ignore"        -> Set('a'),
+    *         "ignore_linear" -> Set('b'),
+    *         "quadratic"     -> Set('b', 'd'),
+    *         "cubic"         -> Set('b', 'c', 'd', 'e'),
+    *         "interactions"  -> Set('a', 'b', 'c', 'd', 'e')
     *       )
     *     )
     *   )
@@ -120,27 +123,27 @@ protected trait VwMultilabelParamAugmentation {
     *
     * @param vwParams current VW parameters passed to the VW JNI
     * @param namespaceNames it is assumed that `namespaceNames` is a superset
-    *                       of all of the namespaces referred to by any
+    *                       of all of the namespaces referred to by any flags
+    *                       found in `vwParams`.
     * @return
     */
   def updatedVwParams(vwParams: String, namespaceNames: Set[String]): Either[VwParamError, String] = {
-    val padded = s" ${vwParams.trim} "
-    lazy val unrecovFlags = unrecoverableFlags(padded)
+    lazy val unrecovFlags = unrecoverableFlags(vwParams)
 
-    if (WapOrCsoaa.findFirstMatchIn(padded).isEmpty)
+    if (WapOrCsoaa.findFirstMatchIn(vwParams).isEmpty)
       Left(NotCsoaaOrWap(vwParams))
     else if (unrecovFlags.nonEmpty)
       Left(UnrecoverableParams(vwParams, unrecovFlags))
     else {
-      val is = interactions(padded)
-      val i  = ignored(padded)
-      val il = ignoredLinear(padded)
+      val is = interactions(vwParams)
+      val i  = ignored(vwParams)
+      val il = ignoredLinear(vwParams)
 
       // This won't effect anything if the definition of UnrecoverableFlags contains
       // all of the flags referenced in the flagsRefMissingNss function.  If there
       // are flags referenced in flagsRefMissingNss but not in UnrecoverableFlags,
       // then this is a valid check.
-      val flagsRefMissingNss = flagsReferencingMissingNss(padded, namespaceNames, i, il, is)
+      val flagsRefMissingNss = flagsReferencingMissingNss(namespaceNames, i, il, is)
 
       if (flagsRefMissingNss.nonEmpty)
         Left(NamespaceError(vwParams, namespaceNames, flagsRefMissingNss))
@@ -148,7 +151,7 @@ protected trait VwMultilabelParamAugmentation {
         VwMultilabelRowCreator.determineLabelNamespaces(namespaceNames).fold(
           Left(LabelNamespaceError(vwParams, namespaceNames)): Either[VwParamError, String]
         ){ labelNs =>
-          val paramsWithoutRemoved = removeParams(padded)
+          val paramsWithoutRemoved = removeParams(vwParams)
           val updatedParams = addParams(paramsWithoutRemoved, namespaceNames, i, il, is, labelNs)
           validateVwParams(vwParams, updatedParams, !isQuiet(updatedParams))
         }
@@ -212,27 +215,11 @@ protected trait VwMultilabelParamAugmentation {
 
   /**
     * Remove flags (and options) for the flags listed in `FlagsToRemove`.
-    * @param padded a padded version of the params passed to `updateVwParams`.
+    * @param vwParams VW params passed to the `updatedVwParams` function.
     * @return
     */
-  protected def removeParams(padded: String): String = {
-    // r.replaceAllIn replaces non-overlapping matches.  Since multiple regular
-    // expressions begin or end with whitespace there can be a whitespace character
-    // that is part of two matches.  To accommodate this, replaceAll keeps replacing
-    // the matches with whitespace until an equilibrium is reached.  Once equilibrium
-    // is reached, move on to the next Regex.
-    @tailrec def replaceAll(s: String, r: Regex): String = {
-      // Replace the matches with whitespace.  Trim and pad to avoid stack overflows.
-      val str = s" ${r.replaceAllIn(s, " ").trim} "
-      str match {
-        case v if v == s => v
-        case v           => replaceAll(v, r)
-      }
-    }
-
-//    FlagsToRemove.foldLeft(padded)(replaceAll)
-    FlagsToRemove.foldLeft(padded)((s, r) => r.replaceAllIn(s, " "))
-  }
+  protected def removeParams(vwParams: String): String =
+    FlagsToRemove.foldLeft(vwParams)((s, r) => r.replaceAllIn(s, ""))
 
   protected def addParams(
       paramsAfterRemoved: String,
@@ -287,25 +274,25 @@ protected trait VwMultilabelParamAugmentation {
   /**
     * Get the set of interactions (encoded as Strings).  String length represents the
     * interaction arity.
-    * @param padded the padded version of the original parameters based to `updatedVwParams`.
+    * @param vwParams VW params passed to the `updatedVwParams` function.
     * @return
     */
-  protected def interactions(padded: String): Set[String] =
+  protected def interactions(vwParams: String): Set[String] =
     List(
       QuadraticsShort,
       QuadraticsLong,
       Cubics,
       Interactions
     ).foldLeft(Set.empty[String]){(is, r) =>
-      is ++ firstCaptureGroups(padded, r).map(s => s.sorted)
+      is ++ firstCaptureGroups(vwParams, r).map(s => s.sorted)
     }
 
-  protected def unrecoverableFlags(padded: String): Set[String] =
-    firstCaptureGroups(padded, UnrecoverableFlags).toSet
+  protected def unrecoverableFlags(vwParams: String): Set[String] =
+    firstCaptureGroups(vwParams, UnrecoverableFlags).toSet
 
-  protected def isQuiet(padded: String): Boolean = Quiet.findFirstIn(padded).nonEmpty
-  protected def ignored(padded: String): VWNsSet = charsIn(Ignore, padded)
-  protected def ignoredLinear(padded: String): VWNsSet = charsIn(IgnoreLinear, padded)
+  protected def isQuiet(vwParams: String): Boolean = Quiet.findFirstIn(vwParams).nonEmpty
+  protected def ignored(vwParams: String): VWNsSet = charsIn(Ignore, vwParams)
+  protected def ignoredLinear(vwParams: String): VWNsSet = charsIn(IgnoreLinear, vwParams)
 
   protected def handleClassCastException(
       orig: String,
@@ -318,7 +305,6 @@ protected trait VwMultilabelParamAugmentation {
     }
 
   protected def flagsReferencingMissingNss(
-      padded: String,
       namespaceNames: Set[String],
       i: VWNsSet,
       il: VWNsSet,
@@ -384,12 +370,12 @@ protected trait VwMultilabelParamAugmentation {
 
   /**
     * Find all of the regex matches and extract the first capture group from the match.
-    * @param padded the padded version of the original parameters based to `updatedVwParams`.
+    * @param vwParams VW params passed to the `updatedVwParams` function.
     * @param regex with at least one capture group (this is unchecked).
     * @return Iterator of the matches' first capture group.
     */
-  protected def firstCaptureGroups(padded: String, regex: Regex): Iterator[String] =
-    regex.findAllMatchIn(padded).map(m => m.group(CaptureGroupWithContent))
+  protected def firstCaptureGroups(vwParams: String, regex: Regex): Iterator[String] =
+    regex.findAllMatchIn(vwParams).map(m => m.group(CaptureGroupWithContent))
 
   protected def charsIn(r: Regex, chrSeq: CharSequence): VWNsSet =
     r.findAllMatchIn(chrSeq).flatMap(m => m.group(CaptureGroupWithContent).toCharArray).toSet
