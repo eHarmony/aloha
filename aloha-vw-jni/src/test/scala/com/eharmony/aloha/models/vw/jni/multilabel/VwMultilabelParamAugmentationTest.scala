@@ -90,6 +90,19 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
     assertEquals(exp, updated)
   }
 
+  @Test def testNoAvailableLabelNss(): Unit = {
+    // All namespaces taken.
+    val nss = (Char.MinValue to Char.MaxValue).map(_.toString).toSet
+    val validArgs = "--csoaa_ldf mc"
+
+    VwMultilabelModel.updatedVwParams(validArgs, nss) match {
+      case Left(LabelNamespaceError(orig, nssOut)) =>
+        assertEquals(validArgs, orig)
+        assertEquals(nss, nssOut)
+      case _ => fail()
+    }
+  }
+
   @Test def testBadVwFlag(): Unit = {
     val args = "--wap_ldf m --NO_A_VALID_VW_FLAG"
 

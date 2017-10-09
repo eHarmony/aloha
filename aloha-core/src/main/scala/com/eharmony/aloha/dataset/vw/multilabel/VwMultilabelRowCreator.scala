@@ -160,13 +160,14 @@ object VwMultilabelRowCreator {
     */
   private[multilabel] def bruteForceNsSearch(usedNss: sci.BitSet): Option[LabelNamespaces] = {
     val found =
-      Stream
-        .from(FirstValidCharacter)
+      Iterator
+        .range(Char.MinValue, Char.MaxValue)
         .filter(c => !(usedNss contains c) && validCharForNamespace(c.toChar))
         .take(2)
+        .toList
 
     found match {
-      case actual #:: dummy #:: Stream.Empty =>
+      case actual :: dummy :: Nil =>
         Option(LabelNamespaces(actual.toChar, dummy.toChar))
       case _ => None
     }
