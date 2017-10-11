@@ -121,33 +121,17 @@ class VwMultilabelModelTest {
     //  Prepare parameters for VW model that will be trained.
     // ------------------------------------------------------------------------------------
 
-
     val binaryVwModel = File.createTempFile("vw_", ".bin.model")
     binaryVwModel.deleteOnExit()
 
     val cacheFile = File.createTempFile("vw_", ".cache")
     cacheFile.deleteOnExit()
 
-    // probs / costs
-    //   --csoaa_ldf mc  vs  m
-    //   --csoaa_rank
-    //   --loss_function logistic  add this
-    //   --noconstant
-    //   --ignore_linear X
-    //   --ignore $dummyLabelNs
-    //  turn first order features into quadratics
-    //  turn quadratic features into cubics
-    //
-    val vwParams =
+    val origParams =
       s"""
          | --quiet
          | --csoaa_ldf mc
-         | --csoaa_rank
          | --loss_function logistic
-         | -q ${labelNs}X
-         | --noconstant
-         | --ignore_linear X
-         | --ignore $dummyLabelNs
          | -f ${binaryVwModel.getCanonicalPath}
          | --passes 50
          | --cache_file ${cacheFile.getCanonicalPath}
@@ -156,6 +140,10 @@ class VwMultilabelModelTest {
          | --decay_learning_rate 0.9
        """.stripMargin.trim.replaceAll("\n", " ")
 
+    val vwParams = VwMultilabelModel.updatedVwParams(origParams, Set("X")) fold (
+      e => throw new Exception(e.errorMessage),
+      ps => ps
+    )
 
     // ------------------------------------------------------------------------------------
     //  Train VW model

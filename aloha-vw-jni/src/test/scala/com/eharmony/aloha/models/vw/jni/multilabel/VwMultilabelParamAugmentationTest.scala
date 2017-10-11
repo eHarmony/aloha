@@ -22,7 +22,7 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
   @Test def testExpectedUnrecoverableFlags(): Unit = {
     assertEquals(
       "Unrecoverable flags has changed.",
-      Set("redefine", "stage_poly", "keep", "permutations"),
+      Set("redefine", "stage_poly", "keep", "permutations", "autolink"),
       UnrecoverableFlagSet
     )
   }

@@ -1,9 +1,11 @@
 package com.eharmony.aloha.models.vw.jni.multilabel
 
+import java.io.File
+
 import com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator
 import com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator.LabelNamespaces
 import com.eharmony.aloha.models.vw.jni.multilabel.VwSparseMultilabelPredictor.ExpectedLearner
-import org.apache.commons.io.IOUtils
+import org.apache.commons.io.{FileUtils, IOUtils}
 import vowpalWabbit.learner.VWLearners
 
 import scala.util.matching.Regex
@@ -45,6 +47,10 @@ protected trait VwMultilabelParamAugmentation {
       a. For each interaction term (`-q`, `--quadratic`, `--cubic`, `--interactions`), replace it
          with an interaction term also interacted with the label namespace.  This increases the
          arity of the interaction by 1.
+    1. Finally, change the flag options that reference files to point to temp files so that
+       VW doesn't change the files.  This may represent a problem if VW needs to read the file
+       in the option because although it should exist, it will be empty.
+    1. Let VW doing any validations it can.
     *
     * ==Success Examples==
     *
@@ -153,7 +159,13 @@ protected trait VwMultilabelParamAugmentation {
         ){ labelNs =>
           val paramsWithoutRemoved = removeParams(vwParams)
           val updatedParams = addParams(paramsWithoutRemoved, namespaceNames, i, il, is, labelNs)
-          validateVwParams(vwParams, updatedParams, !isQuiet(updatedParams))
+
+          val (finalParams, flagToFileMap) = replaceFileBasedFlags(updatedParams, FileBasedFlags)
+          val ps = validateVwParams(
+            vwParams, updatedParams, finalParams, flagToFileMap, !isQuiet(updatedParams)
+          )
+          flagToFileMap.values foreach FileUtils.deleteQuietly  // IO: Delete the files.
+          ps
         }
     }
   }
@@ -162,14 +174,25 @@ protected trait VwMultilabelParamAugmentation {
     * VW Flags automatically resulting in an error.
     */
   protected val UnrecoverableFlagSet: Set[String] =
-    Set("redefine", "stage_poly", "keep", "permutations")
+    Set("redefine", "stage_poly", "keep", "permutations", "autolink")
 
   /**
     * This is the capture group containing the content when the regex has been
     * padded with the pad function.
     */
-  private val CaptureGroupWithContent = 2
+  private[this] val CaptureGroupWithContent = 2
 
+  private[this] val FileBasedFlags = Set(
+    "-f", "--final_regressor",
+    "--readable_model",
+    "--invert_hash",
+    "--output_feature_regularizer_binary",
+    "--output_feature_regularizer_text",
+    "-p", "--predictions",
+    "-r", "--raw_predictions",
+    "-c", "--cache",
+    "--cache_file"
+  )
 
   /**
     * Pad the regular expression with a prefix and suffix that makes matching work.
@@ -199,6 +222,7 @@ protected trait VwMultilabelParamAugmentation {
   private[this] val NoConstant          = pad("""--noconstant""").r
   private[this] val ConstantShort       = pad("""-C\s*(""" + NumRegex + ")").r
   private[this] val ConstantLong        = pad("""--constant\s+(""" + NumRegex + ")").r
+
 
   private[this] val FlagsToRemove = Seq(
     QuadraticsShort,
@@ -257,6 +281,47 @@ protected trait VwMultilabelParamAugmentation {
     val additions = s" --noconstant --csoaa_rank $ig $igLin $quadratics $cubics $ints"
         .replaceAll("\\s+", " ")
     (paramsAfterRemoved.trim + additions).trim
+  }
+
+  /**
+    * VW will actually update / replace files if files appear as options to flags.  To overcome
+    * this, an attempt is made to detect flags referencing files and if found, replace the the
+    * files with temp files.  These files should be deleted before exiting the main program.
+    * @param updatedParams the parameters after the updates.
+    * @param flagsWithFiles the flag
+    * @return a tuple2 of the final string to try with VW for validation along with the mapping
+    *         from flag to file that was used.
+    */
+  protected def replaceFileBasedFlags(updatedParams: String, flagsWithFiles: Set[String]): (String, Map[String, File]) = {
+    // This is rather hairy function.
+
+    def flagRe(flags: Set[String], groupsForFlag: Int, c1: String, c2: String, c3: String) =
+      if (flags.nonEmpty)
+        Option(pad(flags.map(_ drop groupsForFlag).toVector.sorted.mkString(c1, c2, c3)).r)
+      else None
+
+    // Get short and long flags.
+    val shrt = flagsWithFiles.filter(s => s.startsWith("-") && 2 == s.length && s.charAt(1).isLetterOrDigit)
+    val lng = flagsWithFiles.filter(s => s.startsWith("--") && 2 < s.length)
+
+    val regexes = List(
+      flagRe(shrt, 1, "(-[", "", """])\s*(\S+)"""),
+      flagRe(lng,  2, "(--(", "|", """))\s+(\S+)""")
+    ).flatten
+
+    regexes.foldLeft((updatedParams, Map[String, File]())) { case ((ps, ffm), r) =>
+      // Fold right to not affect subsequent replacements.
+      r.findAllMatchIn(ps).foldRight((ps, ffm)) { case (m, (ps1, ffm1)) =>
+        val f = File.createTempFile("REPLACED_", "_FILE")
+        f.deleteOnExit() // Attempt to be safe here.
+
+        val flag = m.group(CaptureGroupWithContent)
+        val rep = s"$flag ${f.getCanonicalPath}"
+        val ps2 = ps1.take(m.start) + rep + ps1.drop(m.end)
+        val ffm2 = ffm1 + (flag -> f)
+        (ps2, ffm2)
+      }
+    }
   }
 
   protected def createLabelInteractions(
@@ -348,12 +413,15 @@ protected trait VwMultilabelParamAugmentation {
     }
   }
 
+  // TODO: Change file
   protected def validateVwParams(
       orig: String,
       mod: String,
+      finalPs: String,
+      flagToFileMap: Map[String, File],
       addQuiet: Boolean
   ): Either[VwParamError, String] = {
-    val ps = if (addQuiet) s"--quiet $mod" else mod
+    val ps = if (addQuiet) s"--quiet $finalPs" else finalPs
 
     Try { VWLearners.create[ExpectedLearner](ps) } match {
       case Success(m) =>
