@@ -1,5 +1,6 @@
 package com.eharmony.aloha.models.vw.jni.multilabel
 
+import com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -238,7 +239,7 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
     }
   }
 
-  @Test def interactionsWithSelf(): Unit = {
+  @Test def testInteractionsWithSelf(): Unit = {
     val nss = Set("a")
     val args = "--wap_ldf m -qaa --cubic aaa --interactions aaaa"
     val exp = "--wap_ldf m --noconstant --csoaa_rank --ignore y --ignore_linear a " +
@@ -252,4 +253,35 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
       case x => assertEquals("", x)
     }
   }
+
+  @Test def testClassLabels(): Unit = {
+    val args = "--wap_ldf m"
+    val nss = Set.empty[String]
+
+    VwMultilabelModel.updatedVwParams(args, nss) match {
+      case Left(_) => fail()
+      case Right(p) =>
+        val ignored =
+          VwMultilabelRowCreator.determineLabelNamespaces(nss) match {
+            case None => fail()
+            case Some(labelNs) =>
+              val ignoredNs =
+              Ignore
+                .findAllMatchIn(p)
+                .map(m => m.group(CaptureGroupWithContent))
+                .reduce(_ + _)
+                .toCharArray
+                .toSet
+
+              assertEquals(Set('y'), ignoredNs)
+              labelNs.labelNs
+          }
+
+        assertEquals('Y', ignored)
+    }
+  }
+}
+
+object VwMultilabelParamAugmentationTest {
+
 }

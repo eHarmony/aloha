@@ -180,7 +180,7 @@ protected trait VwMultilabelParamAugmentation {
     * This is the capture group containing the content when the regex has been
     * padded with the pad function.
     */
-  private[this] val CaptureGroupWithContent = 2
+  protected val CaptureGroupWithContent = 2
 
   private[this] val FileBasedFlags = Set(
     "-f", "--final_regressor",

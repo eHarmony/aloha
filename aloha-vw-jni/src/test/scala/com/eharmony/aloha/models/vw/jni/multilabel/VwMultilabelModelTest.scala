@@ -26,6 +26,7 @@ import spray.json.{DefaultJsonProtocol, JsonWriter, RootJsonFormat, pimpString}
 import vowpalWabbit.learner.{VWActionScoresLearner, VWLearners}
 
 import scala.annotation.tailrec
+import scala.collection.breakOut
 import scala.util.Random
 
 /**
@@ -117,6 +118,7 @@ class VwMultilabelModelTest {
       new VwMultilabelRowCreator.Producer[Dom, Lab](labelsInTrainingSet).
         getRowCreator(semantics, datasetJson).get
 
+
     // ------------------------------------------------------------------------------------
     //  Prepare parameters for VW model that will be trained.
     // ------------------------------------------------------------------------------------
@@ -140,10 +142,16 @@ class VwMultilabelModelTest {
          | --decay_learning_rate 0.9
        """.stripMargin.trim.replaceAll("\n", " ")
 
-    val vwParams = VwMultilabelModel.updatedVwParams(origParams, Set("X")) fold (
+    // Get the namespace names from the row creator.
+    val nsNames = rc.namespaces.map(_._1)(breakOut): Set[String]
+
+    // Take the parameters and augment with additional parameters to make
+    // multilabel w/ probabilities work correctly.
+    val vwParams = VwMultilabelModel.updatedVwParams(origParams, nsNames) fold (
       e => throw new Exception(e.errorMessage),
       ps => ps
     )
+
 
     // ------------------------------------------------------------------------------------
     //  Train VW model
@@ -155,6 +163,7 @@ class VwMultilabelModelTest {
       vwLearner.learn(x)
     }
     vwLearner.close()
+
 
     // ------------------------------------------------------------------------------------
     //  Create Aloha model JSON
@@ -179,6 +188,7 @@ class VwMultilabelModelTest {
     val factory = ModelFactory.defaultFactory(semantics, optAud)
     val modelTry = factory.fromString(modelJson.prettyPrint) // Use `.compactPrint` in prod.
     val model = modelTry.get
+
 
     // ------------------------------------------------------------------------------------
     //  Test Aloha Model
