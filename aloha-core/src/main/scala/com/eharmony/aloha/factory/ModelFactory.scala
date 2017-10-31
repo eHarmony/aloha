@@ -1,19 +1,17 @@
 package com.eharmony.aloha.factory
 
-import com.eharmony.aloha
 import com.eharmony.aloha.audit.{Auditor, MorphableAuditor}
 import com.eharmony.aloha.factory.ModelFactory.{InlineReader, ModelInlineReader, SubmodelInlineReader}
 import com.eharmony.aloha.factory.ex.{AlohaFactoryException, RecursiveModelDefinitionException}
 import com.eharmony.aloha.factory.jsext.JsValueExtensions
 import com.eharmony.aloha.factory.ri2jf.{RefInfoToJsonFormat, StdRefInfoToJsonFormat}
-import com.eharmony.aloha.io.{GZippedReadable, LocationLoggingReadable, ReadableByString}
 import com.eharmony.aloha.io.multiple.{MultipleAlohaReadable, SequenceMultipleReadable}
 import com.eharmony.aloha.io.sources.ReadableSource
+import com.eharmony.aloha.io.{GZippedReadable, LocationLoggingReadable, ReadableByString}
 import com.eharmony.aloha.models.{Model, Submodel}
-import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
+import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps, RuntimeClasspathScanning}
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.util.Logging
-import org.reflections.Reflections
 import spray.json.DefaultJsonProtocol.{StringJsonFormat, jsonFormat2, optionFormat}
 import spray.json.{CompactPrinter, JsObject, JsValue, JsonFormat, JsonReader, RootJsonFormat, pimpString}
 
@@ -268,7 +266,7 @@ case class ModelFactoryImpl[U, N, A, B <: U](
   }
 }
 
-object ModelFactory {
+object ModelFactory extends RuntimeClasspathScanning {
 
   /** Provides a default factory capable of producing models defined in aloha-core.  The list of models come from
     * the knownModelParsers method.
@@ -286,23 +284,7 @@ object ModelFactory {
   /** Get the list of models on the classpath with parsers that can be used by a model factory.
     * @return
     */
-  def knownModelParsers(): Seq[ModelParser] = {
-    val reflections = new Reflections(aloha.pkgName)
-    import scala.collection.JavaConversions.asScalaSet
-    val parserProviderCompanions = reflections.getSubTypesOf(classOf[ParserProviderCompanion]).toSeq
-
-    parserProviderCompanions.flatMap {
-      case ppc if ppc.getCanonicalName.endsWith("$") =>
-        Try {
-          val c = Class.forName(ppc.getCanonicalName.dropRight(1))
-          c.getMethod("parser").invoke(null) match {
-            case mp: ModelParser => mp
-            case _ => throw new IllegalStateException()
-          }
-        }.toOption
-      case _ => None
-    }
-  }
+  def knownModelParsers(): Seq[ModelParser] = scanObjects[ParserProviderCompanion, ModelParser]("parser")
 
   private[factory] sealed trait InlineReader[U, N, -A, +B <: U, Y] {
     def jsonReader(parser: ModelParser): Try[JsonReader[_ <: Y]]

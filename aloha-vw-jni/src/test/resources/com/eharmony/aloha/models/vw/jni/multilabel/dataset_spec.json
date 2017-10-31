@@ -1,0 +1,13 @@
+{
+  "imports": [
+    "com.eharmony.aloha.feature.BasicFunctions._"
+  ],
+  "features": [
+    { "name": "feature", "spec": "1" }
+  ],
+  "namespaces": [
+    { "name": "X", "features": [ "feature" ] }
+  ],
+  "normalizeFeatures": false,
+  "positiveLabels": "${labels_from_input}"
+}

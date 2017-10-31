@@ -3,15 +3,19 @@ package com.eharmony.aloha.dataset
 import java.lang.reflect.Modifier
 
 import com.eharmony.aloha
+import com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator
 import org.junit.Assert._
 import org.junit.{Ignore, Test}
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
+
 import scala.collection.JavaConversions.asScalaSet
 import org.reflections.Reflections
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class RowCreatorProducerTest {
+    import RowCreatorProducerTest._
+
     private[this] def scanPkg = aloha.pkgName + ".dataset"
 
     @Test def testAllRowCreatorProducersHaveOnlyZeroArgConstructors() {
@@ -20,9 +24,11 @@ class RowCreatorProducerTest {
         specProdClasses.foreach { clazz =>
             val cons = clazz.getConstructors
             assertTrue(s"There should only be one constructor for ${clazz.getCanonicalName}.  Found ${cons.length} constructors.", cons.length <= 1)
-            cons.headOption.foreach{ c =>
-                val nParams = c.getParameterTypes.length
-                assertEquals(s"The constructor for ${clazz.getCanonicalName} should take 0 arguments.  It takes $nParams.", 0, nParams)
+            cons.headOption.foreach { c =>
+                if (!(WhitelistedRowCreatorProducers contains clazz)) {
+                    val nParams = c.getParameterTypes.length
+                    assertEquals(s"The constructor for ${clazz.getCanonicalName} should take 0 arguments.  It takes $nParams.", 0, nParams)
+                }
             }
         }
     }
@@ -40,4 +46,10 @@ class RowCreatorProducerTest {
             assertTrue(s"${clazz.getCanonicalName} needs to be declared final.", Modifier.isFinal(clazz.getModifiers))
         }
     }
+}
+
+object RowCreatorProducerTest {
+    private val WhitelistedRowCreatorProducers = Set[Class[_]](
+        classOf[VwMultilabelRowCreator.Producer[_, _]]
+    )
 }

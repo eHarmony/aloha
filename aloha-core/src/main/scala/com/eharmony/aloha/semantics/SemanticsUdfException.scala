@@ -26,7 +26,7 @@ case class SemanticsUdfException[+A](
         input: A)
     extends AlohaException(SemanticsUdfException.getMessage(specification, accessorOutput, accessorsMissingOutput, accessorsInErr, input), cause)
 
-private object SemanticsUdfException {
+object SemanticsUdfException {
 
     /** This method guards against throwing exceptions.
       * @param specification a specification for the feature that produced an error.
@@ -38,7 +38,7 @@ private object SemanticsUdfException {
       * @tparam A type of input
       * @return
       */
-    def getMessage[A](
+    private def getMessage[A](
             specification: String,
             accessorOutput: Map[String, Try[Any]],
             accessorsMissingOutput: List[String],

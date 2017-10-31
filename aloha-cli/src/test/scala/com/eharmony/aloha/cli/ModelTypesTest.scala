@@ -28,7 +28,8 @@ class ModelTypesTest {
       "ModelDecisionTree",
       "Regression",
       "Segmentation",
-      "VwJNI"
+      "VwJNI",
+      "multilabel-sparse"
     )
 
     val actual = ModelFactory.defaultFactory(null, null).parsers.map(_.modelType).sorted
