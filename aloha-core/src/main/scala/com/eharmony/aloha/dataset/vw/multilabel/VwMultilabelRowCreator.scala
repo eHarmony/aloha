@@ -32,6 +32,14 @@ final case class VwMultilabelRowCreator[-A, K](
 
   @transient private[this] lazy val labelToInd = allLabelsInTrainingSet.zipWithIndex.toMap
 
+  // Precompute these for efficiency rather recompute than inside a hot loop.
+  // Notice these are not lazy vals.
+
+  private[this] val negativeDummyStr =
+    s"$NegDummyClassId:$NegativeCost |$dummyClassNs $NegativeDummyClassFeature"
+
+  private[this] val positiveDummyStr =
+    s"$PosDummyClassId:$PositiveCost |$dummyClassNs $PositiveDummyClassFeature"
 
   override def apply(a: A): (MissingAndErroneousFeatureInfo, Array[String]) = {
     val (missingAndErrs, features) = featuresFunction(a)
@@ -47,7 +55,8 @@ final case class VwMultilabelRowCreator[-A, K](
       defaultNamespace,
       namespaces,
       classNs,
-      dummyClassNs
+      negativeDummyStr,
+      positiveDummyStr
     )
 
     (missingAndErrs, x)
@@ -62,7 +71,7 @@ object VwMultilabelRowCreator {
     * dummy classes uses an ID outside of the allowable range of feature indices:
     * 2^32^.
     */
-  private[this] val NegDummyClassId = (Int.MaxValue.toLong + 1L).toString
+  private val NegDummyClassId = (Int.MaxValue.toLong + 1L).toString
 
   /**
     * VW allows long-based feature indices, but Aloha only allow's 32-bit indices
@@ -70,7 +79,7 @@ object VwMultilabelRowCreator {
     * dummy classes uses an ID outside of the allowable range of feature indices:
     * 2^32^ + 1.
     */
-  private[this] val PosDummyClassId = (Int.MaxValue.toLong + 2L).toString
+  private val PosDummyClassId = (Int.MaxValue.toLong + 2L).toString
 
   /**
     * Since VW CSOAA stands for '''COST''' ''Sensitive One Against All'', the
@@ -78,7 +87,7 @@ object VwMultilabelRowCreator {
     * As such, the ''reward'' of a positive example is designated to be one,
     * so the cost (or negative reward) is -1.
     */
-  private[this] val PositiveCost = (-1).toString
+  private val PositiveCost = (-1).toString
 
   /**
     * Since VW CSOAA stands for '''COST''' ''Sensitive One Against All'', the
@@ -86,12 +95,11 @@ object VwMultilabelRowCreator {
     * As such, the ''reward'' of a negative example is designated to be zero,
     * so the cost (or negative reward) is 0.
     */
-  private[this] val NegativeCost = 0.toString
+  private val NegativeCost = 0.toString
 
-  private[this] val PositiveDummyClassFeature = "P"
+  private val PositiveDummyClassFeature = "P"
 
-  private[this] val NegativeDummyClassFeature = "N"
-
+  private val NegativeDummyClassFeature = "N"
 
   /**
     * "shared" is a special keyword in VW multi-class (multi-row) format.
@@ -100,8 +108,6 @@ object VwMultilabelRowCreator {
     * '''NOTE''': The trailing space should be here.
     */
   private[this] val SharedFeatureIndicator = "shared" + " "
-
-  private[this] val FirstValidCharacter = 0 // Could probably be '0'.toInt
 
   private[this] val PreferredLabelNamespaces = Seq(('Y', 'y'), ('Z', 'z'), ('Λ', 'λ'))
 
@@ -173,7 +179,6 @@ object VwMultilabelRowCreator {
     }
   }
 
-
   /**
     * Produce a multi-line input to be consumed by the underlying ''CSOAA LDF'' VW model.
     * @param features (non-label dependent) features shared across all labels.
@@ -196,7 +201,8 @@ object VwMultilabelRowCreator {
       defaultNs: List[Int],
       namespaces: List[(String, List[Int])],
       classNs: Char,
-      dummyClassNs: Char
+      negativeDummyStr: String,
+      positiveDummyStr: String
   ): Array[String] = {
 
     val n = indices.size
@@ -213,9 +219,8 @@ object VwMultilabelRowCreator {
 
     // These string interpolations are computed over and over but will always be the same
     // for a given dummyClassNs.
-    // TODO: Precompute these in a class instance and pass in as parameters.
-    x(1) = s"$NegDummyClassId:$NegativeCost |$dummyClassNs $NegativeDummyClassFeature"
-    x(2) = s"$PosDummyClassId:$PositiveCost |$dummyClassNs $PositiveDummyClassFeature"
+    x(1) = negativeDummyStr
+    x(2) = positiveDummyStr
 
     // This is mutable because we want speed.
     var i = 0
@@ -230,7 +235,6 @@ object VwMultilabelRowCreator {
 
     x
   }
-
 
   /**
     * Produce a multi-line input to be consumed by the underlying ''CSOAA LDF'' VW model.
