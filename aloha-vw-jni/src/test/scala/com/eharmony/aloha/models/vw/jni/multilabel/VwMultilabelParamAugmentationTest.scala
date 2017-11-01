@@ -11,10 +11,11 @@ import org.junit.runners.BlockJUnit4ClassRunner
   */
 @RunWith(classOf[BlockJUnit4ClassRunner])
 class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
+  import VwMultilabelParamAugmentationTest._
 
   @Test def testNotCsoaaWap(): Unit = {
     val args = ""
-    VwMultilabelModel.updatedVwParams(args, Set.empty) match {
+    VwMultilabelModel.updatedVwParams(args, Set.empty, DefaultNumLabels) match {
       case Left(NotCsoaaOrWap(ps)) => assertEquals(args, ps)
       case _ => fail()
     }
@@ -30,7 +31,7 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
 
   @Test def testUnrecoverable(): Unit = {
     val unrec = UnrecoverableFlagSet.iterator.map { f =>
-      VwMultilabelModel.updatedVwParams(s"--csoaa_ldf mc --$f", Set.empty)
+      VwMultilabelModel.updatedVwParams(s"--csoaa_ldf mc --$f", Set.empty, DefaultNumLabels)
     }.toList
 
     unrec foreach {
@@ -47,7 +48,7 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
   @Test def testIgnoredNotInNsSet(): Unit = {
     val args = "--csoaa_ldf mc --ignore a"
     val origNss = Set.empty[String]
-    VwMultilabelModel.updatedVwParams(args, origNss) match {
+    VwMultilabelModel.updatedVwParams(args, origNss, DefaultNumLabels) match {
       case Left(NamespaceError(o, nss, bad)) =>
         assertEquals(args, o)
         assertEquals(origNss, nss)
@@ -59,7 +60,7 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
   @Test def testIgnoredNotInNsSet2(): Unit = {
     val args = "--csoaa_ldf mc --ignore ab"
     val origNss = Set("a")
-    VwMultilabelModel.updatedVwParams(args, origNss) match {
+    VwMultilabelModel.updatedVwParams(args, origNss, DefaultNumLabels) match {
       case Left(NamespaceError(o, nss, bad)) =>
         assertEquals(args, o)
         assertEquals(origNss, nss)
@@ -71,7 +72,7 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
   @Test def testNamespaceErrors(): Unit = {
     val args = "--wap_ldf m --ignore_linear b --ignore a -qbb -qbd " +
       "--cubic bcd --interactions dde --interactions abcde"
-    val updated = updatedVwParams(args, Set())
+    val updated = updatedVwParams(args, Set(), DefaultNumLabels)
 
     val exp = Left(
       NamespaceError(
@@ -96,7 +97,7 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
     val nss = (Char.MinValue to Char.MaxValue).map(_.toString).toSet
     val validArgs = "--csoaa_ldf mc"
 
-    VwMultilabelModel.updatedVwParams(validArgs, nss) match {
+    VwMultilabelModel.updatedVwParams(validArgs, nss, DefaultNumLabels) match {
       case Left(LabelNamespaceError(orig, nssOut)) =>
         assertEquals(validArgs, orig)
         assertEquals(nss, nssOut)
@@ -109,11 +110,11 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
 
     val exp = VwError(
       args,
-      "--wap_ldf m --NO_A_VALID_VW_FLAG --noconstant --csoaa_rank --ignore y",
+      s"--wap_ldf m --NO_A_VALID_VW_FLAG --noconstant --csoaa_rank $DefaultRingSize --ignore y",
       "unrecognised option '--NO_A_VALID_VW_FLAG'"
     )
 
-    VwMultilabelModel.updatedVwParams(args, Set.empty) match {
+    VwMultilabelModel.updatedVwParams(args, Set.empty, DefaultNumLabels) match {
       case Left(e) => assertEquals(exp, e)
       case _ => fail()
     }
@@ -124,9 +125,9 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
     val nss = Set("abc", "bcd")
 
     // Notice: ignore_linear and quadratics are in sorted order.
-    val exp  = "--csoaa_ldf mc --noconstant --csoaa_rank --ignore y " +
+    val exp  = s"--csoaa_ldf mc --noconstant --csoaa_rank $DefaultRingSize --ignore y " +
                "--ignore_linear ab -qYa -qYb"
-    VwMultilabelModel.updatedVwParams(args, nss) match {
+    VwMultilabelModel.updatedVwParams(args, nss, DefaultNumLabels) match {
       case Right(s) => assertEquals(exp, s)
       case _ => fail()
     }
@@ -137,10 +138,10 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
     val nss  = Set("abc", "bcd")
 
     // Notice: ignore_linear and quadratics are in sorted order.
-    val exp = "--csoaa_ldf mc --noconstant --csoaa_rank --ignore y " +
+    val exp = s"--csoaa_ldf mc --noconstant --csoaa_rank $DefaultRingSize --ignore y " +
               "--ignore_linear ab -qYb"
 
-    VwMultilabelModel.updatedVwParams(args, nss) match {
+    VwMultilabelModel.updatedVwParams(args, nss, DefaultNumLabels) match {
       case Right(s) => assertEquals(exp, s)
       case _ => fail()
     }
@@ -149,13 +150,13 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
   @Test def testCubicCreation(): Unit = {
     val args = "--csoaa_ldf mc -qab --quadratic cb"
     val nss  = Set("abc", "bcd", "cde", "def")
-    val exp  = "--csoaa_ldf mc --noconstant --csoaa_rank --ignore y " +
+    val exp  = s"--csoaa_ldf mc --noconstant --csoaa_rank $DefaultRingSize --ignore y " +
                "--ignore_linear abcd " +
                "-qYa -qYb -qYc -qYd " +
                "--cubic Yab --cubic Ybc"
 
     // Notice: ignore_linear and quadratics are in sorted order.
-    VwMultilabelModel.updatedVwParams(args, nss) match {
+    VwMultilabelModel.updatedVwParams(args, nss, DefaultNumLabels) match {
       case Right(s) => assertEquals(exp, s)
       case _ => fail()
     }
@@ -164,13 +165,13 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
   @Test def testCubicCreationIgnoredLinear(): Unit = {
     val args = "--csoaa_ldf mc -qab --quadratic cb --ignore_linear d"
     val nss  = Set("abc", "bcd", "cde", "def")
-    val exp  = "--csoaa_ldf mc --noconstant --csoaa_rank --ignore y " +
+    val exp  = s"--csoaa_ldf mc --noconstant --csoaa_rank $DefaultRingSize --ignore y " +
                "--ignore_linear abcd " +
                "-qYa -qYb -qYc " +
                "--cubic Yab --cubic Ybc"
 
     // Notice: ignore_linear and quadratics are in sorted order.
-    VwMultilabelModel.updatedVwParams(args, nss) match {
+    VwMultilabelModel.updatedVwParams(args, nss, DefaultNumLabels) match {
       case Right(s) => assertEquals(exp, s)
       case _ => fail()
     }
@@ -179,13 +180,13 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
   @Test def testCubicCreationIgnored(): Unit = {
     val args = "--csoaa_ldf mc -qab --quadratic cb --ignore c"
     val nss  = Set("abc", "bcd", "cde", "def")
-    val exp  = "--csoaa_ldf mc --noconstant --csoaa_rank --ignore cy " +
+    val exp  = s"--csoaa_ldf mc --noconstant --csoaa_rank $DefaultRingSize --ignore cy " +
                "--ignore_linear abd " +
                "-qYa -qYb -qYd " +
                "--cubic Yab"
 
     // Notice: ignore_linear and quadratics are in sorted order.
-    VwMultilabelModel.updatedVwParams(args, nss) match {
+    VwMultilabelModel.updatedVwParams(args, nss, DefaultNumLabels) match {
       case Right(s) => assertEquals(exp, s)
       case _ => fail()
     }
@@ -194,13 +195,13 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
   @Test def testCubicWithInteractionsCreationIgnored(): Unit = {
     val args = "--csoaa_ldf mc --interactions ab --interactions cb --ignore c --ignore d"
     val nss  = Set("abc", "bcd", "cde", "def")
-    val exp  = "--csoaa_ldf mc --noconstant --csoaa_rank --ignore cdy " +
+    val exp  = s"--csoaa_ldf mc --noconstant --csoaa_rank $DefaultRingSize --ignore cdy " +
                "--ignore_linear ab " +
                "-qYa -qYb " +
                "--cubic Yab"
 
     // Notice: ignore_linear and quadratics are in sorted order.
-    VwMultilabelModel.updatedVwParams(args, nss) match {
+    VwMultilabelModel.updatedVwParams(args, nss, DefaultNumLabels) match {
       case Right(s) => assertEquals(exp, s)
       case _ => fail()
     }
@@ -209,11 +210,11 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
   @Test def testHigherOrderInteractions(): Unit = {
     val args = "--csoaa_ldf mc --interactions abcd --ignore_linear abcd"
     val nss  = Set("abc", "bcd", "cde", "def")
-    val exp  = "--csoaa_ldf mc --noconstant --csoaa_rank --ignore y " +
+    val exp  = s"--csoaa_ldf mc --noconstant --csoaa_rank $DefaultRingSize --ignore y " +
                "--ignore_linear abcd " +
                "--interactions Yabcd"
 
-    VwMultilabelModel.updatedVwParams(args, nss) match {
+    VwMultilabelModel.updatedVwParams(args, nss, DefaultNumLabels) match {
       case Right(s) => assertEquals(exp, s)
       case _ => fail()
     }
@@ -225,7 +226,7 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
     val args = s"--csoaa_ldf mc --interactions ab --interactions abc " +
                 "--interactions abcd --interactions abcde"
 
-    val exp = "--csoaa_ldf mc --noconstant --csoaa_rank --ignore y " +
+    val exp = s"--csoaa_ldf mc --noconstant --csoaa_rank $DefaultRingSize --ignore y " +
               "--ignore_linear abcde " +
               "-qYa -qYb -qYc -qYd -qYe " +
               "--cubic Yab " +
@@ -233,7 +234,7 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
               "--interactions Yabcd " +
               "--interactions Yabcde"
 
-    VwMultilabelModel.updatedVwParams(args, nss) match {
+    VwMultilabelModel.updatedVwParams(args, nss, DefaultNumLabels) match {
       case Right(s) => assertEquals(exp, s)
       case _ => fail()
     }
@@ -242,13 +243,13 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
   @Test def testInteractionsWithSelf(): Unit = {
     val nss = Set("a")
     val args = "--wap_ldf m -qaa --cubic aaa --interactions aaaa"
-    val exp = "--wap_ldf m --noconstant --csoaa_rank --ignore y --ignore_linear a " +
+    val exp = s"--wap_ldf m --noconstant --csoaa_rank $DefaultRingSize --ignore y --ignore_linear a " +
               "-qYa " +
               "--cubic Yaa " +
               "--interactions Yaaa " +
               "--interactions Yaaaa"
 
-    VwMultilabelModel.updatedVwParams(args, nss) match {
+    VwMultilabelModel.updatedVwParams(args, nss, DefaultNumLabels) match {
       case Right(s) => assertEquals(exp, s)
       case x => assertEquals("", x)
     }
@@ -258,7 +259,7 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
     val args = "--wap_ldf m"
     val nss = Set.empty[String]
 
-    VwMultilabelModel.updatedVwParams(args, nss) match {
+    VwMultilabelModel.updatedVwParams(args, nss, DefaultNumLabels) match {
       case Left(_) => fail()
       case Right(p) =>
         val ignored =
@@ -283,5 +284,7 @@ class VwMultilabelParamAugmentationTest extends VwMultilabelParamAugmentation {
 }
 
 object VwMultilabelParamAugmentationTest {
-
+  val DefaultNumLabels = 0
+  val DefaultRingSize =
+    s"--ring_size ${DefaultNumLabels + VwSparseMultilabelPredictor.AddlVwRingSize}"
 }

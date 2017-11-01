@@ -147,7 +147,7 @@ class VwMultilabelModelTest {
 
     // Take the parameters and augment with additional parameters to make
     // multilabel w/ probabilities work correctly.
-    val vwParams = VwMultilabelModel.updatedVwParams(origParams, nsNames) fold (
+    val vwParams = VwMultilabelModel.updatedVwParams(origParams, nsNames, 2) fold (
       e => throw new Exception(e.errorMessage),
       ps => ps
     )
@@ -362,7 +362,7 @@ object VwMultilabelModelTest {
   private val LabelNamespaces(labelNs, dummyLabelNs) =
     VwMultilabelRowCreator.determineLabelNamespaces(Set.empty).get
 
-  private def vwTrainingParams(modelFile: File = tmpFile()) = {
+  private def vwTrainingParams(modelFile: File) = {
 
     // NOTES:
     //  1. `--csoaa_rank`  is needed by VW to make a VWActionScoresLearner.

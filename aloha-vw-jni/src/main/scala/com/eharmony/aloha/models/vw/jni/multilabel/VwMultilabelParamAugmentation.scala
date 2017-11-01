@@ -131,9 +131,16 @@ protected trait VwMultilabelParamAugmentation {
     * @param namespaceNames it is assumed that `namespaceNames` is a superset
     *                       of all of the namespaces referred to by any flags
     *                       found in `vwParams`.
+    * @param numUniqueLabels the number of unique labels in the training set.
+    *                        This is used to calculate the appropriate VW
+    *                        `ring_size` parameter.
     * @return
     */
-  def updatedVwParams(vwParams: String, namespaceNames: Set[String]): Either[VwParamError, String] = {
+  def updatedVwParams(
+      vwParams: String,
+      namespaceNames: Set[String],
+      numUniqueLabels: Int
+  ): Either[VwParamError, String] = {
     lazy val unrecovFlags = unrecoverableFlags(vwParams)
 
     if (WapOrCsoaa.findFirstMatchIn(vwParams).isEmpty)
@@ -158,9 +165,11 @@ protected trait VwMultilabelParamAugmentation {
           Left(LabelNamespaceError(vwParams, namespaceNames)): Either[VwParamError, String]
         ){ labelNs =>
           val paramsWithoutRemoved = removeParams(vwParams)
-          val updatedParams = addParams(paramsWithoutRemoved, namespaceNames, i, il, is, labelNs)
+          val updatedParams =
+            addParams(paramsWithoutRemoved, namespaceNames, i, il, is, labelNs, numUniqueLabels)
 
           val (finalParams, flagToFileMap) = replaceFileBasedFlags(updatedParams, FileBasedFlags)
+
           val ps = validateVwParams(
             vwParams, updatedParams, finalParams, flagToFileMap, !isQuiet(updatedParams)
           )
@@ -223,7 +232,6 @@ protected trait VwMultilabelParamAugmentation {
   private[this] val ConstantShort       = pad("""-C\s*(""" + NumRegex + ")").r
   private[this] val ConstantLong        = pad("""--constant\s+(""" + NumRegex + ")").r
 
-
   private[this] val FlagsToRemove = Seq(
     QuadraticsShort,
     QuadraticsLong,
@@ -251,7 +259,8 @@ protected trait VwMultilabelParamAugmentation {
       oldIgnored: VWNsSet,
       oldIgnoredLinear: VWNsSet,
       oldInteractions: Set[String],
-      labelNs: LabelNamespaces
+      labelNs: LabelNamespaces,
+      numUniqueLabels: Int
   ): String = {
     val i = oldIgnored + labelNs.dummyLabelNs
 
@@ -274,11 +283,13 @@ protected trait VwMultilabelParamAugmentation {
     val ints = hos.toSeq.sorted.map(ho => s"--interactions $ho").mkString(" ")
     val igLin = if (il.nonEmpty) il.toSeq.sorted.mkString("--ignore_linear ", "", "") else ""
 
+    val rs = s"--ring_size ${numUniqueLabels + VwSparseMultilabelPredictor.AddlVwRingSize}"
+
     // This is non-empty b/c i is non-empty.
     val ig = s"--ignore ${i.mkString("")}"
 
     // Consolidate whitespace because there shouldn't be whitespace in these flags' options.
-    val additions = s" --noconstant --csoaa_rank $ig $igLin $quadratics $cubics $ints"
+    val additions = s" --noconstant --csoaa_rank $rs $ig $igLin $quadratics $cubics $ints"
         .replaceAll("\\s+", " ")
     (paramsAfterRemoved.trim + additions).trim
   }
