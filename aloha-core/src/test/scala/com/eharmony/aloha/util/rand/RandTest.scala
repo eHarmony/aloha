@@ -2,8 +2,8 @@ package com.eharmony.aloha.util.rand
 
 import java.util.Random
 
-import org.junit.Assert.assertEquals
 import org.junit.Test
+import org.junit.Assert.fail
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 
@@ -20,46 +20,88 @@ class RandTest extends Rand {
   import RandTest._
 
   @Test def testSampleCombinationProbabilities(): Unit = {
-    val trials = 20
-    val maxN = 5
-    val r = new Random(0x105923abdd8L)
+    val failures = findFailures(
+      trials     = 25,
+      maxN       = 6,
+      minSamples = 1000,
+      maxSamples = 10000,
+      seed       = 0
+    )
+    
+    reportFailures(failures)
+  }
 
-    val results = Iterator.fill(trials){
+  private def findFailures(trials: Int, maxN: Int, minSamples: Int, maxSamples: Int, seed: Long) = {
+    val r = new Random(seed)
+
+    Iterator.fill(trials){
       val initSeed = r.nextLong()
-      val samples = 1000 + r.nextInt(9001)
+      val samples = minSamples + r.nextInt(maxSamples - minSamples + 1)
       val n = r.nextInt(maxN + 1)
       val k = r.nextInt(n + 1)
-      val sd = samplingDist(initSeed, samples, n, k)
-      (samples, n, k, sd)
+      (initSeed, samples, n, k)
+    } flatMap { case (initSeed, samples, n, k) =>
+      val dist = samplingDist(initSeed, samples, n, k)
+      checkDistributionUniformity(samples, n, k, dist).toIterable
     }
+  }
 
-    checkResult(results)
+  private def reportFailures[A](failures: Iterator[TestFailure[A]]): Unit = {
+    if (failures.nonEmpty) {
+      val errMsg =
+        failures.foldLeft(""){ case (msg, TestFailure(samples, n, k, fails, dist)) =>
+
+          val thisFail =
+            s"For (n: $n, k: $k, samples: $samples), produced distribution: $dist. Failures:" +
+              fails.mkString("\n\t", "\n\t", "\n\n")
+
+          msg + thisFail
+        }
+      fail(errMsg)
+    }
   }
 
   /**
     * For any `n` and `k`, `choose(n, k)` states should be sampled with uniform probability.
-    * @param results different `numSamples`, `n`, `k`, and ''sample probabilities'' for
-    *                each state sampled.
+    * @param samples number of samples drawn
+    * @param n number of objects from which to choose.
+    * @param k number of elements drawn from the `n` objects.
+    * @param dist distribution created from `samples` ''samples''.
     * @tparam A type of random variable.
+    * @return a potential error.
     */
-  private def checkResult[A](results: Iterator[(NumSamples, N, K, Distribution[A])]): Unit = {
-    results.foreach { case (samples, n, k, statesAndProbs) =>
-      // This can be driven down by increasing `samples`.
-      // This is proportional to 1 / sqrt(samples).
-      // So, if samples is 10000, this is about 10%.
-      val pctDiffFromExpPr = 100 * (10 / math.sqrt(samples))
+  private def checkDistributionUniformity[A](
+      samples: Int,
+      n: Int,
+      k: Int,
+      dist: Distribution[A]
+  ): Option[TestFailure[A]] = {
 
-      val expStates = choose(n, k)
-      val expPr = 1d / expStates
+    val expStates = choose(n, k)
+    val expPr = 1d / expStates
 
-      // Check that all states are sampled.
-      assertEquals(expStates, statesAndProbs.size)
+    // This can be driven down by increasing `samples`.
+    // This is proportional to 1 / sqrt(samples).
+    // So, if samples is 10000, this is about 10%.
+    val pctDiffFromExpPr = 100 * (10 / math.sqrt(samples))
+    val delta = expPr * (pctDiffFromExpPr / 100)
 
-      statesAndProbs.foreach { case (state, pr) =>
-        // Check probabilities are within reason.
-        assertEquals(s"for key '$state'", expPr, pr, expPr * (pctDiffFromExpPr / 100))
+    // Check that all states are sampled.
+    val allStates =
+      if (expStates == dist.size)
+        List.empty[FailureReason]
+      else List(MissingStates(expStates.toInt, dist.size))
+
+    val errors =
+      dist.foldRight(allStates){ case ((state, pr), errs) =>
+        if (math.abs(expPr - pr) < delta)
+          errs
+        else WrongProbability(state, expPr, pr, delta) :: errs
       }
-    }
+
+    if (errors.isEmpty)
+      None
+    else Option(TestFailure(samples, n, k, errors, dist))
   }
 
   private def samplingDist(initSeed: Long, samples: Int, n: Int, k: Int): Distribution[String] =
@@ -91,7 +133,15 @@ class RandTest extends Rand {
 
 object RandTest {
   private type NumSamples = Int
-  private type N = Int
-  private type K = Int
   private type Distribution[A] = Map[A, Double]
+
+  private sealed trait FailureReason
+  private final case class MissingStates(expected: Int, actual: Int) extends FailureReason {
+    override def toString = s"States missing. Expected $expected states. Found $actual."
+  }
+
+  private final case class WrongProbability[A](state: A, expected: Double, actual: Double, delta: Double) extends FailureReason {
+    override def toString = s"Incorrect probability for state $state. Expected pr = $expected +- $delta. Found pr = $actual."
+  }
+  private final case class TestFailure[A](samples: Int, n: Int, k: Int, failures: Seq[FailureReason], dist: Distribution[A])
 }
