@@ -77,7 +77,6 @@ class RandTest extends Rand {
     else {
       val errorMsg =
         failures.foldLeft(""){ case (msg, TestFailure(samples, n, k, fails, dist)) =>
-
           val thisFail =
             s"For (n: $n, k: $k, samples: $samples), produced distribution: $dist. Failures:" +
               fails.mkString("\n\t", "\n\t", "\n\n")
@@ -85,7 +84,7 @@ class RandTest extends Rand {
           msg + thisFail
         }
 
-      Option(errorMsg)
+      Option(errorMsg.trim)
     }
   }
 
@@ -141,7 +140,14 @@ class RandTest extends Rand {
     val samplesAndSeed =
       (1 to samples)
         .foldLeft((Map.empty[String, Int], seed)){ case ((m, s), _) =>
+
+          // This is the sampling method whose uniformity is being tested.
           val (ind, newSeed) = sampleCombination(n, k, s)
+
+          // It is important to sort here because order shouldn't matter since these
+          // samples are to be treated as sets, not sequences.  By contract,
+          // `sampleCombinations` doesn't guarantee a particular ordering but the
+          // results are returned in an array (for computational efficiency).
           val key = ind.sorted.mkString(",")
           val updatedMap = m + (key -> (m.getOrElse(key, 0) + 1))
           (updatedMap, newSeed)
