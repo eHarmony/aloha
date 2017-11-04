@@ -29,20 +29,11 @@ class RandTest extends Rand {
     )
 
     val failureMsg = allFailuresMsg(failures)
-    reportFailureIfPresent(failureMsg)
+    failureMsg foreach fail
   }
 
   /**
-    * Produce junit failure if necessary.  ('''IMPURE''')
-    * @param failureMsg A failure message that when empty, will cause the tests to fail.
-    */
-  private def reportFailureIfPresent(failureMsg: String): Unit = {
-    if (failureMsg.nonEmpty)
-      fail(failureMsg)
-  }
-
-  /**
-    * Sets up the sampling scenarios.  ('''IMPURE''')
+    * Sets up the sampling scenarios.
     * @param trials number of trials to run.
     * @param maxN maximum N value
     * @param minSamples minimum number of samples to draw per trial.
@@ -55,34 +46,46 @@ class RandTest extends Rand {
       maxN: Int,
       minSamples: Int,
       maxSamples: Int,
-      seed: Long): Iterator[SamplingScenario] = {
-    val r = new Random(seed)
+      seed: Long): Seq[SamplingScenario] = {
 
-    Iterator.fill(trials){
-      val initSeed = r.nextLong()
-      val samples = minSamples + r.nextInt(maxSamples - minSamples + 1)
-      val n = r.nextInt(maxN + 1)
-      val k = r.nextInt(n + 1)
-      SamplingScenario(initSeed, samples, n, k)
-    }
+    // Get the scenarios eagerly to avoid carrying around the PRNG.
+    // If there was stateless "randomness", this could be non-strict.
+    val (scenarios, _) =
+      (1 to trials).foldLeft((List.empty[SamplingScenario], new Random(seed))){
+        case ((ss, r), _) =>
+          val initSeed = r.nextLong()
+          val samples = minSamples + r.nextInt(maxSamples - minSamples + 1)
+          val n = r.nextInt(maxN + 1)
+          val k = r.nextInt(n + 1)
+          (SamplingScenario(initSeed, samples, n, k) :: ss, r)
+      }
+
+    scenarios
   }
 
   private def findFailures(trials: Int, maxN: Int, minSamples: Int, maxSamples: Int, seed: Long) = {
-    samplingScenarios(trials, maxN, minSamples, maxSamples, seed).flatMap {
+    samplingScenarios(trials, maxN, minSamples, maxSamples, seed).iterator.flatMap {
       case SamplingScenario(initSeed, samples, n, k) =>
         val dist = samplingDist(initSeed, samples, n, k)
         checkDistributionUniformity(samples, n, k, dist).toIterable
     }
   }
 
-  private def allFailuresMsg[A](failures: Iterator[TestFailure[A]]): String = {
-    failures.foldLeft(""){ case (msg, TestFailure(samples, n, k, fails, dist)) =>
+  private def allFailuresMsg[A](failures: Iterator[TestFailure[A]]): Option[String] = {
+    if (failures.isEmpty)
+      None
+    else {
+      val errorMsg =
+        failures.foldLeft(""){ case (msg, TestFailure(samples, n, k, fails, dist)) =>
 
-      val thisFail =
-        s"For (n: $n, k: $k, samples: $samples), produced distribution: $dist. Failures:" +
-          fails.mkString("\n\t", "\n\t", "\n\n")
+          val thisFail =
+            s"For (n: $n, k: $k, samples: $samples), produced distribution: $dist. Failures:" +
+              fails.mkString("\n\t", "\n\t", "\n\n")
 
-      msg + thisFail
+          msg + thisFail
+        }
+
+      Option(errorMsg)
     }
   }
 
