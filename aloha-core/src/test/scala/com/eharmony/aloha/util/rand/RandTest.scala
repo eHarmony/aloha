@@ -46,7 +46,7 @@ class RandTest extends Rand {
       maxN: Int,
       minSamples: Int,
       maxSamples: Int,
-      seed: Long): Seq[SamplingScenario] = {
+      seed: Long): List[SamplingScenario] = {
 
     // Get the scenarios eagerly to avoid carrying around the PRNG.
     // If there was stateless "randomness", this could be non-strict.
