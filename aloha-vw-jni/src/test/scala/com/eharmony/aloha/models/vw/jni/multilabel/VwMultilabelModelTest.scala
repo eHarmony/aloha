@@ -135,7 +135,7 @@ class VwMultilabelModelTest {
          | --csoaa_ldf mc
          | --loss_function logistic
          | -f ${binaryVwModel.getCanonicalPath}
-         | --passes 50
+         | --passes 40
          | --cache_file ${cacheFile.getCanonicalPath}
          | --holdout_off
          | --learning_rate 5

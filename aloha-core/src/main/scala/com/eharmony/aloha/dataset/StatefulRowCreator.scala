@@ -36,14 +36,53 @@ trait StatefulRowCreator[-A, +B, @specialized(Int, Float, Long, Double) S] exten
     * applications, the state will come from the state generated in the output of the
     * previous application of `apply(A, S)`.
     *
-    * @param as Note the first element of `as` will be forced in this method in order
+    * ''This variant of mapping with state is'' '''non-strict''', so if that's a requirement,
+    * prefer this function over the `mapSeqWithState` variant.  Note that first this method
+    * to work, the first element is computed eagerly.
+    *
+    * To verify non-strictness, this method could be rewritten as:
+    *
+    * {{{
+    * def statefulMap[A, B, S](as: Iterator[A], s: S)
+    *                         (f: (A, S) => (B, S)): Iterator[(B, S)] = {
+    *   if (as.isEmpty)
+    *     Iterator.empty
+    *   else {
+    *     val firstA = as.next()
+    *     val initEl = f(firstA, s)
+    *     as.scanLeft(initEl){ case ((_, newS), a) => f(a, newS) }
+    *   }
+    * }
+    * }}}
+    *
+    * Then using the method, it's easy to verify non-strictness:
+    *
+    * {{{
+    * // cycleModulo4 and res are infinite.
+    * val cycleModulo4 = Iterator.iterate(0)(s => (s + 1) % 4)
+    * val res = statefulMap(cycleModulo4, 0)((a, s) => ((a + s).toDouble, s + 1))
+    *
+    * // returns:
+    * res.take(8)
+    *    .map(_._1)
+    *    .toVector
+    *    .groupBy(identity)
+    *    .mapValues(_.size)
+    *    .toVector
+    *    .sorted
+    *    .foreach(println)
+    *
+    * res.size // never returns
+    * }}}
+    *
+    * @param as Note the first element of `as` ''will be forced'' in this method in order
     *           to construct the output.
     * @param state the initial state to use at the start of the iterator.
-    * @return an iterator containing the a mapped to a
+    * @return an iterator containing the `a` mapped to a
     *         `(MissingAndErroneousFeatureInfo, Option[B])` along with the resulting
     *         state that is created in the process.
     */
-  def apply(as: Iterator[A], state: S): Iterator[((MissingAndErroneousFeatureInfo, Option[B]), S)] = {
+  def mapIteratorWithState(as: Iterator[A], state: S): Iterator[((MissingAndErroneousFeatureInfo, Option[B]), S)] = {
     if (as.isEmpty)
       Iterator.empty
     else {
@@ -58,17 +97,23 @@ trait StatefulRowCreator[-A, +B, @specialized(Int, Float, Long, Double) S] exten
   }
 
   /**
-    * Apply the `apply(A, S)` method to the elements of the Vector.  In the first
+    * Apply the `apply(A, S)` method to the elements of the sequence.  In the first
     * application of `apply(A, S)`, `state` will be used as the state.  In subsequent
     * applications, the state will come from the state generated in the output of the
     * previous application of `apply(A, S)`.
+    *
+    * ''This variant of mapping with state is'' '''strict'''.
+    *
+    * '''NOTE''': This method isn't really parallelizable via chunking.  The way to
+    * parallelize this method is to provide a separate starting state for each unit
+    * of parallelism.
     *
     * @param as input to map.
     * @param state the initial state to use at the start of the Vector.
     * @return a Tuple2 where the first element is a vector of results and the second
     *         element is the resulting state.
     */
-  def apply(as: Vector[A], state: S): (Vector[(MissingAndErroneousFeatureInfo, Option[B])], S) = {
+  def mapSeqWithState(as: Seq[A], state: S): (Vector[(MissingAndErroneousFeatureInfo, Option[B])], S) = {
     as.foldLeft((Vector.empty[(MissingAndErroneousFeatureInfo, Option[B])], state)){
       case ((bs, s), a) =>
         val (b, newS) = apply(a, s)

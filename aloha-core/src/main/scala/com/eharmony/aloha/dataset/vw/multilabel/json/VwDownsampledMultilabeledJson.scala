@@ -22,8 +22,14 @@ final case class VwDownsampledMultilabeledJson(
     namespaces: Option[Seq[Namespace]] = Some(Nil),
     normalizeFeatures: Option[Boolean] = Some(false),
     positiveLabels: String,
-    numDownsampledNegLabels: Int
-) extends VwJsonLike
+    numDownsampledNegLabels: Short
+) extends VwJsonLike {
+
+  require(
+    0 < numDownsampledNegLabels,
+    s"numDownsampledNegLabels must be positive, found $numDownsampledNegLabels"
+  )
+}
 
 object VwDownsampledMultilabeledJson extends DefaultJsonProtocol {
   implicit val vwDownsampledMultilabeledJson: RootJsonFormat[VwDownsampledMultilabeledJson] =

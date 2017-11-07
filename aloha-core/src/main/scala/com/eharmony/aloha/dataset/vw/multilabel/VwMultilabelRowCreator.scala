@@ -15,7 +15,25 @@ import scala.collection.{breakOut, immutable => sci}
 import scala.util.Try
 
 /**
-  * Created by ryan.deak on 9/13/17.
+  * Creates training data for multilabel models in Vowpal Wabbit's CSOAA LDF and WAP LDF format
+  * for the JNI.
+  *
+  * @param allLabelsInTrainingSet all labels in the training set.  This is a sequence because
+  *                               order matters.  Order here can be chosen arbitrarily, but it
+  *                               must be consistent in the training and test formulation.
+  * @param featuresFunction features to extract from the data of type `A`.
+  * @param defaultNamespace list of feature indices in the default VW namespace.
+  * @param namespaces a mapping from VW namespace name to feature indices in that namespace.
+  * @param normalizer can modify VW output (currently unused)
+  * @param positiveLabelsFunction A method that can extract positive class labels.
+  * @param classNs the namespace name for class information.
+  * @param dummyClassNs the namespace name for dummy class information.  2 dummy classes are
+  *                     added to make the predicted probabilities work.
+  * @param includeZeroValues include zero values in VW input?
+  * @tparam A the input type
+  * @tparam K the label or class type
+  * @author deaktator
+  * @since 9/13/2017
   */
 final case class VwMultilabelRowCreator[-A, K](
     allLabelsInTrainingSet: sci.IndexedSeq[K],
@@ -88,16 +106,15 @@ object VwMultilabelRowCreator extends Rand {
   /**
     * Since VW CSOAA stands for '''COST''' ''Sensitive One Against All'', the
     * dependent variable is based on cost (which is the negative of reward).
-    * As such, the ''reward'' of a positive example is designated to be one,
-    * so the cost (or negative reward) is -1.
+    * As such, the ''reward'' of a positive example is designated to be zero.
     */
   private[multilabel] val PositiveCost = 0
 
   /**
     * Since VW CSOAA stands for '''COST''' ''Sensitive One Against All'', the
     * dependent variable is based on cost (which is the negative of reward).
-    * As such, the ''reward'' of a negative example is designated to be zero,
-    * so the cost (or negative reward) is 0.
+    * As such, the ''reward'' of a negative example is designated to be -1,
+    * so the cost (or negative reward) is 1.
     */
   private[multilabel] val NegativeCost = 1
 

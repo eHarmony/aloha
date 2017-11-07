@@ -9,7 +9,7 @@ package com.eharmony.aloha.util.rand
 private[aloha] trait Rand {
 
   type Seed = Long
-  type Index = Short
+  type Index = Int
 
   /**
     * Perform the initial scramble.  This should be called '''''once''''' on the initial
@@ -55,7 +55,7 @@ private[aloha] trait Rand {
     - [[http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/6-b14/java/util/Random.java grepcode for Random]]
     - [[https://en.wikipedia.org/wiki/Linear_congruential_generator Linear congruential generator (Wikipedia)]]
     *
-    * @param n population size (< 2^15^).
+    * @param n population size (< 2^31^).
     * @param k combination size (< 2^15^).
     * @param seed the seed to use for random selection
     * @return a tuple 2 containing the array of 0-based indices representing
@@ -67,7 +67,7 @@ private[aloha] trait Rand {
     //       object creation is important.
 
     if (n <= k) {
-      ((0 until n).map(i => i.toShort).toArray, seed)
+      ((0 until n).toArray, seed)
     }
     else {
       var i = k + 1
@@ -77,7 +77,7 @@ private[aloha] trait Rand {
       var value = 0
 
       // Fill reservoir with the first k indices.
-      val reservoir = (0 until k).map(i => i.toShort).toArray
+      val reservoir = (0 until k).toArray
 
       // Loop over the rest of the indices outside the reservoir and determine if
       // swapping should occur.  If so, swap the index in the reservoir with the

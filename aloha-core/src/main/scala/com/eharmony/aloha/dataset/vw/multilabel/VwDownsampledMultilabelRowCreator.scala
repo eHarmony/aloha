@@ -18,21 +18,48 @@ import scala.util.Try
 
 
 /**
-  * Created by ryan.deak on 11/6/17.
+  * Creates training data for multilabel models in Vowpal Wabbit's CSOAA LDF and WAP LDF format
+  * for the JNI.  In this row creator, negative labels are downsampled and costs for the
+  * downsampled labels are adjusted to produced an unbiased estimator.  It is assumed that
+  * negative labels are in the majority. Downsampling negatives can improve both training
+  * time and possibly model performance.  See the following resources for intuition:
   *
-  * @param allLabelsInTrainingSet
-  * @param featuresFunction
-  * @param defaultNamespace
-  * @param namespaces
-  * @param normalizer
-  * @param positiveLabelsFunction
-  * @param classNs
-  * @param dummyClassNs
-  * @param numDownsampledLabels
+  - [[https://www3.nd.edu/~nchawla/papers/SPRINGER05.pdf Chawla, Nitesh V. "Data mining for
+      imbalanced datasets: An overview." Data mining and knowledge discovery handbook.
+      Springer US, 2009. 875-886.]]
+  - [[https://www3.nd.edu/~dial/publications/chawla2004editorial.pdf Chawla, Nitesh V., Nathalie
+      Japkowicz, and Aleksander Kotcz. "Special issue on learning from imbalanced data sets."
+      ACM SIGKDD Explorations Newsletter 6.1 (2004): 1-6.]]
+  - [[http://www.marcoaltini.com/blog/dealing-with-imbalanced-data-undersampling-oversampling-and-proper-cross-validation
+      Dealing with imbalanced data: undersampling, oversampling, and proper cross validation,
+      Marco Altini, Aug 17, 2015.]]
+  *
+  * This row creator, since it is stateful, requires the caller to maintain state.  If however,
+  * it is only called via an iterator or sequence, then this row creator can maintain the state
+  * during iteration over the iterator or sequence.  In the case of iterators, the mapping is
+  * '''non-strict''' and in the case of sequences (`Seq`), it is '''strict'''.
+  *
+  * @param allLabelsInTrainingSet all labels in the training set.  This is a sequence because
+  *                               order matters.  Order here can be chosen arbitrarily, but it
+  *                               must be consistent in the training and test formulation.
+  * @param featuresFunction features to extract from the data of type `A`.
+  * @param defaultNamespace list of feature indices in the default VW namespace.
+  * @param namespaces a mapping from VW namespace name to feature indices in that namespace.
+  * @param normalizer can modify VW output (currently unused)
+  * @param positiveLabelsFunction A method that can extract positive class labels.
+  * @param classNs the namespace name for class information.
+  * @param dummyClassNs the namespace name for dummy class information.  2 dummy classes are
+  *                     added to make the predicted probabilities work.
+  * @param numDownsampledNegLabels '''a positive value''' representing the number of negative
+  *                                labels to include in each row.  If this is less than the
+  *                                number of negative examples for a given row, then no
+  *                                downsampling of negatives will take place.
   * @param initialSeed a way to start off randomness
   * @param includeZeroValues include zero values in VW input?
-  * @tparam A
-  * @tparam K
+  * @tparam A the input type
+  * @tparam K the label or class type
+  * @author deaktator
+  * @since 11/6/2017
   */
 final case class VwDownsampledMultilabelRowCreator[-A, K](
     allLabelsInTrainingSet: sci.IndexedSeq[K],
@@ -43,15 +70,22 @@ final case class VwDownsampledMultilabelRowCreator[-A, K](
     positiveLabelsFunction: GenAggFunc[A, sci.IndexedSeq[K]],
     classNs: Char,
     dummyClassNs: Char,
-    numDownsampledLabels: Int,
+    numDownsampledNegLabels: Short,
     initialSeed: () => Long,
     includeZeroValues: Boolean = false
 ) extends StatefulRowCreator[A, Array[String], Long]
      with Logging {
 
+  require(
+    0 < numDownsampledNegLabels,
+    s"numDownsampledNegLabels must be positive, found $numDownsampledNegLabels"
+  )
+
   import VwDownsampledMultilabelRowCreator._
 
   @transient private[this] lazy val labelToInd = allLabelsInTrainingSet.zipWithIndex.toMap
+
+  // Precomputed for efficiency.
 
   private[this] val negativeDummyStr =
     s"$NegDummyClassId:$NegativeCost |$dummyClassNs $NegativeDummyClassFeature"
@@ -61,7 +95,6 @@ final case class VwDownsampledMultilabelRowCreator[-A, K](
 
   /**
     * Some initial state that can be used on the very first call to `apply(A, S)`.
-    *
     * @return some state.
     */
   @transient override lazy val initialState: Long = {
@@ -69,7 +102,7 @@ final case class VwDownsampledMultilabelRowCreator[-A, K](
     val seed = initialSeed()
 
     // For logging.  Try to get time as close as possible to calling initialSeed.
-    // Note: There's a good chance this will differ.
+    // Note: There's a very good chance this will differ.
     val time       = System.nanoTime()
     val ip         = java.net.InetAddress.getLocalHost.getHostAddress
     val thread     = Thread.currentThread()
@@ -87,10 +120,10 @@ final case class VwDownsampledMultilabelRowCreator[-A, K](
   }
 
   /**
-    * Given an `a` and some `state`, produce output, including a new state.
+    * Given an `a` and some `seed`, produce output, including a new seed.
     *
     * When using this function, the user is responsible for keeping track of,
-    * and providing the state.
+    * and providing the seeds.
     *
     * The implementation of this function should be referentially transparent.
     *
@@ -103,11 +136,32 @@ final case class VwDownsampledMultilabelRowCreator[-A, K](
   override def apply(a: A, seed: Long): ((MissingAndErroneousFeatureInfo, Option[Array[String]]), Long) = {
     val (missingAndErrs, features) = featuresFunction(a)
 
+    // Get the lazy val once.
+    val labToInd = labelToInd
+
+    // TODO: This seems like it could be optimized.
+    // The positiveLabelsFunction is invoked once and all labels are produced.
+    // Then a set is produced that is used to partition all of the labels in
+    // the training data into positive and negative.  It seems like a slightly
+    // more efficient way to do this would be to create a sorted array of positives
+    // indices.  Then a negative index array could be constructed with the appropriate
+    // size based on the size of allLabelsInTrainingSet and the size of the positives
+    // array.  Next allLabelsInTrainingSet.indices and the positiveIndices array could
+    // be iterated over simultaneously and if the current index in
+    // allLabelsInTrainingSet.indices isn't in the positiveIndices array, then it must
+    // be in the negativeIndices array.  Then then offsets into the two arrays are
+    // incremented.  Both the current and proposed algorithms are O(N), where
+    // N = allLabelsInTrainingSet.indices.size.  But the proposed algorithm would likely
+    // have much better constant factors.
+    //
+    // Note that labels produced by positiveLabelsFunction that are not in the
+    // allLabelsInTrainingSet are discarded without notice.
+    //
     // TODO: Should this be sci.BitSet?
     val positiveIndices: Set[Int] =
-      positiveLabelsFunction(a).flatMap { y => labelToInd.get(y).toSeq }(breakOut)
+      positiveLabelsFunction(a).flatMap { y => labToInd.get(y).toSeq }(breakOut)
 
-    val (x, newSeed) = sampledTrainingInput(
+    val (vwInput, newSeed) = sampledTrainingInput(
       features,
       allLabelsInTrainingSet.indices,
       positiveIndices,
@@ -118,18 +172,45 @@ final case class VwDownsampledMultilabelRowCreator[-A, K](
       negativeDummyStr,
       positiveDummyStr,
       seed,
-      numDownsampledLabels
+      numDownsampledNegLabels
     )
 
-    ((missingAndErrs, Option(x)), newSeed)
+    ((missingAndErrs, Option(vwInput)), newSeed)
   }
 }
 
 
 object VwDownsampledMultilabelRowCreator extends Rand {
 
+  // Expose initSeedScramble to companion class.
   private def scramble(initSeed: Long): Long = initSeedScramble(initSeed)
 
+  /**
+    *
+    * '''This should not be used directly.''' ''It is exposed for testing.''
+    *
+    * @param features the common features produced
+    * @param indices indices of all labels in the training set.
+    * @param positiveLabelIndices indices of labels in the training set that positive are
+    *                             positive for this training example
+    * @param defaultNs list of feature indices in the default VW namespace.
+    * @param namespaces a mapping from VW namespace name to feature indices in that namespace.
+    * @param classNs the namespace name for class information.
+    * @param dummyClassNs the namespace name for dummy class information.  2 dummy classes are
+    *                     added to make the predicted probabilities work.
+    * @param negativeDummyStr line in VW input associated with the negative dummy class.
+    * @param positiveDummyStr line in VW input associated with the positive dummy class.
+    * @param seed a seed for randomness.  The second part of the output of this function is a
+    *             new seed that should be used on the next call to this function.
+    * @param numNegLabelsTarget the desired number of negative labels.  If it is determined
+    *                           that there are less negative labels than desired, no negative
+    *                           label downsampling will occur; otherwise, the negative labels
+    *                           will be downsampled to this target value.
+    * @return an array representing the VW input that can either be passed directly to the
+    *         VW JNI library, or `mkString("", "\n", "\n")` can be called to pass to the VW
+    *         CLI.  The second part of the return value is a new seed to use as the `seed`
+    *         parameter in the next call to this function.
+    */
   private[multilabel] def sampledTrainingInput(
       features: IndexedSeq[Sparse],
       indices: sci.IndexedSeq[Int],
@@ -141,12 +222,13 @@ object VwDownsampledMultilabelRowCreator extends Rand {
       negativeDummyStr: String,
       positiveDummyStr: String,
       seed: Long,
-      numNegLabelsTarget: Int
+      numNegLabelsTarget: Short
   ): (Array[String], Long) = {
 
     // Partition into positive and negative indices.
     val (posLabelInd, negLabelInd) = indices.partition(positiveLabelIndices)
     val negLabels = negLabelInd.size
+
     val numDownsampledLabels = math.min(numNegLabelsTarget, negLabels)
 
     // Sample indices in negLabelInd to use in the output.
@@ -159,14 +241,14 @@ object VwDownsampledMultilabelRowCreator extends Rand {
     // This code is written with knowledge of the constant's value.
     // TODO: Write calling code to abstract over costs so knowledge of the costs isn't necessary.
     val negWt =
-      if (negLabels <= numNegLabelsTarget) {
+      if (numDownsampledLabels == negLabels) {
         // No downsampling occurs.
         NegativeCost.toString
       }
       else {
         // Determine the weight for the downsampled negatives.
-        // If the cost for positive examples is 0, and negative examples have cost 1,
-        // the weight will be in the interval (NegativeCost, Infinity).
+        // If the cost of negative examples is positive, then the weight will be
+        // strictly greater than .
 
         f"${NegativeCost * negLabels / n.toDouble}%.5g"
       }

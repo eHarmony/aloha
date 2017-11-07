@@ -43,7 +43,7 @@ class VwMultilabelDownsampledModelTest {
     val optAud = OptionAuditor[Map[Lab, Double]]()
 
     // 10 passes over the data, sampling the negatives.
-    val repetitions = 10
+    val repetitions = 8
 
 
     // ------------------------------------------------------------------------------------
@@ -101,10 +101,10 @@ class VwMultilabelDownsampledModelTest {
 
     val origParams =
       s"""
-         | -P 2.0
+         | --quiet
          | --cache_file ${cacheFile.getCanonicalPath}
          | --holdout_off
-         | --passes 50
+         | --passes 10
          | --learning_rate 5
          | --decay_learning_rate 0.9
          | --csoaa_ldf mc
@@ -126,15 +126,16 @@ class VwMultilabelDownsampledModelTest {
     //  Train VW model
     // ------------------------------------------------------------------------------------
 
-    // Get the iterator of the examples produced.
-    val examples = rc(trainingSet.iterator, rc.initialState) collect {
+    // Get the iterator of the examples produced.  This is similar to what one may do
+    // within a `mapPartitions` in Spark.
+    val examples = rc.mapIteratorWithState(trainingSet.iterator, rc.initialState) collect {
       case ((_, Some(x)), _) => x
     }
 
     val vwLearner = VWLearners.create[VWActionScoresLearner](vwParams)
 
-    examples foreach { x =>
-      vwLearner.learn(x)
+    examples foreach { yx =>
+      vwLearner.learn(yx)
     }
 
     vwLearner.close()
