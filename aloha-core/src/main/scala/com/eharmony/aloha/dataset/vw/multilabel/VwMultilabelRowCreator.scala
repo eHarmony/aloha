@@ -1,6 +1,5 @@
 package com.eharmony.aloha.dataset.vw.multilabel
 
-import com.eharmony.aloha.AlohaException
 import com.eharmony.aloha.dataset._
 import com.eharmony.aloha.dataset.density.Sparse
 import com.eharmony.aloha.dataset.vw.VwCovariateProducer
@@ -9,10 +8,11 @@ import com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator
 import com.eharmony.aloha.reflect.RefInfo
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.func.GenAggFunc
+import com.eharmony.aloha.util.rand.Rand
 import spray.json.JsValue
 
 import scala.collection.{breakOut, immutable => sci}
-import scala.util.{Failure, Success, Try}
+import scala.util.Try
 
 /**
   * Created by ryan.deak on 9/13/17.
@@ -26,8 +26,8 @@ final case class VwMultilabelRowCreator[-A, K](
     positiveLabelsFunction: GenAggFunc[A, sci.IndexedSeq[K]],
     classNs: Char,
     dummyClassNs: Char,
-    includeZeroValues: Boolean = false
-) extends RowCreator[A, Array[String]] {
+    includeZeroValues: Boolean = false)
+extends RowCreator[A, Array[String]] {
   import VwMultilabelRowCreator._
 
   @transient private[this] lazy val labelToInd = allLabelsInTrainingSet.zipWithIndex.toMap
@@ -63,7 +63,7 @@ final case class VwMultilabelRowCreator[-A, K](
   }
 }
 
-object VwMultilabelRowCreator {
+object VwMultilabelRowCreator extends Rand {
 
   /**
     * VW allows long-based feature indices, but Aloha only allow's 32-bit indices
@@ -71,7 +71,7 @@ object VwMultilabelRowCreator {
     * dummy classes uses an ID outside of the allowable range of feature indices:
     * 2^32^.
     */
-  private val NegDummyClassId = (Int.MaxValue.toLong + 1L).toString
+  private[multilabel] val NegDummyClassId = (Int.MaxValue.toLong + 1L).toString
 
   /**
     * VW allows long-based feature indices, but Aloha only allow's 32-bit indices
@@ -79,7 +79,11 @@ object VwMultilabelRowCreator {
     * dummy classes uses an ID outside of the allowable range of feature indices:
     * 2^32^ + 1.
     */
-  private val PosDummyClassId = (Int.MaxValue.toLong + 2L).toString
+  private[multilabel] val PosDummyClassId = (Int.MaxValue.toLong + 2L).toString
+
+  // NOTE: If PositiveCost and NegativeCost change,
+  //       VwDownsampledMultilabledRowCreator.sampledTrainingInput
+  //       will also need to change.
 
   /**
     * Since VW CSOAA stands for '''COST''' ''Sensitive One Against All'', the
@@ -87,7 +91,7 @@ object VwMultilabelRowCreator {
     * As such, the ''reward'' of a positive example is designated to be one,
     * so the cost (or negative reward) is -1.
     */
-  private val PositiveCost = (-1).toString
+  private[multilabel] val PositiveCost = 0
 
   /**
     * Since VW CSOAA stands for '''COST''' ''Sensitive One Against All'', the
@@ -95,11 +99,11 @@ object VwMultilabelRowCreator {
     * As such, the ''reward'' of a negative example is designated to be zero,
     * so the cost (or negative reward) is 0.
     */
-  private val NegativeCost = 0.toString
+  private[multilabel] val NegativeCost = 1
 
-  private val PositiveDummyClassFeature = "P"
+  private[multilabel] val PositiveDummyClassFeature = "P"
 
-  private val NegativeDummyClassFeature = "N"
+  private[multilabel] val NegativeDummyClassFeature = "N"
 
   /**
     * "shared" is a special keyword in VW multi-class (multi-row) format.
@@ -107,7 +111,7 @@ object VwMultilabelRowCreator {
     *
     * '''NOTE''': The trailing space should be here.
     */
-  private[this] val SharedFeatureIndicator = "shared" + " "
+  private[multilabel] val SharedFeatureIndicator = "shared" + " "
 
   private[this] val PreferredLabelNamespaces = Seq(('Y', 'y'), ('Z', 'z'), ('Λ', 'λ'))
 
@@ -191,10 +195,12 @@ object VwMultilabelRowCreator {
     * @param namespaces the indices into `features` that should be associated with each
     *                   namespace.
     * @param classNs a namespace for features associated with class labels
-    * @param dummyClassNs a namespace for features associated with dummy class labels
+    * // @param dummyClassNs a namespace for features associated with dummy class labels
+    * @param negativeDummyStr
+    * @param positiveDummyStr
     * @return an array to be passed directly to an underlying `VWActionScoresLearner`.
     */
-  private[aloha] def trainingInput(
+  private[multilabel] def trainingInput(
       features: IndexedSeq[Sparse],
       indices: sci.IndexedSeq[Int],
       positiveLabelIndices: Int => Boolean,
@@ -222,7 +228,8 @@ object VwMultilabelRowCreator {
     x(1) = negativeDummyStr
     x(2) = positiveDummyStr
 
-    // This is mutable because we want speed.
+    // vvvvv  This is mutable because we want speed.  vvvvv
+
     var i = 0
     while (i < n) {
       val labelInd = indices(i)
@@ -276,7 +283,6 @@ object VwMultilabelRowCreator {
     x
   }
 
-
   /**
     * A producer that can produce a [[VwMultilabelRowCreator]].
     * The requirement for [[RowCreatorProducer]] to only have zero-argument constructors is
@@ -294,7 +300,8 @@ object VwMultilabelRowCreator {
     * @tparam K the label type.
     */
   final class Producer[A, K: RefInfo](allLabelsInTrainingSet: sci.IndexedSeq[K])
-      extends RowCreatorProducer[A, Array[String], VwMultilabelRowCreator[A, K]]
+      extends PositiveLabelsFunction[A, K]
+         with RowCreatorProducer[A, Array[String], VwMultilabelRowCreator[A, K]]
          with RowCreatorProducerName
          with VwCovariateProducer[A]
          with DvProducer
@@ -305,8 +312,8 @@ object VwMultilabelRowCreator {
 
     /**
       * Attempt to parse the JSON AST to an intermediate representation that is used
-      *
-      * @param json
+      * to create the row creator.
+      * @param json JSON AST.
       * @return
       */
     override def parse(json: JsValue): Try[VwMultilabeledJson] =
@@ -319,42 +326,24 @@ object VwMultilabelRowCreator {
       * @param jsonSpec  a JSON specification to transform into a RowCreator.
       * @return
       */
-    override def getRowCreator(semantics: CompiledSemantics[A], jsonSpec: VwMultilabeledJson): Try[VwMultilabelRowCreator[A, K]] = {
+    override def getRowCreator(
+        semantics: CompiledSemantics[A],
+        jsonSpec: VwMultilabeledJson
+    ): Try[VwMultilabelRowCreator[A, K]] = {
       val (covariates, default, nss, normalizer) = getVwData(semantics, jsonSpec)
 
-      val spec = for {
-        cov <- covariates
-        pos <- positiveLabelsFn(semantics, jsonSpec.positiveLabels)
-        labelNs <- labelNamespaces(nss)
+      val rc = for {
+        cov          <- covariates
+        pos          <- positiveLabelsFn(semantics, jsonSpec.positiveLabels)
+        labelNs      <- labelNamespaces(nss)
         actualLabelNs = labelNs.labelNs
-        dummyLabelNs = labelNs.dummyLabelNs
-        sem = addStringImplicitsToSemantics(semantics, jsonSpec.imports)
+        dummyLabelNs  = labelNs.dummyLabelNs
+        sem           = addStringImplicitsToSemantics(semantics, jsonSpec.imports)
       } yield new VwMultilabelRowCreator[A, K](allLabelsInTrainingSet, cov, default, nss,
                                                normalizer, pos, actualLabelNs, dummyLabelNs)
 
-      spec
+      rc
     }
-
-    private[multilabel] def labelNamespaces(nss: List[(String, List[Int])]): Try[LabelNamespaces] = {
-      val nsNames: Set[String] = nss.map(_._1)(breakOut)
-      determineLabelNamespaces(nsNames) match {
-        case Some(ns) => Success(ns)
-
-        // If there are so many VW namespaces that all available Unicode characters are taken,
-        // then a memory error will probably already have occurred.
-        case None => Failure(new AlohaException(
-          "Could not find any Unicode characters to as VW namespaces. Namespaces provided: " +
-          nsNames.mkString(", ")
-        ))
-      }
-    }
-
-    private[multilabel] def positiveLabelsFn(
-        semantics: CompiledSemantics[A],
-        positiveLabels: String
-    ): Try[GenAggFunc[A, sci.IndexedSeq[K]]] =
-      getDv[A, sci.IndexedSeq[K]](
-        semantics, "positiveLabels", Option(positiveLabels), Option(Vector.empty[K]))
   }
 
   private[aloha] final case class LabelNamespaces(labelNs: Char, dummyLabelNs: Char)

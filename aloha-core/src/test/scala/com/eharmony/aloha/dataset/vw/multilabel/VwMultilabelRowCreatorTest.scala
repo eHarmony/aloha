@@ -104,7 +104,7 @@ class VwMultilabelRowCreatorTest {
 
     val suffix =
       expectedResults.zipWithIndex map { case (isPos, i) =>
-        s"$i:${if (isPos) -1 else 0} |$labelNs _$i"
+        s"$i:${if (isPos) PosVal else NegVal} |$labelNs _$i"
       }
 
     assertEquals(prefix, actualResults.take(prefix.size).toSeq)
@@ -132,8 +132,8 @@ object VwMultilabelRowCreatorTest {
   private val LabelsInTrainingSet = Vector("zero", "one", "two")
   private val NegDummyClass = Int.MaxValue.toLong + 1
   private val PosDummyClass = NegDummyClass + 1
-  private val PosVal = -1
-  private val NegVal = 0
+  private val PosVal = 0
+  private val NegVal = 1
   private val X = Map.empty[String, Any]
   private val SharedPrefix = "shared "
 
@@ -175,11 +175,10 @@ object VwMultilabelRowCreatorTest {
   // the features (and dummy class definitions) in MultilabelDatasetJson are invariant to
   // the input.
   private[aloha] val MultilabelOutputPrefix = Seq(
-    "shared |ns1 f1 |ns2 f2", // due to definition of features and namespaces.
-    "2147483648:0 |y N",      // negative dummy class
-    "2147483649:-1 |y P"      // positive dummy class
+    "shared |ns1 f1 |ns2 f2",    // due to definition of features and namespaces.
+    s"2147483648:$NegVal |y N",  // negative dummy class
+    s"2147483649:$PosVal |y P"   // positive dummy class
   )
-
 
   private def output(out: (MissingAndErroneousFeatureInfo, Array[String])) = out._2
 

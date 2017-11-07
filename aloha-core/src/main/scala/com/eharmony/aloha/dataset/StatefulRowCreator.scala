@@ -6,7 +6,7 @@ package com.eharmony.aloha.dataset
   *
   * Created by ryan.deak on 11/2/17.
   */
-trait StatefulRowCreator[-A, +B, S] extends Serializable {
+trait StatefulRowCreator[-A, +B, @specialized(Int, Float, Long, Double) S] extends Serializable {
 
   /**
     * Some initial state that can be used on the very first call to `apply(A, S)`.

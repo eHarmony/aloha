@@ -453,8 +453,6 @@ object VwMultilabelModelTest {
       labelsInTrainingSet: Vector[K],
       labelsOfInterest: Option[String] = None) = {
 
-//    implicit val vecWriter = vectorFormat(DefaultJsonProtocol.lift(implicitly[JsonWriter[K]]))
-
     val loi = labelsOfInterest.fold(""){ f =>
       val escaped = f.replaceAll("\"", "\\\"")
       s""""labelsOfInterest": "$escaped",\n"""
