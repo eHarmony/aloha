@@ -37,7 +37,7 @@ trait StatefulRowCreator[-A, +B, @specialized(Int, Float, Long, Double) S] exten
     * previous application of `apply(A, S)`.
     *
     * ''This variant of mapping with state is'' '''non-strict''', so if that's a requirement,
-    * prefer this function over the `mapSeqWithState` variant.  Note that first this method
+    * prefer this function over the `mapSeqWithState` variant.  Note that for this method
     * to work, the first element is computed eagerly.
     *
     * To verify non-strictness, this method could be rewritten as:
@@ -83,7 +83,7 @@ trait StatefulRowCreator[-A, +B, @specialized(Int, Float, Long, Double) S] exten
     *         state that is created in the process.
     */
   def mapIteratorWithState(as: Iterator[A], state: S): Iterator[((MissingAndErroneousFeatureInfo, Option[B]), S)] = {
-    if (as.isEmpty)
+    if (as.hasNext)
       Iterator.empty
     else {
       // Force the first A.  Then apply the `apply` transformation to get
