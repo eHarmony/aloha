@@ -28,6 +28,7 @@ class ModelTypesTest {
       "ModelDecisionTree",
       "Regression",
       "Segmentation",
+      "SparseMultilabel",
       "VwJNI"
     )
 

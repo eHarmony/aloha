@@ -219,7 +219,8 @@ object VwJniModel
 
   object Parser extends ModelSubmodelParsingPlugin
                    with EitherHelpers
-                   with RegFeatureCompiler { self =>
+                   with RegFeatureCompiler
+                   with Namespaces { self =>
 
     val modelType = "VwJNI"
 
@@ -239,21 +240,13 @@ object VwJniModel
             case Right(featureMap) =>
               val (names, functions) = featureMap.toIndexedSeq.unzip
 
-              val indices = featureMap.unzip._1.view.zipWithIndex.toMap
-              val nssRaw = vw.namespaces.getOrElse(sci.ListMap.empty)
-              val nss = nssRaw.map { case (ns, fs) =>
-                val fi = fs.flatMap { f =>
-                  val oInd = indices.get(f)
-                  if (oInd.isEmpty) info(s"Ignoring feature '$f' in namespace '$ns'.  Not in the feature list.")
-                  oInd
-                }.toList
-                (ns, fi)
-              }.toList
+              val (nss, defaultNs, missing) =
+                allNamespaceIndices(names, vw.namespaces.getOrElse(sci.ListMap.empty))
+
+              if (missing.nonEmpty)
+                info(s"Ignoring features in namespaces not in feature list: $missing")
 
               val vwParams = vw.vw.params.fold("")(_.fold(_.mkString(" "), x => x)).trim
-
-              val defaultNs = (indices.keySet -- (Set.empty[String] /: nssRaw)(_ ++ _._2)).flatMap(indices.get).toList
-
               val learnerCreator = LearnerCreator[N](vw.classLabels, vw.spline, vwParams)
 
               VwJniModel(

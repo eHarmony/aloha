@@ -1,5 +1,6 @@
 package com.eharmony.aloha.models.reg
 
+import com.eharmony.aloha.dataset.density.Sparse
 import com.eharmony.aloha.semantics.func.GenAggFunc
 
 import scala.collection.{immutable => sci, mutable => scm}
@@ -20,7 +21,7 @@ trait RegressionFeatures[-A] {
     /**
      * Parallel to featureNames.  This is the sequence of functions that extract data from the input value.
      */
-    protected[this] val featureFunctions: sci.IndexedSeq[GenAggFunc[A, Iterable[(String, Double)]]]
+    protected[this] val featureFunctions: sci.IndexedSeq[GenAggFunc[A, Sparse]]
 
     /**
      * A threshold dictating how many missing features to allow before making the prediction fail.  None means
@@ -66,7 +67,7 @@ trait RegressionFeatures[-A] {
      *           1 the map of bad features to the missing values in the raw data that were needed to compute the feature
      *           1 whether the amount of missing data is acceptable to still continue
      */
-    protected[this] final def constructFeatures(a: A): Features[IndexedSeq[Iterable[(String, Double)]]] = {
+    protected[this] final def constructFeatures(a: A): Features[IndexedSeq[Sparse]] = {
         // NOTE: Since this function is at the center of the regression process and will be called many times, it
         //       needs to be efficient.  Therefore, it uses some things that are not idiomatic scala.  For instance,
         //       there are mutable variables, while loops instead of for comprehensions or Range.foreach, etc.
@@ -95,7 +96,7 @@ trait RegressionFeatures[-A] {
             i += 1
         }
 
-        val numMissingOk = numMissingThreshold map { missing.size <= _ } getOrElse true
+        val numMissingOk = numMissingThreshold.forall(t => missing.size <= t)
 
         // If we are going to err out, allow a linear scan (with repeated work so that we can get richer error
         // diagnostics.  Only include the values where the list of missing accessors variables is not empty.
