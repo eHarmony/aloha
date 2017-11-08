@@ -9,13 +9,16 @@ import org.reflections.Reflections
 
 import scala.collection.JavaConversions.asScalaSet
 import scala.util.Try
-
 import java.lang.reflect.{Method, Modifier}
+
+import com.eharmony.aloha.util.Logging
 
 /**
   * Created by ryan on 12/7/15.
   */
-abstract class ModelSerializabilityTestBase(pkgs: Seq[String], outFilters: Seq[String]) {
+abstract class ModelSerializabilityTestBase(pkgs: Seq[String], outFilters: Seq[String])
+extends Logging {
+
   def this() = this(pkgs = Seq(aloha.pkgName), Seq.empty)
 
   @Test def testSerialization(): Unit = {
@@ -26,6 +29,12 @@ abstract class ModelSerializabilityTestBase(pkgs: Seq[String], outFilters: Seq[S
         val name = c.getName
         outFilters.exists(name.matches)
       }
+
+    debug {
+      modelClasses
+        .map(_.getCanonicalName)
+        .mkString("Models tested for Serializability:\n\t", "\n\t", "")
+    }
 
     modelClasses.foreach { c =>
       val m = for {

@@ -30,7 +30,6 @@ class PolynomialEvaluationAlgoTest {
 
   private[this] val factory = ModelFactory.defaultFactory(semantics, OptionAuditor[Double]())
 
-
   @Test def testManualPolyEval() {
     val x = IndexedSeq(
       Seq(("intercept",          1.0)),

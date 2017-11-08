@@ -12,6 +12,7 @@ import com.eharmony.aloha.audit.impl.tree.Tree;
 import com.eharmony.aloha.models.conversion.DoubleToLongModel;
 import com.eharmony.aloha.models.exploration.BootstrapModel;
 import com.eharmony.aloha.models.exploration.EpsilonGreedyModel;
+import com.eharmony.aloha.models.multilabel.MultilabelModel;
 import com.eharmony.aloha.reflect.RefInfo;
 import com.eharmony.aloha.semantics.NoSemantics;
 import com.eharmony.aloha.semantics.Semantics;
@@ -78,7 +79,8 @@ public class JavaDefaultModelFactoryTest {
                 ErrorSwallowingModel.parser().modelType(),
                 EpsilonGreedyModel.parser().modelType(),
                 BootstrapModel.parser().modelType(),
-                CloserTesterModel.parser().modelType()
+                CloserTesterModel.parser().modelType(),
+                MultilabelModel.parser().modelType()
         };
 
         Arrays.sort(names);
