@@ -54,7 +54,18 @@ import scala.util.Try
   *                                labels to include in each row.  If this is less than the
   *                                number of negative examples for a given row, then no
   *                                downsampling of negatives will take place.
-  * @param initialSeed a way to start off randomness
+  * @param seedCreator a "''function''" that creates a seed that will be used for randomness.
+  *                    The implementation of this function is important.  It should create a
+  *                    unique value for each unit of parallelism.  If for example, row
+  *                    creation is parallelized across multiple threads on one machine, the
+  *                    unit of parallelism is threads and `seedCreator` should produce unique
+  *                    values for each thread.  If row creation is parallelized across multiple
+  *                    machines, the `seedCreator` should produce a unique value for each
+  *                    machine.  If row creation is parallelized across machines and threads on
+  *                    each machine, the `seedCreator` should create unique values for each
+  *                    thread on each machine.  Otherwise, randomness will be striped which
+
+  *
   * @param includeZeroValues include zero values in VW input?
   * @tparam A the input type
   * @tparam K the label or class type
@@ -70,8 +81,8 @@ final case class VwDownsampledMultilabelRowCreator[-A, K](
     positiveLabelsFunction: GenAggFunc[A, sci.IndexedSeq[K]],
     classNs: Char,
     dummyClassNs: Char,
-    numDownsampledNegLabels: Short,
-    initialSeed: () => Long,
+    numDownsampledNegLabels: Int,
+    seedCreator: () => Long,
     includeZeroValues: Boolean = false
 ) extends StatefulRowCreator[A, Array[String], Long]
      with Logging {
@@ -99,7 +110,7 @@ final case class VwDownsampledMultilabelRowCreator[-A, K](
     */
   @transient override lazy val initialState: Long = {
 
-    val seed = initialSeed()
+    val seed = seedCreator()
 
     // For logging.  Try to get time as close as possible to calling initialSeed.
     // Note: There's a very good chance this will differ.
@@ -221,7 +232,7 @@ object VwDownsampledMultilabelRowCreator extends Rand {
       negativeDummyStr: String,
       positiveDummyStr: String,
       seed: Long,
-      numNegLabelsTarget: Short
+      numNegLabelsTarget: Int
   ): (Array[String], Long) = {
 
     // Partition into positive and negative indices.

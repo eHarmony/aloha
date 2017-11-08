@@ -55,8 +55,8 @@ private[aloha] trait Rand {
     - [[http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/6-b14/java/util/Random.java grepcode for Random]]
     - [[https://en.wikipedia.org/wiki/Linear_congruential_generator Linear congruential generator (Wikipedia)]]
     *
-    * @param n population size (< 2^31^).
-    * @param k combination size (< 2^15^).
+    * @param n population size
+    * @param k combination size
     * @param seed the seed to use for random selection
     * @return a tuple 2 containing the array of 0-based indices representing
     *         the ''k''-combination and a new random seed.
