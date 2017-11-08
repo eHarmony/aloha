@@ -43,8 +43,6 @@ extends MultilabelModelJson
     *                         which predictions can be made.  If the labels at prediction time
     *                         differs (''or should be extracted from the input to the model''),
     *                         this function can provide that capability.
-    * @param vwArgs arguments that should be passed to the VW model.  This likely isn't strictly
-    *               necessary.
     * @param externalModel whether the underlying binary VW model should remain as a separate
     *                      file and be referenced by the Aloha model specification (`true`)
     *                      or the binary model content should be embeeded directly into the model
@@ -57,22 +55,21 @@ extends MultilabelModelJson
     * @return a JSON object.
     */
   def json[K: JsonWriter](
-                           datasetSpec: Vfs,
-                           binaryVwModel: Vfs,
-                           id: ModelIdentity,
-                           labelsInTrainingSet: Seq[K],
-                           labelsOfInterest: Option[String] = None,
-                           vwArgs: Option[String] = None,
-                           externalModel: Boolean = false,
-                           numMissingThreshold: Option[Int] = None
-                         ): JsValue = {
+      datasetSpec: Vfs,
+      binaryVwModel: Vfs,
+      id: ModelIdentity,
+      labelsInTrainingSet: Seq[K],
+      labelsOfInterest: Option[String] = None,
+      externalModel: Boolean = false,
+      numMissingThreshold: Option[Int] = None
+  ): JsValue = {
 
     val dsJsAst = StringReadable.fromInputStream(datasetSpec.inputStream).parseJson
     val ds = dsJsAst.convertTo[VwMultilabeledJson]
     val features = modelFeatures(ds.features)
     val namespaces = ds.namespaces.map(modelNamespaces)
     val modelSrc = modelSource(binaryVwModel, externalModel)
-    val vw = vwModelPlugin(modelSrc, vwArgs, namespaces)
+    val vw = vwModelPlugin(modelSrc, namespaces)
     val model = modelAst(id, features, numMissingThreshold, labelsInTrainingSet, labelsOfInterest, vw)
 
     // Even though we are only *writing* JSON, we need a JsonFormat[K], (which is a reader
@@ -103,24 +100,22 @@ extends MultilabelModelJson
 
   // Private b/c VwMultilabelAst is protected[this].  Don't let it escape.
   private def vwModelPlugin(
-                             modelSrc: ModelSource,
-                             vwArgs: Option[String],
-                             namespaces: Option[ListMap[String, Seq[String]]]) =
+      modelSrc: ModelSource,
+      namespaces: Option[ListMap[String, Seq[String]]]) =
     VwMultilabelAst(
       VwSparseMultilabelPredictorProducer.multilabelPlugin.name,
       modelSrc,
-      vwArgs.map(a => Right(a)),
       namespaces
     )
 
   // Private b/c MultilabelData is private[this].  Don't let it escape.
   private def modelAst[K](
-                           id: ModelIdentity,
-                           features: ListMap[String, Spec],
-                           numMissingThreshold: Option[Int],
-                           labelsInTrainingSet: Seq[K],
-                           labelsOfInterest: Option[String],
-                           vwPlugin: VwMultilabelAst) =
+      id: ModelIdentity,
+      features: ListMap[String, Spec],
+      numMissingThreshold: Option[Int],
+      labelsInTrainingSet: Seq[K],
+      labelsOfInterest: Option[String],
+      vwPlugin: VwMultilabelAst) =
     MultilabelData(
       modelType = MultilabelModel.parser.modelType,
       modelId = ModelId(id.getId(), id.getName()),

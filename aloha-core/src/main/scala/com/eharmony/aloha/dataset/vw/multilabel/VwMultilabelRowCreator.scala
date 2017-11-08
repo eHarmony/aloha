@@ -62,9 +62,11 @@ extends RowCreator[A, Array[String]] {
   override def apply(a: A): (MissingAndErroneousFeatureInfo, Array[String]) = {
     val (missingAndErrs, features) = featuresFunction(a)
 
+    // Get the lazy val once.
+    val labToInd = labelToInd
+
     // TODO: Should this be sci.BitSet?
-    val positiveIndices: Set[Int] =
-      positiveLabelsFunction(a).flatMap { y => labelToInd.get(y).toSeq }(breakOut)
+    val positiveIndices: Set[Int] = positiveLabelsFunction(a).flatMap(labToInd.get)(breakOut)
 
     val x: Array[String] = trainingInput(
       features,
@@ -148,7 +150,7 @@ object VwMultilabelRowCreator extends Rand {
     *
     * The goal of this function is to try to use characters in literature used to denote a
     * dependent variable.  If that isn't possible (because the characters are already used by some
-    * other namespace, just find the first possible characters.
+    * other namespace), just find the first possible characters.
     * @param usedNss names of namespaces used.
     * @return the namespace for ''actual'' label information then the namespace for ''dummy''
     *         label information.  If two valid namespaces couldn't be produced, return None.
@@ -166,7 +168,7 @@ object VwMultilabelRowCreator extends Rand {
   }
 
   private[multilabel] def nssToFirstCharBitSet(ss: Set[String]): sci.BitSet =
-    ss.collect { case s if s != "" =>
+    ss.collect { case s if s.length != 0 =>
       s.charAt(0).toInt
     }(breakOut[Set[String], Int, sci.BitSet])
 
@@ -237,7 +239,7 @@ object VwMultilabelRowCreator extends Rand {
     // Then come the features for each of the n labels.
     val x = new Array[String](n + 3)
 
-    val shared = VwRowCreator.unlabeledVwInput(features, defaultNs, namespaces, false)
+    val shared = VwRowCreator.unlabeledVwInput(features, defaultNs, namespaces, includeZeroValues = false)
     x(0) = SharedFeatureIndicator + shared
 
     // These string interpolations are computed over and over but will always be the same

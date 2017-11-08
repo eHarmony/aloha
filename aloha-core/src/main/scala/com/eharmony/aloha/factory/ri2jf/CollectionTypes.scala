@@ -27,8 +27,6 @@ class CollectionTypes extends RefInfoToJsonFormatConversions {
           None
       }
     else if (RefInfoOps.isSubType[A, collection.immutable.Seq[Any]])
-//      conv(r.typeArguments.head).flatMap(f => jf(immSeqFormat(f)))
-//      conv(typeParams.head).flatMap(f => jf(immSeqFormat(f)))
       for {
         tEl <- typeParams.headOption
         el  <- conv(tEl)

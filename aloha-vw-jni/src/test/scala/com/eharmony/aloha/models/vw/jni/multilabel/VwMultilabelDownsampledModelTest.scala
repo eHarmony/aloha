@@ -151,7 +151,6 @@ class VwMultilabelDownsampledModelTest {
       id = ModelId(1, "NONE"),
       labelsInTrainingSet = labelsInTrainingSet,
       labelsOfInterest = Option.empty[String],
-      vwArgs = Option.empty[String],
       externalModel = false,
       numMissingThreshold = Option(0)
     )

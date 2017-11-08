@@ -3,7 +3,7 @@ package com.eharmony.aloha.reflect
 import com.eharmony.aloha
 import org.reflections.Reflections
 
-import scala.reflect.ClassTag
+import scala.reflect.{classTag, ClassTag}
 import scala.util.Try
 
 /**
@@ -44,8 +44,7 @@ trait RuntimeClasspathScanning {
   ): Seq[A] = {
     val reflections = new Reflections(aloha.pkgName)
     import scala.collection.JavaConversions.asScalaSet
-    //    val classA = implicitly[ClassTag[A]].runtimeClass
-    val objects = reflections.getSubTypesOf(implicitly[ClassTag[OBJ]].runtimeClass).toSeq
+    val objects = reflections.getSubTypesOf(classTag[OBJ].runtimeClass).toSeq
 
     val suffixLength = objectSuffix.length
 

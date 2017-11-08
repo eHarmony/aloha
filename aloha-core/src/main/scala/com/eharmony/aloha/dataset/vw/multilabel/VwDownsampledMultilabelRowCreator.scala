@@ -158,8 +158,7 @@ final case class VwDownsampledMultilabelRowCreator[-A, K](
     // allLabelsInTrainingSet are discarded without notice.
     //
     // TODO: Should this be sci.BitSet?
-    val positiveIndices: Set[Int] =
-      positiveLabelsFunction(a).flatMap { y => labToInd.get(y).toSeq }(breakOut)
+    val positiveIndices: Set[Int] = positiveLabelsFunction(a).flatMap(labToInd.get)(breakOut)
 
     val (vwInput, newSeed) = sampledTrainingInput(
       features,

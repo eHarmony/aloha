@@ -4,7 +4,7 @@ import com.eharmony.aloha.reflect.{RefInfo, RuntimeClasspathScanning}
 import spray.json.{JsonFormat, JsonReader}
 
 /**
-  * A plugin that will produce the
+  * A plugin that will ultimately produce the [[SparseMultiLabelPredictor]].
   * Created by ryan.deak on 9/6/17.
   */
 trait MultilabelModelParserPlugin {

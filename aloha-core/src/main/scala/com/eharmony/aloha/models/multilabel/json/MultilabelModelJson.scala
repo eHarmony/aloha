@@ -14,14 +14,17 @@ trait MultilabelModelJson extends SpecJson with ScalaJsonFormats {
   protected[this] case class Plugin(`type`: String)
 
   /**
-    * Data for the
+    * AST for multi-label models.
     *
     * @param modelType
     * @param modelId
     * @param features
     * @param numMissingThreshold
-    * @param labelsInTrainingSet
-    * @param labelsOfInterest
+    * @param labelsInTrainingSet The sequence of all labels encountered in training.  '''It is
+    *                            important''' that this is sequence (''with the same order as the
+    *                            labels in the training set'').  This is because some algorithms
+    *                            may require indices based on the training data.
+    * @param labelsOfInterest a string representing a function that will be used to extract labels.
     * @param underlying the underlying model that will be produced by a
     * @tparam K
     */

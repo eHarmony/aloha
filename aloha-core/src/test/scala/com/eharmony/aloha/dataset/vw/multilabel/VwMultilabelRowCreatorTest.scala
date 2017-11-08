@@ -134,12 +134,16 @@ object VwMultilabelRowCreatorTest {
   private val PosDummyClass = NegDummyClass + 1
   private val PosVal = 0
   private val NegVal = 1
+  private val PosFeature = 'P'
+  private val NegFeature = 'N'
+  private val DummyNs = 'y'
+
   private val X = Map.empty[String, Any]
   private val SharedPrefix = "shared "
 
   private val DummyLabels = List(
-    s"$NegDummyClass:$NegVal |y N",
-    s"$PosDummyClass:$PosVal |y P"
+    s"$NegDummyClass:$NegVal |$DummyNs $NegFeature",
+    s"$PosDummyClass:$PosVal |$DummyNs $PosFeature"
   )
 
   private val AllNegative = LabelsInTrainingSet.indices.map(i => s"$i:$NegVal |Y _$i")

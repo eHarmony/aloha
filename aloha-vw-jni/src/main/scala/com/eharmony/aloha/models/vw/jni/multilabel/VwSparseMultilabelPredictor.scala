@@ -13,16 +13,14 @@ import scala.collection.{immutable => sci}
 import scala.util.Try
 
 /**
-  *
-  * Created by ryan.deak on 9/8/17.
+  * Creates a VW multi-label predictor plugin for `MultilabelModel`.
   * @param modelSource a specification for the underlying ''Cost Sensitive One Against All''
-  *                    VW model with ''label dependent features''.  VW flag
-  *                    `--csoaa_ldf mc` is expected. For more information, see the
+  *                    VW model with ''label dependent features''.  VW flag `--csoaa_ldf mc`
+  *                    or `--wap_ldf mc` is expected. For more information, see the
   *                    [[https://github.com/JohnLangford/vowpal_wabbit/wiki/Cost-Sensitive-One-Against-All-(csoaa)-multi-class-example VW CSOAA wiki page]].
   *                    Also see the ''Cost-Sensitive Multiclass Classification'' section of
   *                    Hal Daume's [[https://www.umiacs.umd.edu/%7Ehal/tmp/multiclassVW.html On Multiclass Classification in VW]]
   *                    page.  This model specification will be materialized in this class.
-  * @param params VW parameters.
   * @param defaultNs The list of indices into the `features` sequence that does not have
   *                  an exist in any value of the `namespaces` map.
   * @param namespaces Mapping from namespace name to indices in the `features` sequence passed
@@ -30,13 +28,11 @@ import scala.util.Try
   *                   ''key-value'' pairs appearing in the map should not values that are empty
   *                   sequences.  '''This is a requirement.'''
   * @tparam K the label or class type.
+  * @author deaktator
+  * @since 9/8/2017
   */
-// TODO: Comment this function.  It requires a lot of assumptions.  Make those known.
 case class VwSparseMultilabelPredictor[K](
     modelSource: ModelSource,
-
-    // TODO: Should these be removed?  I don't think so but could be, w/o harm, in limited cases.
-    params: String,
     defaultNs: List[Int],
     namespaces: List[(String, List[Int])],
     numLabelsInTrainingSet: Int)
@@ -46,7 +42,7 @@ extends SparseMultiLabelPredictor[K]
   import VwSparseMultilabelPredictor._
 
   @transient private[this] lazy val paramsAndVwModel =
-    createLearner(modelSource, params, numLabelsInTrainingSet)
+    createLearner(modelSource, numLabelsInTrainingSet)
 
   @transient private[this] lazy val updatedParams = paramsAndVwModel._1
   @transient private[multilabel] lazy val vwModel = paramsAndVwModel._2.get
@@ -130,52 +126,22 @@ object VwSparseMultilabelPredictor {
   @inline final private def modifiedLogistic(x: Float) = 1 / (1 + math.exp(x))
 
   /**
-    * Update the parameters with the
-    *
-    * VW params of interest when doing multi-class:
-    *
-    - `--csoaa_ldf mc`            Label-dependent features for multi-class classification
-    - `--csoaa_rank`              (Probably) necessary to get scores for m-c classification.
-    - `--loss_function logistic`  Standard logistic loss for learning.
-    - `--noconstant`              Don't want a constant since it's not interacted with NS Y.
-    - `-q YX`                     Cross product of label-dependent and features and features
-    - `--ignore_linear Y`         Don't care about the 1st-order wts of the label-dep features.
-    - `--ignore_linear X`         Don't care about the 1st-order wts of the features.
-    - `--ignore y`                Ignore everything related to the dummy class instances.
-    *
-    * {{{
-    * val str =
-    *   "shared |X feature"  + "\n" +
-    *
-    *   "0:1 |y _C0_"        + "\n" +  // These two instances are dummy classes
-    *   "1:0 |y _C1_"        + "\n" +
-    *
-    *   "2:0 |Y _C2_"        + "\n" +
-    *   "3:1 |Y _C3_"
-    *
-    * val ex = str.split("\n")
-    * }}}
-    * @param modelSource location of a VW model.
-    * @param params the parameters passed to the model to which additional parameters will be added.
-    * @return
+    * Update parameters with initial regressior, ring size, testonly, and quiet.
+    * @param modelSource a trained VW binary model.
+    * @param numLabelsInTrainingSet number of labels in the training set informs VW's ring size.
+    * @return updated parameters.
     */
-  // TODO: How much of the parameter setup is up to the caller versus this function?
-  private[multilabel] def paramsWithSource(
-      modelSource: File,
-      params: String,
-      numLabelsInTrainingSet: Int
-  ): String = {
+  private[multilabel] def paramsWithSource(modelSource: File, numLabelsInTrainingSet: Int): String = {
     val ringSize = numLabelsInTrainingSet + AddlVwRingSize
-    s"$params -i ${modelSource.getCanonicalPath} --ring_size $ringSize --testonly --quiet"
+    s"-i ${modelSource.getCanonicalPath} --ring_size $ringSize --testonly --quiet"
   }
 
   private[multilabel] def createLearner(
       modelSource: ModelSource,
-      params: String,
       numLabelsInTrainingSet: Int
   ): (String, Try[ExpectedLearner]) = {
     val modelFile = modelSource.localVfs.replicatedToLocal()
-    val updatedParams = paramsWithSource(modelFile.fileObj, params, numLabelsInTrainingSet)
+    val updatedParams = paramsWithSource(modelFile.fileObj, numLabelsInTrainingSet)
     val learner = Try { VWLearners.create[ExpectedLearner](updatedParams) }
     (updatedParams, learner)
   }

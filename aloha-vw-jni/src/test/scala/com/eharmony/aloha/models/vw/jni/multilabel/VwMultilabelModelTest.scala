@@ -175,7 +175,6 @@ class VwMultilabelModelTest {
       id = ModelId(1, "NONE"),
       labelsInTrainingSet = labelsInTrainingSet,
       labelsOfInterest = Option.empty[String],
-      vwArgs = Option.empty[String],
       externalModel = false,
       numMissingThreshold = Option(0)
     )
@@ -335,7 +334,6 @@ object VwMultilabelModelTest {
 
     val predProd = VwSparseMultilabelPredictorProducer[Label](
       modelSource = TrainedModel,
-      params      = "", // to see the output:  "-p /dev/stdout",
       defaultNs   = List.empty[Int],
       namespaces  = namespaces,
       labelNamespace = labelNs,

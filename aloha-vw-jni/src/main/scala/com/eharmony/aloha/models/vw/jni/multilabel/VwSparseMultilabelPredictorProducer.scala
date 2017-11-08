@@ -7,36 +7,32 @@ import com.eharmony.aloha.reflect.RefInfo
 import spray.json.{JsonFormat, JsonReader}
 
 /**
-  * A thing wrapper responsible for creating a [[VwSparseMultilabelPredictor]].  This
-  * creation is deferred because VW JNI models are not Serializable because they are
+  * A wrapper responsible for creating a [[VwSparseMultilabelPredictor]].  This defers
+  * creation since VW JNI models are not Serializable.  This is because they are
   * thin wrappers around native C models in memory.  The underlying binary model is
   * externalizable in a file, byte array, etc. and this information is contained in
   * `modelSource`.  The actual VW JNI model is created only where needed.  In short,
   * this class can be serialized but the JNI model created from `modelSource` cannot
   * be.
   *
-  * Created by ryan.deak on 9/5/17.
-  *
   * @param modelSource a source from which the binary VW model information can be
   *                    extracted and used to create a VW JNI model.
-  * @param params VW parameters passed to the JNI constructor
   * @param defaultNs indices into the features that belong to VW's default namespace.
   * @param namespaces namespace name to feature indices map.
   * @tparam K type of the labels returned by the [[VwSparseMultilabelPredictor]] that
   *           will be produced.
+  * @author deaktator
+  * @since 9/5/2017
   */
 case class VwSparseMultilabelPredictorProducer[K](
     modelSource: ModelSource,
-
-    // TODO: Should we remove this. If not, it must contain the --ring_size [training labels + 10].
-    params: String,
     defaultNs: List[Int],
     namespaces: List[(String, List[Int])],
     labelNamespace: Char,
     numLabelsInTrainingSet: Int
 ) extends SparsePredictorProducer[K] {
   override def apply(): VwSparseMultilabelPredictor[K] =
-    VwSparseMultilabelPredictor[K](modelSource, params, defaultNs, namespaces, numLabelsInTrainingSet)
+    VwSparseMultilabelPredictor[K](modelSource, defaultNs, namespaces, numLabelsInTrainingSet)
 }
 
 object VwSparseMultilabelPredictorProducer extends MultilabelPluginProviderCompanion {

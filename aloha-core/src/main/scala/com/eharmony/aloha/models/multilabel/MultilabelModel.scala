@@ -19,14 +19,6 @@ import spray.json.{JsonFormat, JsonReader}
 import scala.collection.{immutable => sci, mutable => scm}
 import scala.util.{Failure, Success}
 
-
-// TODO: When adding label-dep features, a Seq[GenAggFunc[K, Sparse]] will be needed.
-// TODO: To create a Seq[GenAggFunc[K, Sparse]], a Semantics[K] needs to be derived from a Semantics[A].
-// TODO: MorphableSemantics provides this.  If K is *embedded inside* A, it should be possible in some cases.
-// TODO: An alternative is to pass a Map[K, Sparse], Map[K, Option[Sparse]], Map[K, Seq[Sparse]] or something.
-// TODO: Directly passing the map of LDFs avoids the need to derive a Semantics[K].  This is easier to code.
-// TODO: Directly passing LDFs would however be more burdensome to the data scientists.
-
 /**
   * A multi-label predictor.
   *
@@ -312,7 +304,11 @@ object MultilabelModel extends ParserProviderCompanion {
   }
 
   /**
-    * Get labels from the input for which a prediction should be produced.
+    * Get labels from the input for which a prediction should be produced.  If
+    * `labelsOfInterest` produces a label not in the training set, it will not
+    * be present in the prediction output but it will appear in
+    * `LabelsAndInfo.labelsNotInTrainingSet`.
+    *
     * @param example the example provided to the model
     * @param labelsOfInterest a function used to extract labels for which a
     *                         prediction should be produced.
@@ -330,6 +326,8 @@ object MultilabelModel extends ParserProviderCompanion {
 
     val labelsShouldPredict = labelsOfInterest(example)
 
+    // Notice here that if the label isn't present in the labeltoInd map, it is ignored
+    // and not inserted into the `unsorted` sequence.
     val unsorted =
       for {
         label <- labelsShouldPredict

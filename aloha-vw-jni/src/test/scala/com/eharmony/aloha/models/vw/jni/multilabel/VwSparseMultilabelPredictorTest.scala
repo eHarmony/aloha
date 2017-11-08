@@ -55,7 +55,7 @@ object VwSparseMultilabelPredictorTest {
   }
 
   private def getPredictor(modelSrc: ModelSource, numLabelsInTrainingSet: Int) =
-    VwSparseMultilabelPredictor[Any](modelSrc, "", Nil, Nil, numLabelsInTrainingSet)
+    VwSparseMultilabelPredictor[Any](modelSrc, Nil, Nil, numLabelsInTrainingSet)
 
   private def checkVwBinFile(vwBinFilePath: String): Unit = {
     val vwBinFile = new File(vwBinFilePath)

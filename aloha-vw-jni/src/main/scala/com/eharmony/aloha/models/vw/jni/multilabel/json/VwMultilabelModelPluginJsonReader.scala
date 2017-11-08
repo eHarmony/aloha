@@ -11,7 +11,7 @@ import scala.collection.breakOut
 import scala.collection.immutable.ListMap
 
 /**
-  *
+  * A JSON reader for SparsePredictorProducer.
   *
   * '''NOTE''': This class extends `JsonReader[SparsePredictorProducer[K]]` rather than the
   * more specific type `JsonReader[VwSparseMultilabelPredictorProducer[K]]` because `JsonReader`
@@ -32,7 +32,6 @@ case class VwMultilabelModelPluginJsonReader[K](featureNames: Seq[String], numLa
 
   override def read(json: JsValue): VwSparseMultilabelPredictorProducer[K] = {
     val ast = json.asJsObject(notObjErr(json)).convertTo[VwMultilabelAst]
-    val params = vwParams(ast.params)
     val (namespaces, defaultNs, missing) =
       allNamespaceIndices(featureNames, ast.namespaces.getOrElse(ListMap.empty))
 
@@ -44,8 +43,7 @@ case class VwMultilabelModelPluginJsonReader[K](featureNames: Seq[String], numLa
 
     labelAndDummyLabelNss match {
       case Some(LabelNamespaces(labelNs, _)) =>
-        // TODO: Should we remove this. If not, it must contain the --ring_size [training labels + 10].
-        VwSparseMultilabelPredictorProducer[K](ast.modelSource, params, defaultNs, namespaces, labelNs, numLabelsInTrainingSet)
+        VwSparseMultilabelPredictorProducer[K](ast.modelSource, defaultNs, namespaces, labelNs, numLabelsInTrainingSet)
       case _ =>
         throw new DeserializationException(
           "Could not determine label namespace.  Found namespaces: " +
@@ -57,9 +55,6 @@ case class VwMultilabelModelPluginJsonReader[K](featureNames: Seq[String], numLa
 
 object VwMultilabelModelPluginJsonReader extends Logging {
   private val JsonErrStrLength = 100
-
-  private[multilabel] def vwParams(params: Option[Either[Seq[String], String]]): String =
-    params.fold("")(e => e.fold(ps => ps.mkString(" "), identity[String])).trim
 
   private[multilabel] def notObjErr(json: JsValue): String = {
     val str = json.prettyPrint
