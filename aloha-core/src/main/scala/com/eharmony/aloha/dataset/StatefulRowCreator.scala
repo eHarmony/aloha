@@ -83,7 +83,7 @@ trait StatefulRowCreator[-A, +B, @specialized(Int, Float, Long, Double) S] exten
     *         state that is created in the process.
     */
   def mapIteratorWithState(as: Iterator[A], state: S): Iterator[((MissingAndErroneousFeatureInfo, Option[B]), S)] = {
-    if (as.hasNext)
+    if (!as.hasNext)
       Iterator.empty
     else {
       // Force the first A.  Then apply the `apply` transformation to get
