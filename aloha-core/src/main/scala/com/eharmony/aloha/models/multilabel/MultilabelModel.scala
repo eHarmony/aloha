@@ -353,7 +353,7 @@ object MultilabelModel extends ParserProviderCompanion {
   override def parser: ModelParser = Parser
 
   object Parser extends ModelSubmodelParsingPlugin with Logging {
-    override val modelType: String = "multilabel-sparse"
+    override val modelType: String = "SparseMultilabel"
 
     // TODO: Figure if a Option[JsonReader[MultilabelModel[U, _, A, B]]] can be returned.
     // See: parser that returns SegmentationModel[U, _, N, A, B]

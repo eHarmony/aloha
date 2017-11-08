@@ -1,12 +1,17 @@
 package com.eharmony.aloha.dataset
 
+import com.eharmony.aloha.util.StatefulMapOps
+
+import scala.collection.{SeqLike, immutable => sci}
+import scala.collection.generic.{CanBuildFrom => CBF}
+
 /**
   * A row creator that requires state.  This state should be modeled functionally, meaning
   * implementations should be referentially transparent.
   *
   * Created by ryan.deak on 11/2/17.
   */
-trait StatefulRowCreator[-A, +B, @specialized(Int, Float, Long, Double) S] extends Serializable {
+trait StatefulRowCreator[-A, +B, S] extends Serializable {
 
   /**
     * Some initial state that can be used on the very first call to `apply(A, S)`.
@@ -36,44 +41,7 @@ trait StatefulRowCreator[-A, +B, @specialized(Int, Float, Long, Double) S] exten
     * applications, the state will come from the state generated in the output of the
     * previous application of `apply(A, S)`.
     *
-    * ''This variant of mapping with state is'' '''non-strict''', so if that's a requirement,
-    * prefer this function over the `mapSeqWithState` variant.  Note that for this method
-    * to work, the first element is computed eagerly.
-    *
-    * To verify non-strictness, this method could be rewritten as:
-    *
-    * {{{
-    * def statefulMap[A, B, S](as: Iterator[A], s: S)
-    *                         (f: (A, S) => (B, S)): Iterator[(B, S)] = {
-    *   if (as.isEmpty)
-    *     Iterator.empty
-    *   else {
-    *     val firstA = as.next()
-    *     val initEl = f(firstA, s)
-    *     as.scanLeft(initEl){ case ((_, newS), a) => f(a, newS) }
-    *   }
-    * }
-    * }}}
-    *
-    * Then using the method, it's easy to verify non-strictness:
-    *
-    * {{{
-    * // cycleModulo4 and res are infinite.
-    * val cycleModulo4 = Iterator.iterate(0)(s => (s + 1) % 4)
-    * val res = statefulMap(cycleModulo4, 0)((a, s) => ((a + s).toDouble, s + 1))
-    *
-    * // returns:
-    * res.take(8)
-    *    .map(_._1)
-    *    .toVector
-    *    .groupBy(identity)
-    *    .mapValues(_.size)
-    *    .toVector
-    *    .sorted
-    *    .foreach(println)
-    *
-    * res.size // never returns
-    * }}}
+    * For more information, see [[com.eharmony.aloha.util.StatefulMapOps]]
     *
     * @param as Note the first element of `as` ''will be forced'' in this method in order
     *           to construct the output.
@@ -82,19 +50,8 @@ trait StatefulRowCreator[-A, +B, @specialized(Int, Float, Long, Double) S] exten
     *         `(MissingAndErroneousFeatureInfo, Option[B])` along with the resulting
     *         state that is created in the process.
     */
-  def mapIteratorWithState(as: Iterator[A], state: S): Iterator[((MissingAndErroneousFeatureInfo, Option[B]), S)] = {
-    if (!as.hasNext)
-      Iterator.empty
-    else {
-      // Force the first A.  Then apply the `apply` transformation to get
-      // the initial element of a scanLeft.  Inside the scanLeft, use the
-      // state outputted by previous `apply` calls as input to current
-      // calls to `apply(A, S)`.
-      val firstA = as.next()
-      val initEl = apply(firstA, state)
-      as.scanLeft(initEl){ case ((_, mostRecentState), a) => apply(a, mostRecentState) }
-    }
-  }
+  def statefulMap(as: Iterator[A], state: S): Iterator[((MissingAndErroneousFeatureInfo, Option[B]), S)] =
+    StatefulMapOps.statefulMap(as, state)(apply)
 
   /**
     * Apply the `apply(A, S)` method to the elements of the sequence.  In the first
@@ -102,22 +59,18 @@ trait StatefulRowCreator[-A, +B, @specialized(Int, Float, Long, Double) S] exten
     * applications, the state will come from the state generated in the output of the
     * previous application of `apply(A, S)`.
     *
-    * ''This variant of mapping with state is'' '''strict'''.
-    *
     * '''NOTE''': This method isn't really parallelizable via chunking.  The way to
     * parallelize this method is to provide a separate starting state for each unit
     * of parallelism.
     *
+    * For more information, see [[com.eharmony.aloha.util.StatefulMapOps]]
+    *
     * @param as input to map.
-    * @param state the initial state to use at the start of the Vector.
-    * @return a Tuple2 where the first element is a vector of results and the second
-    *         element is the resulting state.
+    * @param state the initial state to use at the start of mapping.
+    * @param cbf object responsible for building the output collection.
+    * @return 
     */
-  def mapSeqWithState(as: Seq[A], state: S): (Vector[(MissingAndErroneousFeatureInfo, Option[B])], S) = {
-    as.foldLeft((Vector.empty[(MissingAndErroneousFeatureInfo, Option[B])], state)){
-      case ((bs, s), a) =>
-        val (b, newS) = apply(a, s)
-        (bs :+ b, newS)
-    }
-  }
+  def statefulMap[In <: sci.Seq[A], Out](as: SeqLike[A, In], state: S)(implicit
+      cbf: CBF[In, ((MissingAndErroneousFeatureInfo, Option[B]), S), Out]
+  ): Out = StatefulMapOps.statefulMap(as, state)(apply)
 }

@@ -128,7 +128,7 @@ class VwMultilabelDownsampledModelTest {
 
     // Get the iterator of the examples produced.  This is similar to what one may do
     // within a `mapPartitions` in Spark.
-    val examples = rc.mapIteratorWithState(trainingSet.iterator, rc.initialState) collect {
+    val examples = rc.statefulMap(trainingSet.iterator, rc.initialState) collect {
       case ((_, Some(x)), _) => x
     }
 

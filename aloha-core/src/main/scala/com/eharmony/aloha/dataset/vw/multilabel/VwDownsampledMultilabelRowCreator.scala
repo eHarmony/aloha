@@ -64,8 +64,7 @@ import scala.util.Try
   *                    machine.  If row creation is parallelized across machines and threads on
   *                    each machine, the `seedCreator` should create unique values for each
   *                    thread on each machine.  Otherwise, randomness will be striped which
-
-  *
+  *                    is bad.
   * @param includeZeroValues include zero values in VW input?
   * @tparam A the input type
   * @tparam K the label or class type
@@ -160,7 +159,7 @@ final case class VwDownsampledMultilabelRowCreator[-A, K](
     // array.  Next allLabelsInTrainingSet.indices and the positiveIndices array could
     // be iterated over simultaneously and if the current index in
     // allLabelsInTrainingSet.indices isn't in the positiveIndices array, then it must
-    // be in the negativeIndices array.  Then then offsets into the two arrays are
+    // be in the negativeIndices array.  Then the offsets into the two arrays are
     // incremented.  Both the current and proposed algorithms are O(N), where
     // N = allLabelsInTrainingSet.indices.size.  But the proposed algorithm would likely
     // have much better constant factors.
@@ -258,7 +257,7 @@ object VwDownsampledMultilabelRowCreator extends Rand {
       else {
         // Determine the weight for the downsampled negatives.
         // If the cost of negative examples is positive, then the weight will be
-        // strictly greater than .
+        // strictly greater than NegativeCost.
 
         f"${NegativeCost * negLabels / n.toDouble}%.5g"
       }
@@ -320,7 +319,8 @@ object VwDownsampledMultilabelRowCreator extends Rand {
     *                    machines, the `seedCreator` should produce a unique value for each
     *                    machine.  If row creation is parallelized across machines and threads on
     *                    each machine, the `seedCreator` should create unique values for each
-    *                    thread on each machine.  Otherwise, randomness will be striped which
+    *                    thread on each machine.  Otherwise, randomness will be striped which is
+    *                    bad.
     * @param ev$1 reflection information about `K`.
     * @tparam A type of input passed to the [[StatefulRowCreator]].
     * @tparam K the label type.

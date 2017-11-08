@@ -459,7 +459,7 @@ object VwMultilabelModelTest {
     val json =
       s"""
          |{
-         |  "modelType": "multilabel-sparse",
+         |  "modelType": "SparseMultilabel",
          |  "modelId": { "id": 1, "name": "NONE" },
          |  "features": {
          |    "feature": "1"
