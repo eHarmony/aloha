@@ -109,7 +109,7 @@ private[aloha] trait Rand {
         // Wikipedia does a good job describing this in the proof by induction in the
         // explanation for Algorithm R.
         if (reservoirSwapInd < k)
-          reservoir(reservoirSwapInd) = (i - 1).toShort
+          reservoir(reservoirSwapInd) = i - 1
 
         i += 1
       }
