@@ -1,0 +1,453 @@
+<html><head><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><title>Aloha</title><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="Generic machine learning, lazy features" /><meta name="author" content="eHarmony" /><meta name="og:image" content="/aloha/img/poster.png" /><meta name="og:title" content="Aloha" /><meta name="og:site_name" content="Aloha" /><meta name="og:url" content="http://eharmony.github.io/aloha" /><meta name="og:type" content="website" /><meta name="og:description" content="Generic machine learning, lazy features" /><meta name="twitter:image" content="/aloha/img/poster.png" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:site" content="" /><meta name="kazari-dependencies" content="" /><meta name="kazari-resolvers" content="" /><link rel="icon" type="image/png" href="/aloha/img/favicon.png" /><link rel="icon" type="image/png" sizes="16x16" href="/aloha/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/aloha/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/aloha/img/favicon32x32.png" /><link rel="icon" type="image/png" sizes="48x48" href="/aloha/img/favicon48x48.png" /><link rel="icon" type="image/png" sizes="57x57" href="/aloha/img/favicon57x57.png" /><link rel="icon" type="image/png" sizes="60x60" href="/aloha/img/favicon60x60.png" /><link rel="icon" type="image/png" sizes="64x64" href="/aloha/img/favicon64x64.png" /><link rel="icon" type="image/png" sizes="70x70" href="/aloha/img/favicon70x70.png" /><link rel="icon" type="image/png" sizes="72x72" href="/aloha/img/favicon72x72.png" /><link rel="icon" type="image/png" sizes="76x76" href="/aloha/img/favicon76x76.png" /><link rel="icon" type="image/png" sizes="96x96" href="/aloha/img/favicon96x96.png" /><link rel="icon" type="image/png" sizes="114x114" href="/aloha/img/favicon114x114.png" /><link rel="icon" type="image/png" sizes="120x120" href="/aloha/img/favicon120x120.png" /><link rel="icon" type="image/png" sizes="128x128" href="/aloha/img/favicon128x128.png" /><link rel="icon" type="image/png" sizes="144x144" href="/aloha/img/favicon144x144.png" /><link rel="icon" type="image/png" sizes="150x150" href="/aloha/img/favicon150x150.png" /><link rel="icon" type="image/png" sizes="152x152" href="/aloha/img/favicon152x152.png" /><link rel="icon" type="image/png" sizes="196x196" href="/aloha/img/favicon196x196.png" /><link rel="icon" type="image/png" sizes="310x310" href="/aloha/img/favicon310x310.png" /><link rel="icon" type="image/png" sizes="310x150" href="/aloha/img/favicon310x150.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/aloha/highlight/styles/atom-one-light.css" /><link rel="stylesheet" href="/aloha/css/style.css" /><link rel="stylesheet" href="/aloha/css/palette.css" /><link rel="stylesheet" href="/aloha/css/codemirror.css" /><link rel="stylesheet" href="/aloha/css/kazari-style.css" /><link rel="stylesheet" href="/aloha/css/solarized-dark.css" /><link rel="stylesheet" href="/aloha/css/override.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/aloha/" class="brand"><div class="brand-wrapper"><span>Aloha</span></div></a></li> <li><a href="/aloha/docs/api/index.html" class="">API Docs</a></li> <li><a href="/aloha/docs/getting_started.html" class="">Getting Started (Data Sci)</a></li> <li><a href="/aloha/docs/getting_started_eng.html" class="">Getting Started (Data Eng)</a></li> <li><a href="/aloha/docs/dataset.html" class="">Constructing Datasets</a></li> <li><a href="/aloha/docs/in_depth_walkthrough.html" class="">In Depth Walkthrough</a></li> <li><a href="/aloha/docs/model_formats.html" class="">Model Formats</a></li> <li><a href="/aloha/docs/release_notes.html" class="">Release Notes</a></li></ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li id="gh-eyes-item" class="hidden-xs"><a href="https://github.com/eharmony/aloha"><i class="fa fa-eye"></i><span>WATCH<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs"><a href="https://github.com/eharmony/aloha"><i class="fa fa-star-o"></i><span>STARS<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('Aloha Generic machine learning, lazy features');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('Aloha Generic machine learning, lazy features');"><i class="fa fa-facebook"></i></a></li><li><a href="#" onclick="shareSiteGoogle();"><i class="fa fa-google-plus"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="eharmony" data-github-repo="aloha"><div class="content-wrapper"><section><h1 id="an-in-depth-walkthrough">An In-Depth Walkthrough</h1>
+
+<p>There are a few basic concepts that carry through all aspects of Aloha.  Those are, namely, <em>features</em> and <em>semantics</em>.</p>
+
+<h2 id="feature">Feature</h2>
+
+<p>Features are the basic unit when creating dataset and model specifications.  Features can be thought of as 4-tuples 
+of the form:</p>
+
+<blockquote>
+
+  <p>( Specification, Default, Feature Domain, Feature Codomain )</p>
+
+</blockquote>
+
+<ol>
+  <li>The specification (or <em>spec</em>) is the actual statement, body or definition of what the feature does.</li>
+  <li>The default is the value that a feature produces when a value can’t otherwise be produced.
+A default is not required when all parameters in the spec are required but is required if any of the parameters 
+in a spec are optional (more on this later).</li>
+  <li>Feature <a href="https://en.wikipedia.org/wiki/Domain_of_a_function">domain</a>.</li>
+  <li>Feature <a href="https://en.wikipedia.org/wiki/Codomain">codomain</a>.</li>
+</ol>
+
+<h3 id="a-feature-example-bmi">A Feature Example: BMI</h3>
+
+<p>An example of a feature is Body Mass Index (BMI) which is defined as</p>
+
+<blockquote>
+
+  <p>BMI = 703 * (weight in lbs.) / (height in inches)<sup>2</sup></p>
+
+</blockquote>
+
+<p>Assuming we have a hierarchical datastructure that has a weight and height field, we could represent this as</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="mi">703</span> <span class="o">*</span> <span class="n">$</span><span class="o">{</span><span class="n">weight</span><span class="o">}</span> <span class="o">/</span> <span class="n">pow</span><span class="o">(</span><span class="n">$</span><span class="o">{</span><span class="n">height</span><span class="o">},</span> <span class="mi">2</span><span class="o">)</span>
+</code></pre>
+</div>
+
+<p>where the parameter values to be extracted are inside of the delimiters “<code class="highlighter-rouge">${</code>” and “<code class="highlighter-rouge">}</code>”.  The rest of the feature is just 
+normal <a href="http://scala-lang.org">scala</a> code (with some import statements previously defined).  Notice this specification 
+is very similar to how expressions with <a href="http://www.tldp.org/LDP/abs/html/parameter-substitution.html">parameter substitutions</a> 
+are defined in <a href="http://www.tldp.org/LDP/abs/html/">bash scripts</a>.  In fact, default values are provided in the same way
+as in bash.  For instance,  if the <code class="highlighter-rouge">weight</code> parameter were optional and the particular value was missing, we can provide 
+a default value as follows:</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">$</span><span class="o">{</span><span class="n">weight</span><span class="o">:-</span><span class="mi">200</span><span class="o">}</span>
+</code></pre>
+</div>
+
+<p>Which means, like in bash, that when weight is not declared or has been declared as null, the default of <em>200</em> will be 
+used.  The difference here is that the default value has to type check with the original value.  If for instance 
+<code class="highlighter-rouge">weight</code> were a 32-bit float, then the default couldn’t be <code class="highlighter-rouge">200.5</code> (which is a 64-bit double), but would have to 
+be <code class="highlighter-rouge">200.5f</code>.</p>
+
+<p>So far, we’ve already run into a few snags.  If <code class="highlighter-rouge">weight</code> was optional and the value wasn’t provided, then our expression 
+if naively written, could produce <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/NullPointerException.html">NPEs</a>.<br />
+Aloha avoids these errors by treating optional values appropriately.  It ensures that optional parameters are 
+represented by <a href="http://scala-lang.org/api/current/#scala.Option"><code class="highlighter-rouge">scala.Option</code></a> values.</p>
+
+<blockquote>
+  <p>The key insight is that each feature can be thought of as an 
+<a href="http://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html#applicatives">applicative</a>
+that operates over many parameters lifted into the Option context.  This way, features can be written without worrying
+about the boring details like null values, etc.</p>
+</blockquote>
+
+<p>This insight, along with scala’s <a href="https://twitter.github.io/scala_school/type-basics.html#inference">type inference</a> 
+abilities allows us to synthesize strongly typed code without having to specify parameter types.  We only need to know 
+the input and output types and need to know how to generate the code that extracts parameter values from the input type 
+(see plugins below).   Let’s revisit our example to go into more detail.  So the example above can be decomposed in 
+the two parameters:</p>
+
+<ul>
+  <li>height: required int</li>
+  <li>weight: optional float</li>
+</ul>
+
+<p>and the function of these two parameters. Let’s say that we could write scala functions to extract the height and width
+from the input type.  For simplicity, let’s say we are working with a <code class="highlighter-rouge">Map[String, Any]</code>.  Then, our functions could 
+be written like the following:</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">weight</span> <span class="k">=</span> <span class="o">(</span><span class="n">x</span><span class="k">:</span> <span class="kt">Map</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">Any</span><span class="o">])</span> <span class="k">=&gt;</span> <span class="n">x</span> <span class="n">get</span> <span class="o">{</span> <span class="s">"weight"</span> <span class="o">}</span> <span class="n">collect</span> <span class="o">{</span> <span class="k">case</span> <span class="n">x</span><span class="k">:</span> <span class="kt">Float</span> <span class="o">=&gt;</span> <span class="n">x</span> <span class="o">}</span>  <span class="c1">// Optional value.
+</span><span class="k">val</span> <span class="n">height</span> <span class="k">=</span> <span class="o">(</span><span class="n">x</span><span class="k">:</span> <span class="kt">Map</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">Any</span><span class="o">])</span> <span class="k">=&gt;</span> <span class="n">x</span><span class="o">(</span><span class="s">"height"</span><span class="o">).</span><span class="n">asInstanceOf</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span>                      <span class="c1">// Required value.
+</span></code></pre>
+</div>
+
+<p>Now let’s say that Aloha has a generic way of combining the return values of two functions (representing parameters) 
+using a third combining function.  We could easily write this as:</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="cm">/**
+ * @param u a function with domain X and codomain U 
+ * @param v a function with domain X and codomain V 
+ * @param f a function with domain U x V and codomain Y
+ * @tparam X the domain of the returned function  
+ * @tparam U the first intermediate type.
+ * @tparam V the second intermediate type.
+ * @tparam Y the codomain of the returned function 
+ * @return a function that takes a value x &amp;isin; X and return f(u(x), v(x))
+ */</span>
+<span class="k">def</span> <span class="n">functionWithTwoVariables</span><span class="o">[</span><span class="kt">X</span>, <span class="kt">U</span>, <span class="kt">V</span>, <span class="kt">Y</span><span class="o">](</span><span class="n">u</span><span class="k">:</span> <span class="kt">X</span> <span class="o">=&gt;</span> <span class="n">U</span><span class="o">,</span> <span class="n">v</span><span class="k">:</span> <span class="kt">X</span> <span class="o">=&gt;</span> <span class="n">V</span><span class="o">)(</span><span class="n">f</span><span class="k">:</span> <span class="o">(</span><span class="kt">U</span><span class="o">,</span> <span class="kt">V</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">Y</span><span class="o">)</span> <span class="k">=</span> 
+  <span class="o">(</span><span class="n">x</span><span class="k">:</span> <span class="kt">X</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">f</span><span class="o">(</span><span class="n">u</span><span class="o">(</span><span class="n">x</span><span class="o">),</span> <span class="n">v</span><span class="o">(</span><span class="n">x</span><span class="o">))</span>
+</code></pre>
+</div>
+
+<p>Then we could construct the BMI function easily from the definitions <code class="highlighter-rouge">weight</code> and <code class="highlighter-rouge">height</code> using the following:</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="c1">// functions w and h are defined above.
+// Type of bmi:   Map[String,Any] =&gt; Option[Double]
+</span><span class="k">val</span> <span class="n">bmi</span> <span class="k">=</span> <span class="n">functionWithTwoVariables</span><span class="o">(</span><span class="n">weight</span><span class="o">,</span> <span class="n">height</span><span class="o">)((</span><span class="n">weightOpt</span><span class="o">,</span> <span class="n">height</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="o">{</span>
+  <span class="k">import</span> <span class="nn">math.pow</span>
+  <span class="n">weightOpt</span><span class="o">.</span><span class="n">map</span> <span class="o">{</span> <span class="n">weight</span> <span class="k">=&gt;</span> 
+    <span class="mi">703</span> <span class="o">*</span> <span class="n">weight</span> <span class="o">/</span> <span class="n">pow</span><span class="o">(</span><span class="n">height</span><span class="o">,</span> <span class="mi">2</span><span class="o">)</span>
+  <span class="o">}</span> 
+<span class="o">})</span>
+</code></pre>
+</div>
+
+<p>Notice that once we defined <code class="highlighter-rouge">weight</code> and <code class="highlighter-rouge">height</code> above, we didn’t need to supply any type information.  We just 
+needed to know that the function <code class="highlighter-rouge">weight</code> returned an optional value.  Also notice that the body is identical 
+to how the feature looked in the original specification.</p>
+
+<p>This begs the question, how is this possible?  The answer is the <a href="https://en.wikipedia.org/wiki/Semantics">semantics</a> 
+implementation.</p>
+
+<h2 id="semantics">Semantics</h2>
+
+<p>Simply put, the semantics is the thing that gives meaning to the features.  It is the interpreter that takes a 
+feature specification and a default value and turns this tuple into working functions that extract and process data.</p>
+
+<p>For instance, in the BMI example used above, the semantics was responsible for turning the statement</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="mi">703</span> <span class="o">*</span> <span class="n">$</span><span class="o">{</span><span class="n">weight</span><span class="o">}</span> <span class="o">/</span> <span class="n">pow</span><span class="o">(</span><span class="n">$</span><span class="o">{</span><span class="n">height</span><span class="o">},</span> <span class="mi">2</span><span class="o">)</span>
+</code></pre>
+</div>
+
+<p>into a function with domain <code class="highlighter-rouge">Map[String, Any]</code> and codomain <code class="highlighter-rouge">Option[Double]</code>.</p>
+
+<p>The semantics has additional responsibilities including knowing about the domain of the features.  The API contract
+for semantics is rather vague.  It’s up to the individual implementations of semantics to define how pluggable it 
+wants to be.</p>
+
+<h3 id="compiled-semantics">Compiled Semantics</h3>
+
+<p>Aloha currently has one main type of Semantics, namely 
+<a href="aloha-core/scaladocs/index.html#com.eharmony.aloha.semantics.compiled.CompiledSemantics">CompiledSemantics</a>. CompiledSemantics 
+is extremely powerful because it allows:</p>
+
+<ol>
+  <li>the use of any arbitrary scala code</li>
+  <li>importing code defined inside <em>OR</em> outside the Aloha library</li>
+</ol>
+
+<p>The CompiledSemantics is responsible for transforming the feature specification to a function but it delegates 
+to a plugin for the synthesis of the code responsible for the parameter extraction.  This will become clear soon,
+but before continuing, a brief note.</p>
+
+<h4 id="a-note-on-the-power-of-imports">A Note on the Power of Imports</h4>
+
+<p>It is important to note that the ability to import is <strong>extremely powerful</strong>!  By allowing imports, Aloha can 
+easily be extended outside the library.  Imports provide the power analogous to 
+<a href="https://en.wikipedia.org/wiki/User-defined_function">user-defined functions</a> (UDFs) in databases, but imports 
+are actually much more powerful due to scala’s facility for 
+<a href="http://daily-scala.blogspot.com/2010/04/implicit-parameters.html">implicit parameters</a>.</p>
+
+<blockquote>
+
+  <p>Imports can do more than just add language features. They can <em>change the meaning of the language</em>.</p>
+
+</blockquote>
+
+<p>Imports are specified globally in CompiledSemantics, away from where the features are specified. This is by design 
+so that the same specifications can have different meaning in different problem domains.  The consequence is that 
+imports need to be used with caution, especially when referencing implicit language features.  The following example 
+illustrates this.</p>
+
+<p>Imagine a third party developer wrote the following code</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">package</span> <span class="nn">com.fictitious.company</span>
+
+<span class="k">object</span> <span class="nc">Ops</span> <span class="o">{</span>
+  <span class="cm">/**
+   * @param v an explicit value
+   * @param a an implicit value to add to v 
+   * @param ring A type class representing an algebraic ring.
+   * @tparam A the type of algebraic ring
+   * @return ''v'' added to some value ''a'' in the implicit scope
+   */</span>
+  <span class="k">def</span> <span class="n">add</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">v</span><span class="k">:</span> <span class="kt">A</span><span class="o">)(</span><span class="k">implicit</span> <span class="n">a</span><span class="k">:</span> <span class="kt">A</span><span class="o">,</span> <span class="n">ring</span><span class="k">:</span> <span class="kt">Numeric</span><span class="o">[</span><span class="kt">A</span><span class="o">])</span> <span class="k">=</span> <span class="n">ring</span><span class="o">.</span><span class="n">plus</span><span class="o">(</span><span class="n">v</span><span class="o">,</span> <span class="n">a</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="k">object</span> <span class="nc">Implicits</span> <span class="o">{</span>
+  <span class="k">implicit</span> <span class="k">val</span> <span class="n">two</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">2</span> 
+  <span class="k">implicit</span> <span class="k">val</span> <span class="n">four</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<p>Let’s assume a feature specification: <code class="highlighter-rouge">add(${some.value})</code> and the parameter 
+<code class="highlighter-rouge">${some.value}</code> has an integer value, <em>1</em>. If the imports were:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">com.fictitious.company.Ops.add</code></li>
+  <li><code class="highlighter-rouge">com.fictitious.company.Implicits.two</code></li>
+</ul>
+
+<p>Then the output of the feature would be <em>3</em> in this instance.  If we changed the imports to</p>
+
+<ul>
+  <li><code class="highlighter-rouge">com.fictitious.company.Ops.add</code></li>
+  <li><code class="highlighter-rouge">com.fictitious.company.Implicits.four</code></li>
+</ul>
+
+<p>then the <strong>same feature specification</strong> would yield a value of <em>5</em>.  While this can be extremely useful, it can also
+be extremely dangerous.  It is imperative to understand the imports being imported into scope.</p>
+
+<h3 id="protobuf-plugin">Protobuf Plugin</h3>
+
+<p>Currently there are a few main CompiledSemantics plugins.  The first is
+<a href="/aloha/docs/api/index.html#com.eharmony.aloha.semantics.compiled.plugin.proto.CompiledSemanticsProtoPlugin">CompiledSemanticsProtoPlugin</a> located
+in the <code class="highlighter-rouge">com.eharmony.aloha.semantics.compiled.plugin.proto</code> package in <code class="highlighter-rouge">aloha-io-proto</code>. This
+plugin allows for arbitrary kinds of <a href="https://developers.google.com/protocol-buffers/">Protocol Buffer</a> instances 
+that extend <a href="https://developers.google.com/protocol-buffers/docs/reference/java/com/google/protobuf/GeneratedMessage">GeneratedMessage</a>.</p>
+
+<p>See <a href="aloha-core/dependencies.html">dependencies</a> for the version of protocol buffers used in Aloha.  At the time of 
+this writing, Aloha uses protocol buffers 2.4.1.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="c1">// Scala Code: Constructing a compiled semantics protocol buffer plugin is easy.
+</span><span class="k">import</span> <span class="nn">com.eharmony.aloha.semantics.compiled.plugin.proto.CompiledSemanticsProtoPlugin</span>
+<span class="k">import</span> <span class="nn">com.eharmony.aloha.test.proto.TestProtoBuffs.Abalone</span>
+
+<span class="k">val</span> <span class="n">plugin</span> <span class="k">=</span> <span class="nc">CompiledSemanticsProtoPlugin</span><span class="o">[</span><span class="kt">Abalone</span><span class="o">]</span>
+
+<span class="c1">// pass to compiled semantics ... (more on this later)
+</span></code></pre>
+</div>
+
+<h3 id="avro-plugin">Avro Plugin</h3>
+
+<p>Aloha Also supports Avro input and output.  The support for this in located in the <code class="highlighter-rouge">aloha-io-avro</code> module.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">java.io.File</span>
+<span class="k">import</span> <span class="nn">org.apache.avro.</span><span class="o">{</span><span class="nc">Protocol</span><span class="o">,</span> <span class="nc">Schema</span><span class="o">}</span>
+<span class="k">import</span> <span class="nn">org.apache.avro.generic.GenericRecord</span>
+<span class="k">import</span> <span class="nn">com.eharmony.aloha.semantics.compiled.plugin.avro.CompiledSemanticsAvroPlugin</span>
+
+<span class="c1">// Get the Avro Schema.
+</span><span class="k">val</span> <span class="n">alohaRoot</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">File</span><span class="o">(</span><span class="k">new</span> <span class="nc">File</span><span class="o">(</span><span class="s">"."</span><span class="o">).</span><span class="n">getAbsolutePath</span><span class="o">.</span><span class="n">replaceFirst</span><span class="o">(</span><span class="s">"/aloha/.*$"</span><span class="o">,</span> <span class="s">"/aloha/"</span><span class="o">))</span>
+<span class="k">val</span> <span class="n">protocolFile</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">File</span><span class="o">(</span><span class="n">alohaRoot</span><span class="o">,</span> <span class="s">"aloha-io-avro/src/test/resources/avro/test.avpr"</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">protocol</span> <span class="k">=</span> <span class="nc">Protocol</span><span class="o">.</span><span class="n">parse</span><span class="o">(</span><span class="n">protocolFile</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">schema</span> <span class="k">=</span> <span class="n">protocol</span><span class="o">.</span><span class="n">getType</span><span class="o">(</span><span class="s">"Test"</span><span class="o">)</span>
+
+<span class="c1">// Pass the Avro Schema to plugin.  Need to specify the type associated with the Schema.
+</span><span class="k">val</span> <span class="n">plugin</span> <span class="k">=</span> <span class="nc">CompiledSemanticsAvroPlugin</span><span class="o">[</span><span class="kt">GenericRecord</span><span class="o">](</span><span class="n">schema</span><span class="o">)</span>
+
+<span class="c1">// pass to compiled semantics ... (more on this later)
+</span></code></pre>
+</div>
+
+<h4 id="future-structured-input-datatypes-aloha-may-support">Future structured input datatypes Aloha may support</h4>
+
+<p>One of the niceties of Aloha is that it allows models to accept structured input in a typesafe way.  Currently, this 
+is limited to protocol buffers but we’d like to extend allow to integrate with other serialization protocols such as</p>
+
+<ul>
+  <li><a href="https://thrift.apache.org">Thrift</a></li>
+</ul>
+
+<h3 id="csv-plugin">CSV Plugin</h3>
+
+<p>Another kind of CompiledSemantics plugin currently in use is the</p>
+
+<p><a href="/aloha/docs/api/index.html#com.eharmony.aloha.semantics.compiled.plugin.csv.CompiledSemanticsCsvPlugin">CompiledSemanticsCsvPlugin</a> located
+in the <code class="highlighter-rouge">com.eharmony.aloha.semantics.compiled.plugin.csv</code> package in <code class="highlighter-rouge">aloha-core</code>. This plugin
+allows the user to specify <a href="https://en.wikipedia.org/wiki/Delimiter-separated_values">Delimiter-separated values</a> 
+with lots of different underlying input types.  This plugin takes string-based data and turns it into strongly typed 
+data that can encode fields with types:</p>
+
+<ul>
+  <li>Booleans</li>
+  <li>Enumerated Type Values (Categorical Variables)</li>
+  <li>32-bit and 64-bit integers</li>
+  <li>32-bit and 64-bit floating point numbers</li>
+  <li>Strings</li>
+  <li>Vectorized inputs</li>
+  <li>Optional inputs</li>
+</ul>
+
+<p>Specifying the plugin is easy.  It just requires providing a column name to column type map.  The types come from
+<a href="aloha/docs/api/index.html#com.eharmony.aloha.semantics.compiled.plugin.csv.CsvTypes$">com.eharmony.aloha.semantics.compiled.plugin.csv.CsvTypes</a>.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="c1">// Scala Code
+</span><span class="k">import</span> <span class="nn">com.eharmony.aloha.semantics.compiled.plugin.csv.CompiledSemanticsCsvPlugin</span>
+<span class="k">import</span> <span class="nn">com.eharmony.aloha.semantics.compiled.plugin.csv.CsvTypes.</span><span class="o">{</span><span class="nc">IntType</span><span class="o">,</span> <span class="nc">FloatOptionType</span><span class="o">}</span>
+
+<span class="k">val</span> <span class="n">plugin</span> <span class="k">=</span> <span class="nc">CompiledSemanticsCsvPlugin</span><span class="o">(</span>
+  <span class="s">"height"</span> <span class="o">-&gt;</span> <span class="nc">IntType</span><span class="o">,</span>
+  <span class="s">"weight"</span> <span class="o">-&gt;</span> <span class="nc">FloatOptionType</span>
+<span class="o">)</span>
+</code></pre>
+</div>
+
+<p>Notice that since <a href="/aloha/docs/api/index.html#com.eharmony.aloha.semantics.compiled.plugin.csv.CompiledSemanticsCsvPlugin">CompiledSemanticsCsvPlugin</a> extends
+<a href="/aloha/docs/api/index.html#com.eharmony.aloha.semantics.compiled.CompiledSemanticsPlugin">CompiledSemanticsPlugin</a>[<a href="/aloha/docs/api/index.html#com.eharmony.aloha.semantics.compiled.plugin.csv.CsvLine">CsvLine</a>],
+the features produced by a <a href="/aloha/docs/api/index.html#com.eharmony.aloha.semantics.compiled.CompiledSemantics">CompiledSemantics</a> instance
+parameterized by an <a href="/aloha/docs/api/index.html#com.eharmony.aloha.semantics.compiled.plugin.csv.CompiledSemanticsCsvPlugin">CompiledSemanticsCsvPlugin</a> operate
+on instances of <a href="/aloha/docs/api/index.html#com.eharmony.aloha.semantics.compiled.plugin.csv.CsvLine">CsvLine</a>.  It
+is therefore necessary to produce instances of CsvLine to make use of this plugin.  This is pretty easy to do though.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">com.eharmony.aloha.semantics.compiled.plugin.csv.CsvLines</span>
+
+<span class="c1">// Same as:
+//   val tsvLinesWithDefaults = CsvLines(Map("height" -&gt; 0, "weight" -&gt; 1))
+</span><span class="k">val</span> <span class="n">tsvLines</span> <span class="k">=</span> <span class="nc">CsvLines</span><span class="o">(</span>
+  <span class="nc">Map</span><span class="o">(</span>                     <span class="c1">// 0-based field indices
+</span>    <span class="s">"height"</span> <span class="o">-&gt;</span> <span class="mi">0</span><span class="o">,</span> 
+    <span class="s">"weight"</span> <span class="o">-&gt;</span> <span class="mi">1</span>
+  <span class="o">),</span>
+  <span class="nc">Map</span><span class="o">.</span><span class="n">empty</span><span class="o">,</span>               <span class="c1">// enums: Map[String, Enum] 
+</span>  <span class="s">"\t"</span><span class="o">,</span>                    <span class="c1">// fs (field separator) 
+</span>  <span class="s">","</span><span class="o">,</span>                     <span class="c1">// ifs (intra-field separator, for vectorized inputs)
+</span>  <span class="o">(</span><span class="n">s</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">s</span> <span class="o">==</span> <span class="s">""</span><span class="o">,</span>  <span class="c1">// missingData function 
+</span>  <span class="kc">false</span><span class="o">,</span>                   <span class="c1">// errorOnOptMissingField 
+</span>  <span class="kc">false</span>                    <span class="c1">// errorOnOptMissingEnum
+</span><span class="o">)</span>
+</code></pre>
+</div>
+
+<p>Once in possession of a <code class="highlighter-rouge">CsvLines</code> instance, it’s easy to generate <code class="highlighter-rouge">CsvLine</code> instances:</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">com.eharmony.aloha.semantics.compiled.plugin.csv.CsvLine</span>
+
+<span class="k">val</span> <span class="n">csvLines</span> <span class="k">=</span> <span class="nc">CsvLines</span><span class="o">(</span><span class="nc">Map</span><span class="o">(</span><span class="s">"height"</span> <span class="o">-&gt;</span> <span class="mi">0</span><span class="o">,</span> <span class="s">"weight"</span> <span class="o">-&gt;</span> <span class="mi">1</span><span class="o">),</span> <span class="n">fs</span> <span class="k">=</span> <span class="s">","</span><span class="o">)</span>
+
+<span class="k">val</span> <span class="n">oneCsvLine</span><span class="k">:</span> <span class="kt">CsvLine</span> <span class="o">=</span> <span class="n">csvLines</span><span class="o">(</span><span class="s">"72, 175"</span><span class="o">)</span> <span class="c1">// height = 72 inches, weight = 175 lbs.
+</span><span class="n">assert</span><span class="o">(</span><span class="mi">72</span> <span class="o">==</span> <span class="n">oneCsvLine</span><span class="o">.</span><span class="n">i</span><span class="o">(</span><span class="s">"height"</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="nc">Some</span><span class="o">(</span><span class="mf">175f</span><span class="o">)</span> <span class="o">==</span> <span class="n">oneCsvLine</span><span class="o">.</span><span class="n">of</span><span class="o">(</span><span class="s">"weight"</span><span class="o">))</span>
+
+<span class="k">val</span> <span class="n">manyCsvLinesUsingVarArgs</span><span class="k">:</span> <span class="kt">Vector</span><span class="o">[</span><span class="kt">CsvLine</span><span class="o">]</span> <span class="k">=</span> <span class="n">csvLines</span><span class="o">(</span><span class="s">"72, 175"</span><span class="o">,</span> <span class="s">"70, 180"</span><span class="o">,</span> <span class="s">"64, 110"</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">csvLineIterator</span><span class="k">:</span> <span class="kt">Iterator</span><span class="o">[</span><span class="kt">CsvLine</span><span class="o">]</span> <span class="k">=</span> <span class="n">csvLines</span><span class="o">(</span><span class="nc">Iterator</span><span class="o">(</span><span class="s">"72, 175"</span><span class="o">,</span> <span class="s">"70, 180"</span><span class="o">,</span> <span class="s">"64, 110"</span><span class="o">))</span>
+<span class="k">val</span> <span class="n">csvLineVector</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="kt">CsvLine</span><span class="o">]</span> <span class="k">=</span> <span class="n">csvLines</span><span class="o">(</span><span class="nc">Seq</span><span class="o">(</span><span class="s">"72, 175"</span><span class="o">,</span> <span class="s">"70, 180"</span><span class="o">,</span> <span class="s">"64, 110"</span><span class="o">))</span>
+<span class="k">val</span> <span class="n">nonStrictVectorOfCsvLine</span> <span class="k">=</span> <span class="n">csvLines</span><span class="o">.</span><span class="n">nonStrict</span><span class="o">(</span><span class="nc">Vector</span><span class="o">(</span><span class="s">"72, 175"</span><span class="o">,</span> <span class="s">"70, 180"</span><span class="o">,</span> <span class="s">"64, 110"</span><span class="o">))</span>
+</code></pre>
+</div>
+
+<p>There are many ways to get one or multiple lines CSV lines.  These methods, found in
+<a href="aloha/docs/api/index.html#com.eharmony.aloha.semantics.compiled.plugin.csv.CsvLines">CsvLines</a>,
+are very general and
+have <a href="https://en.wikipedia.org/wiki/Evaluation_strategy#Strict_evaluation">strict</a> and
+<a href="https://en.wikipedia.org/wiki/Evaluation_strategy#Non-strict_evaluation">non-strict</a> versions.
+These methods transform collections passed to them and should retain the collection shape
+appropriately.</p>
+
+<h2 id="factory">Factory</h2>
+
+<p>Factories are important to create models:</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="c1">// Scala Code
+</span><span class="k">import</span> <span class="nn">com.eharmony.aloha.audit.impl.OptionAuditor</span>
+<span class="k">import</span> <span class="nn">com.eharmony.aloha.factory.ModelFactory</span>
+<span class="k">import</span> <span class="nn">com.eharmony.aloha.semantics.compiled.CompiledSemantics</span>
+<span class="k">import</span> <span class="nn">com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler</span>
+<span class="k">import</span> <span class="nn">com.eharmony.aloha.semantics.compiled.plugin.csv.CompiledSemanticsCsvPlugin</span>
+<span class="k">import</span> <span class="nn">com.eharmony.aloha.semantics.compiled.plugin.csv.CsvTypes.</span><span class="o">{</span><span class="nc">IntType</span><span class="o">,</span> <span class="nc">FloatOptionType</span><span class="o">}</span>
+<span class="k">import</span> <span class="nn">java.io.File</span>
+<span class="k">import</span> <span class="nn">scala.concurrent.ExecutionContext.Implicits.global</span>
+
+<span class="cm">/** @return a cache directory if possible */</span>
+<span class="k">def</span> <span class="n">cacheDir</span><span class="o">()</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">File</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
+  <span class="k">val</span> <span class="n">f</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">File</span><span class="o">(</span><span class="s">"/tmp/aloha/cache"</span><span class="o">)</span>
+  <span class="k">if</span> <span class="o">(</span><span class="n">f</span><span class="o">.</span><span class="n">exists</span><span class="o">)</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">f</span><span class="o">.</span><span class="n">isDirectory</span><span class="o">)</span>
+      <span class="nc">Option</span><span class="o">(</span><span class="n">f</span><span class="o">)</span>
+    <span class="k">else</span> <span class="nc">None</span>
+  <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">f</span><span class="o">.</span><span class="n">mkdirs</span><span class="o">)</span>
+    <span class="nc">Option</span><span class="o">(</span><span class="n">f</span><span class="o">)</span>
+  <span class="k">else</span> <span class="nc">None</span>
+<span class="o">}</span>
+
+<span class="c1">// vvvvv  Define the semantics  vvvvvvvvvvvvvvvvvvvvvv
+</span>
+<span class="c1">// -----  Define the plugin  -------------------------
+</span><span class="k">val</span> <span class="n">plugin</span> <span class="k">=</span> <span class="nc">CompiledSemanticsCsvPlugin</span><span class="o">(</span>
+  <span class="s">"profile.user_id"</span> <span class="o">-&gt;</span> <span class="nc">IntType</span>
+<span class="o">)</span>
+<span class="c1">// -----  Define the plugin  -------------------------
+</span>
+
+<span class="c1">// Imports allow extensions to the language.  These can be anything on
+// the classpath, and can be defined outside of Aloha.  Importing BasicFunctions
+// is not required but it's like Aloha's version of Predef to make things work
+// better / more easily.
+</span><span class="k">val</span> <span class="n">imports</span> <span class="k">=</span> <span class="nc">Seq</span><span class="o">(</span><span class="s">"scala.math._"</span><span class="o">,</span> <span class="s">"com.eharmony.aloha.feature.BasicFunctions._"</span><span class="o">)</span>
+
+<span class="c1">// Compiled semantics is the most general.  It requires a compiler, a plugin
+// and a sequence of imports.
+</span><span class="k">val</span> <span class="n">semantics</span> <span class="k">=</span> <span class="nc">CompiledSemantics</span><span class="o">(</span><span class="nc">TwitterEvalCompiler</span><span class="o">(</span><span class="n">classCacheDir</span> <span class="k">=</span> <span class="n">cacheDir</span><span class="o">()),</span> <span class="n">plugin</span><span class="o">,</span> <span class="n">imports</span><span class="o">)</span>
+<span class="c1">// ^^^^^  Define the semantics  ^^^^^^^^^^^^^^^^^^^^^^
+</span>
+<span class="c1">// Create an Auditor
+</span><span class="k">val</span> <span class="n">auditor</span> <span class="k">=</span> <span class="nc">OptionAuditor</span><span class="o">[</span><span class="kt">Double</span><span class="o">]()</span>
+
+<span class="c1">// Create a model factory.  It requires a semantics to make sense of features
+// and an auditor to report predictions in the proper container.
+</span><span class="k">val</span> <span class="n">factory</span> <span class="k">=</span> <span class="nc">ModelFactory</span><span class="o">.</span><span class="n">defaultFactory</span><span class="o">(</span><span class="n">semantics</span><span class="o">,</span> <span class="n">auditor</span><span class="o">)</span>
+
+<span class="k">val</span> <span class="n">modelFile</span> <span class="k">=</span> <span class="o">{</span>
+  <span class="k">val</span> <span class="n">alohaRoot</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">File</span><span class="o">(</span><span class="k">new</span> <span class="nc">File</span><span class="o">(</span><span class="s">"."</span><span class="o">).</span><span class="n">getAbsolutePath</span><span class="o">.</span><span class="n">replaceFirst</span><span class="o">(</span><span class="s">"/aloha/.*$"</span><span class="o">,</span> <span class="s">"/aloha/"</span><span class="o">))</span>
+  <span class="k">new</span> <span class="nc">File</span><span class="o">(</span><span class="n">alohaRoot</span><span class="o">,</span> <span class="s">"aloha-core/src/test/resources/fizzbuzz.json"</span><span class="o">)</span>
+<span class="o">}</span>
+
+<span class="c1">// type: scala.util.Try[com.eharmony.aloha.models.Model[CsvLine, Double]]
+</span><span class="k">val</span> <span class="n">modelAttempt</span> <span class="k">=</span> <span class="n">factory</span><span class="o">.</span><span class="n">fromFile</span><span class="o">(</span><span class="n">modelFile</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">model</span> <span class="k">=</span> <span class="n">modelAttempt</span><span class="o">.</span><span class="n">get</span>
+</code></pre>
+</div>
+
+<p>Once we have a model, we can create some input data and run the model.  So, based on this data:</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">val</span> <span class="n">csvLines</span> <span class="k">=</span> <span class="nc">CsvLines</span><span class="o">(</span><span class="nc">Map</span><span class="o">(</span><span class="s">"profile.user_id"</span> <span class="o">-&gt;</span> <span class="mi">0</span><span class="o">))</span>
+<span class="k">val</span> <span class="n">lines</span> <span class="k">=</span> <span class="n">csvLines</span><span class="o">(</span><span class="mi">10</span> <span class="n">to</span> <span class="mi">15</span> <span class="n">map</span> <span class="o">(</span><span class="n">i</span> <span class="k">=&gt;</span> <span class="n">i</span><span class="o">.</span><span class="n">toString</span><span class="o">))</span>
+</code></pre>
+</div>
+
+<p>we can use the model to predict.  Since the model is just a function, this is rather easy.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">predictions</span> <span class="k">=</span> <span class="n">lines</span> <span class="n">map</span> <span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">model</span><span class="o">(</span><span class="n">x</span><span class="o">))</span> <span class="c1">// or just 'lines map model'
+</span><span class="n">predictions</span><span class="k">:</span> <span class="kt">scala.collection.immutable.IndexedSeq</span><span class="o">[</span><span class="kt">Option</span><span class="o">[</span><span class="kt">Double</span><span class="o">]]</span> <span class="k">=</span> <span class="nc">Vector</span><span class="o">(</span><span class="nc">Some</span><span class="o">(-</span><span class="mf">4.0</span><span class="o">),</span> <span class="nc">Some</span><span class="o">(</span><span class="mf">11.0</span><span class="o">),</span> <span class="nc">Some</span><span class="o">(-</span><span class="mf">2.0</span><span class="o">),</span> <span class="nc">Some</span><span class="o">(</span><span class="mf">13.0</span><span class="o">),</span> <span class="nc">Some</span><span class="o">(</span><span class="mf">14.0</span><span class="o">),</span> <span class="nc">Some</span><span class="o">(-</span><span class="mf">6.0</span><span class="o">))</span>
+
+<span class="n">scala</span><span class="o">&gt;</span> <span class="k">val</span> <span class="n">inputs</span> <span class="k">=</span> <span class="n">lines</span> <span class="n">map</span> <span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">x</span><span class="o">.</span><span class="n">i</span><span class="o">(</span><span class="s">"profile.user_id"</span><span class="o">))</span>
+<span class="n">inputs</span><span class="k">:</span> <span class="kt">scala.collection.immutable.IndexedSeq</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Vector</span><span class="o">(</span><span class="mi">10</span><span class="o">,</span> <span class="mi">11</span><span class="o">,</span> <span class="mi">12</span><span class="o">,</span> <span class="mi">13</span><span class="o">,</span> <span class="mi">14</span><span class="o">,</span> <span class="mi">15</span><span class="o">)</span>
+
+<span class="n">scala</span><span class="o">&gt;</span> <span class="o">(</span><span class="n">inputs</span> <span class="n">zip</span> <span class="n">predictions</span><span class="o">).</span><span class="n">flatMap</span> <span class="o">{</span> <span class="k">case</span> <span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="n">p</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">y</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">))</span> <span class="o">}.</span><span class="n">mkString</span><span class="o">(</span><span class="s">"\n"</span><span class="o">)</span>
+<span class="n">res48</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=</span>
+<span class="o">(</span><span class="mi">10</span><span class="o">,-</span><span class="mf">4.0</span><span class="o">)</span>
+<span class="o">(</span><span class="mi">11</span><span class="o">,</span><span class="mf">11.0</span><span class="o">)</span>
+<span class="o">(</span><span class="mi">12</span><span class="o">,-</span><span class="mf">2.0</span><span class="o">)</span>
+<span class="o">(</span><span class="mi">13</span><span class="o">,</span><span class="mf">13.0</span><span class="o">)</span>
+<span class="o">(</span><span class="mi">14</span><span class="o">,</span><span class="mf">14.0</span><span class="o">)</span>
+<span class="o">(</span><span class="mi">15</span><span class="o">,-</span><span class="mf">6.0</span><span class="o">)</span>
+</code></pre>
+</div>
+
+<p>For more information on creating semantics and factories, see the <a href="/aloha/docs/creating_semantics.html">Creating Semantics</a> page.</p>
+</section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/aloha/highlight/highlight.pack.js"></script><script>hljs.configure({
+languages:['scala','java','bash']
+});
+hljs.initHighlighting();
+             </script><script src="/aloha/js/main.js"></script><script src="/aloha/js/kazari.js"></script><script>
+$(document).ready(function() {
+	kazari.KazariPlugin().decorateCode('https://scala-evaluator-212.herokuapp.com/eval', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.S2F6YXJp.Jl2eqMfw8IakJF93PjxTbrf-8YUJgX5OoOfy5JHE8Yw', '', 'solarized-dark')
+})
+    </script></body></html>
