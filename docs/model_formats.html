@@ -1,0 +1,2384 @@
+<html><head><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><title>Aloha</title><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="Generic machine learning, lazy features" /><meta name="author" content="eHarmony" /><meta name="og:image" content="/aloha/img/poster.png" /><meta name="og:title" content="Aloha" /><meta name="og:site_name" content="Aloha" /><meta name="og:url" content="http://eharmony.github.io/aloha" /><meta name="og:type" content="website" /><meta name="og:description" content="Generic machine learning, lazy features" /><meta name="twitter:image" content="/aloha/img/poster.png" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:site" content="" /><meta name="kazari-dependencies" content="" /><meta name="kazari-resolvers" content="" /><link rel="icon" type="image/png" href="/aloha/img/favicon.png" /><link rel="icon" type="image/png" sizes="16x16" href="/aloha/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/aloha/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/aloha/img/favicon32x32.png" /><link rel="icon" type="image/png" sizes="48x48" href="/aloha/img/favicon48x48.png" /><link rel="icon" type="image/png" sizes="57x57" href="/aloha/img/favicon57x57.png" /><link rel="icon" type="image/png" sizes="60x60" href="/aloha/img/favicon60x60.png" /><link rel="icon" type="image/png" sizes="64x64" href="/aloha/img/favicon64x64.png" /><link rel="icon" type="image/png" sizes="70x70" href="/aloha/img/favicon70x70.png" /><link rel="icon" type="image/png" sizes="72x72" href="/aloha/img/favicon72x72.png" /><link rel="icon" type="image/png" sizes="76x76" href="/aloha/img/favicon76x76.png" /><link rel="icon" type="image/png" sizes="96x96" href="/aloha/img/favicon96x96.png" /><link rel="icon" type="image/png" sizes="114x114" href="/aloha/img/favicon114x114.png" /><link rel="icon" type="image/png" sizes="120x120" href="/aloha/img/favicon120x120.png" /><link rel="icon" type="image/png" sizes="128x128" href="/aloha/img/favicon128x128.png" /><link rel="icon" type="image/png" sizes="144x144" href="/aloha/img/favicon144x144.png" /><link rel="icon" type="image/png" sizes="150x150" href="/aloha/img/favicon150x150.png" /><link rel="icon" type="image/png" sizes="152x152" href="/aloha/img/favicon152x152.png" /><link rel="icon" type="image/png" sizes="196x196" href="/aloha/img/favicon196x196.png" /><link rel="icon" type="image/png" sizes="310x310" href="/aloha/img/favicon310x310.png" /><link rel="icon" type="image/png" sizes="310x150" href="/aloha/img/favicon310x150.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/aloha/highlight/styles/atom-one-light.css" /><link rel="stylesheet" href="/aloha/css/style.css" /><link rel="stylesheet" href="/aloha/css/palette.css" /><link rel="stylesheet" href="/aloha/css/codemirror.css" /><link rel="stylesheet" href="/aloha/css/kazari-style.css" /><link rel="stylesheet" href="/aloha/css/solarized-dark.css" /><link rel="stylesheet" href="/aloha/css/override.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/aloha/" class="brand"><div class="brand-wrapper"><span>Aloha</span></div></a></li> <li><a href="/aloha/docs/api/index.html" class="">API Docs</a></li> <li><a href="/aloha/docs/getting_started.html" class="">Getting Started (Data Sci)</a></li> <li><a href="/aloha/docs/getting_started_eng.html" class="">Getting Started (Data Eng)</a></li> <li><a href="/aloha/docs/dataset.html" class="">Constructing Datasets</a></li> <li><a href="/aloha/docs/in_depth_walkthrough.html" class="">In Depth Walkthrough</a></li> <li><a href="/aloha/docs/model_formats.html" class="">Model Formats</a></li> <li><a href="/aloha/docs/release_notes.html" class="">Release Notes</a></li></ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li id="gh-eyes-item" class="hidden-xs"><a href="https://github.com/eharmony/aloha"><i class="fa fa-eye"></i><span>WATCH<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs"><a href="https://github.com/eharmony/aloha"><i class="fa fa-star-o"></i><span>STARS<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('Aloha Generic machine learning, lazy features');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('Aloha Generic machine learning, lazy features');"><i class="fa fa-facebook"></i></a></li><li><a href="#" onclick="shareSiteGoogle();"><i class="fa fa-google-plus"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="eharmony" data-github-repo="aloha"><div class="content-wrapper"><section><h1 id="model-formats">Model Formats</h1>
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<h3 id="common-required-json-fields">Common Required JSON Fields</h3>
+
+<ul>
+  <li><code class="highlighter-rouge">modelType</code> is a string defining the type of model the JSON in the same object block represents.  These values 
+are predefined within the model definitions and won’t change without a major version change since Aloha uses 
+<a href="http://semver.org">semantic versioning</a>.  See a model description below to determine the associated <code class="highlighter-rouge">modelType</code>
+field.</li>
+  <li><code class="highlighter-rouge">modelId</code> is a JSON object that acts as an identifier for models.  It is represented by an object with two fields 
+<code class="highlighter-rouge">id</code>, a 64-bit integer and <code class="highlighter-rouge">name</code>, a string.</li>
+</ul>
+
+<h3 id="models-should-be-immutable">Models Should be Immutable</h3>
+
+<blockquote>
+  <p><strong>NOTE</strong>: While Aloha doesn’t place any special importance of the uniqueness of these model IDs and doesn’t 
+assign any special semantic meaning to these fields, <em>Aloha users</em> <strong><em>SHOULD</em></strong> <em>place special importance 
+on the uniqueness of the numeric <code class="highlighter-rouge">id</code>.</em></p>
+</blockquote>
+
+<p>This is just a suggestion but it will pay huge dividends in terms of cleaner data collection:</p>
+
+<blockquote>
+  <p>Models should for practical purposes be immutable.  This means that whenever a model is edited in such a way that 
+the model functionally changes, the model’s <code class="highlighter-rouge">modelId</code>’s <code class="highlighter-rouge">id</code> field should be changed <strong>And all ancestor models’ 
+<code class="highlighter-rouge">modelId</code>’s <code class="highlighter-rouge">id</code> field should change.</strong></p>
+</blockquote>
+
+<h2 id="model-types">Model Types</h2>
+
+<ul>
+  <li><a href="#Categorical_distribution_model">Categorical distribution model</a>: 
+returns pseudo-random values based on a designated
+<a href="https://en.wikipedia.org/wiki/Categorical_distribution">Categorical distribution</a></li>
+  <li><a href="#Constant_model">Constant model</a>: returns a constant value</li>
+  <li><a href="#Decision_tree_model">Decision tree model</a>: a standard <a href="https://en.wikipedia.org/wiki/Decision_tree">decision tree</a></li>
+  <li><a href="#Double-to-Long_model">Double-to-Long model</a>: provides an 
+<a href="https://en.wikipedia.org/wiki/Affine_transformation">affine transformation</a> from Double values to Long values</li>
+  <li><a href="#Error_model">Error model</a>: a model for returning errors rather than returning a score or throwing an exception.</li>
+  <li><a href="#Error-swallowing_model">Error-swallowing model</a>: swallows all errors (exceptions) and returns a <em>no-score</em> if an
+error is encountered.</li>
+  <li><a href="#Model_decision_tree_model">Model decision tree model</a>: a <a href="https://en.wikipedia.org/wiki/Decision_tree">decision tree</a>
+whose nodes are models that when reached are applied to the input data.</li>
+  <li><a href="#Regression_model">Regression model</a>: a <a href="https://en.wikipedia.org/wiki/Sparse_matrix">sparse</a> 
+<a href="https://en.wikipedia.org/wiki/Polynomial_regression">polynomial regression</a> model</li>
+  <li><a href="#Segmentation_model">Segmentation model</a>: a vanilla <a href="https://en.wikipedia.org/wiki/Market_segmentation">segmentation</a> 
+model based on linear search in an <a href="https://en.wikipedia.org/wiki/Interval_\(mathematics\)">interval</a> space</li>
+  <li><a href="#Vowpal_Wabbit_model">Vowpal Wabbit model</a>: a model exposing <a href="https://github.com/JohnLangford/vowpal_wabbit/wiki">VW</a> 
+through its <a href="https://github.com/JohnLangford/vowpal_wabbit/tree/master/java">JNI</a> wrapper</li>
+  <li><a href="#H2O_model">H<sub>2</sub>O model</a>: a model exposing the suite of <a href="https://h2o.ai">H<sub>2</sub>O</a> models</li>
+  <li><a href="#Epsilon_greedy_exploration_model">Epsilon greedy exploration model</a>: a model for doing 
+<a href="https://en.wikipedia.org/wiki/Multi-armed_bandit">epsilon greedy</a> style exploration.</li>
+  <li><a href="#Bootstrap_exploration_model">Bootstrap exploration model</a>: a model for doing
+exploration over a number of policies.</li>
+</ul>
+
+<h2 id="categorical-distribution-model">Categorical distribution model</h2>
+
+<p>A Categorical distribution model returns pseudo-random values based on a designated
+<a href="https://en.wikipedia.org/wiki/Categorical_distribution">Categorical distribution</a>.  It can be used for collecting 
+random data on which future models can be trained.  Its sampling is constant time, regardless of the number of 
+values in the distribution.</p>
+
+<h3 id="cd-json-fields">(CD) JSON Fields</h3>
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aCD_modelType">modelType</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td>modelId</td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aCD_features">features</a></td>
+    <td>Array</td>
+    <td>String</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aCD_probabilities">probabilities</a></td>
+    <td>Array</td>
+    <td>Number</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aCD_labels">labels</a></td>
+    <td>Array</td>
+    <td><b>OUTPUT</b></td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aCD_missing">missingOk</a></td>
+    <td>Boolean</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>false</td>
+  </tr>
+</table>
+
+<h3 id="cd-json-field-descriptions">(CD) JSON Field Descriptions</h3>
+
+<h4 id="cd-modeltype">(CD) modelType</h4>
+
+<p><code class="highlighter-rouge">modelType</code> field must be <code class="highlighter-rouge">CategoricalDistribution</code>.</p>
+
+<h4 id="cd-features">(CD) features</h4>
+
+<p><code class="highlighter-rouge">features</code> is an array of strings, where each string contains an Aloha feature specification.  Each of these strings
+should just contain a variable definition.  These features are used to create a hash on which the pseudo-randomness
+is based.  It can be thought of as the <a href="https://en.wikipedia.org/wiki/Statistical_unit">statistical unit</a> for the 
+experiment being run.</p>
+
+<p>An example value might be:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">[</span><span class="w"> </span><span class="s2">"${profile.user_id}"</span><span class="p">,</span><span class="w"> </span><span class="s2">"1"</span><span class="w"> </span><span class="p">]</span><span class="w"> 
+</span></code></pre>
+</div>
+
+<p>where the second element, <em>1</em>, acts as a <a href="https://en.wikipedia.org/wiki/Salt_\(cryptography\)">hash salt</a>.  When using
+unique hash salts for every hash, one can avoid interaction in multiple hashes.  For more information on salting 
+including an example of issues that can arise, see 
+<a href="https://deaktator.github.io/presentations/prob-testing/#/10">Salts and Seeds</a> in 
+<a href="https://deaktator.github.io/presentations/prob-testing">Testing in an Unsure World</a> by 
+<a href="https://deaktator.github.io">Ryan Deak</a>.</p>
+
+<h4 id="cd-probabilities">(CD) probabilities</h4>
+
+<p><code class="highlighter-rouge">probabilities</code> is an array of non-negative numbers.  These values, once 
+<a href="https://en.wikipedia.org/wiki/Normalization_\(statistics\)">normalized</a>, will provide the probability of 
+selecting one of the associated <em>labels</em> at the same index in the 
+<a href="https://en.wikipedia.org/wiki/Parallel_array">parallel</a> <code class="highlighter-rouge">labels</code> array.  While these values needn’t be normalized 
+in the JSON, it may help to supply normalized values if exact normalized probabilities can be provided.  If exact 
+values cannot be provided, it’s OK to provide approximations, so long as the ratios are the same as the final 
+normalized <a href="https://en.wikipedia.org/wiki/Probability_vector">probability vector</a>.  For instance, the following are
+both perfectly fine, but I would opt for the second:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">[</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">]</span><span class="w">
+</span></code></pre>
+</div>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">[</span><span class="w"> </span><span class="mf">0.33</span><span class="p">,</span><span class="w"> </span><span class="mf">0.33</span><span class="p">,</span><span class="w"> </span><span class="mf">0.33</span><span class="w"> </span><span class="p">]</span><span class="w">
+</span></code></pre>
+</div>
+
+<h4 id="cd-labels">(CD) labels</h4>
+
+<p><code class="highlighter-rouge">labels</code> are the actual values returned when a value is sampled from the distribution.  The <em>type of value</em> in 
+<code class="highlighter-rouge">labels</code> is dependent on the model’s output type.  For instance, if the model output type is a string, then the 
+JSON value type in <code class="highlighter-rouge">labels</code> will be  strings.  If the output type is a 64-bit float, the JSON type in the <code class="highlighter-rouge">labels</code> 
+array will be <code class="highlighter-rouge">Number</code>.</p>
+
+<h4 id="cd-missingok">(CD) missingOk</h4>
+
+<p><code class="highlighter-rouge">missingOk</code> determines whether the model should return a value when at least one of the values in <code class="highlighter-rouge">features</code> 
+could not be determined.  If <code class="highlighter-rouge">false</code>, no score will be returned.  If <code class="highlighter-rouge">true</code>, then a constant will be used in place 
+of the feature value and will be incorporated into the hash.</p>
+
+<h3 id="cd-json-examples">(CD) JSON Examples</h3>
+
+<p>This example samples values <em>{ 1, 2, 3, 4 }</em> based on a user ID and the number of days since Jan 1, 1970.  This means
+that for any day, regardless of how many times the model is called, the same user will always get the same value.  This
+value can however change from day to day.</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CategoricalDistribution"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"model with E[X] = 3"</span><span class="w"> </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"features"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"${profile.id}"</span><span class="p">,</span><span class="w"> </span><span class="s2">"${calculated_values.days_since_epoch}"</span><span class="p">,</span><span class="w"> </span><span class="s2">"1"</span><span class="w"> </span><span class="p">],</span><span class="w">
+  </span><span class="nt">"probabilities"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">0.1</span><span class="p">,</span><span class="w"> </span><span class="mf">0.2</span><span class="p">,</span><span class="w"> </span><span class="mf">0.3</span><span class="p">,</span><span class="w"> </span><span class="mf">0.4</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">,</span><span class="w">
+  </span><span class="nt">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="p">],</span><span class="w">
+  </span><span class="nt">"missingOk"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>Imagine a situation where <em>Alice</em> and <em>Bob</em> are talking to each other and each of them is equally likely to start
+a conversation with the other person.  But with a one percent probability <em>Manny</em> will intercept the message and 
+will forward his own message to the person from whom the message did not originate.  This model can 
+probabilistically model the sender of the message that was received by either <em>Alice</em> or <em>Bob</em>.</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CategoricalDistribution"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"man-in-the-middle-model"</span><span class="w"> </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"features"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"${conversation.id}"</span><span class="p">,</span><span class="w"> </span><span class="s2">"2"</span><span class="w"> </span><span class="p">],</span><span class="w">
+  </span><span class="nt">"probabilities"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">0.495</span><span class="p">,</span><span class="w"> </span><span class="mf">0.495</span><span class="p">,</span><span class="w"> </span><span class="mf">0.01</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">,</span><span class="w">
+  </span><span class="nt">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"Bob"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Alice"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Manny"</span><span class="w"> </span><span class="p">],</span><span class="w">
+  </span><span class="nt">"missingOk"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h2 id="constant-model">Constant model</h2>
+
+<p>A constant model always returns the same value.</p>
+
+<h3 id="c-json-fields">(C) JSON Fields</h3>
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aC_modelType">modelType</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td>modelId</td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aC_value">value</a></td>
+    <td><b>OUTPUT</b></td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+</table>
+
+<h3 id="c-json-field-descriptions">(C) JSON Field Descriptions</h3>
+
+<h4 id="c-modeltype">(C) modelType</h4>
+
+<p><code class="highlighter-rouge">modelType</code> field must be <code class="highlighter-rouge">Constant</code>.</p>
+
+<h4 id="c-value">(C) value</h4>
+
+<p><code class="highlighter-rouge">value</code> field’s <em>type</em> is dependent on the model’s output type.</p>
+
+<h3 id="c-json-examples">(C) JSON Examples</h3>
+
+<p>Always return <em>1</em>.  Whether <em>1</em> is a 32-bit integer, 64-bit integer, 32-bit or 64-bit float is dependent on the 
+output type of the model.</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Constant"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"model that always returns 1"</span><span class="w"> </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>Always return <code class="highlighter-rouge">"awesome"</code>.  This model will parse assuming the output type of the model is <code class="highlighter-rouge">String</code>.</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Constant"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"model that always returns 'awesome'"</span><span class="w"> </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"awesome"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h2 id="decision-tree-model">Decision tree model</h2>
+
+<p>Decision trees are what one might expect from a <a href="https://en.wikipedia.org/wiki/Decision_tree">decision tree</a>: they 
+encode the ability to return different values based on 
+<a href="https://en.wikipedia.org/wiki/Predicate_\(mathematical_logic\)">predicates</a> that hold for a given input datum.
+Aloha encodes trees as a <a href="https://en.wikipedia.org/wiki/Graph_\(mathematics\)">graph</a>-like structure so that the
+code could be extended to <a href="https://en.wikipedia.org/wiki/Directed_acyclic_graph">DAG</a>s in a straightforward way.
+The first node in the <code class="highlighter-rouge">nodes</code> array is considered to be the root node.</p>
+
+<h3 id="dt-json-fields">(DT) JSON Fields</h3>
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aDT_modelType">modelType</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td>modelId</td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aDT_returnBest">returnBest</a></td>
+    <td>Boolean</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aDT_missingDataOk">missingDataOk</a></td>
+    <td>Boolean</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aDT_nodes">nodes</a></td>
+    <td>Array</td>
+    <td><a href="#aDT_nodes">Node<sup>*</sup></a></td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+</table>
+
+<h3 id="dt-json-field-descriptions">(DT) JSON Field Descriptions</h3>
+
+<h4 id="dt-modeltype">(DT) modelType</h4>
+
+<p><code class="highlighter-rouge">modelType</code> field must be <code class="highlighter-rouge">DecisionTree</code>.</p>
+
+<h4 id="dt-returnbest">(DT) returnBest</h4>
+
+<p><code class="highlighter-rouge">returnBest</code> is a Boolean that when <code class="highlighter-rouge">true</code> let’s the decision tree return a value associated with an 
+<a href="https://en.wikipedia.org/wiki/Tree_\(data_structure\)#Terminologies_used_in_Trees">internal node</a> when no 
+further progress down the tree can be made.</p>
+
+<p>When set to false, the model returns an error rather than a score.</p>
+
+<p>Usually, in a decision tree, the inability to produce a path from the tree root to a leaf is indicative of a problem.
+The most common problem being that the branching logic at a given node is not
+<a href="https://en.wikipedia.org/wiki/Collectively_exhaustive_events">exhaustive</a>.  This will happen when the tree algorithm
+checks if it can proceed to any of its children and the predicates associated with each child return <code class="highlighter-rouge">false</code>.</p>
+
+<h4 id="dt-missingdataok">(DT) missingDataOk</h4>
+
+<p><code class="highlighter-rouge">missingDataOk</code> is a Boolean telling whether missing data is OK.  In the event that <code class="highlighter-rouge">missingDataOk</code> is set to <code class="highlighter-rouge">false</code>,
+when a variable in a node selector is missing, the node selector should stop and report to the decision tree that it
+can’t make a decision on which child to traverse.  The subsequent behavior is dictated by <a href="#aDT_returnBest">returnBest</a>.</p>
+
+<p>If <code class="highlighter-rouge">missingDataOk</code> is <code class="highlighter-rouge">true</code>, then when a node selector encounters missing data, it can still recover.  For instance,
+when a <code class="highlighter-rouge">linear</code> node selector encounters missing data in one of the predicates, it will assume the predicate evaluates
+to <code class="highlighter-rouge">false</code> and will continue on to the next predicate.  This behavior may vary across node selectors of different
+types.</p>
+
+<h4 id="dt-nodes">(DT) nodes</h4>
+
+<p><code class="highlighter-rouge">nodes</code> contains the list of nodes in the decision tree.  As was mentioned above, trees are encoded in a tabular
+way to provide future extensibility to decision <a href="https://en.wikipedia.org/wiki/Directed_acyclic_graph">DAG</a>s.  The 
+first node in the <code class="highlighter-rouge">nodes</code> array is considered to be the root node. The structure of a node is as follows:</p>
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aNode_id">id</a></td>
+    <td>Number</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aNode_value">value</a></td>
+    <td><b>OUTPUT</b></td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#Node_Selectors">selector</a></td>
+    <td><a href="#Node_Selectors">Node Selector<sup>*</sup></a></td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>N / A</td>
+  </tr>
+</table>
+
+<h5 id="node-id">(Node) id</h5>
+
+<p><code class="highlighter-rouge">id</code> is the node id and is used by <a href="#Node_Selectors">node selectors</a> to determine which child to traverse.  Note that 
+this is independent of the model’s <code class="highlighter-rouge">id</code>.</p>
+
+<h5 id="node-value">(Node) value</h5>
+
+<p><code class="highlighter-rouge">value</code> in nodes are the values potentially return by the decision tree when a given node is selected.</p>
+
+<h5 id="node-selector">(Node) selector</h5>
+
+<p><code class="highlighter-rouge">selector</code> is the data type responsible for determining which child to traverse.  It is required for internal nodes
+ but should not be included for leaf nodes.  For the different type of node selectors, see the 
+ <a href="#Node_Selectors">Node Selectors</a> section.</p>
+
+<h3 id="node-selectors">Node Selectors</h3>
+
+<p><em>Node selectors</em> are responsible for determining which child in the tree to traverse.  Currently, the following 
+types of node selectors exist:</p>
+
+<ul>
+  <li><a href="#Linear_Node_Selector">Linear node selector</a></li>
+  <li><a href="#Random_Node_Selector">Random node selector</a></li>
+</ul>
+
+<h4 id="linear-node-selector">Linear Node Selector</h4>
+
+<p>Linear node selectors work like an 
+<a href="https://en.wikipedia.org/wiki/Conditional_\(computer_programming\)#If.E2.80.93then.28.E2.80.93else.29">IF-THEN-ELSE</a>
+statement.  Children are ordered and a predicate is associated with each child.  A 
+<a href="https://en.wikipedia.org/wiki/Linear_search">linear search</a> is performed to find the first predicate that yields a
+value of <em>true</em>.  If no predicate yields true, then the decision tree split is said to be not 
+<a href="https://en.wikipedia.org/wiki/Collectively_exhaustive_events">exhaustive</a>.  In this case, the 
+<a href="#returnBest">returnBest</a> field of the decision tree determines the subsequent behavior.  This selector algorithm acts
+in <em>O</em>(<em>N</em>) time where <em>N</em> is node’s the number of children.</p>
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#alinear_ns_selectorType">selectorType</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#alinear_ns_children">children</a></td>
+    <td>Array</td>
+    <td>Number</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#alinear_ns_predicates">predicates</a></td>
+    <td>Array</td>
+    <td>String</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+</table>
+
+<h5 id="linear-ns-selectortype">(linear ns) selectorType</h5>
+
+<p><code class="highlighter-rouge">selectorType</code> must be <code class="highlighter-rouge">linear</code>.</p>
+
+<h5 id="linear-ns-children">(linear ns) children</h5>
+
+<p><code class="highlighter-rouge">children</code> is a list of <code class="highlighter-rouge">node</code> <code class="highlighter-rouge">id</code> values.  This array is <a href="https://en.wikipedia.org/wiki/Parallel_array">parallel</a>
+to the <code class="highlighter-rouge">predicates</code> array.  If index <em>i</em> in <code class="highlighter-rouge">predicates</code> is the first predicate yielding <em>true</em>, then the value at 
+index <em>i</em> in <code class="highlighter-rouge">children</code> will contain the <em>id</em> of the node that will be visited.</p>
+
+<h5 id="linear-ns-predicates">(linear ns) predicates</h5>
+
+<p>The <code class="highlighter-rouge">predicates</code> array contains strings where each string is an Aloha feature specification representing a Boolean 
+function.  This array is <a href="https://en.wikipedia.org/wiki/Parallel_array">parallel</a> to the <code class="highlighter-rouge">children</code> array.  If 
+index <em>i</em> in <code class="highlighter-rouge">predicates</code> is the first predicate yielding <em>true</em>, then the value at index <em>i</em> in <code class="highlighter-rouge">children</code> will 
+contain the <em>id</em> of the node that will be visited.</p>
+
+<h4 id="random-node-selector">Random Node Selector</h4>
+
+<p>A random node selector provides a way of pseudo-randomly splitting traffic between one or more outcomes.  This 
+selector algorithm acts in <em>O</em>(1) time regardless of the number of children.</p>
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#arandom_ns_selectorType">selectorType</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#arandom_ns_children">children</a></td>
+    <td>Array</td>
+    <td>Number</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#arandom_ns_probabilities">probabilities</a></td>
+    <td>Array</td>
+    <td>Number</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#arandom_ns_features">features</a></td>
+    <td>Array</td>
+    <td>String</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+</table>
+
+<h5 id="random-ns-selectortype">(random ns) selectorType</h5>
+
+<p><code class="highlighter-rouge">selectorType</code> must be <code class="highlighter-rouge">random</code>.</p>
+
+<h5 id="random-ns-children">(random ns) children</h5>
+
+<p><code class="highlighter-rouge">children</code> is a list of <code class="highlighter-rouge">node</code> <code class="highlighter-rouge">id</code> values.  This array is <a href="https://en.wikipedia.org/wiki/Parallel_array">parallel</a>
+to the <code class="highlighter-rouge">probabilities</code> array.  Samples drawn from the 
+<a href="https://en.wikipedia.org/wiki/Categorical_distribution">Categorical distribution</a> backed by <code class="highlighter-rouge">probabilities</code> yield an
+index into the <code class="highlighter-rouge">children</code> array.  The <code class="highlighter-rouge">id</code> at the chosen index in the <code class="highlighter-rouge">children</code> array is used to select the child
+to traverse.</p>
+
+<p><strong>Note</strong>: There is a special case when the length of <code class="highlighter-rouge">children</code> can be one less than the length of the <code class="highlighter-rouge">probabilities</code>
+array.  In such a case, if <code class="highlighter-rouge">returnBest</code> is set to <em>true</em> then when the sampling from the categorical distribution 
+selects last index in <code class="highlighter-rouge">probabilities</code>, the <em>current node</em> (and not a child node) is selected.  See JSON examples
+for how this is useful.</p>
+
+<h5 id="random-ns-probabilities">(random ns) probabilities</h5>
+
+<p><code class="highlighter-rouge">probabilities</code> is a (possibly unnormalized) <a href="https://en.wikipedia.org/wiki/Probability_vector">probability vector</a>.
+This array is <a href="https://en.wikipedia.org/wiki/Parallel_array">parallel</a> to the <code class="highlighter-rouge">children</code> array.  Samples drawn 
+from the <a href="https://en.wikipedia.org/wiki/Categorical_distribution">Categorical distribution</a> backed by <code class="highlighter-rouge">probabilities</code> 
+yield an index into the <code class="highlighter-rouge">children</code> array.  The <code class="highlighter-rouge">id</code> at the chosen index in the <code class="highlighter-rouge">children</code> array is used to select 
+the child to traverse.</p>
+
+<p>While <code class="highlighter-rouge">probabilities</code> will be normalized and it’s not strictly required to provide a normalized probabilities in
+<code class="highlighter-rouge">probabilities</code>, it is most likely more readable to provide normalized probabilities as long as the ratios can be 
+encoded exactly.  For instance</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">[</span><span class="w"> </span><span class="mf">0.33</span><span class="p">,</span><span class="w"> </span><span class="mf">0.33</span><span class="p">,</span><span class="w"> </span><span class="mf">0.33</span><span class="w"> </span><span class="p">]</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>may be preferable to</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">[</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">]</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>What should not be done is to compromise the ratios for readability.  For instance, if we want to encode probabilities 
+of <em>1/3</em>, we should <strong>NOT</strong> encode them as:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">[</span><span class="w"> </span><span class="mf">0.33</span><span class="p">,</span><span class="w"> </span><span class="mf">0.34</span><span class="p">,</span><span class="w"> </span><span class="mf">0.33</span><span class="p">]</span><span class="w">
+</span></code></pre>
+</div>
+
+<h5 id="random-ns-features">(random ns) features</h5>
+
+<p><code class="highlighter-rouge">features</code> is an array of strings, where each string contains an Aloha feature specification.  Each of these strings
+should just contain a variable definition.  These features are used to create a hash on which the pseudo-randomness
+is based.  It can be thought of as the <a href="https://en.wikipedia.org/wiki/Statistical_unit">statistical unit</a> for the 
+experiment being run.</p>
+
+<p>An example value might be:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">[</span><span class="w"> </span><span class="s2">"${profile.user_id}"</span><span class="p">,</span><span class="w"> </span><span class="s2">"1"</span><span class="w"> </span><span class="p">]</span><span class="w"> 
+</span></code></pre>
+</div>
+
+<p>where the second element, <em>1</em>, acts as a <a href="https://en.wikipedia.org/wiki/Salt_\(cryptography\)">hash salt</a>.  When using
+unique hash salts for every hash, one can avoid interaction in multiple hashes.  For more information on salting 
+including an example of issues that can arise, see 
+<a href="https://deaktator.github.io/presentations/prob-testing/#/10">Salts and Seeds</a> in 
+<a href="https://deaktator.github.io/presentations/prob-testing">Testing in an Unsure World</a> by 
+<a href="https://deaktator.github.io">Ryan Deak</a>.</p>
+
+<h3 id="dt-json-examples">(DT) JSON Examples</h3>
+
+<h4 id="dt-one-node-tree-example">(DT) One Node Tree Example</h4>
+
+<p>The simplest tree would be a one node tree that is equivalent to a <a href="#Constant_model">Constant model</a>:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DecisionTree"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"one node tree"</span><span class="p">},</span><span class="w">
+  </span><span class="nt">"returnBest"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"missingDataOk"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"nodes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h4 id="dt-three-node-tree-example">(DT) Three Node Tree Example</h4>
+
+<p>A basic tree with one split can be encoded as follows (deeper trees can just repeat the pattern).  It will output the 
+string “<em>short</em>” when the height is less than 66 (<em>presumably inches</em>).  If height is greater than or equal to 66, 
+“<em>tall</em>” is returned.  Note that the <code class="highlighter-rouge">value</code> field is related to the model output type so this model will only 
+parse when the model output type is <code class="highlighter-rouge">String</code>.</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DecisionTree"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"height decision tree"</span><span class="p">},</span><span class="w">
+  </span><span class="nt">"returnBest"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"missingDataOk"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"nodes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> 
+    </span><span class="p">{</span><span class="w"> 
+      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> 
+      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"This value won't be returned b/c returnBest and missingDataOk are both false."</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"selector"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> 
+        </span><span class="nt">"selectorType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"linear"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"predicates"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"${profile.height} &lt; 66"</span><span class="p">,</span><span class="w"> </span><span class="s2">"true"</span><span class="w"> </span><span class="p">],</span><span class="w">
+        </span><span class="nt">"children"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="p">]</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"short"</span><span class="w"> </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tall"</span><span class="w"> </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h4 id="dt-random-branching-example">(DT) Random Branching Example</h4>
+
+<p>In the following example, we have a randomized split based on user id where 90% of the time, the value 1 is returned
+and 10% of the time, -1 is returned.  If the user ID is missing, the output value will be 0.  This is just for 
+illustration purposes.  Usually, you’ll want to add a constant salt to <code class="highlighter-rouge">features</code> like <code class="highlighter-rouge">[ "${profile.user_id}", "1" ]</code>.</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DecisionTree"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"90/10 random split"</span><span class="p">},</span><span class="w">
+  </span><span class="nt">"returnBest"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"missingDataOk"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"nodes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> 
+    </span><span class="p">{</span><span class="w"> 
+      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> 
+      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"selector"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> 
+        </span><span class="nt">"selectorType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"random"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"features"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"${profile.user_id}"</span><span class="w"> </span><span class="p">],</span><span class="w">
+        </span><span class="nt">"children"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="p">],</span><span class="w">
+        </span><span class="nt">"probabilities"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">0.9</span><span class="p">,</span><span class="w"> </span><span class="mf">0.1</span><span class="w"> </span><span class="p">]</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="w"> </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h4 id="dt-short-circuit-random-branching-example">(DT) Short-Circuit Random Branching Example</h4>
+
+<p>As was mentioned above, you could have a situation where you want to do something randomly with some probability
+by making the <code class="highlighter-rouge">children</code> array 1 element shorter than the <code class="highlighter-rouge">probabilities</code> array.  Let’s say that we want to do 
+the same thing as in the previous example but are willing to give users missing a user ID a negative one.  This 
+allows us to essentially reuse the root node for randomization and missing data purposes.  We can write that 
+model as follows:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DecisionTree"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"90/10 random split, user missing id get -1."</span><span class="p">},</span><span class="w">
+  </span><span class="nt">"returnBest"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"missingDataOk"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"nodes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> 
+    </span><span class="p">{</span><span class="w"> 
+      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> 
+      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"selector"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> 
+        </span><span class="nt">"selectorType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"random"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"features"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"${profile.user_id}"</span><span class="w"> </span><span class="p">],</span><span class="w">
+        </span><span class="nt">"children"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">],</span><span class="w">
+        </span><span class="nt">"probabilities"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">0.9</span><span class="p">,</span><span class="w"> </span><span class="mf">0.1</span><span class="w"> </span><span class="p">]</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h2 id="double-to-long-model">Double-to-Long model</h2>
+
+<p>The Double-to-Long model provides an <a href="https://en.wikipedia.org/wiki/Affine_transformation">affine transformation</a> 
+from Double values to Long values.  It works by applying the following transformation:</p>
+
+<p><em>v</em> = <em>scale</em> × <em>submodel value</em> + <em>translation</em><br />
+<em>v</em>′ = <em>IF round THEN</em> round(<em>v</em>) <em>ELSE</em> floor(<em>v</em>)<br />
+<em>output</em> = max(<em>clampLower</em>, min(<em>v</em>′, <em>clampUpper</em>))</p>
+
+<p>This model is useful for <a href="http://www.eharmony.com">eHarmony</a>-specific purposes, but others may find it useful as well.</p>
+
+<h3 id="dtl-json-fields">(DtL) JSON Fields</h3>
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aDtL_modelType">modelType</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td>modelId</td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aDtL_submodel">submodel</a></td>
+    <td><b>Model<sup>*</sup></b></td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aDtL_scale">scale</a></td>
+    <td>Number</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td><a href="#aDtL_translation">translation</a></td>
+    <td>Number</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td><a href="#aDtL_clampLower">clampLower</a></td>
+    <td>Number</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>-&infin;</td>
+  </tr>
+  <tr>
+    <td><a href="#aDtL_clampUpper">clampUpper</a></td>
+    <td>Number</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>&infin;</td>
+  </tr>
+  <tr>
+    <td><a href="#aDtL_round">round</a></td>
+    <td>Boolean</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>false</td>
+  </tr>
+</table>
+
+<h3 id="dtl-json-field-descriptions">(DtL) JSON Field Descriptions</h3>
+
+<h4 id="dtl-modeltype">(DtL) modelType</h4>
+
+<p><code class="highlighter-rouge">modelType</code> field must be <code class="highlighter-rouge">DoubleToLong</code>.</p>
+
+<h4 id="dtl-submodel">(DtL) submodel</h4>
+
+<p><code class="highlighter-rouge">submodel</code> must either be a JSON object containing an Aloha model or it can be a JSON object with exactly one field,
+<code class="highlighter-rouge">import</code> whose associated value is a JSON string containing an 
+<a href="https://commons.apache.org/proper/commons-vfs/filesystems.html">Apache VFS</a> URL.  For instance:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="nt">"import"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/path/to/aloha/model.json"</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>Either way, the submodel is expected to be a model that takes the same input type as the Double-to-Long model itself
+and the submodel should have an output type of Double.  The output to of the Double-to-Long model is obviously 
+expected to be a 64-bit long-valued integer.</p>
+
+<h4 id="dtl-scale">(DtL) scale</h4>
+
+<p><code class="highlighter-rouge">scale</code> is the multiplier in the affine transformation.  It can be any 64-bit float.  When not supplied, the default 
+value will be 1.</p>
+
+<h4 id="dtl-translation">(DtL) translation</h4>
+
+<p><code class="highlighter-rouge">translation</code> is the additive term in the affine transformation.  It can be any 64-bit float.  When not supplied, 
+the default value will be 0.</p>
+
+<h4 id="dtl-clamplower">(DtL) clampLower</h4>
+
+<p><code class="highlighter-rouge">clampLower</code> is the lower <a href="https://en.wikipedia.org/wiki/Clamping_\(graphics\)">clamp</a> value.  It is a 64-bit long-valued
+int.  When not supplied, the default value will be <code class="highlighter-rouge">-9,223,372,036,854,775,808</code>.</p>
+
+<h4 id="dtl-clampupper">(DtL) clampUpper</h4>
+
+<p><code class="highlighter-rouge">clampUpper</code> is the upper <a href="https://en.wikipedia.org/wiki/Clamping_\(graphics\)">clamp</a> value.  It is a 64-bit long-valued
+int.  When not supplied, the default value will be <code class="highlighter-rouge">9,223,372,036,854,775,807</code>.</p>
+
+<h4 id="dtl-round">(DtL) round</h4>
+
+<p><code class="highlighter-rouge">round</code> is a Boolean that determines whether the affine-transformed value should be rounded (<code class="highlighter-rouge">true</code>) or 
+<a href="https://en.wikipedia.org/wiki/Floor_and_ceiling_functions">floored</a> (<code class="highlighter-rouge">false</code>).</p>
+
+<h3 id="dtl-json-examples">(DtL) JSON Examples</h3>
+
+<h4 id="dtl-minimal-example">(DtL) Minimal Example</h4>
+
+<p>A double-to-long model whose submodel is a constant model returning 5.5.  The outer model floors <em>5.5</em> to the 64-bit long 
+value <em>5</em>.</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DoubleToLong"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w"> </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"submodel"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Constant"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Constant model returning 5.5"</span><span class="w"> </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">5.5</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h4 id="dtl-full-example">(DtL) Full Example</h4>
+
+<p>A double-to-long model whose submodel is a constant model returning <code class="highlighter-rouge">-13</code>.  The outer model multiplies by <code class="highlighter-rouge">-0.5</code>, adds 
+<code class="highlighter-rouge">2</code>, rounds, then takes the min of <code class="highlighter-rouge">clampUpper</code> (<code class="highlighter-rouge">8</code>) and <code class="highlighter-rouge">9</code>, which comes out to <code class="highlighter-rouge">8</code>.</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DoubleToLong"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w"> </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"clampLower"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"clampUpper"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="mf">-0.5</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"translation"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"round"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"submodel"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Constant"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Constant model returning -13"</span><span class="w"> </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">-13</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h2 id="error-model">Error model</h2>
+
+<p>An error model returns an error.  This is not the same as throwing an exception.  Error models return values.</p>
+
+<h3 id="e-json-fields">(E) JSON Fields</h3>
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aE_modelType">modelType</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td>modelId</td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aE_errors">errors</a></td>
+    <td>Array</td>
+    <td>String</td>
+    <td>true</td>
+    <td>Array[ "Error with unspecified reason." ]</td>
+  </tr>
+</table>
+
+<h3 id="e-json-field-descriptions">(E) JSON Field Descriptions</h3>
+
+<h4 id="e-modeltype">(E) modelType</h4>
+
+<p><code class="highlighter-rouge">modelType</code> field must be <code class="highlighter-rouge">Error</code>.</p>
+
+<h4 id="e-errors">(E) errors</h4>
+
+<p><code class="highlighter-rouge">errors</code> is an array of error strings to provide.  This is an optional parameter.  An empty array is permitted.</p>
+
+<h3 id="e-json-examples">(E) JSON Examples</h3>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Error"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w"> </span><span class="p">},</span><span class="w">
+</span><span class="err">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Error"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w"> </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"errors"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"error 1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"error 2"</span><span class="w"> </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h2 id="error-swallowing-model">Error-swallowing model</h2>
+
+<p>Error swallowing model makes an attempt to trap exceptions and return them as errors instead.  While this is not 
+foolproof, it was tested against 
+<a href="https://deaktator.github.io/2015/08/07/can-your-exception-handling-code-handle-the-schrodingerexception-juggernaut/">SchrodingerException</a>,
+an exception specifically designed to be as harmful as possible.  The implementation uses <code class="highlighter-rouge">scala.util.Try</code> which means 
+errors that are caught are dictated by 
+<a href="https://github.com/scala/scala/blob/v2.10.3/src/library/scala/util/control/NonFatal.scala">scala.util.control.NonFatal</a>.</p>
+
+<h3 id="es-json-fields">(ES) JSON Fields</h3>
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aES_modelType">modelType</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td>modelId</td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aES_submodel">submodel</a></td>
+    <td><b>Model<sup>*</sup></b></td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aES_recordErrorStackTraces">recordErrorStackTraces</a></td>
+    <td>Boolean</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>true</td>
+  </tr>
+</table>
+
+<h3 id="es-json-field-descriptions">(ES) JSON Field Descriptions</h3>
+
+<h4 id="es-modeltype">(ES) modelType</h4>
+
+<p><code class="highlighter-rouge">modelType</code> field must be <code class="highlighter-rouge">ErrorSwallowingModel</code>.</p>
+
+<h4 id="es-submodel">(ES) submodel</h4>
+
+<p><code class="highlighter-rouge">submodel</code> must either be a JSON object containing an Aloha model or it can be a JSON object with exactly one field,
+<code class="highlighter-rouge">import</code> whose associated value is a JSON string containing an 
+<a href="https://commons.apache.org/proper/commons-vfs/filesystems.html">Apache VFS</a> URL.  For instance:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="nt">"import"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/path/to/aloha/model.json"</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>Either way, the submodel is expected to be a model with the same input and output type as the Error-swallowing model 
+itself.</p>
+
+<h4 id="es-recorderrorstacktraces">(ES) recordErrorStackTraces</h4>
+
+<p><code class="highlighter-rouge">recordErrorStackTraces</code> is a boolean indicating whether to record stack traces in the returned error.</p>
+
+<h3 id="es-json-examples">(ES) JSON Examples</h3>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ErrorSwallowingModel"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="w"> </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"recordErrorStackTraces"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"submodel"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Regression"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="w"> </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"features"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"evil_feature"</span><span class="p">:</span><span class="w"> </span><span class="s2">"throw new RuntimeException"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"weights"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h2 id="model-decision-tree-model">Model decision tree model</h2>
+
+<p>Model decision tree models are just like <a href="#Decision_tree_model">Decision tree models</a> exception that the <code class="highlighter-rouge">value</code> field
+must either be a JSON object containing an Aloha model or it can be a JSON object representing a model import.
+For instance:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="nt">"import"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/path/to/aloha/model.json"</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>where <code class="highlighter-rouge">import</code> is a JSON string containing an
+<a href="https://commons.apache.org/proper/commons-vfs/filesystems.html">Apache VFS</a> URL.</p>
+
+<p>The submodels, input, and output types are expected to be the same as the input and output type of the model decision 
+tree model.  The model works by using the decision tree algorithm to select a node containing a model, and then it 
+applies the submodel it finds in the node to the same input data that was passed to the decision tree.</p>
+
+<p>For more information, see the section on <a href="#Decision_tree_model">Decision tree models</a>.</p>
+
+<h2 id="regression-model">Regression model</h2>
+
+<p>The regression model implementation in Aloha is a <a href="https://en.wikipedia.org/wiki/Sparse_matrix">sparse</a> 
+<a href="https://en.wikipedia.org/wiki/Polynomial_regression">polynomial regression</a> model.  This is a superset of and therefore
+subsumes <a href="https://en.wikipedia.org/wiki/Linear_regression">linear regression</a> models.</p>
+
+<h3 id="r-json-fields">(R) JSON Fields</h3>
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aR_modelType">modelType</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td>modelId</td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aR_features">features</a></td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aR_weights">weights</a></td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aR_higherOrderFeatures">higherOrderFeatures</a></td>
+    <td>Array</td>
+    <td>Object</td>
+    <td>false</td>
+    <td>Empty Array</td>
+  </tr>
+  <tr>
+    <td><a href="#aR_spline">spline</a></td>
+    <td>Array</td>
+    <td>Object</td>
+    <td>false</td>
+    <td>Empty Array</td>
+  </tr>
+  <tr>
+    <td><a href="#aR_numMissingThreshold">numMissingThreshold</a></td>
+    <td>Number</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>&infin;</td>
+  </tr>
+</table>
+
+<h3 id="r-json-field-descriptions">(R) JSON Field Descriptions</h3>
+
+<h4 id="r-modeltype">(R) modelType</h4>
+
+<p><code class="highlighter-rouge">modelType</code> field must be <code class="highlighter-rouge">Regression</code>.</p>
+
+<h4 id="r-features">(R) features</h4>
+
+<p><code class="highlighter-rouge">features</code> is the map of features that are included in the model.  The keys in the <code class="highlighter-rouge">features</code> represent the feature 
+names; the values can take on one of two forms.  They can either be a String or a JSON object.  If they are a JSON
+object, they must have the following format:</p>
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aR_feature_spec">spec</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aR_feature_defVal">defVal</a></td>
+    <td>Array</td>
+    <td>Array (2 elements. 0: (String) feature name, 1: (Number) feature value)</td>
+    <td>false</td>
+    <td>Empty Array</td>
+  </tr>
+</table>
+
+<h5 id="r-feature-spec">(R) feature spec</h5>
+
+<p><code class="highlighter-rouge">spec</code> contains an Aloha feature specification.  These feature specifications produce functions whose input type
+is the same as the regression model’s input type and the output type is an iterable collection of 
+(<em>String</em>, <em>Double</em>) key-value pairs.  Specifically, the Scala type is <code class="highlighter-rouge">scala.collection.Iterable[(String, Double)]</code>.
+An example of such a <code class="highlighter-rouge">spec</code> string is:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="s2">"Seq((\"\", ${profile.height}))"</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>This creates one key-value pair whose <em>key</em> is the empty string and whose <em>value</em> is the height extract from a 
+profile.  One might ask, “<em>why would the key be the empty string?</em>”  The answer is that the keys are prepended with the 
+feature name.  So, for instance, the above <em>spec</em> string might be included in a feature as follows:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Regression"</span><span class="p">,</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+  </span><span class="nt">"features"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"height"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"spec"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Seq((\"\", ${profile.height}))"</span><span class="w"> </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>Given the above model, let’s say the <code class="highlighter-rouge">profile.height</code> yields a value of <em>66</em>.  Then the feature key-value pairs produced 
+would be: { <code class="highlighter-rouge">("height", 66)</code> }.</p>
+
+<p>There is a lot of supporting code available to the Aloha user when importing 
+<code class="highlighter-rouge">com.eharmony.aloha.feature.BasicFunctions._</code>.  Among these is an implicit conversion from numeric types to sequences
+of key-value pairs.  This allows the user to write the previously mentioned Aloha function specification as:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="s2">"${profile.height}"</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>Aloha will take care of converting it to:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="s2">"Seq((\"\", ${profile.height}))"</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>assuming <code class="highlighter-rouge">profile.height</code> is an appropriate numeric type.</p>
+
+<h5 id="r-feature-defval">(R) feature defVal</h5>
+
+<p><strong>NOTE</strong>: <a href="https://deaktator.github.io">Ryan Deak</a>, author of Aloha has expressed a personal distaste for the use
+of this feature.  It can however create better models at the cost of readability and error reporting.</p>
+
+<p><code class="highlighter-rouge">defVal</code> is the value that is returned if the <code class="highlighter-rouge">spec</code> references a variable whose presence is <em>optional</em> and 
+whose value is not present for the current model input.  As with the Iterable of key-value pairs produced by the 
+function created by <code class="highlighter-rouge">spec</code>, keys will have the <em>feature name</em> prepended in the final feature value (see below for
+an example).</p>
+
+<p><code class="highlighter-rouge">defVal</code> is a JSON Array of Arrays.  The inner Array should contain a String followed by a Number.  For instance, you 
+may want to use something like the following:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">[[</span><span class="s2">"=UNKNOWN"</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">]]</span><span class="w">
+</span></code></pre>
+</div>
+
+<p><a href="http://www.eharmony.com">eHarmony</a> uses this in a lot of models.  Let’s put this into context:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Regression"</span><span class="p">,</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+  </span><span class="nt">"features"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"height"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"spec"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Seq((\"\", ${profile.height}))"</span><span class="p">,</span><span class="w"> </span><span class="nt">"defVal"</span><span class="p">:</span><span class="w"> </span><span class="p">[[</span><span class="s2">"=UNKNOWN"</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">]]</span><span class="w"> </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>and imagine <code class="highlighter-rouge">profile.height</code> is an optional variable that is not present in the current model input.  Then the model
+can’t produce the key-value for <em>height</em> feature and defaults to using <code class="highlighter-rouge">defVal</code> to produce: 
+{ <code class="highlighter-rouge">("height=UNKNOWN", 1)</code> }.  The reason we use the value <em>1</em> is that this is exactly the form of an 
+<a href="https://en.wikipedia.org/wiki/Dummy_variable_\(statistics\)">indicator variable</a>.  That way, the regression model
+can have an associated weight in the <strong>β</strong> vector.</p>
+
+<p>There is a consequence of providing a <code class="highlighter-rouge">defVal</code>.  When the <code class="highlighter-rouge">defVal</code> field is provided and its value is the non-empty Array,
+this will affect the reporting of the number of missing features.  For more information, see the 
+<a href="#aR_numMissingThreshold">numMissingThreshold</a> section.</p>
+
+<h5 id="r-spec-as-a-string">(R) spec (as a String)</h5>
+
+<p>As was mentioned above, features values in the regression model JSON can either be represented as a String or Object,
+the Object case is shown above.  If you don’t provide a <code class="highlighter-rouge">defVal</code> in the above object, the specification Object can 
+be replaced with just the <code class="highlighter-rouge">spec</code> value.  For instance, the example from above:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Regression"</span><span class="p">,</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+  </span><span class="nt">"features"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"height"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"spec"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Seq((\"\", ${profile.height}))"</span><span class="w"> </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>could be rewritten as:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Regression"</span><span class="p">,</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+  </span><span class="nt">"features"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"height"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Seq((\"\", ${profile.height}))"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>and with what we learned about imports, if <code class="highlighter-rouge">com.eharmony.aloha.feature.BasicFunctions._</code> is imported, the JSON can 
+be simplified further to:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Regression"</span><span class="p">,</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+  </span><span class="nt">"features"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"height"</span><span class="p">:</span><span class="w"> </span><span class="s2">"${profile.height}"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>This is easier to read and write and more aesthetically pleasing in general.</p>
+
+<h4 id="r-weights">(R) weights</h4>
+
+<p><code class="highlighter-rouge">weights</code> is a representation of the <em>first-order</em> feature weights in the regression <strong>β</strong> vector.  By
+<em>first-order</em>, we mean terms of <a href="https://en.wikipedia.org/wiki/Degree_of_a_polynomial">degree</a> <em>1</em> in the
+<a href="https://en.wikipedia.org/wiki/Polynomial">polynomial</a> expression which is being regressed in the model.</p>
+
+<p><code class="highlighter-rouge">weights</code> is a JSON Object where the keys are the same as the keys produced in the feature map.  The values are the
+weights associated with the each feature value.</p>
+
+<p><strong>NOTE</strong>: Only if the feature values (the numbers in the <a href="#aR_features">feature</a> key-value pairs) are 
+<a href="https://en.wikipedia.org/wiki/Standard_score#Calculation_from_raw_score">standardized</a>, can one infer feature
+importance from the magnitude of the weight values.  This is because if the weights are not 
+<a href="https://en.wikipedia.org/wiki/Standard_score#Calculation_from_raw_score">standardized</a>, the scales of the feature 
+values will differ and the weights will adapt to these scales.</p>
+
+<p>An example of weights is:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Regression"</span><span class="p">,</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+  </span><span class="nt">"weights"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"height"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.23</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"weight"</span><span class="p">:</span><span class="w"> </span><span class="mf">-2.34</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h4 id="r-higherorderfeatures">(R) higherOrderFeatures</h4>
+
+<p><code class="highlighter-rouge">higherOrderFeatures</code> encodes the weights associated with terms in the 
+<a href="https://en.wikipedia.org/wiki/Polynomial">polynomial</a> expression with 
+<a href="https://en.wikipedia.org/wiki/Degree_of_a_polynomial">degree</a> greater than <em>1</em>.  This is optional and is used for
+<a href="https://en.wikipedia.org/wiki/Polynomial_regression">polynomial regression</a> models but is not necessary for 
+<a href="https://en.wikipedia.org/wiki/Linear_regression">linear regression</a> models.  It is an <em>optional</em> field.  An example
+looks like:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Regression"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"features"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"m_ht_lt_63"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ind(${male.height} &lt; 63)"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"f_ht_gt_66"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ind(66 &lt; ${female.height})"</span><span class="p">,</span><span class="w">
+  </span><span class="err">}</span><span class="p">,</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+  </span><span class="nt">"higherOrderFeatures"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w"> 
+      </span><span class="nt">"wt"</span><span class="p">:</span><span class="w"> </span><span class="mf">-5.1</span><span class="p">,</span><span class="w"> 
+      </span><span class="nt">"features"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> 
+        </span><span class="nt">"m_ht_lt_63"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"m_ht_lt_63=true"</span><span class="p">],</span><span class="w"> 
+        </span><span class="nt">"f_ht_gt_66"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"f_ht_gt_66=true"</span><span class="p">]</span><span class="w"> 
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w"> 
+      </span><span class="nt">"wt"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.2</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"features"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"m_ht_lt_63"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"m_ht_lt_63=false"</span><span class="p">],</span><span class="w">
+        </span><span class="nt">"f_ht_gt_66"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"f_ht_gt_66=false"</span><span class="p">]</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aR_higherOrderFeatures_wt">wt</a></td>
+    <td>Number</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aR_higherOrderFeatures_features">features</a></td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+</table>
+
+<p>Given <code class="highlighter-rouge">features</code> with feature names “<em>m_ht_lt_63</em>” and “<em>f_ht_gt_66</em>”, where “<em>m_ht_lt_63</em>” is an indicator variable
+meaning male in a <a href="https://en.wikipedia.org/wiki/Dyad_\(sociology\)">dyad</a> has a height of less than 63 inches and 
+“<em>f_ht_gt_66</em>” means the female’s height is greater than 66 inches, we see that when the male is on the shorter 
+side and the female is taller, this has a disproportionally large negative effect versus when the male is either 
+not that much shorter (≤ 3 inches) or is taller than the the female.</p>
+
+<h5 id="r-higherorderfeatures-wt">(R) higherOrderFeatures wt</h5>
+
+<p>We can tell this because the <code class="highlighter-rouge">wt</code> field in each higher-order features.  This is the weight associated with the 
+<strong>β</strong> for the feature.  Within the features</p>
+
+<h5 id="r-higherorderfeatures-features">(R) higherOrderFeatures features</h5>
+
+<p><code class="highlighter-rouge">features</code> is a map where the keys are the feature names from the top-level <a href="#aR_features">features</a> map in the 
+regression model.  The value associated with a key is a non-empty Array containing the <strong>feature keys</strong> from the 
+features created by the top-level <a href="#aR_features">features</a> map.  That is, when a feature function produces the 
+Iterable of (<em>String</em>, <em>Double</em>) key-value pairs, the <em>String</em> in the first index of the tuple is the String 
+that goes in this Array.  It is possible to have Arrays of length larger than two.  This will happen most commonly 
+occurs when the term of interest in the polynomial is some variable raised to a power.</p>
+
+<p>For instance, imagine someone throwing a ball 80 mph (35.7632 <em>m</em>/<em>s</em>) at a 30° angle with a release point 
+8.25ft (2.5146 <em>m</em>) off the ground.  The vertical velocity component is 17.8816 <em>m</em>/<em>s</em> = 0.5 × 35.7632. 
+Using the equation from <a href="https://en.wikipedia.org/wiki/Classical_mechanics">classical mechanics</a>:</p>
+
+<p><em>h</em>(<em>t</em>) = 1/2<em>gt</em><sup>2</sup> + <em>v</em><sub>0</sub><em>t</em> + <em>h</em><sub>0</sub>     Where <em>g</em> = -9.8 <em>m</em>/<em>s</em></p>
+
+<p>the height of the ball in meters could be encoded as:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Regression"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"80mph throw at 30 degree angle"</span><span class="w"> </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"features"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"intercept"</span><span class="p">:</span><span class="w"> </span><span class="s2">"intercept"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="s2">"${time}"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"weights"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"intercept"</span><span class="p">:</span><span class="w"> </span><span class="mf">2.5146</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="mf">17.8816</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"higherOrderFeatures"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w"> </span><span class="nt">"wt"</span><span class="p">:</span><span class="w"> </span><span class="mf">-4.9</span><span class="p">,</span><span class="w"> </span><span class="nt">"features"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"time"</span><span class="p">,</span><span class="w"> </span><span class="s2">"time"</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w"> 
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h4 id="r-spline">(R) spline</h4>
+
+<p><code class="highlighter-rouge">spline</code> is an optional field representing a 
+<a href="https://en.wikipedia.org/wiki/Spline_\(mathematics\)">spline</a> function.  The spline is applied to the inner product 
+of the feature vector, <strong>X</strong> and the <strong>&amp;betal</strong> vector (<strong>Xβ</strong>); and acts like an 
+<a href="https://en.wikipedia.org/wiki/Generalized_linear_model#Link_function">inverse link function</a> in 
+<a href="https://en.wikipedia.org/wiki/Generalized_linear_model">GLM</a>s.  The reason a spline is provided rather than an 
+explicit link is that oftentimes we want to <a href="https://en.wikipedia.org/wiki/Calibration_\(statistics\)">calibrate</a> 
+our classifiers to ensure that the class probabilities yield accurate estimates.  For more information see
+<a href="http://cseweb.ucsd.edu/~elkan/">Charles Elkan</a>’s and <a href="http://www2.ic.uff.br/~bianca/">Bianca Zadrozny</a>’s papers on 
+model calibration or checkout Jan Hendrik Metzen’s 
+<a href="https://jmetzen.github.io/2015-04-14/calibration.html">blog post on calibration</a> for a nice explanation.</p>
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aR_spline_min">min</a></td>
+    <td>Number</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aR_spline_max">max</a></td>
+    <td>Number</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+    <tr>
+      <td><a href="#aR_spline_knots">knots</a></td>
+      <td>Array</td>
+      <td>Number</td>
+      <td>true</td>
+      <td>N / A</td>
+    </tr>
+</table>
+
+<h5 id="r-spline-min">(R) spline min</h5>
+
+<p><code class="highlighter-rouge">min</code> is the minimum value in the <a href="https://en.wikipedia.org/wiki/Domain_of_a_function">domain</a> of the spline.  Values
+less than <code class="highlighter-rouge">min</code> will be <a href="https://en.wikipedia.org/wiki/Clamping_\(graphics\)">clamped</a>.</p>
+
+<h5 id="r-spline-max">(R) spline max</h5>
+
+<p><code class="highlighter-rouge">max</code> is the minimum value in the <a href="https://en.wikipedia.org/wiki/Domain_of_a_function">domain</a> of the spline.  Values
+greater than <code class="highlighter-rouge">max</code> will be <a href="https://en.wikipedia.org/wiki/Clamping_\(graphics\)">clamped</a>.</p>
+
+<h5 id="r-spline-knots">(R) spline knots</h5>
+
+<p><code class="highlighter-rouge">knots</code> defines the <a href="https://en.wikipedia.org/wiki/Piecewise_linear_function">piecewise linear</a> 
+<a href="https://en.wikipedia.org/wiki/Spline_\(mathematics\)">spline</a>.  The knots are the values of the 
+<a href="https://en.wikipedia.org/wiki/Codomain">codmain</a>.  The associated 
+<a href="https://en.wikipedia.org/wiki/Domain_of_a_function">domain</a> values can be calculated from the <code class="highlighter-rouge">min</code>, <code class="highlighter-rouge">max</code>, and size
+of the <code class="highlighter-rouge">knots</code> Array.  The size of <code class="highlighter-rouge">knots</code> must be at least two, unless in the special case <code class="highlighter-rouge">min</code> equals <code class="highlighter-rouge">max</code>, in
+which case knots is expected to contain <em>exactly</em> one element.</p>
+
+<h4 id="r-nummissingthreshold">(R) numMissingThreshold</h4>
+
+<p><code class="highlighter-rouge">numMissingThreshold</code> is an optional integral value.  When supplied, if the number of <a href="#aR_features">features</a> that
+yield empty Iterables (<em>size zero</em>) <strong>exceeds</strong> <code class="highlighter-rouge">numMissingThreshold</code>, then an error rather than a score will be 
+returned.</p>
+
+<h3 id="r-json-examples">(R) JSON Examples</h3>
+
+<h4 id="r-basic-example">(R) Basic Example</h4>
+
+<p>This is the most basic regression model there is, just an intercept term:</p>
+
+<blockquote>
+  <p>0.5 = <strong>βX</strong> = [0.5]<sup>T</sup>[1]<sup>T</sup></p>
+</blockquote>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Regression"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"basic example"</span><span class="w"> </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"features"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"intercept"</span><span class="p">:</span><span class="w"> </span><span class="s2">"intercept"</span><span class="w"> </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"weights"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"intercept"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>There is a little bit going on here behind the scenes.  The <code class="highlighter-rouge">intercept</code> function that appears as the sole <em>value</em> in 
+the <code class="highlighter-rouge">features</code> map is a special function that is included when importing <code class="highlighter-rouge">com.eharmony.aloha.feature.BasicFuncions._</code>. 
+It is in the <code class="highlighter-rouge">com.eharmony.aloha.feature.Intercept</code> trait that is mixed into <code class="highlighter-rouge">BasicFuncions</code>.  What this function does
+is create one key-value pair: <code class="highlighter-rouge">("", 1.0)</code>.  Then, as has been mentioned before, the feature name is prepended to the 
+key, so the final key-value pair is <code class="highlighter-rouge">("intercept", 1.0)</code>.  The <code class="highlighter-rouge">1.0</code> represents the 
+<a href="https://en.wikipedia.org/wiki/Artificial_neuron#Basic_structure">bias term</a> and the associated <code class="highlighter-rouge">intercept</code> in the 
+<code class="highlighter-rouge">weights</code> map represents the model’s output when all <a href="https://en.wikipedia.org/wiki/Covariate">covariate</a> data is 
+omitted.</p>
+
+<h4 id="r-higherorderfeatures-example">(R) higherOrderFeatures Example</h4>
+
+<p>This is repeated from the <a href="#aR_higherOrderFeatures_features">higherOrderFeatures features</a> section.  It illusrates 
+modeling the equation
+<em>h</em>(<em>t</em>) = 1/2<em>gt</em><sup>2</sup> + <em>v</em><sub>0</sub><em>t</em> + <em>h</em><sub>0</sub>.  See
+that section for more information.</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Regression"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"80mph throw at 30 degree angle"</span><span class="w"> </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"features"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"intercept"</span><span class="p">:</span><span class="w"> </span><span class="s2">"intercept"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="s2">"${time}"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"weights"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"intercept"</span><span class="p">:</span><span class="w"> </span><span class="mf">2.5146</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="mf">17.8816</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"higherOrderFeatures"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w"> </span><span class="nt">"wt"</span><span class="p">:</span><span class="w"> </span><span class="mf">-4.9</span><span class="p">,</span><span class="w"> </span><span class="nt">"features"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"time"</span><span class="p">,</span><span class="w"> </span><span class="s2">"time"</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w"> 
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h2 id="segmentation-model">Segmentation model</h2>
+
+<p>Segmentation models take a submodel that returns a value with an imposed 
+<a href="https://en.wikipedia.org/wiki/Total_order">total ordering</a> and then create a
+<a href="https://en.wikipedia.org/wiki/Partition_of_a_set">partition</a> on the set of values the submodel produces.  The 
+segmentation model maps elements in the same induced 
+<a href="https://en.wikipedia.org/wiki/Equivalence_class">equivalence class</a> to a label unique to each class.</p>
+
+<h3 id="s-json-fields">(S) JSON Fields</h3>
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aS_modelType">modelType</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td>modelId</td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aS_subModel"><b>subModel</b></a></td>
+    <td><b>Model<sup>*</sup></b></td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aS_subModelOutputType">subModelOutputType</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aS_thresholds">thresholds</a></td>
+    <td>subModel Output</td>
+    <td><b>subModel Output</b></td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aS_labels">labels</a></td>
+    <td>Array</td>
+    <td><b>Output</b></td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+</table>
+
+<h3 id="s-json-field-descriptions">(S) JSON Field Descriptions</h3>
+
+<h4 id="s-modeltype">(S) modelType</h4>
+
+<p><code class="highlighter-rouge">modelType</code> field must be <code class="highlighter-rouge">Segmentation</code>.</p>
+
+<h4 id="s-submodel">(S) subModel</h4>
+
+<p><code class="highlighter-rouge">submodel</code> must either be a JSON object containing an Aloha model or it can be a JSON object that represents the 
+import of an external model.  The <code class="highlighter-rouge">import</code> field has an associated value which is a JSON string containing an 
+<a href="https://commons.apache.org/proper/commons-vfs/filesystems.html">Apache VFS</a> URL.  For instance:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="nt">"import"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/path/to/aloha/model.json"</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>Either way, the submodel is expected to be a model that takes the same input type as the Segmentation model itself
+and the submodel should have an output type dictated by the <a href="#aS_subModelOutputType">subModelOutputType</a> value.</p>
+
+<h4 id="s-submodeloutputtype">(S) subModelOutputType</h4>
+
+<p><code class="highlighter-rouge">subModelOutputType</code> determines the output type of the submodel.  <code class="highlighter-rouge">subModelOutputType</code> must be one of:</p>
+
+<ul>
+  <li>Byte</li>
+  <li>Short</li>
+  <li>Int</li>
+  <li>Long</li>
+  <li>Float</li>
+  <li>Double</li>
+  <li>String</li>
+</ul>
+
+<h4 id="s-thresholds">(S) thresholds</h4>
+
+<p><code class="highlighter-rouge">thresholds</code> is the set of values that partitions the space into intervals.  It should be sorted according to the
+natural <a href="https://en.wikipedia.org/wiki/Total_order">total ordering</a> associated with the output type of the submodel.<br />
+This Array must have one less element than the <code class="highlighter-rouge">labels</code> Array.  If, for instance, the submodel produces a value 
+“less than” the first value in <code class="highlighter-rouge">thresholds</code>, then the first element in <code class="highlighter-rouge">labels</code> is returned.  If that’s not the case, 
+the search continues until an element in <code class="highlighter-rouge">thresholds</code> is greater than the submodel output.  If there is no such value, 
+the last element in <code class="highlighter-rouge">labels</code> is returned.</p>
+
+<h4 id="s-labels">(S) labels</h4>
+
+<p><code class="highlighter-rouge">labels</code> contains the labels associated with each <a href="https://en.wikipedia.org/wiki/Equivalence_class">equivalence class</a> 
+induced by <code class="highlighter-rouge">thresholds</code>.  The type of each label must be the same as the Segmentation model output type.  <code class="highlighter-rouge">labels</code>
+must have one more element that <code class="highlighter-rouge">thresholds</code>.  See <a href="#aS_thresholds">thresholds</a> section for more details.</p>
+
+<h3 id="s-json-examples">(S) JSON Examples</h3>
+
+<p>The following shows a model whose output type is String, with a submodel that returns a value in { 1, 4, 5, 7 }.<br />
+The mapping from submodel value to Segmentation model value is:</p>
+
+<table>
+  <tr>
+    <th>subModel</th>
+    <th>Segmentation</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>smallest</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>second smallest</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td>second largest</td>
+  </tr>
+  <tr>
+    <td>7</td>
+    <td>largest</td>
+  </tr>
+</table>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Segmentation"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w"> </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"thresholds"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="p">],</span><span class="w">
+  </span><span class="nt">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"smallest"</span><span class="p">,</span><span class="w"> </span><span class="s2">"second smallest"</span><span class="p">,</span><span class="w"> </span><span class="s2">"second largest"</span><span class="p">,</span><span class="w"> </span><span class="s2">"largest"</span><span class="w"> </span><span class="p">],</span><span class="w">
+  </span><span class="nt">"subModelOutputType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Int"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"subModel"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CategoricalDistribution"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w"> </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"features"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"${profile.id}"</span><span class="p">,</span><span class="w"> </span><span class="s2">"1"</span><span class="w"> </span><span class="p">],</span><span class="w">
+    </span><span class="nt">"probabilities"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">0.25</span><span class="p">,</span><span class="w"> </span><span class="mf">0.25</span><span class="p">,</span><span class="w"> </span><span class="mf">0.25</span><span class="p">,</span><span class="w"> </span><span class="mf">0.25</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">,</span><span class="w">
+    </span><span class="nt">"labels"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="w"> </span><span class="p">],</span><span class="w">
+    </span><span class="nt">"missingOk"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h2 id="vowpal-wabbit-model">Vowpal Wabbit model</h2>
+
+<p>The <a href="https://github.com/JohnLangford/vowpal_wabbit/wiki">Vowpal Wabbit</a> model provides the feature extraction 
+capabilities of an Aloha native <a href="#Regression_model">Regression model</a>, but delegates to VW’s 
+<a href="https://github.com/JohnLangford/vowpal_wabbit/tree/master/java">JNI layer</a> for prediction, which is much more 
+powerful.  Note that this shares a fair amount of code with <a href="#Regression_model">Regression model</a> so be sure to
+look at the docs there.</p>
+
+<p><strong>NOTE</strong>: This model is in module <strong>aloha-vw-jni</strong>, not <strong>aloha-core</strong>.  To use, be sure to include the proper 
+maven dependency:</p>
+
+<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>com.eharmony<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>aloha-vw-jni<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>...<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre>
+</div>
+
+<p>VW does not need to be installed on the computer where the Aloha VW model is used.  The VW JNI library contains
+operating system-specific versions of the VW library, so it will be included transitively when the <code class="highlighter-rouge">aloha-vw-jni</code>
+maven dependency is pulled in.  Since VW is <strong>not binary compatible across versions</strong>, the trained VW binary model
+needs to be trained on the same VW version that is included in the <code class="highlighter-rouge">aloha-vw-jni</code>
+<a href="https://github.com/eHarmony/aloha/blob/master/aloha-vw-jni/pom.xml">POM</a>.  Make sure to look for this dependency.</p>
+
+<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;dependency&gt;</span>
+ <span class="nt">&lt;groupId&gt;</span>com.github.johnlangford<span class="nt">&lt;/groupId&gt;</span>
+ <span class="nt">&lt;artifactId&gt;</span>vw-jni<span class="nt">&lt;/artifactId&gt;</span>
+ <span class="nt">&lt;version&gt;</span>[THIS VERSION NEEDS TO MATCH THE VW USED TO TRAIN THE MODEL]<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre>
+</div>
+
+<h3 id="vw-json-fields">(VW) JSON Fields</h3>
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aVW_modelType">modelType</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td>modelId</td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aVW_features">features</a></td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aVW_vw">vw</a></td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aVW_namespaces">namespaces</a></td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aVW_numMissingThreshold">numMissingThreshold</a></td>
+    <td>Number</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aVW_notes">notes</a></td>
+    <td>Array</td>
+    <td>String</td>
+    <td>false</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aVW_spline">spline</a></td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>N / A</td>
+  </tr>
+</table>
+
+<h3 id="vw-json-field-descriptions">(VW) JSON Field Descriptions</h3>
+
+<h4 id="vw-modeltype">(VW) modelType</h4>
+
+<p><code class="highlighter-rouge">modelType</code> field must be <code class="highlighter-rouge">VwJNI</code>.</p>
+
+<h4 id="vw-features">(VW) features</h4>
+
+<p>See <a href="#aR_features">Regression model features</a> for details.</p>
+
+<h4 id="vw-vw">(VW) vw</h4>
+
+<p>The <code class="highlighter-rouge">vw</code> Object has two main components.  The first component is a representation of the binary VW model, or 
+“<em>initial regressor</em>” in VW terminology.  This is the model parameterization.  The second component is the set of 
+parameters used by VW.  This includes things like the link function, prediction ranges, skip grams, namespace 
+interactions, regularization, etc.  To see descriptions of these parameters, see the 
+<a href="https://github.com/JohnLangford/vowpal_wabbit/wiki">VW wiki</a> or run:</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>vw -h
+</code></pre>
+</div>
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aVW_vw_creationTime">creationTime</a></td>
+    <td>Number</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>number of milliseconds since <a href="https://en.wikipedia.org/wiki/Unix_time">epoch</a> for current time.</td>
+  </tr>
+  <tr>
+    <td><a href="#aVW_vw_model">model</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aVW_vw_modelUrl">modelUrl</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aVW_vw_via">via</a></td>
+    <td>String with one of: "<em>file</em>", "<em>vfs1</em>", "<em>vfs2</em>"</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aVW_vw_params">params</a></td>
+    <td>String or Array of String</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>Empty String</td>
+  </tr>
+</table>
+
+<h5 id="vw-vw-creationtime">(VW) vw creationTime</h5>
+
+<p><code class="highlighter-rouge">creationTime</code> is optional and is used when copying the content of the binary VW model to the local disk on the 
+computer where the Aloha model is run.  When no value is supplied, the value will be set to
+<code class="highlighter-rouge">java.lang.System.currentTimeMillis()</code>.</p>
+
+<h5 id="vw-vw-model">(VW) vw model</h5>
+
+<p>Exactly one of <code class="highlighter-rouge">model</code> or <code class="highlighter-rouge">modelUrl</code> is required.  When <code class="highlighter-rouge">model</code> is provided, it should be a string 
+with the base64-encoded content of the binary VW model.  For instance, this may be something like the string:</p>
+
+<p>“<code class="highlighter-rouge">BgAAADguMC4wAG0AAAAAAACAPxIAAAAAAAAAAAAAAAAAAAABAAAAAAA=</code>”</p>
+
+<p>which might come from:</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="nb">echo</span> <span class="s2">""</span> | vw -f model.vw 2&gt;/dev/null <span class="o">&amp;&amp;</span> cat model.vw | base64 <span class="o">&amp;&amp;</span> rm -f model.vw
+</code></pre>
+</div>
+
+<h5 id="vw-vw-modelurl">(VW) vw modelUrl</h5>
+
+<p>Exactly one of <code class="highlighter-rouge">model</code> or <code class="highlighter-rouge">modelUrl</code> is required.  When <code class="highlighter-rouge">modelUrl</code> is provided, it should be a string contain an
+<a href="https://commons.apache.org/proper/commons-vfs/filesystems.html">Apache VFS</a> URL.  This is the location from which the
+content will be copied to the local disk.</p>
+
+<h5 id="vw-vw-via">(VW) vw via</h5>
+
+<p><code class="highlighter-rouge">via</code> is optional.  It is a string and can be one of: <code class="highlighter-rouge">file</code>, <code class="highlighter-rouge">vfs1</code>, <code class="highlighter-rouge">vfs2</code>.  It provides a way for Aloha 
+users to use different versions of <a href="https://commons.apache.org/proper/commons-vfs/">Apache VFS</a>.  This is useful 
+because VFS provides a common interface to different file systems.  Since VFS provides a plugin architecture, 
+different plugins might be available to different versions of VFS.  For instance, the HDFS plugin eHarmony uses 
+(at the time of this writing) is a VFS 1 plugin.</p>
+
+<p><code class="highlighter-rouge">via</code> is only to be used in conjunction with the <code class="highlighter-rouge">modelUrl</code> field.  When supplied with the <code class="highlighter-rouge">model</code> field,
+the value associated with the <code class="highlighter-rouge">via</code> field is ignored.  File operations used to copy to the local disk
+the contents associated with the <code class="highlighter-rouge">model</code> field are <code class="highlighter-rouge">java.io.File</code> based and don’t make use of Apache VFS.</p>
+
+<h5 id="vw-vw-params">(VW) vw params</h5>
+
+<p><code class="highlighter-rouge">params</code> is not required.  It can either be specified as a string or an Array of strings (which are joined with a 
+space in between each item).  This is how VW parameters are specified.</p>
+
+<h4 id="vw-namespaces">(VW) namespaces</h4>
+
+<p>A JSON object representing a map from <a href="https://github.com/JohnLangford/vowpal_wabbit/wiki/Input-format">namespace</a> 
+names to an Array of feature names to be placed in that 
+<a href="https://github.com/JohnLangford/vowpal_wabbit/wiki/Input-format">namespace</a>.  For example:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="w">  </span><span class="s2">"features"</span><span class="err">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"height_mm"</span><span class="p">:</span><span class="w"> </span><span class="s2">"${profile.height_cm} * 10"</span><span class="w">
+  </span><span class="p">}</span><span class="err">,</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+  </span><span class="s2">"namespaces"</span><span class="err">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"personal_features"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"height_mm"</span><span class="w"> </span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h4 id="vw-nummissingthreshold">(VW) numMissingThreshold</h4>
+
+<p>See <a href="#aR_numMissingThreshold">Regression model numMissingThreshold</a> for details.</p>
+
+<h4 id="vw-notes">(VW) notes</h4>
+
+<p>This is just an optional Array of Strings for documentation purposes.</p>
+
+<h4 id="vw-spline">(VW) spline</h4>
+
+<p>See <a href="#aR_spline">Regression model spline</a> for details.</p>
+
+<h3 id="vw-json-examples">(VW) JSON Examples</h3>
+
+<h4 id="vw-base64-encoded-model-json-example">(VW) Base64 Encoded Model JSON Example</h4>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"VwJNI"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w"> </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"features"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"height_mm"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Seq((\"1800\", 1.0))"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"namespaces"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"personal_features"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"height_mm"</span><span class="w"> </span><span class="p">]</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"vw"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"params"</span><span class="p">:</span><span class="w"> </span><span class="s2">"--quiet -t"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"model"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[base64 encoded model string here]"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h4 id="vw-model-url-json-example">(VW) Model URL JSON Example</h4>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"VwJNI"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"model name"</span><span class="w"> </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"features"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"height_mm"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Seq((\"1800\", 1.0))"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"notes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"This is a note"</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nt">"namespaces"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"personal_features"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"height_mm"</span><span class="w"> </span><span class="p">]</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"vw"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"params"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"--quiet"</span><span class="p">,</span><span class="w"> </span><span class="s2">"-t"</span><span class="p">],</span><span class="w">
+    </span><span class="nt">"model"</span><span class="p">:</span><span class="w"> </span><span class="s2">"file:///Users/xyz/model.vw"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h4 id="vw-model-url-via-vfs1-json-example">(VW) Model URL via ‘vfs1’ JSON Example</h4>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"VwJNI"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"model name"</span><span class="w"> </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"features"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"height_mm"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Seq((\"1800\", 1.0))"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"notes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"This is a note"</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nt">"namespaces"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"personal_features"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"height_mm"</span><span class="w"> </span><span class="p">]</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"vw"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"params"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"--quiet"</span><span class="p">,</span><span class="w"> </span><span class="s2">"-t"</span><span class="p">],</span><span class="w">
+    </span><span class="nt">"model"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hdfs://some/path/to/data"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"via"</span><span class="p">:</span><span class="w"> </span><span class="s2">"vfs1"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h2 id="h2o-model">H<sub>2</sub>O model</h2>
+
+<p><a href="http://h2o.ai">H<sub>2</sub>O</a> model is a wrapper around the <a href="http://h2o.ai">H<sub>2</sub>O</a> library that provides
+feature extraction and delegates to <a href="http://h2o.ai">H<sub>2</sub>O</a> for predictions.  <a href="http://h2o.ai">H<sub>2</sub>O</a>
+provides many types of models.  Users will most likely find the biggest benefit in using the non-linear model
+offerings.</p>
+
+<p><strong>NOTE</strong>: This model is in module <strong>aloha-h2o</strong>, not <strong>aloha-core</strong>.  To use, be sure to include the proper
+maven dependency:</p>
+
+<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>com.eharmony<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>aloha-h2o<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>...<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre>
+</div>
+
+<p><a href="http://h2o.ai">H<sub>2</sub>O</a> does not need to be installed on the computer where the Aloha
+<a href="http://h2o.ai">H<sub>2</sub>O</a> model is used.  Since <a href="http://h2o.ai">H<sub>2</sub>O</a> is a java library and the model
+is embedded in an Aloha model and is compiled on the fly, ensure that you are producing a model with an
+<a href="http://h2o.ai">H<sub>2</sub>O</a> version compatible with the one found in the
+<a href="https://github.com/eHarmony/aloha/blob/master/aloha-h2o/pom.xml">aloha-h2o/pom.xml</a>.  Search for <code class="highlighter-rouge">h2o.version</code> in
+the pom.</p>
+
+<h3 id="h-json-fields">(H) JSON Fields</h3>
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aH_modelType">modelType</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td>modelId</td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aH_features">features</a></td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aH_numMissingThreshold">numMissingThreshold</a></td>
+    <td>Number</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>&infin;</td>
+  </tr>
+  <tr>
+    <td><a href="#aH_model">model</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aH_modelUrl">modelUrl</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aH_via">via</a></td>
+    <td>String with one of: "<em>file</em>", "<em>vfs1</em>", "<em>vfs2</em>"</td>
+    <td>N / A</td>
+    <td>false</td>
+    <td>"<em>vfs2</em>"</td>
+  </tr>
+</table>
+
+<h3 id="h-json-field-descriptions">(H) JSON Field Descriptions</h3>
+
+<h4 id="h-modeltype">(H) modelType</h4>
+
+<p><code class="highlighter-rouge">modelType</code> field must be <code class="highlighter-rouge">H2o</code>.</p>
+
+<h4 id="h-features">(H) features</h4>
+
+<p><code class="highlighter-rouge">features</code> is similar to <a href="#aR_features">features</a> found in the Regression model. Like in the Regression
+model, the <code class="highlighter-rouge">features</code> JSON object represents a map from feature name to a extraction function.  There are however
+differences between the two.  Since the variable types in <a href="http://h2o.ai">H<sub>2</sub>O</a> can be either <code class="highlighter-rouge">Double</code>
+or <code class="highlighter-rouge">String</code>, the JSON has to allow for this. So the JSON for a feature can take on one of two forms.  It can
+either be a JSON string or an object.</p>
+
+<ol>
+  <li>If the feature is encoded as a string, it is assumed that the feature is a Double-based feature and that
+no default will be supplied to the <a href="http://h2o.ai">H<sub>2</sub>O</a> if any of the data used to compute the
+feature is missing.</li>
+  <li>If the feature is encoded as an object, it must supply a <code class="highlighter-rouge">type</code> field with a value of either <code class="highlighter-rouge">string</code> or
+<code class="highlighter-rouge">double</code>.  It must also have a <code class="highlighter-rouge">spec</code> field whose value is the feature specification.  Additionally, an
+optional <code class="highlighter-rouge">defVal</code> field may be provided that determines the feature’s return value in the case that data
+required in the feature computation is missing.  The default must be the same type as the one indicated in
+the <code class="highlighter-rouge">type</code> field.  For instance, in the following <code class="highlighter-rouge">features</code> map, <code class="highlighter-rouge">weight_1</code> and <code class="highlighter-rouge">weight_2</code> have an
+equivalent meaning.</li>
+</ol>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"weight_1"</span><span class="p">:</span><span class="w"> </span><span class="s2">"${u.wt}"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"weight_2"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"double"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"spec"</span><span class="p">:</span><span class="w"> </span><span class="s2">"${u.wt}"</span><span class="w"> </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"wt_w_def"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"double"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"spec"</span><span class="p">:</span><span class="w"> </span><span class="s2">"${u.wt}"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"defVal"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"height"</span><span class="p">:</span><span class="w">   </span><span class="p">{</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"spec"</span><span class="p">:</span><span class="w"> </span><span class="s2">"if (${u.ht} &lt; 84) \"UNDER_7\" else \"OVER_7\""</span><span class="w"> </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"ht_w_def"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"spec"</span><span class="p">:</span><span class="w"> </span><span class="s2">"if (${u.ht} &lt; 84) \"UNDER_7\" else \"OVER_7\""</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"defVal"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UNDER_7"</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h4 id="h-model">(H) model</h4>
+
+<p>Exactly one of <code class="highlighter-rouge">model</code> or <code class="highlighter-rouge">modelUrl</code> is required.  When <code class="highlighter-rouge">model</code> is provided, it should be a string
+with the base64-encoded content a generated <a href="http://h2o.ai">H<sub>2</sub>O</a> model.</p>
+
+<h4 id="h-modelurl">(H) modelUrl</h4>
+
+<p>Exactly one of <code class="highlighter-rouge">model</code> or <code class="highlighter-rouge">modelUrl</code> is required.  When <code class="highlighter-rouge">modelUrl</code> is provided, it should be a string contain an
+<a href="https://commons.apache.org/proper/commons-vfs/filesystems.html">Apache VFS</a> URL.  This is the location from which the
+content will be copied to the local disk.</p>
+
+<h4 id="h-via">(H) via</h4>
+
+<p><code class="highlighter-rouge">via</code> is optional.  It is a string and can be one of: <code class="highlighter-rouge">file</code>, <code class="highlighter-rouge">vfs1</code>, <code class="highlighter-rouge">vfs2</code>.  It provides a way for Aloha
+users to use different versions of <a href="https://commons.apache.org/proper/commons-vfs/">Apache VFS</a>.  This is useful
+because VFS provides a common interface to different file systems.  Since VFS provides a plugin architecture,
+different plugins might be available to different versions of VFS.  For instance, the HDFS plugin eHarmony uses
+(at the time of this writing) is a VFS 1 plugin.</p>
+
+<p><code class="highlighter-rouge">via</code> is only to be used in conjunction with the <code class="highlighter-rouge">modelUrl</code> field.  When supplied with the <code class="highlighter-rouge">model</code> field,
+the value associated with the <code class="highlighter-rouge">via</code> field is ignored.  File operations used to copy to the local disk
+the contents associated with the <code class="highlighter-rouge">model</code> field are <code class="highlighter-rouge">java.io.File</code> based and don’t make use of Apache VFS.</p>
+
+<h4 id="h-nummissingthreshold">(H) numMissingThreshold</h4>
+
+<p>numMissingThreshold is an optional integral value. When supplied, if the number of features no value
+exceeds numMissingThreshold, then an error rather than a score will be returned.  Note that when a feature
+default is provided and that default is returned, it is not counted as a missing feature.</p>
+
+<h3 id="h-json-examples">(H) JSON Examples</h3>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"H2o"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"proto model"</span><span class="w"> </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"notes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"The features are all calculated in different varieties of an identity function to show off some of the power of Aloha"</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nt">"features"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"Sex"</span><span class="p">:</span><span class="w">            </span><span class="p">{</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w"> </span><span class="nt">"spec"</span><span class="p">:</span><span class="w"> </span><span class="s2">"${sex}.name.substring(0,1)"</span><span class="w"> </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"Length"</span><span class="p">:</span><span class="w">         </span><span class="s2">"1d + ${length} - 1L"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"Diameter"</span><span class="p">:</span><span class="w">       </span><span class="s2">"${diameter} * 1f"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"Height"</span><span class="p">:</span><span class="w">         </span><span class="s2">"identity(${height})"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"Whole weight"</span><span class="p">:</span><span class="w">   </span><span class="s2">"${weight.whole} * ${height} / ${height}"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"Shucked weight"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pow(${weight.shucked}, 1)"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"Viscera weight"</span><span class="p">:</span><span class="w"> </span><span class="s2">"${weight.viscera} * (pow(sin(${diameter}), 2) + pow(cos(${diameter}), 2))"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"Shell weight"</span><span class="p">:</span><span class="w">   </span><span class="s2">"${weight.shell} + log((${length} + ${height}) / (${height} + ${length}))"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"Circumference (unused)"</span><span class="p">:</span><span class="w">  </span><span class="s2">"Pi * ${diameter}"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"modelUrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"res:com/eharmony/aloha/models/h2o/glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.java"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h2 id="epsilon-greedy-exploration-model">Epsilon greedy exploration model</h2>
+
+<p>An epsilon greedy exploration model is a model used for exploring over a set of actions in 
+<a href="https://en.wikipedia.org/wiki/Multi-armed_bandit">bandit</a> and
+<a href="https://en.wikipedia.org/wiki/Reinforcement_learning">reinforcement learning</a> style problems.  Epsilon greedy makes
+use of a parameter called epsilon and a default policy.  The model will choose a random action with probability <code class="highlighter-rouge">epsilon</code>
+and an action from the default policy with probability <code class="highlighter-rouge">1 - epsilon</code>.</p>
+
+<h3 id="eg-json-fields">(EG) JSON Fields</h3>
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aEG_modelType">modelType</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td>modelId</td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aEG_salt">salt</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aEG_epsilon">epsilon</a></td>
+    <td>Number</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aEG_default_policy">defaultPolicy</a></td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aEG_class_labels">classLabels</a></td>
+    <td>Array</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+</table>
+
+<h3 id="eg-json-field-descriptions">(EG) JSON Field Descriptions</h3>
+
+<h4 id="eg-modeltype">(EG) modelType</h4>
+
+<p><code class="highlighter-rouge">modelType</code> field must be <code class="highlighter-rouge">EpsilonGreedyExploration</code>.</p>
+
+<h4 id="eg-salt">(EG) salt</h4>
+
+<p><code class="highlighter-rouge">salt</code> is an Aloha specification that will produce a <code class="highlighter-rouge">Long</code> that will be used as the salt for the randomization.  This 
+allows the randomization to be repeatable.</p>
+
+<h4 id="eg-epsilon">(EG) epsilon</h4>
+
+<p><code class="highlighter-rouge">epsilon</code> is a floating point number which signifies the tradeoff between exploration and exploitation.  Actions are
+chosen at random with probability <code class="highlighter-rouge">epsilon</code> and from the default policy with probability <code class="highlighter-rouge">1 - epsilon</code>.</p>
+
+<h4 id="eg-default-policy">(EG) default policy</h4>
+
+<p><code class="highlighter-rouge">defaultPolicy</code> is the model to be used to return the learned action.  This model must evaluate to an <code class="highlighter-rouge">Int</code> as it is 
+used within the
+<a href="https://github.com/multiworldtesting/explore-java/blob/master/src/main/java/com/mwt/explorers/EpsilonGreedyExplorer.java">MWT Epsilon Greedy Explorer</a>.</p>
+
+<h4 id="eg-class-labels">(EG) class labels</h4>
+
+<p><code class="highlighter-rouge">classLabels</code> is an array of the output type of the model.  The result from either the default policy or the random action
+is used as a lookup into the <code class="highlighter-rouge">classLabels</code>.</p>
+
+<h3 id="eg-json-examples">(EG) JSON Examples</h3>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"EpsilonGreedyExploration"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Epsilon Greedy Model"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"epsilon"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.1</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"salt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"${profile.user_id}"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"defaultPolicy"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"import"</span><span class="p">:</span><span class="w"> </span><span class="s2">"file:///x/y/z.json"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"classLabels"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h2 id="bootstrap-exploration-model">Bootstrap exploration model</h2>
+
+<p>A bootstrap exploration model is a model used for exploring over a set of actions in 
+<a href="https://en.wikipedia.org/wiki/Multi-armed_bandit">bandit</a> and
+<a href="https://en.wikipedia.org/wiki/Reinforcement_learning">reinforcement learning</a> style problems.  Bootstrap works over a
+set of policies.  The algorithm chooses one policy at random and uses that policy’s action as the chosen action.</p>
+
+<h3 id="b-json-fields">(B) JSON Fields</h3>
+
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>JSON Type</th>
+    <th>JSON Subtype</th>
+    <th>Required</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><a href="#aB_modelType">modelType</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td>modelId</td>
+    <td>Object</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aB_salt">salt</a></td>
+    <td>String</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aB_default_policy">policies</a></td>
+    <td>Array</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+  <tr>
+    <td><a href="#aB_class_labels">classLabels</a></td>
+    <td>Array</td>
+    <td>N / A</td>
+    <td>true</td>
+    <td>N / A</td>
+  </tr>
+</table>
+
+<h3 id="b-json-field-descriptions">(B) JSON Field Descriptions</h3>
+
+<h4 id="b-modeltype">(B) modelType</h4>
+
+<p><code class="highlighter-rouge">modelType</code> field must be <code class="highlighter-rouge">BootstrapExploration</code>.</p>
+
+<h4 id="b-salt">(B) salt</h4>
+
+<p><code class="highlighter-rouge">salt</code> is an Aloha specification that will produce a <code class="highlighter-rouge">Long</code> that will be used as the salt for the randomization.  This 
+allows the randomization to be repeatable.</p>
+
+<h4 id="b-policies">(B) policies</h4>
+
+<p><code class="highlighter-rouge">policies</code> are the models to be used to return the action.  All the models must evaluate to an <code class="highlighter-rouge">Int</code> as it is 
+used within the
+<a href="https://github.com/multiworldtesting/explore-java/blob/master/src/main/java/com/mwt/explorers/BootstrapExplorer.java">MWT Bootstrap Explorer</a>.</p>
+
+<h4 id="b-class-labels">(B) class labels</h4>
+
+<p><code class="highlighter-rouge">classLabels</code> is an array of the output type of the model.  The result from either the default policy or the random action
+is used as a lookup into the <code class="highlighter-rouge">classLabels</code>.</p>
+
+<h3 id="b-json-examples">(B) JSON Examples</h3>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"modelType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"BootstrapExploration"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"modelId"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Bootstrap Exploration Model"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"salt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"${profile.user_id}"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"policies"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"import"</span><span class="p">:</span><span class="w"> </span><span class="s2">"file:///x/y/z.json"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"import"</span><span class="p">:</span><span class="w"> </span><span class="s2">"file:///x/y/a.json"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nt">"classLabels"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+</section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/aloha/highlight/highlight.pack.js"></script><script>hljs.configure({
+languages:['scala','java','bash']
+});
+hljs.initHighlighting();
+             </script><script src="/aloha/js/main.js"></script><script src="/aloha/js/kazari.js"></script><script>
+$(document).ready(function() {
+	kazari.KazariPlugin().decorateCode('https://scala-evaluator-212.herokuapp.com/eval', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.S2F6YXJp.Jl2eqMfw8IakJF93PjxTbrf-8YUJgX5OoOfy5JHE8Yw', '', 'solarized-dark')
+})
+    </script></body></html>
