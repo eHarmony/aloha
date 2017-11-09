@@ -1,0 +1,1171 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>VwMultilabelModel - com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel</title>
+          <meta name="description" content="VwMultilabelModel - com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel" />
+          <meta name="keywords" content="VwMultilabelModel com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../../../../index.html';
+            var hash = 'com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img alt="Object" src="../../../../../../../lib/object_big.png" />
+        <p id="owner"><a href="../../../../../../package.html" class="extype" name="com">com</a>.<a href="../../../../../package.html" class="extype" name="com.eharmony">eharmony</a>.<a href="../../../../package.html" class="extype" name="com.eharmony.aloha">aloha</a>.<a href="../../../package.html" class="extype" name="com.eharmony.aloha.models">models</a>.<a href="../../package.html" class="extype" name="com.eharmony.aloha.models.vw">vw</a>.<a href="../package.html" class="extype" name="com.eharmony.aloha.models.vw.jni">jni</a>.<a href="package.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel">multilabel</a></p>
+        <h1>VwMultilabelModel</h1><h3><span class="morelinks"><div>Related Doc:
+            <a href="package.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel">package multilabel</a>
+          </div></span></h3><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <span class="name">VwMultilabelModel</span><span class="result"> extends <span class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultlabelJsonCreator">VwMultlabelJsonCreator</span> with <a href="VwMultilabelParamAugmentation.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">VwMultilabelParamAugmentation</a></span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Created by ryan.deak on 9/29/17.
+</p></div><div class="toggleContainer block">
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent"><a href="VwMultilabelParamAugmentation.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">VwMultilabelParamAugmentation</a>, <span class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultlabelJsonCreator">VwMultlabelJsonCreator</span>, <a href="json/VwMultilabelModelJson.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.json.VwMultilabelModelJson">VwMultilabelModelJson</a>, <a href="../../../multilabel/json/MultilabelModelJson.html" class="extype" name="com.eharmony.aloha.models.multilabel.json.MultilabelModelJson">MultilabelModelJson</a>, <a href="../../../../factory/ScalaJsonFormats.html" class="extype" name="com.eharmony.aloha.factory.ScalaJsonFormats">ScalaJsonFormats</a>, <a href="../../../reg/json/SpecJson.html" class="extype" name="com.eharmony.aloha.models.reg.json.SpecJson">SpecJson</a>, <a href="../../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+        </div></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        <div id="order">
+              <span class="filtertype">Ordering</span>
+              <ol>
+                
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By Inheritance</span></li>
+              </ol>
+            </div>
+        <div id="ancestors">
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel"><span>VwMultilabelModel</span></li><li class="in" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation"><span>VwMultilabelParamAugmentation</span></li><li class="in" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultlabelJsonCreator"><span>VwMultlabelJsonCreator</span></li><li class="in" name="com.eharmony.aloha.models.vw.jni.multilabel.json.VwMultilabelModelJson"><span>VwMultilabelModelJson</span></li><li class="in" name="com.eharmony.aloha.models.multilabel.json.MultilabelModelJson"><span>MultilabelModelJson</span></li><li class="in" name="com.eharmony.aloha.factory.ScalaJsonFormats"><span>ScalaJsonFormats</span></li><li class="in" name="com.eharmony.aloha.models.reg.json.SpecJson"><span>SpecJson</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show All</span></li>
+            </ol>
+          </div>
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="com.eharmony.aloha.models.multilabel.json.MultilabelModelJson.MultilabelData" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="MultilabelData[K]extendsPluginInfo[K]withProductwithSerializable"></a>
+      <a id="MultilabelData[K]:MultilabelData[K]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="../../../multilabel/json/MultilabelModelJson$MultilabelData.html"><span class="name">MultilabelData</span></a><span class="tparams">[<span name="K">K</span>]</span><span class="params">(<span name="modelType">modelType: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="modelId">modelId: <a href="../../../../id/ModelId.html" class="extype" name="com.eharmony.aloha.id.ModelId">ModelId</a></span>, <span name="features">features: <span class="extype" name="scala.collection.immutable.ListMap">ListMap</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="../../../reg/json/Spec.html" class="extype" name="com.eharmony.aloha.models.reg.json.Spec">Spec</a>]</span>, <span name="numMissingThreshold">numMissingThreshold: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="labelsInTrainingSet">labelsInTrainingSet: <a href="../../../../../../../scala/package.html#Vector[+A]=scala.collection.immutable.Vector[A]" class="extmbr" name="scala.Vector">Vector</a>[<span class="extype" name="com.eharmony.aloha.models.multilabel.json.MultilabelModelJson.MultilabelData.K">K</span>]</span>, <span name="labelsOfInterest">labelsOfInterest: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="underlying">underlying: <span class="extype" name="spray.json.JsObject">JsObject</span></span>)</span><span class="result"> extends <a href="../../../multilabel/PluginInfo.html" class="extype" name="com.eharmony.aloha.models.multilabel.PluginInfo">PluginInfo</a>[<span class="extype" name="com.eharmony.aloha.models.multilabel.json.MultilabelModelJson.MultilabelData.K">K</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.multilabel.json.MultilabelModelJson@MultilabelData[K]extendsPluginInfo[K]withProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">AST for multi-label models.</p><div class="fullcomment"><div class="comment cmt"><p>AST for multi-label models.
+</p></div><dl class="paramcmts block"><dt class="param">labelsInTrainingSet</dt><dd class="cmt"><p>The sequence of all labels encountered in training.  <b>It is
+                           important</b> that this is sequence (<i>with the same order as the
+                           labels in the training set</i>).  This is because some algorithms
+                           may require indices based on the training data.</p></dd><dt class="param">labelsOfInterest</dt><dd class="cmt"><p>a string representing a function that will be used to extract labels.</p></dd><dt class="param">underlying</dt><dd class="cmt"><p>the underlying model that will be produced by a</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../multilabel/json/MultilabelModelJson.html" class="extype" name="com.eharmony.aloha.models.multilabel.json.MultilabelModelJson">MultilabelModelJson</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.multilabel.json.MultilabelModelJson.Plugin" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="PluginextendsProductwithSerializable"></a>
+      <a id="Plugin:Plugin"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="../../../multilabel/json/MultilabelModelJson$Plugin.html"><span class="name">Plugin</span></a><span class="params">(<span name="type">type: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.multilabel.json.MultilabelModelJson@PluginextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../multilabel/json/MultilabelModelJson.html" class="extype" name="com.eharmony.aloha.models.multilabel.json.MultilabelModelJson">MultilabelModelJson</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation.VWNsCrossProdSet" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="VWNsCrossProdSet=Set[(Char,Char)]"></a>
+      <a id="VWNsCrossProdSet:VWNsCrossProdSet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">VWNsCrossProdSet</span><span class="result"> = <span class="extype" name="scala.collection.immutable.Set">Set</span>[(<span class="extype" name="scala.Char">Char</span>, <span class="extype" name="scala.Char">Char</span>)]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@VWNsCrossProdSet=Set[(Char,Char)]" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="VwMultilabelParamAugmentation.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">VwMultilabelParamAugmentation</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation.VWNsSet" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="VWNsSet=Set[Char]"></a>
+      <a id="VWNsSet:VWNsSet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">VWNsSet</span><span class="result"> = <span class="extype" name="scala.collection.immutable.Set">Set</span>[<span class="extype" name="scala.Char">Char</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@VWNsSet=Set[Char]" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="VwMultilabelParamAugmentation.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">VwMultilabelParamAugmentation</a></dd></dl></div>
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="!=(x$1:Any):Boolean"></a>
+      <a id="!=(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@!=(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="##():Int"></a>
+      <a id="##():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@##():Int" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="==(x$1:Any):Boolean"></a>
+      <a id="==(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@==(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation#CaptureGroupWithContent" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="CaptureGroupWithContent:Int"></a>
+      <a id="CaptureGroupWithContent:Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">CaptureGroupWithContent</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@CaptureGroupWithContent:Int" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">This is the capture group containing the content when the regex has been
+padded with the pad function.</p><div class="fullcomment"><div class="comment cmt"><p>This is the capture group containing the content when the regex has been
+padded with the pad function.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="VwMultilabelParamAugmentation.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">VwMultilabelParamAugmentation</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.reg.json.SpecJson.FeatureSpecFormat" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="FeatureSpecFormat"></a>
+      <a id="FeatureSpecFormat:FeatureSpecFormat"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="../../../reg/json/SpecJson$FeatureSpecFormat$.html"><span class="name">FeatureSpecFormat</span></a><span class="result"> extends <span class="extype" name="spray.json.JsonFormat">JsonFormat</span>[<a href="../../../reg/json/Spec.html" class="extype" name="com.eharmony.aloha.models.reg.json.Spec">Spec</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.models.reg.json.SpecJson@FeatureSpecFormat" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../reg/json/SpecJson.html" class="extype" name="com.eharmony.aloha.models.reg.json.SpecJson">SpecJson</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation#Ignore" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="Ignore:scala.util.matching.Regex"></a>
+      <a id="Ignore:Regex"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Ignore</span><span class="result">: <span class="extype" name="scala.util.matching.Regex">Regex</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@Ignore:scala.util.matching.Regex" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="VwMultilabelParamAugmentation.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">VwMultilabelParamAugmentation</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation#IgnoreLinear" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="IgnoreLinear:scala.util.matching.Regex"></a>
+      <a id="IgnoreLinear:Regex"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">IgnoreLinear</span><span class="result">: <span class="extype" name="scala.util.matching.Regex">Regex</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@IgnoreLinear:scala.util.matching.Regex" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="VwMultilabelParamAugmentation.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">VwMultilabelParamAugmentation</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation#UnrecoverableFlagSet" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="UnrecoverableFlagSet:Set[String]"></a>
+      <a id="UnrecoverableFlagSet:Set[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">UnrecoverableFlagSet</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@UnrecoverableFlagSet:Set[String]" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">VW Flags automatically resulting in an error.</p><div class="fullcomment"><div class="comment cmt"><p>VW Flags automatically resulting in an error.
+</p></div><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="VwMultilabelParamAugmentation.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">VwMultilabelParamAugmentation</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation#addParams" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="addParams(paramsAfterRemoved:String,namespaceNames:Set[String],oldIgnored:VwMultilabelParamAugmentation.this.VWNsSet,oldIgnoredLinear:VwMultilabelParamAugmentation.this.VWNsSet,oldInteractions:Set[String],labelNs:com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator.LabelNamespaces,numUniqueLabels:Int):String"></a>
+      <a id="addParams(String,Set[String],VWNsSet,VWNsSet,Set[String],LabelNamespaces,Int):String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">addParams</span><span class="params">(<span name="paramsAfterRemoved">paramsAfterRemoved: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="namespaceNames">namespaceNames: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="oldIgnored">oldIgnored: <a href="#VWNsSet=Set[Char]" class="extmbr" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel.VWNsSet">VWNsSet</a></span>, <span name="oldIgnoredLinear">oldIgnoredLinear: <a href="#VWNsSet=Set[Char]" class="extmbr" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel.VWNsSet">VWNsSet</a></span>, <span name="oldInteractions">oldInteractions: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="labelNs">labelNs: <span class="extype" name="com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator.LabelNamespaces">LabelNamespaces</span></span>, <span name="numUniqueLabels">numUniqueLabels: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@addParams(paramsAfterRemoved:String,namespaceNames:Set[String],oldIgnored:VwMultilabelParamAugmentation.this.VWNsSet,oldIgnoredLinear:VwMultilabelParamAugmentation.this.VWNsSet,oldInteractions:Set[String],labelNs:com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator.LabelNamespaces,numUniqueLabels:Int):String" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="VwMultilabelParamAugmentation.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">VwMultilabelParamAugmentation</a></dd></dl></div>
+    </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asInstanceOf[T0]:T0"></a>
+      <a id="asInstanceOf[T0]:T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@asInstanceOf[T0]:T0" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation#charsIn" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="charsIn(r:scala.util.matching.Regex,chrSeq:CharSequence):VwMultilabelParamAugmentation.this.VWNsSet"></a>
+      <a id="charsIn(Regex,CharSequence):VWNsSet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">charsIn</span><span class="params">(<span name="r">r: <span class="extype" name="scala.util.matching.Regex">Regex</span></span>, <span name="chrSeq">chrSeq: <span class="extype" name="java.lang.CharSequence">CharSequence</span></span>)</span><span class="result">: <a href="#VWNsSet=Set[Char]" class="extmbr" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel.VWNsSet">VWNsSet</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@charsIn(r:scala.util.matching.Regex,chrSeq:CharSequence):VwMultilabelParamAugmentation.this.VWNsSet" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="VwMultilabelParamAugmentation.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">VwMultilabelParamAugmentation</a></dd></dl></div>
+    </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="clone():Object"></a>
+      <a id="clone():AnyRef"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@clone():Object" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation#createLabelInteractions" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="createLabelInteractions(interactions:Set[String],ignored:VwMultilabelParamAugmentation.this.VWNsSet,labelNs:com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator.LabelNamespaces,filter:Int=&gt;Boolean):Set[String]"></a>
+      <a id="createLabelInteractions(Set[String],VWNsSet,LabelNamespaces,(Int)⇒Boolean):Set[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">createLabelInteractions</span><span class="params">(<span name="interactions">interactions: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="ignored">ignored: <a href="#VWNsSet=Set[Char]" class="extmbr" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel.VWNsSet">VWNsSet</a></span>, <span name="labelNs">labelNs: <span class="extype" name="com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator.LabelNamespaces">LabelNamespaces</span></span>, <span name="filter">filter: (<span class="extype" name="scala.Int">Int</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@createLabelInteractions(interactions:Set[String],ignored:VwMultilabelParamAugmentation.this.VWNsSet,labelNs:com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator.LabelNamespaces,filter:Int=&gt;Boolean):Set[String]" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="VwMultilabelParamAugmentation.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">VwMultilabelParamAugmentation</a></dd></dl></div>
+    </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="eq(x$1:AnyRef):Boolean"></a>
+      <a id="eq(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(x$1:Any):Boolean"></a>
+      <a id="equals(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@equals(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation#filterAndFlattenInteractions" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="filterAndFlattenInteractions(is:Set[String],filter:Int=&gt;Boolean):VwMultilabelParamAugmentation.this.VWNsSet"></a>
+      <a id="filterAndFlattenInteractions(Set[String],(Int)⇒Boolean):VWNsSet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">filterAndFlattenInteractions</span><span class="params">(<span name="is">is: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="filter">filter: (<span class="extype" name="scala.Int">Int</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="#VWNsSet=Set[Char]" class="extmbr" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel.VWNsSet">VWNsSet</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@filterAndFlattenInteractions(is:Set[String],filter:Int=&gt;Boolean):VwMultilabelParamAugmentation.this.VWNsSet" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="VwMultilabelParamAugmentation.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">VwMultilabelParamAugmentation</a></dd></dl></div>
+    </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="finalize():Unit"></a>
+      <a id="finalize():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@finalize():Unit" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../../../../../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation#firstCaptureGroups" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="firstCaptureGroups(vwParams:String,regex:scala.util.matching.Regex):Iterator[String]"></a>
+      <a id="firstCaptureGroups(String,Regex):Iterator[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">firstCaptureGroups</span><span class="params">(<span name="vwParams">vwParams: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="regex">regex: <span class="extype" name="scala.util.matching.Regex">Regex</span></span>)</span><span class="result">: <a href="../../../../../../../scala/package.html#Iterator[+A]=Iterator[A]" class="extmbr" name="scala.Iterator">Iterator</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@firstCaptureGroups(vwParams:String,regex:scala.util.matching.Regex):Iterator[String]" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Find all of the regex matches and extract the first capture group from the match.</p><div class="fullcomment"><div class="comment cmt"><p>Find all of the regex matches and extract the first capture group from the match.</p></div><dl class="paramcmts block"><dt class="param">vwParams</dt><dd class="cmt"><p>VW params passed to the <code>updatedVwParams</code> function.</p></dd><dt class="param">regex</dt><dd class="cmt"><p>with at least one capture group (this is unchecked).</p></dd><dt>returns</dt><dd class="cmt"><p>Iterator of the matches' first capture group.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="VwMultilabelParamAugmentation.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">VwMultilabelParamAugmentation</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation#flagsReferencingMissingNss" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="flagsReferencingMissingNss(namespaceNames:Set[String],i:VwMultilabelParamAugmentation.this.VWNsSet,il:VwMultilabelParamAugmentation.this.VWNsSet,q:VwMultilabelParamAugmentation.this.VWNsSet,c:VwMultilabelParamAugmentation.this.VWNsSet,ho:VwMultilabelParamAugmentation.this.VWNsSet):Map[String,VwMultilabelParamAugmentation.this.VWNsSet]"></a>
+      <a id="flagsReferencingMissingNss(Set[String],VWNsSet,VWNsSet,VWNsSet,VWNsSet,VWNsSet):Map[String,VWNsSet]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">flagsReferencingMissingNss</span><span class="params">(<span name="namespaceNames">namespaceNames: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="i">i: <a href="#VWNsSet=Set[Char]" class="extmbr" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel.VWNsSet">VWNsSet</a></span>, <span name="il">il: <a href="#VWNsSet=Set[Char]" class="extmbr" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel.VWNsSet">VWNsSet</a></span>, <span name="q">q: <a href="#VWNsSet=Set[Char]" class="extmbr" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel.VWNsSet">VWNsSet</a></span>, <span name="c">c: <a href="#VWNsSet=Set[Char]" class="extmbr" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel.VWNsSet">VWNsSet</a></span>, <span name="ho">ho: <a href="#VWNsSet=Set[Char]" class="extmbr" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel.VWNsSet">VWNsSet</a></span>)</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="#VWNsSet=Set[Char]" class="extmbr" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel.VWNsSet">VWNsSet</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@flagsReferencingMissingNss(namespaceNames:Set[String],i:VwMultilabelParamAugmentation.this.VWNsSet,il:VwMultilabelParamAugmentation.this.VWNsSet,q:VwMultilabelParamAugmentation.this.VWNsSet,c:VwMultilabelParamAugmentation.this.VWNsSet,ho:VwMultilabelParamAugmentation.this.VWNsSet):Map[String,VwMultilabelParamAugmentation.this.VWNsSet]" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="VwMultilabelParamAugmentation.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">VwMultilabelParamAugmentation</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation#flagsReferencingMissingNss" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="flagsReferencingMissingNss(namespaceNames:Set[String],i:VwMultilabelParamAugmentation.this.VWNsSet,il:VwMultilabelParamAugmentation.this.VWNsSet,is:Set[String]):Map[String,VwMultilabelParamAugmentation.this.VWNsSet]"></a>
+      <a id="flagsReferencingMissingNss(Set[String],VWNsSet,VWNsSet,Set[String]):Map[String,VWNsSet]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">flagsReferencingMissingNss</span><span class="params">(<span name="namespaceNames">namespaceNames: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="i">i: <a href="#VWNsSet=Set[Char]" class="extmbr" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel.VWNsSet">VWNsSet</a></span>, <span name="il">il: <a href="#VWNsSet=Set[Char]" class="extmbr" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel.VWNsSet">VWNsSet</a></span>, <span name="is">is: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="#VWNsSet=Set[Char]" class="extmbr" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel.VWNsSet">VWNsSet</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@flagsReferencingMissingNss(namespaceNames:Set[String],i:VwMultilabelParamAugmentation.this.VWNsSet,il:VwMultilabelParamAugmentation.this.VWNsSet,is:Set[String]):Map[String,VwMultilabelParamAugmentation.this.VWNsSet]" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="VwMultilabelParamAugmentation.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">VwMultilabelParamAugmentation</a></dd></dl></div>
+    </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getClass():Class[_]"></a>
+      <a id="getClass():Class[_]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@getClass():Class[_]" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation#handleClassCastException" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="handleClassCastException(orig:String,mod:String,ex:ClassCastException):com.eharmony.aloha.models.vw.jni.multilabel.VwParamError"></a>
+      <a id="handleClassCastException(String,String,ClassCastException):VwParamError"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">handleClassCastException</span><span class="params">(<span name="orig">orig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="mod">mod: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="ex">ex: <a href="../../../../../../../scala/package.html#ClassCastException=ClassCastException" class="extmbr" name="scala.ClassCastException">ClassCastException</a></span>)</span><span class="result">: <a href="VwParamError.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwParamError">VwParamError</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@handleClassCastException(orig:String,mod:String,ex:ClassCastException):com.eharmony.aloha.models.vw.jni.multilabel.VwParamError" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="VwMultilabelParamAugmentation.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">VwMultilabelParamAugmentation</a></dd></dl></div>
+    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode():Int"></a>
+      <a id="hashCode():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@hashCode():Int" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation#ignored" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ignored(vwParams:String):VwMultilabelParamAugmentation.this.VWNsSet"></a>
+      <a id="ignored(String):VWNsSet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ignored</span><span class="params">(<span name="vwParams">vwParams: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="#VWNsSet=Set[Char]" class="extmbr" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel.VWNsSet">VWNsSet</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@ignored(vwParams:String):VwMultilabelParamAugmentation.this.VWNsSet" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="VwMultilabelParamAugmentation.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">VwMultilabelParamAugmentation</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation#ignoredLinear" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ignoredLinear(vwParams:String):VwMultilabelParamAugmentation.this.VWNsSet"></a>
+      <a id="ignoredLinear(String):VWNsSet"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ignoredLinear</span><span class="params">(<span name="vwParams">vwParams: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="#VWNsSet=Set[Char]" class="extmbr" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel.VWNsSet">VWNsSet</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@ignoredLinear(vwParams:String):VwMultilabelParamAugmentation.this.VWNsSet" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="VwMultilabelParamAugmentation.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">VwMultilabelParamAugmentation</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation#interactions" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="interactions(vwParams:String):Set[String]"></a>
+      <a id="interactions(String):Set[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">interactions</span><span class="params">(<span name="vwParams">vwParams: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@interactions(vwParams:String):Set[String]" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Get the set of interactions (encoded as Strings).</p><div class="fullcomment"><div class="comment cmt"><p>Get the set of interactions (encoded as Strings).  String length represents the
+interaction arity.</p></div><dl class="paramcmts block"><dt class="param">vwParams</dt><dd class="cmt"><p>VW params passed to the <code>updatedVwParams</code> function.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="VwMultilabelParamAugmentation.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">VwMultilabelParamAugmentation</a></dd></dl></div>
+    </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation#isQuiet" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isQuiet(vwParams:String):Boolean"></a>
+      <a id="isQuiet(String):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isQuiet</span><span class="params">(<span name="vwParams">vwParams: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@isQuiet(vwParams:String):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="VwMultilabelParamAugmentation.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">VwMultilabelParamAugmentation</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultlabelJsonCreator#json" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="json[K](datasetSpec:com.eharmony.aloha.io.vfs.Vfs,binaryVwModel:com.eharmony.aloha.io.vfs.Vfs,id:com.eharmony.aloha.id.ModelIdentity,labelsInTrainingSet:Seq[K],labelsOfInterest:Option[String],externalModel:Boolean,numMissingThreshold:Option[Int])(implicitevidence$1:spray.json.JsonWriter[K]):spray.json.JsValue"></a>
+      <a id="json[K](Vfs,Vfs,ModelIdentity,Seq[K],Option[String],Boolean,Option[Int])(JsonWriter[K]):JsValue"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">json</span><span class="tparams">[<span name="K">K</span>]</span><span class="params">(<span name="datasetSpec">datasetSpec: <a href="../../../../io/vfs/Vfs.html" class="extype" name="com.eharmony.aloha.io.vfs.Vfs">Vfs</a></span>, <span name="binaryVwModel">binaryVwModel: <a href="../../../../io/vfs/Vfs.html" class="extype" name="com.eharmony.aloha.io.vfs.Vfs">Vfs</a></span>, <span name="id">id: <a href="../../../../id/ModelIdentity.html" class="extype" name="com.eharmony.aloha.id.ModelIdentity">ModelIdentity</a></span>, <span name="labelsInTrainingSet">labelsInTrainingSet: <a href="../../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultlabelJsonCreator.json.K">K</span>]</span>, <span name="labelsOfInterest">labelsOfInterest: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol"><span class="name"><a href="../../../../../../../scala/package.html">None</a></span></span></span>, <span name="externalModel">externalModel: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="numMissingThreshold">numMissingThreshold: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>] = <span class="symbol"><span class="name"><a href="../../../../../../../scala/package.html">None</a></span></span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="spray.json.JsonWriter">JsonWriter</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultlabelJsonCreator.json.K">K</span>]</span>)</span><span class="result">: <span class="extype" name="spray.json.JsValue">JsValue</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@json[K](datasetSpec:com.eharmony.aloha.io.vfs.Vfs,binaryVwModel:com.eharmony.aloha.io.vfs.Vfs,id:com.eharmony.aloha.id.ModelIdentity,labelsInTrainingSet:Seq[K],labelsOfInterest:Option[String],externalModel:Boolean,numMissingThreshold:Option[Int])(implicitevidence$1:spray.json.JsonWriter[K]):spray.json.JsValue" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Create a JSON representation of an Aloha model.</p><div class="fullcomment"><div class="comment cmt"><p>Create a JSON representation of an Aloha model.</p><p><b>NOTE</b>: Because of the inclusion of the unrestricted <code>labelsOfInterest</code> parameter,
+            the JSON produced by this function is not guaranteed to result in a valid
+            Aloha model.  This is because no semantics are required by this function and
+            so, the <code>labelsOfInterest</code> function specification cannot be validated.
+</p></div><dl class="paramcmts block"><dt class="tparam">K</dt><dd class="cmt"><p>the type of label or class.</p></dd><dt class="param">datasetSpec</dt><dd class="cmt"><p>a location of a dataset specification.</p></dd><dt class="param">binaryVwModel</dt><dd class="cmt"><p>a location of a VW binary model file.</p></dd><dt class="param">id</dt><dd class="cmt"><p>a model ID.</p></dd><dt class="param">labelsInTrainingSet</dt><dd class="cmt"><p>The sequence of all labels encountered in the training set used
+                           to produce the <code>binaryVwModel</code>.
+                           <b><i>It is extremely important that this sequence has the
+                                same order as the sequence of labels used in the
+                                dataset creation process.</i></b>  Otherwise, the VW model might
+                                associate scores with an incorrect label.</p></dd><dt class="param">labelsOfInterest</dt><dd class="cmt"><p>It is possible that a model is trained on a super set of labels for
+                        which predictions can be made.  If the labels at prediction time
+                        differs (<i>or should be extracted from the input to the model</i>),
+                        this function can provide that capability.</p></dd><dt class="param">externalModel</dt><dd class="cmt"><p>whether the underlying binary VW model should remain as a separate
+                     file and be referenced by the Aloha model specification (<code>true</code>)
+                     or the binary model content should be embeeded directly into the model
+                     (<code>false</code>).  <b>Keep in mind</b> Aloha models must be smaller than 2 GB
+                     because they are decoded to <code>String</code>s and <code>String</code>s are indexed by
+                     32-bit integers (which have a max value of 2<sup>32</sup> - 1).</p></dd><dt class="param">numMissingThreshold</dt><dd class="cmt"><p>the number of missing features to tolerate before emitting a
+                           prediction failure.</p></dd><dt>returns</dt><dd class="cmt"><p>a JSON object.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd>VwMultlabelJsonCreator</dd></dl></div>
+    </li><li name="com.eharmony.aloha.factory.ScalaJsonFormats#listMapFormat" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="listMapFormat[K,V](implicitevidence$1:spray.json.JsonFormat[K],implicitevidence$2:spray.json.JsonFormat[V]):spray.json.RootJsonFormat[scala.collection.immutable.ListMap[K,V]]{defwrite(m:scala.collection.immutable.ListMap[K,V]):spray.json.JsObject}"></a>
+      <a id="listMapFormat[K,V](JsonFormat[K],JsonFormat[V]):RootJsonFormat[ListMap[K,V]]{defwrite(m:scala.collection.immutable.ListMap[K,V]):spray.json.JsObject}"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">listMapFormat</span><span class="tparams">[<span name="K">K</span>, <span name="V">V</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="spray.json.JsonFormat">JsonFormat</span>[<span class="extype" name="com.eharmony.aloha.factory.ScalaJsonFormats.listMapFormat.K">K</span>]</span>, <span name="arg1">arg1: <span class="extype" name="spray.json.JsonFormat">JsonFormat</span>[<span class="extype" name="com.eharmony.aloha.factory.ScalaJsonFormats.listMapFormat.V">V</span>]</span>)</span><span class="result">: <span class="extype" name="spray.json.RootJsonFormat">RootJsonFormat</span>[<span class="extype" name="scala.collection.immutable.ListMap">ListMap</span>[<span class="extype" name="com.eharmony.aloha.factory.ScalaJsonFormats.listMapFormat.K">K</span>, <span class="extype" name="com.eharmony.aloha.factory.ScalaJsonFormats.listMapFormat.V">V</span>]] { def write(m: scala.collection.immutable.ListMap[K,V]): spray.json.JsObject }</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@listMapFormat[K,V](implicitevidence$1:spray.json.JsonFormat[K],implicitevidence$2:spray.json.JsonFormat[V]):spray.json.RootJsonFormat[scala.collection.immutable.ListMap[K,V]]{defwrite(m:scala.collection.immutable.ListMap[K,V]):spray.json.JsObject}" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../../factory/ScalaJsonFormats.html" class="extype" name="com.eharmony.aloha.factory.ScalaJsonFormats">ScalaJsonFormats</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.multilabel.json.MultilabelModelJson#multilabelDataJsonFormat" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="multilabelDataJsonFormat[K](implicitevidence$1:spray.json.JsonFormat[K]):spray.json.RootJsonFormat[MultilabelModelJson.this.MultilabelData[K]]"></a>
+      <a id="multilabelDataJsonFormat[K](JsonFormat[K]):RootJsonFormat[MultilabelData[K]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">multilabelDataJsonFormat</span><span class="tparams">[<span name="K">K</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="spray.json.JsonFormat">JsonFormat</span>[<span class="extype" name="com.eharmony.aloha.models.multilabel.json.MultilabelModelJson.multilabelDataJsonFormat.K">K</span>]</span>)</span><span class="result">: <span class="extype" name="spray.json.RootJsonFormat">RootJsonFormat</span>[<a href="#MultilabelData[K]extendsPluginInfo[K]withProductwithSerializable" class="extmbr" name="com.eharmony.aloha.models.multilabel.json.MultilabelModelJson.MultilabelData">MultilabelData</a>[<span class="extype" name="com.eharmony.aloha.models.multilabel.json.MultilabelModelJson.multilabelDataJsonFormat.K">K</span>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@multilabelDataJsonFormat[K](implicitevidence$1:spray.json.JsonFormat[K]):spray.json.RootJsonFormat[MultilabelModelJson.this.MultilabelData[K]]" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../multilabel/json/MultilabelModelJson.html" class="extype" name="com.eharmony.aloha.models.multilabel.json.MultilabelModelJson">MultilabelModelJson</a></dd></dl></div>
+    </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ne(x$1:AnyRef):Boolean"></a>
+      <a id="ne(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="../../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notify():Unit"></a>
+      <a id="notify():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@notify():Unit" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#notifyAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notifyAll():Unit"></a>
+      <a id="notifyAll():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@notifyAll():Unit" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation#nssNotInNamespaceNames" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="nssNotInNamespaceNames(nsNames:Set[String],sets:(String,VwMultilabelParamAugmentation.this.VWNsSet)*):Map[String,VwMultilabelParamAugmentation.this.VWNsSet]"></a>
+      <a id="nssNotInNamespaceNames(Set[String],(String,VWNsSet)*):Map[String,VWNsSet]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">nssNotInNamespaceNames</span><span class="params">(<span name="nsNames">nsNames: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="sets">sets: (<span class="extype" name="scala.Predef.String">String</span>, <a href="#VWNsSet=Set[Char]" class="extmbr" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel.VWNsSet">VWNsSet</a>)*</span>)</span><span class="result">: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="#VWNsSet=Set[Char]" class="extmbr" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel.VWNsSet">VWNsSet</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@nssNotInNamespaceNames(nsNames:Set[String],sets:(String,VwMultilabelParamAugmentation.this.VWNsSet)*):Map[String,VwMultilabelParamAugmentation.this.VWNsSet]" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="VwMultilabelParamAugmentation.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">VwMultilabelParamAugmentation</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.multilabel.json.MultilabelModelJson#pluginJsonFormat" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="pluginJsonFormat:spray.json.RootJsonFormat[MultilabelModelJson.this.Plugin]"></a>
+      <a id="pluginJsonFormat:RootJsonFormat[Plugin]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit final </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">pluginJsonFormat</span><span class="result">: <span class="extype" name="spray.json.RootJsonFormat">RootJsonFormat</span>[<a href="#PluginextendsProductwithSerializable" class="extmbr" name="com.eharmony.aloha.models.multilabel.json.MultilabelModelJson.Plugin">Plugin</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@pluginJsonFormat:spray.json.RootJsonFormat[MultilabelModelJson.this.Plugin]" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../multilabel/json/MultilabelModelJson.html" class="extype" name="com.eharmony.aloha.models.multilabel.json.MultilabelModelJson">MultilabelModelJson</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation#removeParams" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="removeParams(vwParams:String):String"></a>
+      <a id="removeParams(String):String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">removeParams</span><span class="params">(<span name="vwParams">vwParams: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@removeParams(vwParams:String):String" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Remove flags (and options) for the flags listed in <code>FlagsToRemove</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Remove flags (and options) for the flags listed in <code>FlagsToRemove</code>.</p></div><dl class="paramcmts block"><dt class="param">vwParams</dt><dd class="cmt"><p>VW params passed to the <code>updatedVwParams</code> function.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="VwMultilabelParamAugmentation.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">VwMultilabelParamAugmentation</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation#replaceFileBasedFlags" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="replaceFileBasedFlags(updatedParams:String,flagsWithFiles:Set[String]):(String,Map[String,java.io.File])"></a>
+      <a id="replaceFileBasedFlags(String,Set[String]):(String,Map[String,File])"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">replaceFileBasedFlags</span><span class="params">(<span name="updatedParams">updatedParams: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="flagsWithFiles">flagsWithFiles: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: (<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="java.io.File">File</span>])</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@replaceFileBasedFlags(updatedParams:String,flagsWithFiles:Set[String]):(String,Map[String,java.io.File])" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">VW will actually update / replace files if files appear as options to flags.</p><div class="fullcomment"><div class="comment cmt"><p>VW will actually update / replace files if files appear as options to flags.  To overcome
+this, an attempt is made to detect flags referencing files and if found, replace the the
+files with temp files.  These files should be deleted before exiting the main program.</p></div><dl class="paramcmts block"><dt class="param">updatedParams</dt><dd class="cmt"><p>the parameters after the updates.</p></dd><dt class="param">flagsWithFiles</dt><dd class="cmt"><p>the flag</p></dd><dt>returns</dt><dd class="cmt"><p>a tuple2 of the final string to try with VW for validation along with the mapping
+        from flag to file that was used.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="VwMultilabelParamAugmentation.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">VwMultilabelParamAugmentation</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.reg.json.SpecJson#specJsonFormat" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="specJsonFormat:spray.json.RootJsonFormat[com.eharmony.aloha.models.reg.json.Spec]"></a>
+      <a id="specJsonFormat:RootJsonFormat[Spec]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">specJsonFormat</span><span class="result">: <span class="extype" name="spray.json.RootJsonFormat">RootJsonFormat</span>[<a href="../../../reg/json/Spec.html" class="extype" name="com.eharmony.aloha.models.reg.json.Spec">Spec</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@specJsonFormat:spray.json.RootJsonFormat[com.eharmony.aloha.models.reg.json.Spec]" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../reg/json/SpecJson.html" class="extype" name="com.eharmony.aloha.models.reg.json.SpecJson">SpecJson</a></dd></dl></div>
+    </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
+      <a id="synchronized[T0](⇒T0):T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toString():String"></a>
+      <a id="toString():String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@toString():String" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation#unrecoverableFlags" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="unrecoverableFlags(vwParams:String):Set[String]"></a>
+      <a id="unrecoverableFlags(String):Set[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">unrecoverableFlags</span><span class="params">(<span name="vwParams">vwParams: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@unrecoverableFlags(vwParams:String):Set[String]" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="VwMultilabelParamAugmentation.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">VwMultilabelParamAugmentation</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation#updatedVwParams" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="updatedVwParams(vwParams:String,namespaceNames:Set[String],numUniqueLabels:Int):Either[com.eharmony.aloha.models.vw.jni.multilabel.VwParamError,String]"></a>
+      <a id="updatedVwParams(String,Set[String],Int):Either[VwParamError,String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">updatedVwParams</span><span class="params">(<span name="vwParams">vwParams: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="namespaceNames">namespaceNames: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="numUniqueLabels">numUniqueLabels: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../../../../../../../scala/package.html#Either[+A,+B]=scala.util.Either[A,B]" class="extmbr" name="scala.Either">Either</a>[<a href="VwParamError.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwParamError">VwParamError</a>, <span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@updatedVwParams(vwParams:String,namespaceNames:Set[String],numUniqueLabels:Int):Either[com.eharmony.aloha.models.vw.jni.multilabel.VwParamError,String]" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Adds VW parameters to make the parameters work as an Aloha multilabel model.</p><div class="fullcomment"><div class="comment cmt"><p>Adds VW parameters to make the parameters work as an Aloha multilabel model.</p><p>The algorithm works as follows:</p><ol class="decimal"><li>Ensure the VW <code>csoaa_ldf</code> or <code>wap_ldf</code> reduction is specified in the supplied VW
+       parameter list (<i>with the appropriate option for the flag</i>).</li><li>Ensure that no &quot;<i>unrecoverable</i>&quot; flags appear in the supplied VW parameter list.
+       See <code>UnrecoverableFlagSet</code> for flags whose appearance is considered
+       &quot;<i>unrecoverable</i>&quot;.</li><li>Ensure that <i>ignore</i> and <i>interaction</i> flags (<code>--ignore</code>, <code>--ignore_linear</code>, <code>-q</code>,
+       <code>--quadratic</code>, <code>--cubic</code>) do not refer to namespaces not supplied in
+       the <code>namespaceNames</code> parameter.</li><li>Attempt to determine namespace names that can be used for the labels.  For more
+       information on the label namespace resolution algorithm, see:
+       <code>com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator.determineLabelNamespaces</code>.</li><li>Remove flags and options found in <code>FlagsToRemove</code>.</li><li>Add <code>--noconstant</code> and <code>--csoaa_rank</code> flags.  <code>--noconstant</code> is added because per-label
+       intercepts will be included and take the place of a single intercept.  <code>--csoaa_rank</code>
+       is added to make the <code>VWLearner</code> a <code>VWActionScoresLearner</code>.</li><li>Create interactions between features and the label namespaces created above.<ol class="lowerAlpha"><li>If a namespace in <code>namespaceNames</code> appears as an option to VW's <code>ignore_linear</code> flag,
+         <b>do not</b> create a quadratic interaction between that namespace and the label
+         namespace.</li><li>For each interaction term (<code>-q</code>, <code>--quadratic</code>, <code>--cubic</code>, <code>--interactions</code>), replace it
+         with an interaction term also interacted with the label namespace.  This increases the
+         arity of the interaction by 1.</li></ol></li><li>Finally, change the flag options that reference files to point to temp files so that
+       VW doesn't change the files.  This may represent a problem if VW needs to read the file
+       in the option because although it should exist, it will be empty.</li><li>Let VW doing any validations it can.</li></ol><h4>Success Examples</h4><pre><span class="kw">import</span> com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel.updatedVwParams
+
+<span class="cmt">// This is a basic example. 'y' and 'Y' in the output are label</span>
+<span class="cmt">// namespaces.  Notice all namespaces are quadratically interacted</span>
+<span class="cmt">// with the label namespace.</span>
+<span class="kw">val</span> uvw1 = updatedVwParams(
+  <span class="lit">"--csoaa_ldf mc"</span>,
+  <span class="std">Set</span>(<span class="lit">"a"</span>, <span class="lit">"b"</span>, <span class="lit">"c"</span>)
+)
+<span class="cmt">// Right("--csoaa_ldf mc --noconstant --csoaa_rank --ignore y " +</span>
+<span class="cmt">//       "--ignore_linear abc -qYa -qYb -qYc")</span>
+
+<span class="cmt">// Here since 'a' is in 'ignore_linear', no '-qYa' term appears</span>
+<span class="cmt">// in the output.</span>
+<span class="kw">val</span> uvw2 = updatedVwParams(
+  <span class="lit">"--csoaa_ldf mc --ignore_linear a -qbc"</span>,
+  <span class="std">Set</span>(<span class="lit">"a"</span>, <span class="lit">"b"</span>, <span class="lit">"c"</span>)
+)
+<span class="cmt">// Right("--csoaa_ldf mc --noconstant --csoaa_rank --ignore y " +</span>
+<span class="cmt">//       "--ignore_linear abc -qYb -qYc --cubic Ybc)</span>
+
+<span class="cmt">// 'a' is in 'ignore', so no terms with 'a' are emitted. 'b' is</span>
+<span class="cmt">// in 'ignore_linear' so it does occur in any quadratic</span>
+<span class="cmt">// interactions in the output, but can appear in interaction</span>
+<span class="cmt">// terms of higher arity like the cubic interaction.</span>
+<span class="kw">val</span> uvw3 = updatedVwParams(
+  <span class="lit">"--csoaa_ldf mc --ignore a --ignore_linear b -qbc --cubic abc"</span>,
+  <span class="std">Set</span>(<span class="lit">"a"</span>, <span class="lit">"b"</span>, <span class="lit">"c"</span>)
+)
+<span class="cmt">//  Right("--csoaa_ldf mc --noconstant --csoaa_rank --ignore ay " +</span>
+<span class="cmt">//        "--ignore_linear bc -qYc --cubic Ybc")</span></pre><h4>Errors Examples</h4><pre><span class="kw">import</span> com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel.updatedVwParams
+<span class="kw">import</span> com.eharmony.aloha.models.vw.jni.multilabel.{
+  NotCsoaaOrWap,
+  NamespaceError
+}
+
+assert( updatedVwParams(<span class="lit">""</span>, <span class="std">Set</span>())  ==  Left(NotCsoaaOrWap(<span class="lit">""</span>)) )
+
+assert(
+  updatedVwParams(<span class="lit">"--wap_ldf m -qaa"</span>, <span class="std">Set</span>()) ==
+  Left(NamespaceError(<span class="lit">"--wap_ldf m -qaa"</span>, <span class="std">Set</span>(), <span class="std">Map</span>(<span class="lit">"quadratic"</span> -&gt; <span class="std">Set</span>(<span class="lit">'a'</span>))))
+)
+
+assert(
+  updatedVwParams(
+    <span class="lit">"--wap_ldf m --ignore_linear b --ignore a -qbb -qbd "</span> +
+            <span class="lit">"--cubic bcd --interactions dde --interactions abcde"</span>,
+    <span class="std">Set</span>()
+  ) ==
+  Left(
+    NamespaceError(
+      <span class="lit">"--wap_ldf m --ignore_linear b --ignore a -qbb -qbd --cubic bcd "</span> +
+        <span class="lit">"--interactions dde --interactions abcde"</span>,
+      <span class="std">Set</span>(),
+      <span class="std">Map</span>(
+        <span class="lit">"ignore"</span>        -&gt; <span class="std">Set</span>(<span class="lit">'a'</span>),
+        <span class="lit">"ignore_linear"</span> -&gt; <span class="std">Set</span>(<span class="lit">'b'</span>),
+        <span class="lit">"quadratic"</span>     -&gt; <span class="std">Set</span>(<span class="lit">'b'</span>, <span class="lit">'d'</span>),
+        <span class="lit">"cubic"</span>         -&gt; <span class="std">Set</span>(<span class="lit">'b'</span>, <span class="lit">'c'</span>, <span class="lit">'d'</span>, <span class="lit">'e'</span>),
+        <span class="lit">"interactions"</span>  -&gt; <span class="std">Set</span>(<span class="lit">'a'</span>, <span class="lit">'b'</span>, <span class="lit">'c'</span>, <span class="lit">'d'</span>, <span class="lit">'e'</span>)
+      )
+    )
+  )
+)</pre></div><dl class="paramcmts block"><dt class="param">vwParams</dt><dd class="cmt"><p>current VW parameters passed to the VW JNI</p></dd><dt class="param">namespaceNames</dt><dd class="cmt"><p>it is assumed that <code>namespaceNames</code> is a superset
+                      of all of the namespaces referred to by any flags
+                      found in <code>vwParams</code>.</p></dd><dt class="param">numUniqueLabels</dt><dd class="cmt"><p>the number of unique labels in the training set.
+                       This is used to calculate the appropriate VW
+                       <code>ring_size</code> parameter.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="VwMultilabelParamAugmentation.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">VwMultilabelParamAugmentation</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation#validateVwParams" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="validateVwParams(orig:String,mod:String,finalPs:String,flagToFileMap:Map[String,java.io.File],addQuiet:Boolean):Either[com.eharmony.aloha.models.vw.jni.multilabel.VwParamError,String]"></a>
+      <a id="validateVwParams(String,String,String,Map[String,File],Boolean):Either[VwParamError,String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">validateVwParams</span><span class="params">(<span name="orig">orig: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="mod">mod: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="finalPs">finalPs: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="flagToFileMap">flagToFileMap: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="java.io.File">File</span>]</span>, <span name="addQuiet">addQuiet: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="../../../../../../../scala/package.html#Either[+A,+B]=scala.util.Either[A,B]" class="extmbr" name="scala.Either">Either</a>[<a href="VwParamError.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwParamError">VwParamError</a>, <span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@validateVwParams(orig:String,mod:String,finalPs:String,flagToFileMap:Map[String,java.io.File],addQuiet:Boolean):Either[com.eharmony.aloha.models.vw.jni.multilabel.VwParamError,String]" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="VwMultilabelParamAugmentation.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">VwMultilabelParamAugmentation</a></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.vw.jni.multilabel.json.VwMultilabelModelJson#vwMultilabelAstFormat" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="vwMultilabelAstFormat:spray.json.RootJsonFormat[VwMultilabelModelJson.this.VwMultilabelAst]"></a>
+      <a id="vwMultilabelAstFormat:RootJsonFormat[VwMultilabelAst]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">vwMultilabelAstFormat</span><span class="result">: <span class="extype" name="spray.json.RootJsonFormat">RootJsonFormat</span>[<span class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.json.VwMultilabelModelJson.VwMultilabelAst">VwMultilabelAst</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@vwMultilabelAstFormat:spray.json.RootJsonFormat[VwMultilabelModelJson.this.VwMultilabelAst]" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="json/VwMultilabelModelJson.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.json.VwMultilabelModelJson">VwMultilabelModelJson</a></dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait():Unit"></a>
+      <a id="wait():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@wait():Unit" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long,x$2:Int):Unit"></a>
+      <a id="wait(Long,Int):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long):Unit"></a>
+      <a id="wait(Long):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../../index.html#com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelModel$@wait(x$1:Long):Unit" title="Permalink" target="_top">
+        <img src="../../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        <div class="parent" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">
+              <h3>Inherited from <a href="VwMultilabelParamAugmentation.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultilabelParamAugmentation">VwMultilabelParamAugmentation</a></h3>
+            </div><div class="parent" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultlabelJsonCreator">
+              <h3>Inherited from <span class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.VwMultlabelJsonCreator">VwMultlabelJsonCreator</span></h3>
+            </div><div class="parent" name="com.eharmony.aloha.models.vw.jni.multilabel.json.VwMultilabelModelJson">
+              <h3>Inherited from <a href="json/VwMultilabelModelJson.html" class="extype" name="com.eharmony.aloha.models.vw.jni.multilabel.json.VwMultilabelModelJson">VwMultilabelModelJson</a></h3>
+            </div><div class="parent" name="com.eharmony.aloha.models.multilabel.json.MultilabelModelJson">
+              <h3>Inherited from <a href="../../../multilabel/json/MultilabelModelJson.html" class="extype" name="com.eharmony.aloha.models.multilabel.json.MultilabelModelJson">MultilabelModelJson</a></h3>
+            </div><div class="parent" name="com.eharmony.aloha.factory.ScalaJsonFormats">
+              <h3>Inherited from <a href="../../../../factory/ScalaJsonFormats.html" class="extype" name="com.eharmony.aloha.factory.ScalaJsonFormats">ScalaJsonFormats</a></h3>
+            </div><div class="parent" name="com.eharmony.aloha.models.reg.json.SpecJson">
+              <h3>Inherited from <a href="../../../reg/json/SpecJson.html" class="extype" name="com.eharmony.aloha.models.reg.json.SpecJson">SpecJson</a></h3>
+            </div><div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <a href="../../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+            </div>
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>

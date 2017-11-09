@@ -47,7 +47,7 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">VwRowCreator</span><span class="tparams">[<span name="A">-A</span>]</span><span class="result"> extends <a href="../../RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a>[<span class="extype" name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator.A">A</span>] with <span class="extype" name="java.io.Serializable">Serializable</span> with <a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></span>
+        <span class="name">VwRowCreator</span><span class="tparams">[<span name="A">-A</span>]</span><span class="result"> extends <a href="../../package.html#CharSeqRowCreator[-A]=com.eharmony.aloha.dataset.RowCreator[A,CharSequence]" class="extmbr" name="com.eharmony.aloha.dataset.CharSeqRowCreator">CharSeqRowCreator</a>[<span class="extype" name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator.A">A</span>] with <span class="extype" name="java.io.Serializable">Serializable</span> with <a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></span>
       </span>
       </h4>
       
@@ -59,7 +59,7 @@
               
         </dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a>, <a href="../../RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a>[<span class="extype" name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator.A">A</span>], <span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, (<span class="extype" name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator.A">A</span>) ⇒ (<a href="../../MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <span class="extype" name="java.lang.CharSequence">CharSequence</span>), <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a>, <a href="../../RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a>[<span class="extype" name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator.A">A</span>, <span class="extype" name="java.lang.CharSequence">CharSequence</span>], <span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, (<span class="extype" name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator.A">A</span>) ⇒ (<a href="../../MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <span class="extype" name="java.lang.CharSequence">CharSequence</span>), <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
             <span class="toggle">Known Subclasses</span>
             <div class="subClasses hiddenContent"><a href="../cb/VwContextualBanditRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.vw.cb.VwContextualBanditRowCreator">VwContextualBanditRowCreator</a>, <a href="../labeled/VwLabelRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.vw.labeled.VwLabelRowCreator">VwLabelRowCreator</a></div>
@@ -848,7 +848,7 @@ trait is mixed-in.
       <p class="shortcomment cmt">Issue a trace logging message.</p><div class="fullcomment"><div class="comment cmt"><p>Issue a trace logging message.
 </p></div><dl class="paramcmts block"><dt class="param">msg</dt><dd class="cmt"><p>the message object. <code>toString()</code> is called to convert it
             to a loggable string.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></dd></dl></div>
-    </li><li name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator#unlabeledVwInput" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator#unlabeledVwInput" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="unlabeledVwInput(features:IndexedSeq[com.eharmony.aloha.dataset.density.Sparse]):CharSequence"></a>
       <a id="unlabeledVwInput(IndexedSeq[Sparse]):CharSequence"></a>
       <h4 class="signature">
@@ -864,7 +864,7 @@ trait is mixed-in.
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Each namespace will only be present if it contains at least one feature in the namespace.</p><div class="fullcomment"><div class="comment cmt"><p>Each namespace will only be present if it contains at least one feature in the namespace.</p></div><dl class="paramcmts block"><dt class="param">features</dt><dd class="cmt"><p>features to insert into VW input line.</p></dd></dl></div>
+      
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -984,7 +984,7 @@ trait is mixed-in.
         <div class="parent" name="com.eharmony.aloha.util.Logging">
               <h3>Inherited from <a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></h3>
             </div><div class="parent" name="com.eharmony.aloha.dataset.RowCreator">
-              <h3>Inherited from <a href="../../RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a>[<span class="extype" name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator.A">A</span>]</h3>
+              <h3>Inherited from <a href="../../RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a>[<span class="extype" name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator.A">A</span>, <span class="extype" name="java.lang.CharSequence">CharSequence</span>]</h3>
             </div><div class="parent" name="scala.Serializable">
               <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
             </div><div class="parent" name="java.io.Serializable">

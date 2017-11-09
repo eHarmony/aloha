@@ -66,7 +66,77 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="com.eharmony.aloha.audit.impl.OptionAuditor" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="com.eharmony.aloha.audit.impl.EitherAuditor" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="EitherAuditor[A]extendsMorphableAuditor[Either[com.eharmony.aloha.audit.impl.EitherAuditorError,_],A,Either[com.eharmony.aloha.audit.impl.EitherAuditorError,A]]"></a>
+      <a id="EitherAuditor[A]:EitherAuditor[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="EitherAuditor.html"><span class="name">EitherAuditor</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="../MorphableAuditor.html" class="extype" name="com.eharmony.aloha.audit.MorphableAuditor">MorphableAuditor</a>[<a href="../../../../../scala/package.html#Either[+A,+B]=scala.util.Either[A,B]" class="extmbr" name="scala.Either">Either</a>[<a href="EitherAuditorError.html" class="extype" name="com.eharmony.aloha.audit.impl.EitherAuditorError">EitherAuditorError</a>, _], <span class="extype" name="com.eharmony.aloha.audit.impl.EitherAuditor.A">A</span>, <a href="../../../../../scala/package.html#Either[+A,+B]=scala.util.Either[A,B]" class="extmbr" name="scala.Either">Either</a>[<a href="EitherAuditorError.html" class="extype" name="com.eharmony.aloha.audit.impl.EitherAuditorError">EitherAuditorError</a>, <span class="extype" name="com.eharmony.aloha.audit.impl.EitherAuditor.A">A</span>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.audit.impl.package@EitherAuditor[A]extendsMorphableAuditor[Either[com.eharmony.aloha.audit.impl.EitherAuditorError,_],A,Either[com.eharmony.aloha.audit.impl.EitherAuditorError,A]]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">An <a href="EitherAuditor.html" class="extype" name="com.eharmony.aloha.audit.impl.EitherAuditor">EitherAuditor</a> encodes the idea of success or failure.</p><div class="fullcomment"><div class="comment cmt"><p>An <a href="EitherAuditor.html" class="extype" name="com.eharmony.aloha.audit.impl.EitherAuditor">EitherAuditor</a> encodes the idea of success or failure.  In the case of failure,
+(meaning a model could not produce a prediction) diagnostic information is encoded
+in the form of an <a href="EitherAuditorError.html" class="extype" name="com.eharmony.aloha.audit.impl.EitherAuditorError">EitherAuditorError</a>.  No diagnostic information is emitted when
+a &quot;<i>successful</i>&quot; prediction is produced, even if compromises were made in order to
+produce the prediction or problems like missing data were encountered.</p><p>To construct an <a href="EitherAuditor.html" class="extype" name="com.eharmony.aloha.audit.impl.EitherAuditor">EitherAuditor</a>, use the <code>apply</code> factory methods in the companion
+object.</p><p>Created by ryan.deak on 10/2/17.</p></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>the type of value returned in the success case.</p></dd></dl></div>
+    </li><li name="com.eharmony.aloha.audit.impl.EitherAuditorError" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="EitherAuditorErrorextendsProductwithSerializable"></a>
+      <a id="EitherAuditorError:EitherAuditorError"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="EitherAuditorError.html"><span class="name">EitherAuditorError</span></a><span class="params">(<span name="failureModelIds">failureModelIds: <a href="../../../../../scala/package.html#::[A]=scala.collection.immutable.::[A]" class="extmbr" name="scala.::">::</a>[<a href="../../id/ModelIdentity.html" class="extype" name="com.eharmony.aloha.id.ModelIdentity">ModelIdentity</a>]</span>, <span name="errorMsgs">errorMsgs: <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="missingVarNames">missingVarNames: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.audit.impl.package@EitherAuditorErrorextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Diagnostic information about failures encountered.</p><div class="fullcomment"><div class="comment cmt"><p>Diagnostic information about failures encountered.  This structure can be thought
+of as a flattened tree of failures.  The tree is pruned one of two ways, it is
+either prune at the root, or pruned at the the first submodel successes
+encountered.  The tree is pruned at the root if the auditor is created via
+<code>EitherAuditor[A](aggregateDiagnostics = false)</code>.</p><p>If the auditor is created via <code>EitherAuditor[A](aggregateDiagnostics = true)</code>,
+or simply <code>EitherAuditor[A]</code>, then the trees are pruned at successes.  For
+instance, imagine a model, model <code>1</code>, that has submodels <code>2</code> and <code>5</code>.
+Submodel <code>2</code> has submodels <code>3</code> and <code>4</code>; submodel <code>5</code> has submodels <code>6</code> and <code>7</code>.
+Let's say the following submodels fail: 1, 2, 4, 6, 7.  Then, information would
+be aggregated as follows:</p><pre><span class="cmt">//          ORIGINAL        |       PRUNED      |       SIMPLIFIED</span>
+<span class="cmt">//  =====================================================================</span>
+<span class="cmt">//                          |                   |</span>
+<span class="cmt">//   1:F +-- 2:F +--  3:S   |   1 +-- 2 +-- /   |   1 --- 2 +</span>
+<span class="cmt">//       |       |          |     |     |       |           |</span>
+<span class="cmt">//       |       +--  4:F   |     |     +-- 4   |           +-- 4</span>
+<span class="cmt">//       |                  |     |             |</span>
+<span class="cmt">//       +-- 5:S +--  6:F   |     +-- / +-- /   |</span>
+<span class="cmt">//               |          |           |       |</span>
+<span class="cmt">//               +--  7:F   |           +-- /   |  DFS preorder: 1, 2, 4</span>
+<span class="cmt">//                          |                   |</span>
+<span class="cmt">//  =====================================================================</span></pre><p>Notice because submodel <code>5</code> succeeds, error information about submodels
+<code>6</code> and <code>7</code> is disregarded because submodel <code>5</code> could recover from its
+submodels' errors.</p><p>So, in the event that diagnostics are aggregated, only information about
+submodels <code>1</code>, <code>2</code>, <code>4</code> should be contained in the <a href="EitherAuditorError.html" class="extype" name="com.eharmony.aloha.audit.impl.EitherAuditorError">EitherAuditorError</a>
+returned by the <a href="EitherAuditor.html" class="extype" name="com.eharmony.aloha.audit.impl.EitherAuditor">EitherAuditor</a>.
+</p></div><dl class="paramcmts block"><dt class="param">failureModelIds</dt><dd class="cmt"><p>a non-empty list of <span class="extype" name="ModelIdentity">ModelIdentity</span> instances of submodels
+                       that failed to produce a prediction.  Since the top-level
+                       model must fail in order for an <a href="EitherAuditorError.html" class="extype" name="com.eharmony.aloha.audit.impl.EitherAuditorError">EitherAuditorError</a> to be
+                       returned, this is a <b>non-empty</b> list.  This <b>non-empty</b>
+                       list is in
+                       <a href="https://en.wikipedia.org/wiki/Tree_traversal#Pre-order" target="_blank">DFS preorder</a>.</p></dd><dt class="param">errorMsgs</dt><dd class="cmt"><p>messages indicating errors encountered.</p></dd><dt class="param">missingVarNames</dt><dd class="cmt"><p>names of variables with missing data encountered in the
+                       model computation.</p></dd></dl></div>
+    </li><li name="com.eharmony.aloha.audit.impl.OptionAuditor" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="OptionAuditor[A]extendsMorphableAuditor[Option[_],A,Option[A]]withProductwithSerializable"></a>
       <a id="OptionAuditor[A]:OptionAuditor[A]"></a>
       <h4 class="signature">
@@ -90,7 +160,24 @@
 
         <div id="values" class="values members">
               <h3>Value Members</h3>
-              <ol><li name="com.eharmony.aloha.audit.impl.avro" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="com.eharmony.aloha.audit.impl.EitherAuditor" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="EitherAuditor"></a>
+      <a id="EitherAuditor:EitherAuditor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="EitherAuditor$.html"><span class="name">EitherAuditor</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.audit.impl.package@EitherAuditor" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.audit.impl.avro" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="avro"></a>
       <a id="avro:avro"></a>
       <h4 class="signature">

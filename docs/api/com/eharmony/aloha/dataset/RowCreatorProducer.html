@@ -45,20 +45,29 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">RowCreatorProducer</span><span class="tparams">[<span name="A">A</span>, <span name="B">+B &lt;: <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer.A">A</span>]</span>]</span><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+        <span class="name">RowCreatorProducer</span><span class="tparams">[<span name="A">A</span>, <span name="B">+B</span>, <span name="Impl">+Impl &lt;: <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer.A">A</span>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer.B">B</span>]</span>]</span><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>SpecProducer is used to create different kinds of <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a> instances.  <b>Classes that extend SpecProducer should
-only have zero-arg constructors.</b>  This is because Spec instances should only be parametrized by the JSON
-specification.  Otherwise, one JSON specification could produce non-equivalent Spec instances in different
-environments.  It is a design goal for this not to happen.
-</p></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>type of input passed to the spec.</p></dd><dt class="tparam">B</dt><dd class="cmt"><p>implementation of the Spec[A] that is returned by the getSpec function.</p></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p><a href="" class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer">RowCreatorProducer</a> is used to create different kinds of <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a> instances.</p><p><b>Classes that extend <a href="" class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer">RowCreatorProducer</a> should (<i>try to</i>) have only
+zero-argument constructors.</b></p><p>This is because <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a> instances should ideally only be parametrized by
+the JSON specification.  Otherwise, one JSON specification could produce
+non-equivalent <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a> instances in different environments.</p><p><b>This statelessness is a design goal and should only be broken with good reason.</b></p><p>One of the reasons this rule <i>will likely be broken</i> is that things
+like context bounds on a type parameter to a <a href="" class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer">RowCreatorProducer</a> become
+constructor arguments.  So if a <a href="" class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer">RowCreatorProducer</a> is parametrized by a
+type that requires a type class to decode the JSON representation, this rule would be
+broken.</p><p>Another example might be in training multi-label models.  Whereas in binary classifiers
+the labels values are known automatically (because they are isomorphic to the set
+<code>{true, false}</code>), the label set isn't known <i>a priori</i> (because each problem codomain
+might be different).  Therefore, we might ask for the set of labels to expect.</p><p><b>NOTE</b>: <code>com.eharmony.aloha.dataset.RowCreatorProducerTest</code> will be used to control
+which <a href="" class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer">RowCreatorProducer</a>s can accept parameters.
+</p></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>type of input passed to the <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a>.</p></dd><dt class="tparam">B</dt><dd class="cmt"><p>type of output returned from the <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a>.</p></dd><dt class="tparam">Impl</dt><dd class="cmt"><p>implementation of the <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a> that is returned by the
+             <code>getRowCreator</code> function.</p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
             <span class="toggle">Known Subclasses</span>
-            <div class="subClasses hiddenContent"><a href="libsvm/labeled/LibSvmLabelRowCreator$$Producer.html" class="extype" name="com.eharmony.aloha.dataset.libsvm.labeled.LibSvmLabelRowCreator.Producer">Producer</a>, <a href="libsvm/unlabeled/LibSvmRowCreator$$Producer.html" class="extype" name="com.eharmony.aloha.dataset.libsvm.unlabeled.LibSvmRowCreator.Producer">Producer</a>, <a href="vw/unlabeled/VwRowCreator$$Producer.html" class="extype" name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator.Producer">Producer</a>, <a href="vw/cb/VwContextualBanditRowCreator$$Producer.html" class="extype" name="com.eharmony.aloha.dataset.vw.cb.VwContextualBanditRowCreator.Producer">Producer</a>, <a href="vw/labeled/VwLabelRowCreator$$Producer.html" class="extype" name="com.eharmony.aloha.dataset.vw.labeled.VwLabelRowCreator.Producer">Producer</a>, <a href="csv/CsvRowCreator$$Producer.html" class="extype" name="com.eharmony.aloha.dataset.csv.CsvRowCreator.Producer">Producer</a></div>
+            <div class="subClasses hiddenContent"><a href="csv/CsvRowCreator$$Producer.html" class="extype" name="com.eharmony.aloha.dataset.csv.CsvRowCreator.Producer">Producer</a>, <a href="vw/multilabel/VwMultilabelRowCreator$$Producer.html" class="extype" name="com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator.Producer">Producer</a>, <a href="libsvm/labeled/LibSvmLabelRowCreator$$Producer.html" class="extype" name="com.eharmony.aloha.dataset.libsvm.labeled.LibSvmLabelRowCreator.Producer">Producer</a>, <a href="vw/cb/VwContextualBanditRowCreator$$Producer.html" class="extype" name="com.eharmony.aloha.dataset.vw.cb.VwContextualBanditRowCreator.Producer">Producer</a>, <a href="libsvm/unlabeled/LibSvmRowCreator$$Producer.html" class="extype" name="com.eharmony.aloha.dataset.libsvm.unlabeled.LibSvmRowCreator.Producer">Producer</a>, <a href="vw/labeled/VwLabelRowCreator$$Producer.html" class="extype" name="com.eharmony.aloha.dataset.vw.labeled.VwLabelRowCreator.Producer">Producer</a>, <a href="vw/unlabeled/VwRowCreator$$Producer.html" class="extype" name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator.Producer">Producer</a></div>
           </div></div>
         
 
@@ -120,18 +129,18 @@ environments.  It is a design goal for this not to happen.
         <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
               <ol><li name="com.eharmony.aloha.dataset.RowCreatorProducer#getRowCreator" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="getRowCreator(semantics:com.eharmony.aloha.semantics.compiled.CompiledSemantics[A],jsonSpec:RowCreatorProducer.this.JsonType):scala.util.Try[B]"></a>
-      <a id="getRowCreator(CompiledSemantics[A],JsonType):Try[B]"></a>
+      <a id="getRowCreator(semantics:com.eharmony.aloha.semantics.compiled.CompiledSemantics[A],jsonSpec:RowCreatorProducer.this.JsonType):scala.util.Try[Impl]"></a>
+      <a id="getRowCreator(CompiledSemantics[A],JsonType):Try[Impl]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getRowCreator</span><span class="params">(<span name="semantics">semantics: <a href="../semantics/compiled/CompiledSemantics.html" class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemantics">CompiledSemantics</a>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer.A">A</span>]</span>, <span name="jsonSpec">jsonSpec: <a href="#JsonType" class="extmbr" name="com.eharmony.aloha.dataset.RowCreatorProducer.JsonType">JsonType</a></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer.B">B</span>]</span>
+        <span class="name">getRowCreator</span><span class="params">(<span name="semantics">semantics: <a href="../semantics/compiled/CompiledSemantics.html" class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemantics">CompiledSemantics</a>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer.A">A</span>]</span>, <span name="jsonSpec">jsonSpec: <a href="#JsonType" class="extmbr" name="com.eharmony.aloha.dataset.RowCreatorProducer.JsonType">JsonType</a></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer.Impl">Impl</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreatorProducer@getRowCreator(semantics:com.eharmony.aloha.semantics.compiled.CompiledSemantics[A],jsonSpec:RowCreatorProducer.this.JsonType):scala.util.Try[B]" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreatorProducer@getRowCreator(semantics:com.eharmony.aloha.semantics.compiled.CompiledSemantics[A],jsonSpec:RowCreatorProducer.this.JsonType):scala.util.Try[Impl]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>

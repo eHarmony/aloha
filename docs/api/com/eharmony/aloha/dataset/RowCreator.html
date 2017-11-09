@@ -45,16 +45,16 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">RowCreator</span><span class="tparams">[<span name="A">-A</span>]</span><span class="result"> extends (<span class="extype" name="com.eharmony.aloha.dataset.RowCreator.A">A</span>) ⇒ (<a href="MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <span class="extype" name="java.lang.CharSequence">CharSequence</span>) with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">RowCreator</span><span class="tparams">[<span name="A">-A</span>, <span name="B">+B</span>]</span><span class="result"> extends (<span class="extype" name="com.eharmony.aloha.dataset.RowCreator.A">A</span>) ⇒ (<a href="MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreator.B">B</span>) with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, (<span class="extype" name="com.eharmony.aloha.dataset.RowCreator.A">A</span>) ⇒ (<a href="MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <span class="extype" name="java.lang.CharSequence">CharSequence</span>), <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, (<span class="extype" name="com.eharmony.aloha.dataset.RowCreator.A">A</span>) ⇒ (<a href="MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreator.B">B</span>), <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
             <span class="toggle">Known Subclasses</span>
-            <div class="subClasses hiddenContent"><a href="csv/CsvRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.csv.CsvRowCreator">CsvRowCreator</a>, <a href="LabelRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.LabelRowCreator">LabelRowCreator</a>, <a href="libsvm/labeled/LibSvmLabelRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.libsvm.labeled.LibSvmLabelRowCreator">LibSvmLabelRowCreator</a>, <a href="libsvm/unlabeled/LibSvmRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.libsvm.unlabeled.LibSvmRowCreator">LibSvmRowCreator</a>, <a href="vw/cb/VwContextualBanditRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.vw.cb.VwContextualBanditRowCreator">VwContextualBanditRowCreator</a>, <a href="vw/labeled/VwLabelRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.vw.labeled.VwLabelRowCreator">VwLabelRowCreator</a>, <a href="vw/unlabeled/VwRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator">VwRowCreator</a></div>
+            <div class="subClasses hiddenContent"><a href="csv/CsvRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.csv.CsvRowCreator">CsvRowCreator</a>, <a href="LabelRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.LabelRowCreator">LabelRowCreator</a>, <a href="libsvm/labeled/LibSvmLabelRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.libsvm.labeled.LibSvmLabelRowCreator">LibSvmLabelRowCreator</a>, <a href="libsvm/unlabeled/LibSvmRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.libsvm.unlabeled.LibSvmRowCreator">LibSvmRowCreator</a>, <a href="vw/cb/VwContextualBanditRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.vw.cb.VwContextualBanditRowCreator">VwContextualBanditRowCreator</a>, <a href="vw/labeled/VwLabelRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.vw.labeled.VwLabelRowCreator">VwLabelRowCreator</a>, <a href="vw/multilabel/VwMultilabelRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator">VwMultilabelRowCreator</a>, <a href="vw/unlabeled/VwRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator">VwRowCreator</a></div>
           </div></div>
         
 
@@ -97,14 +97,14 @@
               <h3>Abstract Value Members</h3>
               <ol><li name="scala.Function1#apply" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="apply(v1:T1):R"></a>
-      <a id="apply(A):(MissingAndErroneousFeatureInfo,CharSequence)"></a>
+      <a id="apply(A):(MissingAndErroneousFeatureInfo,B)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="v1">v1: <span class="extype" name="com.eharmony.aloha.dataset.RowCreator.A">A</span></span>)</span><span class="result">: (<a href="MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <span class="extype" name="java.lang.CharSequence">CharSequence</span>)</span>
+        <span class="name">apply</span><span class="params">(<span name="v1">v1: <span class="extype" name="com.eharmony.aloha.dataset.RowCreator.A">A</span></span>)</span><span class="result">: (<a href="MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreator.B">B</span>)</span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreator@apply(v1:T1):R" title="Permalink" target="_top">
@@ -170,14 +170,14 @@
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.Function1#andThen" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="andThen[A](g:R=&gt;A):T1=&gt;A"></a>
-      <a id="andThen[A](((MissingAndErroneousFeatureInfo,CharSequence))⇒A):(A)⇒A"></a>
+      <a id="andThen[A](((MissingAndErroneousFeatureInfo,B))⇒A):(A)⇒A"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">andThen</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="g">g: ((<a href="MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <span class="extype" name="java.lang.CharSequence">CharSequence</span>)) ⇒ <span class="extype" name="scala.Function1.andThen.A">A</span></span>)</span><span class="result">: (<span class="extype" name="com.eharmony.aloha.dataset.RowCreator.A">A</span>) ⇒ <span class="extype" name="scala.Function1.andThen.A">A</span></span>
+        <span class="name">andThen</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="g">g: ((<a href="MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreator.B">B</span>)) ⇒ <span class="extype" name="scala.Function1.andThen.A">A</span></span>)</span><span class="result">: (<span class="extype" name="com.eharmony.aloha.dataset.RowCreator.A">A</span>) ⇒ <span class="extype" name="scala.Function1.andThen.A">A</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreator@andThen[A](g:R=&gt;A):T1=&gt;A" title="Permalink" target="_top">
@@ -230,14 +230,14 @@
         </dd></dl></div>
     </li><li name="scala.Function1#compose" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="compose[A](g:A=&gt;T1):A=&gt;R"></a>
-      <a id="compose[A]((A)⇒A):(A)⇒(MissingAndErroneousFeatureInfo,CharSequence)"></a>
+      <a id="compose[A]((A)⇒A):(A)⇒(MissingAndErroneousFeatureInfo,B)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">compose</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="g">g: (<span class="extype" name="scala.Function1.compose.A">A</span>) ⇒ <span class="extype" name="com.eharmony.aloha.dataset.RowCreator.A">A</span></span>)</span><span class="result">: (<span class="extype" name="scala.Function1.compose.A">A</span>) ⇒ (<a href="MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <span class="extype" name="java.lang.CharSequence">CharSequence</span>)</span>
+        <span class="name">compose</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="g">g: (<span class="extype" name="scala.Function1.compose.A">A</span>) ⇒ <span class="extype" name="com.eharmony.aloha.dataset.RowCreator.A">A</span></span>)</span><span class="result">: (<span class="extype" name="scala.Function1.compose.A">A</span>) ⇒ (<a href="MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreator.B">B</span>)</span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreator@compose[A](g:A=&gt;T1):A=&gt;R" title="Permalink" target="_top">
@@ -524,7 +524,7 @@
             </div><div class="parent" name="java.io.Serializable">
               <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
             </div><div class="parent" name="scala.Function1">
-              <h3>Inherited from (<span class="extype" name="com.eharmony.aloha.dataset.RowCreator.A">A</span>) ⇒ (<a href="MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <span class="extype" name="java.lang.CharSequence">CharSequence</span>)</h3>
+              <h3>Inherited from (<span class="extype" name="com.eharmony.aloha.dataset.RowCreator.A">A</span>) ⇒ (<a href="MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreator.B">B</span>)</h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">

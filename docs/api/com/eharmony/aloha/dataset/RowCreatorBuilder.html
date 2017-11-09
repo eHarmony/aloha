@@ -47,16 +47,16 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">RowCreatorBuilder</span><span class="tparams">[<span name="A">A</span>, <span name="B">B &lt;: <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.A">A</span>]</span>]</span><span class="params">(<span name="semantics">semantics: <a href="../semantics/compiled/CompiledSemantics.html" class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemantics">CompiledSemantics</a>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.A">A</span>]</span>, <span name="producers">producers: <a href="../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<a href="RowCreatorProducer.html" class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer">RowCreatorProducer</a>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.A">A</span>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>]]</span>)</span><span class="result"> extends <a href="../io/AlohaReadable.html" class="extype" name="com.eharmony.aloha.io.AlohaReadable">AlohaReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>]] with <a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">RowCreatorBuilder</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>, <span name="Impl">Impl &lt;: <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.A">A</span>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>]</span>]</span><span class="params">(<span name="semantics">semantics: <a href="../semantics/compiled/CompiledSemantics.html" class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemantics">CompiledSemantics</a>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.A">A</span>]</span>, <span name="producers">producers: <a href="../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<a href="RowCreatorProducer.html" class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer">RowCreatorProducer</a>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.A">A</span>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.Impl">Impl</span>]]</span>)</span><span class="result"> extends <a href="../io/AlohaReadable.html" class="extype" name="com.eharmony.aloha.io.AlohaReadable">AlohaReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.Impl">Impl</span>]] with <a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Given a semantics, json specification and an ordered sequence of RowCreatorProducers, <i>find the first producer</i>
-that applies to creating a Spec from the json specification and use it to instantiate the RowCreator object.</p></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>the result type produced by reading from one of the readable formats.</p></dd><dt class="tparam">B</dt><dd class="cmt"><p>the implementation of Spec[A] used.</p></dd><dt class="param">semantics</dt><dd class="cmt"><p>a Semantics to be used for creating the RowCreator.</p></dd><dt class="param">producers</dt><dd class="cmt"><p>an ordered sequence of RowCreatorProducers.  These producers form the basis of a
+that applies to creating a Spec from the json specification and use it to instantiate the RowCreator object.</p></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>the type consumed by the <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a> produced by this Readable.</p></dd><dt class="tparam">B</dt><dd class="cmt"><p>the type produced by the <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a> produced by this Readable.</p></dd><dt class="tparam">Impl</dt><dd class="cmt"><p>the implementation of <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a>.</p></dd><dt class="param">semantics</dt><dd class="cmt"><p>a Semantics to be used for creating the RowCreator.</p></dd><dt class="param">producers</dt><dd class="cmt"><p>an ordered sequence of RowCreatorProducers.  These producers form the basis of a
                  <a href="http://en.wikipedia.org/wiki/Chain-of-responsibility_pattern" target="_blank">chain of responsibility pattern</a>.
                  Therefore, <b>the order is important</b>.</p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a>, <a href="../io/AlohaReadable.html" class="extype" name="com.eharmony.aloha.io.AlohaReadable">AlohaReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>]], <a href="../io/NonFileReadable.html" class="extype" name="com.eharmony.aloha.io.NonFileReadable">NonFileReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>]], <a href="../io/FileReadable.html" class="extype" name="com.eharmony.aloha.io.FileReadable">FileReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>]], <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a>, <a href="../io/AlohaReadable.html" class="extype" name="com.eharmony.aloha.io.AlohaReadable">AlohaReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.Impl">Impl</span>]], <a href="../io/NonFileReadable.html" class="extype" name="com.eharmony.aloha.io.NonFileReadable">NonFileReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.Impl">Impl</span>]], <a href="../io/FileReadable.html" class="extype" name="com.eharmony.aloha.io.FileReadable">FileReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.Impl">Impl</span>]], <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -94,18 +94,18 @@ that applies to creating a Spec from the json specification and use it to instan
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="com.eharmony.aloha.dataset.RowCreatorBuilder#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="&lt;init&gt;(semantics:com.eharmony.aloha.semantics.compiled.CompiledSemantics[A],producers:List[com.eharmony.aloha.dataset.RowCreatorProducer[A,B]]):com.eharmony.aloha.dataset.RowCreatorBuilder[A,B]"></a>
-      <a id="&lt;init&gt;:RowCreatorBuilder[A,B]"></a>
+      <a id="&lt;init&gt;(semantics:com.eharmony.aloha.semantics.compiled.CompiledSemantics[A],producers:List[com.eharmony.aloha.dataset.RowCreatorProducer[A,B,Impl]]):com.eharmony.aloha.dataset.RowCreatorBuilder[A,B,Impl]"></a>
+      <a id="&lt;init&gt;:RowCreatorBuilder[A,B,Impl]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">RowCreatorBuilder</span><span class="params">(<span name="semantics">semantics: <a href="../semantics/compiled/CompiledSemantics.html" class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemantics">CompiledSemantics</a>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.A">A</span>]</span>, <span name="producers">producers: <a href="../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<a href="RowCreatorProducer.html" class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer">RowCreatorProducer</a>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.A">A</span>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>]]</span>)</span>
+        <span class="name">RowCreatorBuilder</span><span class="params">(<span name="semantics">semantics: <a href="../semantics/compiled/CompiledSemantics.html" class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemantics">CompiledSemantics</a>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.A">A</span>]</span>, <span name="producers">producers: <a href="../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<a href="RowCreatorProducer.html" class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer">RowCreatorProducer</a>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.A">A</span>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.Impl">Impl</span>]]</span>)</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreatorBuilder@&lt;init&gt;(semantics:com.eharmony.aloha.semantics.compiled.CompiledSemantics[A],producers:List[com.eharmony.aloha.dataset.RowCreatorProducer[A,B]]):com.eharmony.aloha.dataset.RowCreatorBuilder[A,B]" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreatorBuilder@&lt;init&gt;(semantics:com.eharmony.aloha.semantics.compiled.CompiledSemantics[A],producers:List[com.eharmony.aloha.dataset.RowCreatorProducer[A,B,Impl]]):com.eharmony.aloha.dataset.RowCreatorBuilder[A,B,Impl]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -329,174 +329,174 @@ that applies to creating a Spec from the json specification and use it to instan
               
         </dd></dl></div>
     </li><li name="com.eharmony.aloha.dataset.RowCreatorBuilder#fromClasspathResource" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="fromClasspathResource(r:String):scala.util.Try[B]"></a>
-      <a id="fromClasspathResource(String):Try[B]"></a>
+      <a id="fromClasspathResource(r:String):scala.util.Try[Impl]"></a>
+      <a id="fromClasspathResource(String):Try[Impl]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fromClasspathResource</span><span class="params">(<span name="r">r: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>]</span>
+        <span class="name">fromClasspathResource</span><span class="params">(<span name="r">r: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.Impl">Impl</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreatorBuilder@fromClasspathResource(r:String):scala.util.Try[B]" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreatorBuilder@fromClasspathResource(r:String):scala.util.Try[Impl]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <p class="shortcomment cmt">Read from a classpath resource.</p><div class="fullcomment"><div class="comment cmt"><p>Read from a classpath resource.  This uses fromVfs2 under the hood.</p></div><dl class="paramcmts block"><dt class="param">r</dt><dd class="cmt"><p>a classpath resource path.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder">RowCreatorBuilder</a> → <a href="../io/FileReadable.html" class="extype" name="com.eharmony.aloha.io.FileReadable">FileReadable</a></dd></dl></div>
     </li><li name="com.eharmony.aloha.dataset.RowCreatorBuilder#fromFile" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="fromFile(f:java.io.File):scala.util.Try[B]"></a>
-      <a id="fromFile(File):Try[B]"></a>
+      <a id="fromFile(f:java.io.File):scala.util.Try[Impl]"></a>
+      <a id="fromFile(File):Try[Impl]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fromFile</span><span class="params">(<span name="f">f: <span class="extype" name="java.io.File">File</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>]</span>
+        <span class="name">fromFile</span><span class="params">(<span name="f">f: <span class="extype" name="java.io.File">File</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.Impl">Impl</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreatorBuilder@fromFile(f:java.io.File):scala.util.Try[B]" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreatorBuilder@fromFile(f:java.io.File):scala.util.Try[Impl]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <p class="shortcomment cmt">Read from a File.</p><div class="fullcomment"><div class="comment cmt"><p>Read from a File.
 </p></div><dl class="paramcmts block"><dt class="param">f</dt><dd class="cmt"><p>a File to read.  The File's InputStream is automatically closed.</p></dd><dt>returns</dt><dd class="cmt"><p>the result</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder">RowCreatorBuilder</a> → <a href="../io/FileReadable.html" class="extype" name="com.eharmony.aloha.io.FileReadable">FileReadable</a></dd></dl></div>
     </li><li name="com.eharmony.aloha.dataset.RowCreatorBuilder#fromInputStream" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="fromInputStream(is:java.io.InputStream):scala.util.Try[B]"></a>
-      <a id="fromInputStream(InputStream):Try[B]"></a>
+      <a id="fromInputStream(is:java.io.InputStream):scala.util.Try[Impl]"></a>
+      <a id="fromInputStream(InputStream):Try[Impl]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fromInputStream</span><span class="params">(<span name="is">is: <span class="extype" name="java.io.InputStream">InputStream</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>]</span>
+        <span class="name">fromInputStream</span><span class="params">(<span name="is">is: <span class="extype" name="java.io.InputStream">InputStream</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.Impl">Impl</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreatorBuilder@fromInputStream(is:java.io.InputStream):scala.util.Try[B]" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreatorBuilder@fromInputStream(is:java.io.InputStream):scala.util.Try[Impl]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <p class="shortcomment cmt">Read from an InputStream.</p><div class="fullcomment"><div class="comment cmt"><p>Read from an InputStream.</p></div><dl class="paramcmts block"><dt class="param">is</dt><dd class="cmt"><p>an InputStream to read.  The InputStream is automatically closed.</p></dd><dt>returns</dt><dd class="cmt"><p>the result</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder">RowCreatorBuilder</a> → <a href="../io/NonFileReadable.html" class="extype" name="com.eharmony.aloha.io.NonFileReadable">NonFileReadable</a></dd></dl></div>
     </li><li name="com.eharmony.aloha.dataset.RowCreatorBuilder#fromJson" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="fromJson(json:spray.json.JsValue):scala.util.Try[B]"></a>
-      <a id="fromJson(JsValue):Try[B]"></a>
+      <a id="fromJson(json:spray.json.JsValue):scala.util.Try[Impl]"></a>
+      <a id="fromJson(JsValue):Try[Impl]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fromJson</span><span class="params">(<span name="json">json: <span class="extype" name="spray.json.JsValue">JsValue</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>]</span>
+        <span class="name">fromJson</span><span class="params">(<span name="json">json: <span class="extype" name="spray.json.JsValue">JsValue</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.Impl">Impl</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreatorBuilder@fromJson(json:spray.json.JsValue):scala.util.Try[B]" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreatorBuilder@fromJson(json:spray.json.JsValue):scala.util.Try[Impl]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
     </li><li name="com.eharmony.aloha.dataset.RowCreatorBuilder#fromReader" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="fromReader(r:java.io.Reader):scala.util.Try[B]"></a>
-      <a id="fromReader(Reader):Try[B]"></a>
+      <a id="fromReader(r:java.io.Reader):scala.util.Try[Impl]"></a>
+      <a id="fromReader(Reader):Try[Impl]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fromReader</span><span class="params">(<span name="r">r: <span class="extype" name="java.io.Reader">Reader</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>]</span>
+        <span class="name">fromReader</span><span class="params">(<span name="r">r: <span class="extype" name="java.io.Reader">Reader</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.Impl">Impl</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreatorBuilder@fromReader(r:java.io.Reader):scala.util.Try[B]" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreatorBuilder@fromReader(r:java.io.Reader):scala.util.Try[Impl]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <p class="shortcomment cmt">Read from an Reader.</p><div class="fullcomment"><div class="comment cmt"><p>Read from an Reader.</p></div><dl class="paramcmts block"><dt class="param">r</dt><dd class="cmt"><p>a Reader from which to read.  The Reader is automatically closed.</p></dd><dt>returns</dt><dd class="cmt"><p>the result</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder">RowCreatorBuilder</a> → <a href="../io/NonFileReadable.html" class="extype" name="com.eharmony.aloha.io.NonFileReadable">NonFileReadable</a></dd></dl></div>
     </li><li name="com.eharmony.aloha.dataset.RowCreatorBuilder#fromResource" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="fromResource(r:String):scala.util.Try[B]"></a>
-      <a id="fromResource(String):Try[B]"></a>
+      <a id="fromResource(r:String):scala.util.Try[Impl]"></a>
+      <a id="fromResource(String):Try[Impl]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fromResource</span><span class="params">(<span name="r">r: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>]</span>
+        <span class="name">fromResource</span><span class="params">(<span name="r">r: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.Impl">Impl</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreatorBuilder@fromResource(r:String):scala.util.Try[B]" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreatorBuilder@fromResource(r:String):scala.util.Try[Impl]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <p class="shortcomment cmt">Read from a resource.</p><div class="fullcomment"><div class="comment cmt"><p>Read from a resource.  This uses fromVfs2 under the hood.</p></div><dl class="paramcmts block"><dt class="param">r</dt><dd class="cmt"><p>a resource path.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder">RowCreatorBuilder</a> → <a href="../io/FileReadable.html" class="extype" name="com.eharmony.aloha.io.FileReadable">FileReadable</a></dd></dl></div>
     </li><li name="com.eharmony.aloha.dataset.RowCreatorBuilder#fromString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="fromString(s:String):scala.util.Try[B]"></a>
-      <a id="fromString(String):Try[B]"></a>
+      <a id="fromString(s:String):scala.util.Try[Impl]"></a>
+      <a id="fromString(String):Try[Impl]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fromString</span><span class="params">(<span name="s">s: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>]</span>
+        <span class="name">fromString</span><span class="params">(<span name="s">s: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.Impl">Impl</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreatorBuilder@fromString(s:String):scala.util.Try[B]" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreatorBuilder@fromString(s:String):scala.util.Try[Impl]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <p class="shortcomment cmt">Read from a String.</p><div class="fullcomment"><div class="comment cmt"><p>Read from a String.</p></div><dl class="paramcmts block"><dt class="param">s</dt><dd class="cmt"><p>a String to read.</p></dd><dt>returns</dt><dd class="cmt"><p>the result</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder">RowCreatorBuilder</a> → <a href="../io/NonFileReadable.html" class="extype" name="com.eharmony.aloha.io.NonFileReadable">NonFileReadable</a></dd></dl></div>
     </li><li name="com.eharmony.aloha.dataset.RowCreatorBuilder#fromUrl" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="fromUrl(u:java.net.URL):scala.util.Try[B]"></a>
-      <a id="fromUrl(URL):Try[B]"></a>
+      <a id="fromUrl(u:java.net.URL):scala.util.Try[Impl]"></a>
+      <a id="fromUrl(URL):Try[Impl]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fromUrl</span><span class="params">(<span name="u">u: <span class="extype" name="java.net.URL">URL</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>]</span>
+        <span class="name">fromUrl</span><span class="params">(<span name="u">u: <span class="extype" name="java.net.URL">URL</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.Impl">Impl</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreatorBuilder@fromUrl(u:java.net.URL):scala.util.Try[B]" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreatorBuilder@fromUrl(u:java.net.URL):scala.util.Try[Impl]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <p class="shortcomment cmt">Read from a URL.</p><div class="fullcomment"><div class="comment cmt"><p>Read from a URL.
 </p></div><dl class="paramcmts block"><dt class="param">u</dt><dd class="cmt"><p>a URL to read.  The URL's InputStream is automatically closed.</p></dd><dt>returns</dt><dd class="cmt"><p>the result</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder">RowCreatorBuilder</a> → <a href="../io/FileReadable.html" class="extype" name="com.eharmony.aloha.io.FileReadable">FileReadable</a></dd></dl></div>
     </li><li name="com.eharmony.aloha.dataset.RowCreatorBuilder#fromVfs1" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="fromVfs1(foVfs1:org.apache.commons.vfs.FileObject):scala.util.Try[B]"></a>
-      <a id="fromVfs1(FileObject):Try[B]"></a>
+      <a id="fromVfs1(foVfs1:org.apache.commons.vfs.FileObject):scala.util.Try[Impl]"></a>
+      <a id="fromVfs1(FileObject):Try[Impl]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fromVfs1</span><span class="params">(<span name="foVfs1">foVfs1: <span class="extype" name="org.apache.commons.vfs.FileObject">FileObject</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>]</span>
+        <span class="name">fromVfs1</span><span class="params">(<span name="foVfs1">foVfs1: <span class="extype" name="org.apache.commons.vfs.FileObject">FileObject</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.Impl">Impl</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreatorBuilder@fromVfs1(foVfs1:org.apache.commons.vfs.FileObject):scala.util.Try[B]" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreatorBuilder@fromVfs1(foVfs1:org.apache.commons.vfs.FileObject):scala.util.Try[Impl]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <p class="shortcomment cmt">Read from an Apache FileObject.</p><div class="fullcomment"><div class="comment cmt"><p>Read from an Apache FileObject.
 </p></div><dl class="paramcmts block"><dt class="param">foVfs1</dt><dd class="cmt"><p>an Apache v1 VFS FileObject to read.  The FileObject's InputStream is automatically closed.</p></dd><dt>returns</dt><dd class="cmt"><p>the result</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder">RowCreatorBuilder</a> → <a href="../io/FileReadable.html" class="extype" name="com.eharmony.aloha.io.FileReadable">FileReadable</a></dd></dl></div>
     </li><li name="com.eharmony.aloha.dataset.RowCreatorBuilder#fromVfs2" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="fromVfs2(foVfs2:org.apache.commons.vfs2.FileObject):scala.util.Try[B]"></a>
-      <a id="fromVfs2(FileObject):Try[B]"></a>
+      <a id="fromVfs2(foVfs2:org.apache.commons.vfs2.FileObject):scala.util.Try[Impl]"></a>
+      <a id="fromVfs2(FileObject):Try[Impl]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fromVfs2</span><span class="params">(<span name="foVfs2">foVfs2: <span class="extype" name="org.apache.commons.vfs2.FileObject">FileObject</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>]</span>
+        <span class="name">fromVfs2</span><span class="params">(<span name="foVfs2">foVfs2: <span class="extype" name="org.apache.commons.vfs2.FileObject">FileObject</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.Impl">Impl</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreatorBuilder@fromVfs2(foVfs2:org.apache.commons.vfs2.FileObject):scala.util.Try[B]" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreatorBuilder@fromVfs2(foVfs2:org.apache.commons.vfs2.FileObject):scala.util.Try[Impl]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -771,18 +771,18 @@ trait is mixed-in.
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="com.eharmony.aloha.dataset.RowCreatorBuilder#producers" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="producers:List[com.eharmony.aloha.dataset.RowCreatorProducer[A,B]]"></a>
-      <a id="producers:List[RowCreatorProducer[A,B]]"></a>
+      <a id="producers:List[com.eharmony.aloha.dataset.RowCreatorProducer[A,B,Impl]]"></a>
+      <a id="producers:List[RowCreatorProducer[A,B,Impl]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">producers</span><span class="result">: <a href="../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<a href="RowCreatorProducer.html" class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer">RowCreatorProducer</a>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.A">A</span>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>]]</span>
+        <span class="name">producers</span><span class="result">: <a href="../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<a href="RowCreatorProducer.html" class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer">RowCreatorProducer</a>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.A">A</span>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.Impl">Impl</span>]]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreatorBuilder@producers:List[com.eharmony.aloha.dataset.RowCreatorProducer[A,B]]" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreatorBuilder@producers:List[com.eharmony.aloha.dataset.RowCreatorProducer[A,B,Impl]]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -988,11 +988,11 @@ trait is mixed-in.
             </div><div class="parent" name="com.eharmony.aloha.util.Logging">
               <h3>Inherited from <a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a></h3>
             </div><div class="parent" name="com.eharmony.aloha.io.AlohaReadable">
-              <h3>Inherited from <a href="../io/AlohaReadable.html" class="extype" name="com.eharmony.aloha.io.AlohaReadable">AlohaReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>]]</h3>
+              <h3>Inherited from <a href="../io/AlohaReadable.html" class="extype" name="com.eharmony.aloha.io.AlohaReadable">AlohaReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.Impl">Impl</span>]]</h3>
             </div><div class="parent" name="com.eharmony.aloha.io.NonFileReadable">
-              <h3>Inherited from <a href="../io/NonFileReadable.html" class="extype" name="com.eharmony.aloha.io.NonFileReadable">NonFileReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>]]</h3>
+              <h3>Inherited from <a href="../io/NonFileReadable.html" class="extype" name="com.eharmony.aloha.io.NonFileReadable">NonFileReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.Impl">Impl</span>]]</h3>
             </div><div class="parent" name="com.eharmony.aloha.io.FileReadable">
-              <h3>Inherited from <a href="../io/FileReadable.html" class="extype" name="com.eharmony.aloha.io.FileReadable">FileReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>]]</h3>
+              <h3>Inherited from <a href="../io/FileReadable.html" class="extype" name="com.eharmony.aloha.io.FileReadable">FileReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.Impl">Impl</span>]]</h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">

@@ -47,13 +47,13 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">ModelFactory</span>
+        <span class="name">ModelFactory</span><span class="result"> extends <a href="../reflect/RuntimeClasspathScanning.html" class="extype" name="com.eharmony.aloha.reflect.RuntimeClasspathScanning">RuntimeClasspathScanning</a></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../reflect/RuntimeClasspathScanning.html" class="extype" name="com.eharmony.aloha.reflect.RuntimeClasspathScanning">RuntimeClasspathScanning</a>, <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -71,7 +71,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.eharmony.aloha.factory.ModelFactory"><span>ModelFactory</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.eharmony.aloha.factory.ModelFactory"><span>ModelFactory</span></li><li class="in" name="com.eharmony.aloha.reflect.RuntimeClasspathScanning"><span>RuntimeClasspathScanning</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -383,6 +383,30 @@ aloha.
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.eharmony.aloha.reflect.RuntimeClasspathScanning#scanObjects" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="scanObjects[OBJ,A](methodName:String,packageToSearch:String)(implicitevidence$1:scala.reflect.ClassTag[OBJ],implicitevidence$2:scala.reflect.ClassTag[A]):Seq[A]"></a>
+      <a id="scanObjects[OBJ,A](String,String)(ClassTag[OBJ],ClassTag[A]):Seq[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">scanObjects</span><span class="tparams">[<span name="OBJ">OBJ</span>, <span name="A">A</span>]</span><span class="params">(<span name="methodName">methodName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="packageToSearch">packageToSearch: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol"><span class="name"><a href="../../../package.html">aloha.pkgName</a></span></span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="com.eharmony.aloha.reflect.RuntimeClasspathScanning.scanObjects.OBJ">OBJ</span>]</span>, <span name="arg1">arg1: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<span class="extype" name="com.eharmony.aloha.reflect.RuntimeClasspathScanning.scanObjects.A">A</span>]</span>)</span><span class="result">: <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="com.eharmony.aloha.reflect.RuntimeClasspathScanning.scanObjects.A">A</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.factory.ModelFactory$@scanObjects[OBJ,A](methodName:String,packageToSearch:String)(implicitevidence$1:scala.reflect.ClassTag[OBJ],implicitevidence$2:scala.reflect.ClassTag[A]):Seq[A]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Scan the classpath within subpackages of <code>packageToSearch</code> to find Scala objects that
+contain extend <code>OBJ</code> and contain method called <code>methodName</code> that should return an <code>A</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Scan the classpath within subpackages of <code>packageToSearch</code> to find Scala objects that
+contain extend <code>OBJ</code> and contain method called <code>methodName</code> that should return an <code>A</code>.
+Call the method and get the result.  If the result is indeed an <code>A</code>, add to it to
+the resulting sequence.</p><p>This function makes some assumptions.  It assumes that Scala objects have classes
+ending with '$'.  It also assumes that methods in objects have static forwarders.
+</p></div><dl class="paramcmts block"><dt class="tparam">OBJ</dt><dd class="cmt"><p>the super type of the objects the search should find</p></dd><dt class="tparam">A</dt><dd class="cmt"><p>the output type of elements that should be returned by the method named
+          <code>methodName</code></p></dd><dt class="param">methodName</dt><dd class="cmt"><p>the name of a method in an object that should be found and called.</p></dd><dt class="param">packageToSearch</dt><dd class="cmt"><p>the package to search for candidates</p></dd><dt>returns</dt><dd class="cmt"><p>a sequence of <code>A</code> instances that could be found.</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="../reflect/RuntimeClasspathScanning.html" class="extype" name="com.eharmony.aloha.reflect.RuntimeClasspathScanning">RuntimeClasspathScanning</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -495,7 +519,9 @@ aloha.
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
+        <div class="parent" name="com.eharmony.aloha.reflect.RuntimeClasspathScanning">
+              <h3>Inherited from <a href="../reflect/RuntimeClasspathScanning.html" class="extype" name="com.eharmony.aloha.reflect.RuntimeClasspathScanning">RuntimeClasspathScanning</a></h3>
+            </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>

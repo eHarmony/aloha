@@ -1,0 +1,225 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>multilabel - com.eharmony.aloha.dataset.vw.multilabel</title>
+          <meta name="description" content="multilabel - com.eharmony.aloha.dataset.vw.multilabel" />
+          <meta name="keywords" content="multilabel com.eharmony.aloha.dataset.vw.multilabel" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../../../index.html';
+            var hash = 'com.eharmony.aloha.dataset.vw.multilabel.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img alt="Package" src="../../../../../../lib/package_big.png" />
+        <p id="owner"><a href="../../../../../package.html" class="extype" name="com">com</a>.<a href="../../../../package.html" class="extype" name="com.eharmony">eharmony</a>.<a href="../../../package.html" class="extype" name="com.eharmony.aloha">aloha</a>.<a href="../../package.html" class="extype" name="com.eharmony.aloha.dataset">dataset</a>.<a href="../package.html" class="extype" name="com.eharmony.aloha.dataset.vw">vw</a></p>
+        <h1>multilabel</h1><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.multilabel.package" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">multilabel</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="com.eharmony.aloha.dataset.vw.multilabel.VwDownsampledMultilabelRowCreator" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="VwDownsampledMultilabelRowCreator[-A,K]extendsStatefulRowCreator[A,Array[String],Long]withLoggingwithProductwithSerializable"></a>
+      <a id="VwDownsampledMultilabelRowCreator[-A,K]:VwDownsampledMultilabelRowCreator[A,K]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="VwDownsampledMultilabelRowCreator.html"><span class="name">VwDownsampledMultilabelRowCreator</span></a><span class="tparams">[<span name="A">-A</span>, <span name="K">K</span>]</span><span class="params">(<span name="allLabelsInTrainingSet">allLabelsInTrainingSet: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="com.eharmony.aloha.dataset.vw.multilabel.VwDownsampledMultilabelRowCreator.K">K</span>]</span>, <span name="featuresFunction">featuresFunction: <a href="../../FeatureExtractorFunction.html" class="extype" name="com.eharmony.aloha.dataset.FeatureExtractorFunction">FeatureExtractorFunction</a>[<span class="extype" name="com.eharmony.aloha.dataset.vw.multilabel.VwDownsampledMultilabelRowCreator.A">A</span>, <span class="extype" name="com.eharmony.aloha.dataset.density.Sparse">Sparse</span>]</span>, <span name="defaultNamespace">defaultNamespace: <a href="../../../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="namespaces">namespaces: <a href="../../../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[(<span class="extype" name="scala.Predef.String">String</span>, <a href="../../../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<span class="extype" name="scala.Int">Int</span>])]</span>, <span name="normalizer">normalizer: <span class="extype" name="scala.Option">Option</span>[(<span class="extype" name="java.lang.CharSequence">CharSequence</span>) ⇒ <span class="extype" name="java.lang.CharSequence">CharSequence</span>]</span>, <span name="positiveLabelsFunction">positiveLabelsFunction: <a href="../../../semantics/func/GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.dataset.vw.multilabel.VwDownsampledMultilabelRowCreator.A">A</span>, <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="com.eharmony.aloha.dataset.vw.multilabel.VwDownsampledMultilabelRowCreator.K">K</span>]]</span>, <span name="classNs">classNs: <span class="extype" name="scala.Char">Char</span></span>, <span name="dummyClassNs">dummyClassNs: <span class="extype" name="scala.Char">Char</span></span>, <span name="numDownsampledNegLabels">numDownsampledNegLabels: <span class="extype" name="scala.Int">Int</span></span>, <span name="seedCreator">seedCreator: () ⇒ <span class="extype" name="scala.Long">Long</span></span>, <span name="includeZeroValues">includeZeroValues: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result"> extends <a href="../../StatefulRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.StatefulRowCreator">StatefulRowCreator</a>[<span class="extype" name="com.eharmony.aloha.dataset.vw.multilabel.VwDownsampledMultilabelRowCreator.A">A</span>, <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Predef.String">String</span>], <span class="extype" name="scala.Long">Long</span>] with <a href="../../../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.multilabel.package@VwDownsampledMultilabelRowCreator[-A,K]extendsStatefulRowCreator[A,Array[String],Long]withLoggingwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Creates training data for multilabel models in Vowpal Wabbit's CSOAA LDF and WAP LDF format
+for the JNI.</p><div class="fullcomment"><div class="comment cmt"><p>Creates training data for multilabel models in Vowpal Wabbit's CSOAA LDF and WAP LDF format
+for the JNI.  In this row creator, negative labels are downsampled and costs for the
+downsampled labels are adjusted to produced an unbiased estimator.  It is assumed that
+negative labels are in the majority. Downsampling negatives can improve both training
+time and possibly model performance.  See the following resources for intuition:</p><ul><li><a href="https://www3.nd.edu/~nchawla/papers/SPRINGER05.pdf" target="_blank">Chawla, Nitesh V. &quot;Data mining for
+      imbalanced datasets: An overview.&quot; Data mining and knowledge discovery handbook.
+      Springer US, 2009. 875-886.</a></li><li><a href="https://www3.nd.edu/~dial/publications/chawla2004editorial.pdf" target="_blank">Chawla, Nitesh V., Nathalie
+      Japkowicz, and Aleksander Kotcz. &quot;Special issue on learning from imbalanced data sets.&quot;
+      ACM SIGKDD Explorations Newsletter 6.1 (2004): 1-6.</a></li><li><a href="http://www.marcoaltini.com/blog/dealing-with-imbalanced-data-undersampling-oversampling-and-proper-cross-validation" target="_blank">Dealing with imbalanced data: undersampling, oversampling, and proper cross validation,
+      Marco Altini, Aug 17, 2015.</a></li></ul><p>This row creator, since it is stateful, requires the caller to maintain state.  If however,
+it is only called via an iterator or sequence, then this row creator can maintain the state
+during iteration over the iterator or sequence.  In the case of iterators, the mapping is
+<b>non-strict</b> and in the case of sequences (<code>Seq</code>), it is <b>strict</b>.
+</p></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>the input type</p></dd><dt class="tparam">K</dt><dd class="cmt"><p>the label or class type</p></dd><dt class="param">allLabelsInTrainingSet</dt><dd class="cmt"><p>all labels in the training set.  This is a sequence because
+                              order matters.  Order here can be chosen arbitrarily, but it
+                              must be consistent in the training and test formulation.</p></dd><dt class="param">featuresFunction</dt><dd class="cmt"><p>features to extract from the data of type <code>A</code>.</p></dd><dt class="param">defaultNamespace</dt><dd class="cmt"><p>list of feature indices in the default VW namespace.</p></dd><dt class="param">namespaces</dt><dd class="cmt"><p>a mapping from VW namespace name to feature indices in that namespace.</p></dd><dt class="param">normalizer</dt><dd class="cmt"><p>can modify VW output (currently unused)</p></dd><dt class="param">positiveLabelsFunction</dt><dd class="cmt"><p>A method that can extract positive class labels.</p></dd><dt class="param">classNs</dt><dd class="cmt"><p>the namespace name for class information.</p></dd><dt class="param">dummyClassNs</dt><dd class="cmt"><p>the namespace name for dummy class information.  2 dummy classes are
+                    added to make the predicted probabilities work.</p></dd><dt class="param">numDownsampledNegLabels</dt><dd class="cmt"><p><b>a positive value</b> representing the number of negative
+                               labels to include in each row.  If this is less than the
+                               number of negative examples for a given row, then no
+                               downsampling of negatives will take place.</p></dd><dt class="param">seedCreator</dt><dd class="cmt"><p>a &quot;<i>function</i>&quot; that creates a seed that will be used for randomness.
+                   The implementation of this function is important.  It should create a
+                   unique value for each unit of parallelism.  If for example, row
+                   creation is parallelized across multiple threads on one machine, the
+                   unit of parallelism is threads and <code>seedCreator</code> should produce unique
+                   values for each thread.  If row creation is parallelized across multiple
+                   machines, the <code>seedCreator</code> should produce a unique value for each
+                   machine.  If row creation is parallelized across machines and threads on
+                   each machine, the <code>seedCreator</code> should create unique values for each
+                   thread on each machine.  Otherwise, randomness will be striped which
+                   is bad.</p></dd><dt class="param">includeZeroValues</dt><dd class="cmt"><p>include zero values in VW input?</p></dd></dl><dl class="attributes block"> <dt>Since</dt><dd><p>11/6/2017</p></dd></dl></div>
+    </li><li name="com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="VwMultilabelRowCreator[-A,K]extendsRowCreator[A,Array[String]]withProductwithSerializable"></a>
+      <a id="VwMultilabelRowCreator[-A,K]:VwMultilabelRowCreator[A,K]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="VwMultilabelRowCreator.html"><span class="name">VwMultilabelRowCreator</span></a><span class="tparams">[<span name="A">-A</span>, <span name="K">K</span>]</span><span class="params">(<span name="allLabelsInTrainingSet">allLabelsInTrainingSet: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator.K">K</span>]</span>, <span name="featuresFunction">featuresFunction: <a href="../../FeatureExtractorFunction.html" class="extype" name="com.eharmony.aloha.dataset.FeatureExtractorFunction">FeatureExtractorFunction</a>[<span class="extype" name="com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator.A">A</span>, <span class="extype" name="com.eharmony.aloha.dataset.density.Sparse">Sparse</span>]</span>, <span name="defaultNamespace">defaultNamespace: <a href="../../../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="namespaces">namespaces: <a href="../../../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[(<span class="extype" name="scala.Predef.String">String</span>, <a href="../../../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<span class="extype" name="scala.Int">Int</span>])]</span>, <span name="normalizer">normalizer: <span class="extype" name="scala.Option">Option</span>[(<span class="extype" name="java.lang.CharSequence">CharSequence</span>) ⇒ <span class="extype" name="java.lang.CharSequence">CharSequence</span>]</span>, <span name="positiveLabelsFunction">positiveLabelsFunction: <a href="../../../semantics/func/GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator.A">A</span>, <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator.K">K</span>]]</span>, <span name="classNs">classNs: <span class="extype" name="scala.Char">Char</span></span>, <span name="dummyClassNs">dummyClassNs: <span class="extype" name="scala.Char">Char</span></span>, <span name="includeZeroValues">includeZeroValues: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result"> extends <a href="../../RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a>[<span class="extype" name="com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator.A">A</span>, <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Predef.String">String</span>]] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.multilabel.package@VwMultilabelRowCreator[-A,K]extendsRowCreator[A,Array[String]]withProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Creates training data for multilabel models in Vowpal Wabbit's CSOAA LDF and WAP LDF format
+for the JNI.</p><div class="fullcomment"><div class="comment cmt"><p>Creates training data for multilabel models in Vowpal Wabbit's CSOAA LDF and WAP LDF format
+for the JNI.
+</p></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>the input type</p></dd><dt class="tparam">K</dt><dd class="cmt"><p>the label or class type</p></dd><dt class="param">allLabelsInTrainingSet</dt><dd class="cmt"><p>all labels in the training set.  This is a sequence because
+                              order matters.  Order here can be chosen arbitrarily, but it
+                              must be consistent in the training and test formulation.</p></dd><dt class="param">featuresFunction</dt><dd class="cmt"><p>features to extract from the data of type <code>A</code>.</p></dd><dt class="param">defaultNamespace</dt><dd class="cmt"><p>list of feature indices in the default VW namespace.</p></dd><dt class="param">namespaces</dt><dd class="cmt"><p>a mapping from VW namespace name to feature indices in that namespace.</p></dd><dt class="param">normalizer</dt><dd class="cmt"><p>can modify VW output (currently unused)</p></dd><dt class="param">positiveLabelsFunction</dt><dd class="cmt"><p>A method that can extract positive class labels.</p></dd><dt class="param">classNs</dt><dd class="cmt"><p>the namespace name for class information.</p></dd><dt class="param">dummyClassNs</dt><dd class="cmt"><p>the namespace name for dummy class information.  2 dummy classes are
+                    added to make the predicted probabilities work.</p></dd><dt class="param">includeZeroValues</dt><dd class="cmt"><p>include zero values in VW input?</p></dd></dl><dl class="attributes block"> <dt>Since</dt><dd><p>9/13/2017</p></dd></dl></div>
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="com.eharmony.aloha.dataset.vw.multilabel.VwDownsampledMultilabelRowCreator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="VwDownsampledMultilabelRowCreator"></a>
+      <a id="VwDownsampledMultilabelRowCreator:VwDownsampledMultilabelRowCreator"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="VwDownsampledMultilabelRowCreator$.html"><span class="name">VwDownsampledMultilabelRowCreator</span></a><span class="result"> extends <span class="extype" name="com.eharmony.aloha.util.rand.Rand">Rand</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.multilabel.package@VwDownsampledMultilabelRowCreator" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="VwMultilabelRowCreator"></a>
+      <a id="VwMultilabelRowCreator:VwMultilabelRowCreator"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="VwMultilabelRowCreator$.html"><span class="name">VwMultilabelRowCreator</span></a><span class="result"> extends <span class="extype" name="com.eharmony.aloha.util.rand.Rand">Rand</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.multilabel.package@VwMultilabelRowCreator" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.dataset.vw.multilabel.json" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="json"></a>
+      <a id="json:json"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="json/package.html"><span class="name">json</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.vw.multilabel.package@json" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>

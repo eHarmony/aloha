@@ -89,7 +89,24 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="com.eharmony.aloha.dataset.CompilerFailureMessages" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+              <ol><li name="com.eharmony.aloha.dataset.CharSeqRowCreator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CharSeqRowCreator[-A]=com.eharmony.aloha.dataset.RowCreator[A,CharSequence]"></a>
+      <a id="CharSeqRowCreator[-A]:CharSeqRowCreator[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">CharSeqRowCreator</span><span class="tparams">[<span name="A">-A</span>]</span><span class="result"> = <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a>[<span class="extype" name="com.eharmony.aloha.dataset.CharSeqRowCreator.A">A</span>, <span class="extype" name="java.lang.CharSequence">CharSequence</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.package@CharSeqRowCreator[-A]=com.eharmony.aloha.dataset.RowCreator[A,CharSequence]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.dataset.CompilerFailureMessages" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="CompilerFailureMessagesextendsAnyRef"></a>
       <a id="CompilerFailureMessages:CompilerFailureMessages"></a>
       <h4 class="signature">
@@ -192,18 +209,18 @@
     </span>
       <p class="shortcomment cmt">A function that takes a value and returns extracted features and information on missing and erring features.</p>
     </li><li name="com.eharmony.aloha.dataset.LabelRowCreator" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="LabelRowCreator[-A]extendsRowCreator[A]"></a>
-      <a id="LabelRowCreator[-A]:LabelRowCreator[A]"></a>
+      <a id="LabelRowCreator[-A,+B]extendsRowCreator[A,B]"></a>
+      <a id="LabelRowCreator[-A,+B]:LabelRowCreator[A,B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="LabelRowCreator.html"><span class="name">LabelRowCreator</span></a><span class="tparams">[<span name="A">-A</span>]</span><span class="result"> extends <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a>[<span class="extype" name="com.eharmony.aloha.dataset.LabelRowCreator.A">A</span>]</span>
+        <a href="LabelRowCreator.html"><span class="name">LabelRowCreator</span></a><span class="tparams">[<span name="A">-A</span>, <span name="B">+B</span>]</span><span class="result"> extends <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a>[<span class="extype" name="com.eharmony.aloha.dataset.LabelRowCreator.A">A</span>, <span class="extype" name="com.eharmony.aloha.dataset.LabelRowCreator.B">B</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.package@LabelRowCreator[-A]extendsRowCreator[A]" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.package@LabelRowCreator[-A,+B]extendsRowCreator[A,B]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -226,64 +243,73 @@
     </span>
       
     </li><li name="com.eharmony.aloha.dataset.RowCreator" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="RowCreator[-A]extendsA=&gt;(com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo,CharSequence)withSerializable"></a>
-      <a id="RowCreator[-A]:RowCreator[A]"></a>
+      <a id="RowCreator[-A,+B]extendsA=&gt;(com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo,B)withSerializable"></a>
+      <a id="RowCreator[-A,+B]:RowCreator[A,B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="RowCreator.html"><span class="name">RowCreator</span></a><span class="tparams">[<span name="A">-A</span>]</span><span class="result"> extends (<span class="extype" name="com.eharmony.aloha.dataset.RowCreator.A">A</span>) ⇒ (<a href="MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <span class="extype" name="java.lang.CharSequence">CharSequence</span>) with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="RowCreator.html"><span class="name">RowCreator</span></a><span class="tparams">[<span name="A">-A</span>, <span name="B">+B</span>]</span><span class="result"> extends (<span class="extype" name="com.eharmony.aloha.dataset.RowCreator.A">A</span>) ⇒ (<a href="MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreator.B">B</span>) with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.package@RowCreator[-A]extendsA=&gt;(com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo,CharSequence)withSerializable" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.package@RowCreator[-A,+B]extendsA=&gt;(com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo,B)withSerializable" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
     </li><li name="com.eharmony.aloha.dataset.RowCreatorBuilder" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="RowCreatorBuilder[A,B&lt;:com.eharmony.aloha.dataset.RowCreator[A]]extendsAlohaReadable[scala.util.Try[B]]withLoggingwithProductwithSerializable"></a>
-      <a id="RowCreatorBuilder[A,B&lt;:RowCreator[A]]:RowCreatorBuilder[A,B]"></a>
+      <a id="RowCreatorBuilder[A,B,Impl&lt;:com.eharmony.aloha.dataset.RowCreator[A,B]]extendsAlohaReadable[scala.util.Try[Impl]]withLoggingwithProductwithSerializable"></a>
+      <a id="RowCreatorBuilder[A,B,Impl&lt;:RowCreator[A,B]]:RowCreatorBuilder[A,B,Impl]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="RowCreatorBuilder.html"><span class="name">RowCreatorBuilder</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B &lt;: <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.A">A</span>]</span>]</span><span class="params">(<span name="semantics">semantics: <a href="../semantics/compiled/CompiledSemantics.html" class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemantics">CompiledSemantics</a>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.A">A</span>]</span>, <span name="producers">producers: <a href="../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<a href="RowCreatorProducer.html" class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer">RowCreatorProducer</a>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.A">A</span>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>]]</span>)</span><span class="result"> extends <a href="../io/AlohaReadable.html" class="extype" name="com.eharmony.aloha.io.AlohaReadable">AlohaReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>]] with <a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="RowCreatorBuilder.html"><span class="name">RowCreatorBuilder</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>, <span name="Impl">Impl &lt;: <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.A">A</span>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>]</span>]</span><span class="params">(<span name="semantics">semantics: <a href="../semantics/compiled/CompiledSemantics.html" class="extype" name="com.eharmony.aloha.semantics.compiled.CompiledSemantics">CompiledSemantics</a>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.A">A</span>]</span>, <span name="producers">producers: <a href="../../../../scala/package.html#List[+A]=List[A]" class="extmbr" name="scala.List">List</a>[<a href="RowCreatorProducer.html" class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer">RowCreatorProducer</a>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.A">A</span>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.B">B</span>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.Impl">Impl</span>]]</span>)</span><span class="result"> extends <a href="../io/AlohaReadable.html" class="extype" name="com.eharmony.aloha.io.AlohaReadable">AlohaReadable</a>[<span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorBuilder.Impl">Impl</span>]] with <a href="../util/Logging.html" class="extype" name="com.eharmony.aloha.util.Logging">Logging</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.package@RowCreatorBuilder[A,B&lt;:com.eharmony.aloha.dataset.RowCreator[A]]extendsAlohaReadable[scala.util.Try[B]]withLoggingwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.package@RowCreatorBuilder[A,B,Impl&lt;:com.eharmony.aloha.dataset.RowCreator[A,B]]extendsAlohaReadable[scala.util.Try[Impl]]withLoggingwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <p class="shortcomment cmt">Given a semantics, json specification and an ordered sequence of RowCreatorProducers, <i>find the first producer</i>
 that applies to creating a Spec from the json specification and use it to instantiate the RowCreator object.</p><div class="fullcomment"><div class="comment cmt"><p>Given a semantics, json specification and an ordered sequence of RowCreatorProducers, <i>find the first producer</i>
-that applies to creating a Spec from the json specification and use it to instantiate the RowCreator object.</p></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>the result type produced by reading from one of the readable formats.</p></dd><dt class="tparam">B</dt><dd class="cmt"><p>the implementation of Spec[A] used.</p></dd><dt class="param">semantics</dt><dd class="cmt"><p>a Semantics to be used for creating the RowCreator.</p></dd><dt class="param">producers</dt><dd class="cmt"><p>an ordered sequence of RowCreatorProducers.  These producers form the basis of a
+that applies to creating a Spec from the json specification and use it to instantiate the RowCreator object.</p></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>the type consumed by the <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a> produced by this Readable.</p></dd><dt class="tparam">B</dt><dd class="cmt"><p>the type produced by the <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a> produced by this Readable.</p></dd><dt class="tparam">Impl</dt><dd class="cmt"><p>the implementation of <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a>.</p></dd><dt class="param">semantics</dt><dd class="cmt"><p>a Semantics to be used for creating the RowCreator.</p></dd><dt class="param">producers</dt><dd class="cmt"><p>an ordered sequence of RowCreatorProducers.  These producers form the basis of a
                  <a href="http://en.wikipedia.org/wiki/Chain-of-responsibility_pattern" target="_blank">chain of responsibility pattern</a>.
                  Therefore, <b>the order is important</b>.</p></dd></dl></div>
     </li><li name="com.eharmony.aloha.dataset.RowCreatorProducer" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="RowCreatorProducer[A,+B&lt;:com.eharmony.aloha.dataset.RowCreator[A]]extendsAnyRef"></a>
-      <a id="RowCreatorProducer[A,+B&lt;:RowCreator[A]]:RowCreatorProducer[A,B]"></a>
+      <a id="RowCreatorProducer[A,+B,+Impl&lt;:com.eharmony.aloha.dataset.RowCreator[A,B]]extendsAnyRef"></a>
+      <a id="RowCreatorProducer[A,+B,+Impl&lt;:RowCreator[A,B]]:RowCreatorProducer[A,B,Impl]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="RowCreatorProducer.html"><span class="name">RowCreatorProducer</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">+B &lt;: <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer.A">A</span>]</span>]</span><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+        <a href="RowCreatorProducer.html"><span class="name">RowCreatorProducer</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">+B</span>, <span name="Impl">+Impl &lt;: <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a>[<span class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer.A">A</span>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer.B">B</span>]</span>]</span><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.package@RowCreatorProducer[A,+B&lt;:com.eharmony.aloha.dataset.RowCreator[A]]extendsAnyRef" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.package@RowCreatorProducer[A,+B,+Impl&lt;:com.eharmony.aloha.dataset.RowCreator[A,B]]extendsAnyRef" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">SpecProducer is used to create different kinds of <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a> instances.</p><div class="fullcomment"><div class="comment cmt"><p>SpecProducer is used to create different kinds of <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a> instances.  <b>Classes that extend SpecProducer should
-only have zero-arg constructors.</b>  This is because Spec instances should only be parametrized by the JSON
-specification.  Otherwise, one JSON specification could produce non-equivalent Spec instances in different
-environments.  It is a design goal for this not to happen.
-</p></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>type of input passed to the spec.</p></dd><dt class="tparam">B</dt><dd class="cmt"><p>implementation of the Spec[A] that is returned by the getSpec function.</p></dd></dl></div>
+      <p class="shortcomment cmt"><a href="RowCreatorProducer.html" class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer">RowCreatorProducer</a> is used to create different kinds of <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a> instances.</p><div class="fullcomment"><div class="comment cmt"><p><a href="RowCreatorProducer.html" class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer">RowCreatorProducer</a> is used to create different kinds of <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a> instances.</p><p><b>Classes that extend <a href="RowCreatorProducer.html" class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer">RowCreatorProducer</a> should (<i>try to</i>) have only
+zero-argument constructors.</b></p><p>This is because <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a> instances should ideally only be parametrized by
+the JSON specification.  Otherwise, one JSON specification could produce
+non-equivalent <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a> instances in different environments.</p><p><b>This statelessness is a design goal and should only be broken with good reason.</b></p><p>One of the reasons this rule <i>will likely be broken</i> is that things
+like context bounds on a type parameter to a <a href="RowCreatorProducer.html" class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer">RowCreatorProducer</a> become
+constructor arguments.  So if a <a href="RowCreatorProducer.html" class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer">RowCreatorProducer</a> is parametrized by a
+type that requires a type class to decode the JSON representation, this rule would be
+broken.</p><p>Another example might be in training multi-label models.  Whereas in binary classifiers
+the labels values are known automatically (because they are isomorphic to the set
+<code>{true, false}</code>), the label set isn't known <i>a priori</i> (because each problem codomain
+might be different).  Therefore, we might ask for the set of labels to expect.</p><p><b>NOTE</b>: <code>com.eharmony.aloha.dataset.RowCreatorProducerTest</code> will be used to control
+which <a href="RowCreatorProducer.html" class="extype" name="com.eharmony.aloha.dataset.RowCreatorProducer">RowCreatorProducer</a>s can accept parameters.
+</p></div><dl class="paramcmts block"><dt class="tparam">A</dt><dd class="cmt"><p>type of input passed to the <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a>.</p></dd><dt class="tparam">B</dt><dd class="cmt"><p>type of output returned from the <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a>.</p></dd><dt class="tparam">Impl</dt><dd class="cmt"><p>implementation of the <a href="RowCreator.html" class="extype" name="com.eharmony.aloha.dataset.RowCreator">RowCreator</a> that is returned by the
+             <code>getRowCreator</code> function.</p></dd></dl></div>
     </li><li name="com.eharmony.aloha.dataset.RowCreatorProducerName" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="RowCreatorProducerNameextendsAnyRef"></a>
       <a id="RowCreatorProducerName:RowCreatorProducerName"></a>
@@ -335,6 +361,42 @@ environments.  It is a design goal for this not to happen.
       </a>
     </span>
       
+    </li><li name="com.eharmony.aloha.dataset.StatefulRowCreator" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="StatefulRowCreator[-A,+B,S]extendsSerializable"></a>
+      <a id="StatefulRowCreator[-A,+B,S]:StatefulRowCreator[A,B,S]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="StatefulRowCreator.html"><span class="name">StatefulRowCreator</span></a><span class="tparams">[<span name="A">-A</span>, <span name="B">+B</span>, <span name="S">S</span>]</span><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.package@StatefulRowCreator[-A,+B,S]extendsSerializable" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A row creator that requires state.</p><div class="fullcomment"><div class="comment cmt"><p>A row creator that requires state.  This state should be modeled functionally, meaning
+implementations should be referentially transparent.</p><p>Created by ryan.deak on 11/2/17.
+</p></div></div>
+    </li><li name="com.eharmony.aloha.dataset.StatefulRowCreatorProducer" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="StatefulRowCreatorProducer[A,+B,S,+Impl&lt;:com.eharmony.aloha.dataset.StatefulRowCreator[A,B,S]]extendsAnyRef"></a>
+      <a id="StatefulRowCreatorProducer[A,+B,S,+Impl&lt;:StatefulRowCreator[A,B,S]]:StatefulRowCreatorProducer[A,B,S,Impl]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="StatefulRowCreatorProducer.html"><span class="name">StatefulRowCreatorProducer</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">+B</span>, <span name="S">S</span>, <span name="Impl">+Impl &lt;: <a href="StatefulRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.StatefulRowCreator">StatefulRowCreator</a>[<span class="extype" name="com.eharmony.aloha.dataset.StatefulRowCreatorProducer.A">A</span>, <span class="extype" name="com.eharmony.aloha.dataset.StatefulRowCreatorProducer.B">B</span>, <span class="extype" name="com.eharmony.aloha.dataset.StatefulRowCreatorProducer.S">S</span>]</span>]</span><span class="result"> extends <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.package@StatefulRowCreatorProducer[A,+B,S,+Impl&lt;:com.eharmony.aloha.dataset.StatefulRowCreator[A,B,S]]extendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Created by deaktator on 11/6/17.</p>
     </li><li name="com.eharmony.aloha.dataset.StringFeatureExtractorFunction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="StringFeatureExtractorFunction[-A]extendsFeatureExtractorFunction[A,String]withProductwithSerializable"></a>
       <a id="StringFeatureExtractorFunction[-A]:StringFeatureExtractorFunction[A]"></a>

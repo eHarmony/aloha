@@ -1,0 +1,308 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>multilabel - com.eharmony.aloha.models.multilabel</title>
+          <meta name="description" content="multilabel - com.eharmony.aloha.models.multilabel" />
+          <meta name="keywords" content="multilabel com.eharmony.aloha.models.multilabel" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../../../index.html';
+            var hash = 'com.eharmony.aloha.models.multilabel.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img alt="Package" src="../../../../../lib/package_big.png" />
+        <p id="owner"><a href="../../../../package.html" class="extype" name="com">com</a>.<a href="../../../package.html" class="extype" name="com.eharmony">eharmony</a>.<a href="../../package.html" class="extype" name="com.eharmony.aloha">aloha</a>.<a href="../package.html" class="extype" name="com.eharmony.aloha.models">models</a></p>
+        <h1>multilabel</h1><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.models.multilabel.package" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">multilabel</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Created by ryan.deak on 8/31/17.
+</p></div><div class="toggleContainer block">
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent"><a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+        </div></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        <div id="order">
+              <span class="filtertype">Ordering</span>
+              <ol>
+                
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By Inheritance</span></li>
+              </ol>
+            </div>
+        <div id="ancestors">
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="com.eharmony.aloha.models.multilabel"><span>multilabel</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show All</span></li>
+            </ol>
+          </div>
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="com.eharmony.aloha.models.multilabel.MultilabelModel" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="MultilabelModel[U,K,-A,+B&lt;:U]extendsSubmodelBase[U,Map[K,Double],A,B]withRegressionFeatures[A]withProductwithSerializable"></a>
+      <a id="MultilabelModel[U,K,-A,+B&lt;:U]:MultilabelModel[U,K,A,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="MultilabelModel.html"><span class="name">MultilabelModel</span></a><span class="tparams">[<span name="U">U</span>, <span name="K">K</span>, <span name="A">-A</span>, <span name="B">+B &lt;: <span class="extype" name="com.eharmony.aloha.models.multilabel.MultilabelModel.U">U</span></span>]</span><span class="params">(<span name="modelId">modelId: <a href="../../id/ModelIdentity.html" class="extype" name="com.eharmony.aloha.id.ModelIdentity">ModelIdentity</a></span>, <span name="featureNames">featureNames: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="featureFunctions">featureFunctions: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<a href="../../semantics/func/GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.models.multilabel.MultilabelModel.A">A</span>, <span class="extype" name="com.eharmony.aloha.dataset.density.Sparse">Sparse</span>]]</span>, <span name="labelsInTrainingSet">labelsInTrainingSet: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="com.eharmony.aloha.models.multilabel.MultilabelModel.K">K</span>]</span>, <span name="labelsOfInterest">labelsOfInterest: <span class="extype" name="scala.Option">Option</span>[<a href="../../semantics/func/GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.models.multilabel.MultilabelModel.A">A</span>, <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="com.eharmony.aloha.models.multilabel.MultilabelModel.K">K</span>]]]</span>, <span name="predictorProducer">predictorProducer: <a href="#SparsePredictorProducer[K]=()=&gt;com.eharmony.aloha.models.multilabel.package.SparseMultiLabelPredictor[K]" class="extmbr" name="com.eharmony.aloha.models.multilabel.SparsePredictorProducer">SparsePredictorProducer</a>[<span class="extype" name="com.eharmony.aloha.models.multilabel.MultilabelModel.K">K</span>]</span>, <span name="numMissingThreshold">numMissingThreshold: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="auditor">auditor: <a href="../../audit/Auditor.html" class="extype" name="com.eharmony.aloha.audit.Auditor">Auditor</a>[<span class="extype" name="com.eharmony.aloha.models.multilabel.MultilabelModel.U">U</span>, <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="com.eharmony.aloha.models.multilabel.MultilabelModel.K">K</span>, <span class="extype" name="scala.Double">Double</span>], <span class="extype" name="com.eharmony.aloha.models.multilabel.MultilabelModel.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <a href="../../util/SerializabilityEvidence.html" class="extype" name="com.eharmony.aloha.util.SerializabilityEvidence">SerializabilityEvidence</a>[<span class="extype" name="com.eharmony.aloha.models.multilabel.MultilabelModel.K">K</span>]</span>)</span><span class="result"> extends <a href="../SubmodelBase.html" class="extype" name="com.eharmony.aloha.models.SubmodelBase">SubmodelBase</a>[<span class="extype" name="com.eharmony.aloha.models.multilabel.MultilabelModel.U">U</span>, <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="com.eharmony.aloha.models.multilabel.MultilabelModel.K">K</span>, <span class="extype" name="scala.Double">Double</span>], <span class="extype" name="com.eharmony.aloha.models.multilabel.MultilabelModel.A">A</span>, <span class="extype" name="com.eharmony.aloha.models.multilabel.MultilabelModel.B">B</span>] with <a href="../reg/RegressionFeatures.html" class="extype" name="com.eharmony.aloha.models.reg.RegressionFeatures">RegressionFeatures</a>[<span class="extype" name="com.eharmony.aloha.models.multilabel.MultilabelModel.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.models.multilabel.package@MultilabelModel[U,K,-A,+B&lt;:U]extendsSubmodelBase[U,Map[K,Double],A,B]withRegressionFeatures[A]withProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A multi-label predictor.</p><div class="fullcomment"><div class="comment cmt"><p>A multi-label predictor.</p><p>Created by ryan.deak on 8/29/17.
+</p></div><dl class="paramcmts block"><dt class="tparam">U</dt><dd class="cmt"><p>upper bound on model output type <code>B</code></p></dd><dt class="tparam">K</dt><dd class="cmt"><p>type of label or class</p></dd><dt class="tparam">A</dt><dd class="cmt"><p>input type of the model</p></dd><dt class="tparam">B</dt><dd class="cmt"><p>output type of the model.</p></dd><dt class="param">modelId</dt><dd class="cmt"><p>An identifier for the model.  Used in score and error reporting.</p></dd><dt class="param">featureNames</dt><dd class="cmt"><p>feature names (parallel to featureFunctions)</p></dd><dt class="param">featureFunctions</dt><dd class="cmt"><p>feature extracting functions.</p></dd><dt class="param">labelsInTrainingSet</dt><dd class="cmt"><p>a sequence of all labels encountered during training. Note: the
+                           order of labels may relate to the predictor produced by
+                           predictorProducer.  It is the caller's responsibility to ensure
+                           the order is correct.  To mitigate such problems, both labels
+                           and indices into labelsInTrainingSet are passed to the predictor
+                           produced by predictorProducer.</p></dd><dt class="param">labelsOfInterest</dt><dd class="cmt"><p>if provided, a sequence of labels will be extracted from the example
+                        for which a prediction is desired. The <i>intersection</i> of the
+                        extracted labels and the training labels will be the labels for which
+                        predictions will be produced.</p></dd><dt class="param">predictorProducer</dt><dd class="cmt"><p>the function produced when calling this function is responsible for
+                         getting the data into the correct type and using it within an
+                         underlying ML library to produce a prediction.  The mapping back to
+                         (K, Double) pairs is also its responsibility.  If the predictor
+                         produced by predictorProducer is Closeable, it will be closed when
+                         MultilabelModel's close method is called.</p></dd><dt class="param">numMissingThreshold</dt><dd class="cmt"><p>if provided, we check whether the threshold is exceeded.  If so,
+                           return an error instead of the computed score.  This is for missing
+                           data situations.</p></dd><dt class="param">auditor</dt><dd class="cmt"><p>transforms a <code>Map[K, Double]</code> to a <code>B</code>.  Reports successes and errors.</p></dd><dt class="param">ev</dt><dd class="cmt"><p>evidence that <code>K</code> is serializable.</p></dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.multilabel.MultilabelModelParserPlugin" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="MultilabelModelParserPluginextendsAnyRef"></a>
+      <a id="MultilabelModelParserPlugin:MultilabelModelParserPlugin"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="MultilabelModelParserPlugin.html"><span class="name">MultilabelModelParserPlugin</span></a><span class="result"> extends <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.models.multilabel.package@MultilabelModelParserPluginextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A plugin that will ultimately produce the <a href="#SparseMultiLabelPredictor[K]=(com.eharmony.aloha.models.multilabel.package.SparseFeatures,com.eharmony.aloha.models.multilabel.package.Labels[K],com.eharmony.aloha.models.multilabel.package.LabelIndices,com.eharmony.aloha.models.multilabel.package.SparseLabelDepFeatures)=&gt;scala.util.Try[Map[K,Double]]" class="extmbr" name="com.eharmony.aloha.models.multilabel.SparseMultiLabelPredictor">SparseMultiLabelPredictor</a>.</p><div class="fullcomment"><div class="comment cmt"><p>A plugin that will ultimately produce the <a href="#SparseMultiLabelPredictor[K]=(com.eharmony.aloha.models.multilabel.package.SparseFeatures,com.eharmony.aloha.models.multilabel.package.Labels[K],com.eharmony.aloha.models.multilabel.package.LabelIndices,com.eharmony.aloha.models.multilabel.package.SparseLabelDepFeatures)=&gt;scala.util.Try[Map[K,Double]]" class="extmbr" name="com.eharmony.aloha.models.multilabel.SparseMultiLabelPredictor">SparseMultiLabelPredictor</a>.
+Created by ryan.deak on 9/6/17.
+</p></div></div>
+    </li><li name="com.eharmony.aloha.models.multilabel.MultilabelPluginProviderCompanion" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="MultilabelPluginProviderCompanionextendsAnyRef"></a>
+      <a id="MultilabelPluginProviderCompanion:MultilabelPluginProviderCompanion"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="MultilabelPluginProviderCompanion.html"><span class="name">MultilabelPluginProviderCompanion</span></a><span class="result"> extends <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.models.multilabel.package@MultilabelPluginProviderCompanionextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Created by ryan.deak on 9/6/17.</p>
+    </li><li name="com.eharmony.aloha.models.multilabel.PluginInfo" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="PluginInfo[K]extendsAnyRef"></a>
+      <a id="PluginInfo[K]:PluginInfo[K]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="PluginInfo.html"><span class="name">PluginInfo</span></a><span class="tparams">[<span name="K">K</span>]</span><span class="result"> extends <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.models.multilabel.package@PluginInfo[K]extendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Created by ryan.deak on 9/7/17.</p>
+    </li><li name="com.eharmony.aloha.models.multilabel.SparseMultiLabelPredictor" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="SparseMultiLabelPredictor[K]=(com.eharmony.aloha.models.multilabel.package.SparseFeatures,com.eharmony.aloha.models.multilabel.package.Labels[K],com.eharmony.aloha.models.multilabel.package.LabelIndices,com.eharmony.aloha.models.multilabel.package.SparseLabelDepFeatures)=&gt;scala.util.Try[Map[K,Double]]"></a>
+      <a id="SparseMultiLabelPredictor[K]:SparseMultiLabelPredictor[K]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">SparseMultiLabelPredictor</span><span class="tparams">[<span name="K">K</span>]</span><span class="result"> = (<span class="extype" name="com.eharmony.aloha.models.multilabel.SparseFeatures">SparseFeatures</span>, <span class="extype" name="com.eharmony.aloha.models.multilabel.Labels">Labels</span>[<span class="extype" name="com.eharmony.aloha.models.multilabel.SparseMultiLabelPredictor.K">K</span>], <span class="extype" name="com.eharmony.aloha.models.multilabel.LabelIndices">LabelIndices</span>, <span class="extype" name="com.eharmony.aloha.models.multilabel.SparseLabelDepFeatures">SparseLabelDepFeatures</span>) ⇒ <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="com.eharmony.aloha.models.multilabel.SparseMultiLabelPredictor.K">K</span>, <span class="extype" name="scala.Double">Double</span>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.models.multilabel.package@SparseMultiLabelPredictor[K]=(com.eharmony.aloha.models.multilabel.package.SparseFeatures,com.eharmony.aloha.models.multilabel.package.Labels[K],com.eharmony.aloha.models.multilabel.package.LabelIndices,com.eharmony.aloha.models.multilabel.package.SparseLabelDepFeatures)=&gt;scala.util.Try[Map[K,Double]]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A sparse multi-label predictor takes:</p><div class="fullcomment"><div class="comment cmt"><p>A sparse multi-label predictor takes:</p><ul><li>features</li><li>labels for which a prediction should be produced</li><li>indices of those labels into sequence of all of the labels the model knows about.</li><li>label dependent-features</li></ul><p>and returns a Map from the labels passed in, to the prediction associated with the label.
+</p></div></div>
+    </li><li name="com.eharmony.aloha.models.multilabel.SparsePredictorProducer" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="SparsePredictorProducer[K]=()=&gt;com.eharmony.aloha.models.multilabel.package.SparseMultiLabelPredictor[K]"></a>
+      <a id="SparsePredictorProducer[K]:SparsePredictorProducer[K]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">SparsePredictorProducer</span><span class="tparams">[<span name="K">K</span>]</span><span class="result"> = () ⇒ <a href="#SparseMultiLabelPredictor[K]=(com.eharmony.aloha.models.multilabel.package.SparseFeatures,com.eharmony.aloha.models.multilabel.package.Labels[K],com.eharmony.aloha.models.multilabel.package.LabelIndices,com.eharmony.aloha.models.multilabel.package.SparseLabelDepFeatures)=&gt;scala.util.Try[Map[K,Double]]" class="extmbr" name="com.eharmony.aloha.models.multilabel.SparseMultiLabelPredictor">SparseMultiLabelPredictor</a>[<span class="extype" name="com.eharmony.aloha.models.multilabel.SparsePredictorProducer.K">K</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.models.multilabel.package@SparsePredictorProducer[K]=()=&gt;com.eharmony.aloha.models.multilabel.package.SparseMultiLabelPredictor[K]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A lazy version of a sparse multi-label predictor.</p><div class="fullcomment"><div class="comment cmt"><p>A lazy version of a sparse multi-label predictor.  It is a curried zero-arg function that
+produces a sparse multi-label predictor.</p><p>This definition is &quot;lazy&quot; because we can't guarantee that the underlying predictor is
+<code>Serializable</code> so we pass around a function that can be cached in a <i>transient</i>
+<code>lazy val</code>.  This function should however be <code>Serializable</code> and testing should be done
+to ensure that each predictor producer is <code>Serializable</code>.
+</p></div></div>
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="com.eharmony.aloha.models.multilabel.MultilabelModel" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="MultilabelModel"></a>
+      <a id="MultilabelModel:MultilabelModel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="MultilabelModel$.html"><span class="name">MultilabelModel</span></a><span class="result"> extends <a href="../../factory/ParserProviderCompanion.html" class="extype" name="com.eharmony.aloha.factory.ParserProviderCompanion">ParserProviderCompanion</a> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.models.multilabel.package@MultilabelModel" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.models.multilabel.MultilabelModelParserPlugin" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="MultilabelModelParserPlugin"></a>
+      <a id="MultilabelModelParserPlugin:MultilabelModelParserPlugin"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="MultilabelModelParserPlugin$.html"><span class="name">MultilabelModelParserPlugin</span></a><span class="result"> extends <a href="../../reflect/RuntimeClasspathScanning.html" class="extype" name="com.eharmony.aloha.reflect.RuntimeClasspathScanning">RuntimeClasspathScanning</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.models.multilabel.package@MultilabelModelParserPlugin" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.models.multilabel.json" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="json"></a>
+      <a id="json:json"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="json/package.html"><span class="name">json</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.models.multilabel.package@json" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        <div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+            </div>
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>
