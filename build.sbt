@@ -269,11 +269,6 @@ pomExtra in Global := (
         <distribution>repo</distribution>
       </license>
     </licenses>
-    <scm>
-      <url>git@github.com:eharmony/aloha.git</url>
-      <developerConnection>scm:git:git@github.com:eharmony/aloha.git</developerConnection>
-      <connection>scm:git:git@github.com:eharmony/aloha.git</connection>
-    </scm>
     <developers>
       <developer>
         <id>deaktator</id>
@@ -283,7 +278,7 @@ pomExtra in Global := (
             <role>creator</role>
             <role>developer</role>
         </roles>
-        <timezone>-7</timezone>
+        <timezone>-8</timezone>
       </developer>
     </developers>
   )
