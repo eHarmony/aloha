@@ -4,9 +4,10 @@ import java.{lang => jl}
 
 import com.eharmony.aloha.FileLocations
 import com.eharmony.aloha.reflect.RefInfo
+import com.eharmony.aloha.semantics.LazyInitSupport
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
-import org.junit.Assert._
 import org.junit.Test
+import org.junit.Assert._
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 
@@ -96,6 +97,40 @@ class CompiledSemanticsTest {
     }
 
 
+    @Test
+    def testFeatureFunctionsDoNotCallReferencedFunctionsWhenDataIsMissing(): Unit = {
+        // According to the semantics, the input type must be an Option.
+        val semantics = CompiledSemanticsInstances.anyNameMissingValueSemantics[Option[String]]()
+
+        // Call the `code` function on a variable with missing data.
+        val spec = s"${getClass.getCanonicalName}.code" + "(${missingVariable})"
+
+        // The output type of the function is Option[Boolean] for two reasons:
+        //   1. the output of the `code` function in the companion object is Boolean
+        //   2. the semantics produces a GeneratedAccessor[Option[String]], therefore,
+        //      the output of the function must be an Option.  As a consequence of
+        //      having optional data, a default must be provided.  This is `Some(None)`
+        //      because the default is that when missing data is present, `f` will return
+        //      the `None` inside the `Some(None)`.
+        val defaultReturnValue = Some(None)
+        val fAttempt = semantics.createFunction[Option[Boolean]](spec, defaultReturnValue)
+
+        // Assert the compilation succeeded.
+        assertTrue(s"Compilation failed. Found $fAttempt", fAttempt.isRight)
+        val f = fAttempt.right.get
+
+        // Call the function with (missing) data.  It doesn't matter whether the data is
+        // missing or not because the semantics should return missing data.
+        val x = None
+        val y = f(x)
+        assertEquals(None, y)
+
+        // The `code` function should not have been called because the data wasn't present
+        // (since the semantics deleted it even if it was present).
+        val wasCalled = CompiledSemanticsTest.codeWasCalled
+        assertFalse(wasCalled)
+    }
+
     private[this] object MapStringLongPlugin extends CompiledSemanticsPlugin[Map[String, Long]] {
         def refInfoA = RefInfo[Map[String, Long]]
         def accessorFunctionCode(spec: String) = {
@@ -107,6 +142,8 @@ class CompiledSemanticsTest {
         }
     }
 }
+
+object CompiledSemanticsTest extends LazyInitSupport
 
 object StaticFuncs {
     def f(a: jl.Long): Long = if (null == a) 13 else 18
