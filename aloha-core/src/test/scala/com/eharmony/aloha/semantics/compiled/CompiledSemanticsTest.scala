@@ -112,8 +112,8 @@ class CompiledSemanticsTest {
         //      having optional data, a default must be provided.  This is `Some(None)`
         //      because the default is that when missing data is present, `f` will return
         //      the `None` inside the `Some(None)`.
-        val default = Some(None)
-        val fAttempt = semantics.createFunction[Option[Boolean]](spec, default)
+        val defaultReturnValue = Some(None)
+        val fAttempt = semantics.createFunction[Option[Boolean]](spec, defaultReturnValue)
 
         // Assert the compilation succeeded.
         assertTrue(s"Compilation failed. Found $fAttempt", fAttempt.isRight)

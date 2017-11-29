@@ -11,20 +11,20 @@ import java.util.concurrent.atomic.AtomicBoolean
   * @author deaktator
   * @since 11/28/2017
   */
-trait LazyInitSupport {
-  private[this] val NotCalled = false
-  private[this] val Called = true
+private[aloha] abstract class LazyInitSupport {
+  private val NotCalled = false
+  private val Called = true
 
   /**
     * Only to be modified by `wasCalled`.
     */
-  private[this] val indicator = new AtomicBoolean(NotCalled)
+  private val indicator = new AtomicBoolean(NotCalled)
 
   /**
     * Attempt to set `indicator` to `true` assuming `indicator` wasn't already set.
     * `true` if indicator wasn't previously set; otherwise, `false`.
     */
-  private[this] lazy val wasCalled = indicator.compareAndSet(NotCalled, Called)
+  private lazy val wasCalled = indicator.compareAndSet(NotCalled, Called)
 
   /**
     * This function should be called in a feature function created by the
