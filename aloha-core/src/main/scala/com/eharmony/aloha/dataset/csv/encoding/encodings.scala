@@ -1,6 +1,6 @@
 package com.eharmony.aloha.dataset.csv.encoding
 
-import com.eharmony.aloha.dataset.csv.json.{SyntheticEnumCsvColumn, EnumCsvColumn, CsvColumn}
+import com.eharmony.aloha.dataset.csv.json._
 import spray.json._
 import spray.json.DefaultJsonProtocol.lift
 
@@ -61,9 +61,11 @@ case object HotOneEncoding extends Encoding {
     }
 
     override def csvHeadersForColumn(c: CsvColumn): Seq[String] = c match {
-        case e@EnumCsvColumn(name, _, _) => e.values.map(v => s"${name}_$v")
+        case e@EnumCsvColumn(name, _, _)                => e.values.map(v => s"${name}_$v")
         case SyntheticEnumCsvColumn(name, _, values, _) => values.map(v => s"${name}_$v")
-        case d => Seq(d.name)
+        case SeqCsvColumnWithNoDefault(_, _, n)         => (0 until n) map (i => s"${c.name}_$i")
+        case OptionSeqCsvColumnWithNoDefault(_, _, n)   => (0 until n) map (i => s"${c.name}_$i")
+        case d                                          => Seq(d.name)
     }
 
     override def finalizer[A](sep: String, nullString: String, values: Iterable[String]): Option[A] => String = HotOne[A](sep, values.view.zipWithIndex.toMap)
@@ -71,14 +73,20 @@ case object HotOneEncoding extends Encoding {
 
 case object RegularEncoding extends Encoding {
     private[this] case class Regular[A](nullString: String, ok: Set[String]) extends (Option[A] => String) {
-        def apply(o: Option[A]) =
+        def apply(o: Option[A]): String =
             o.fold(nullString){ v =>
                 val s = v.toString
                 if (ok contains s) s else nullString
             }
     }
 
-    override def csvHeadersForColumn(c: CsvColumn): Seq[String] = Seq(c.name)
+    override def csvHeadersForColumn(c: CsvColumn): Seq[String] = {
+        c match {
+            case SeqCsvColumnWithNoDefault(_, _, n)       => (0 until n) map (i => s"${c.name}_$i")
+            case OptionSeqCsvColumnWithNoDefault(_, _, n) => (0 until n) map (i => s"${c.name}_$i")
+            case d                                        => Seq(d.name)
+        }
+    }
 
     override def finalizer[A](sep: String, nullString: String, values: Iterable[String]): Option[A] => String = Regular[A](nullString, values.toSet)
 }

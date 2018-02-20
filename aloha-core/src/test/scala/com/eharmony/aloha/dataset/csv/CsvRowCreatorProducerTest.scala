@@ -2,6 +2,7 @@ package com.eharmony.aloha.dataset.csv
 
 import com.eharmony.aloha.FileLocations
 import com.eharmony.aloha.dataset.{MissingAndErroneousFeatureInfo, RowCreatorBuilder}
+import com.eharmony.aloha.semantics.SemanticsUdfException
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import com.eharmony.aloha.semantics.compiled.plugin.csv._
@@ -78,6 +79,59 @@ class CsvRowCreatorProducerTest {
         val actual = lines.map(spec)
 
         assertEquals(expected, actual)
+    }
+
+    @Test def testVectorizedInput(): Unit = {
+        val line = (1 to 10).mkString(",") + "," + (11 to 20).map(_.toDouble).mkString(",")
+
+        test(
+            """
+              |{
+              |  "imports": [],
+              |  "separator": ",",
+              |  "nullValue": "null",
+              |  "features": [
+              |    { "spec": "1 to 10", "type": "int", "size": 10, "name": "i_1_10" },
+              |    { "spec": "11 to 20 map (_.toDouble)", "type": "double", "size": 10, "name": "d_1_10" }
+              |  ]
+              |}
+            """.stripMargin,
+
+            Seq.fill(4)(line).mkString("\n")
+        )
+    }
+
+    @Test def testWrongSizedOutput(): Unit = {
+
+        val json =
+            """
+              |{
+              |  "imports": [],
+              |  "separator": ",",
+              |  "nullValue": "null",
+              |  "features": [
+              |    { "spec": "1 to 3", "type": "int", "size": 2, "name": "i=1..3, size=2" }
+              |  ]
+              |}
+            """.stripMargin
+
+        val spec = specBuilder.fromString(json).get
+        val pipeline = lines.view.take(1).map(spec)
+        val expMsg = "requirement failed: feature 'i=1..3, size=2' output size != 2"
+
+        try {
+            pipeline.headOption
+            fail()
+        }
+        catch {
+            case SemanticsUdfException(_, accOut, accMissingOut, accErr, cause, _) =>
+                assertTrue(cause.isInstanceOf[IllegalArgumentException])
+                assertEquals(expMsg, cause.getMessage)
+                assertTrue(accOut.isEmpty)
+                assertTrue(accMissingOut.isEmpty)
+                assertTrue(accErr.isEmpty)
+            case _ => fail()
+        }
     }
 
 

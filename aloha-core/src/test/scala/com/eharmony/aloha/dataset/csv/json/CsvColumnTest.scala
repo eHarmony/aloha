@@ -1,11 +1,12 @@
 package com.eharmony.aloha.dataset.csv.json
 
+import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import org.junit.Assert._
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 import spray.json._
-import spray.json.DefaultJsonProtocol.{DoubleJsonFormat, LongJsonFormat}
+import spray.json.DefaultJsonProtocol._
 
 
 @RunWith(classOf[BlockJUnit4ClassRunner])
@@ -54,5 +55,24 @@ class CsvColumnTest {
         val json = jsonTxt.parseJson
         val col = json.convertTo[CsvColumn]
         assertTrue(col.isInstanceOf[OptionEnumCsvColumn[_]])
+    }
+
+    @Test def testSizedByte(): Unit = testSizedCreation[Byte]
+    @Test def testSizedChar(): Unit = testSizedCreation[Char]
+    @Test def testSizedShort(): Unit = testSizedCreation[Short]
+    @Test def testSizedInt(): Unit = testSizedCreation[Int]
+    @Test def testSizedLong(): Unit = testSizedCreation[Long]
+    @Test def testSizedFloat(): Unit = testSizedCreation[Float]
+    @Test def testSizedDouble(): Unit = testSizedCreation[Double]
+    @Test def testSizedString(): Unit = testSizedCreation[String]
+
+    private def testSizedCreation[A: RefInfo: JsonFormat]: Unit = {
+        val tpe = RefInfoOps.toString(RefInfo[A]).split("\\.").last.toLowerCase
+        val name = tpe.replaceAll("[aeiou]", "")
+        val spec = "${string}"
+        val jsonTxt = s"""{ "name": "$name", "type": "$tpe", "size": 2, "spec": "$spec"}"""
+        val col = jsonTxt.parseJson.convertTo[CsvColumn]
+        val exp = SeqCsvColumnWithNoDefault[A](name, spec, 2)
+        assertEquals(exp, col)
     }
 }
