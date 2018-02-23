@@ -61,12 +61,10 @@ private[h2o] sealed abstract class VectorFeatureFunction[-A, B](implicit box: B 
   }
 }
 
-//case class DoubleFeatureFunction[-A](ff: GenAggFunc[A, Option[jl.Double]]) extends FeatureFunction[A]
 case class DoubleFeatureFunction[-A](ff: GenAggFunc[A, Option[jl.Double]])
    extends ScalarFeatureFunction[A, jl.Double]
       with FeatureFunction[A]
 
-//case class StringFeatureFunction[-A](ff: GenAggFunc[A, Option[String]]) extends FeatureFunction[A]
 case class StringFeatureFunction[-A](ff: GenAggFunc[A, Option[String]])
    extends ScalarFeatureFunction[A, String]
      with FeatureFunction[A]
