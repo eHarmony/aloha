@@ -19,7 +19,7 @@ import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
-import com.eharmony.aloha.semantics.func.GenAggFunc
+// import com.eharmony.aloha.semantics.func.GenAggFunc
 import com.eharmony.aloha.util.{EitherHelpers, Logging}
 import hex.genmodel.GenModel
 import hex.genmodel.easy.exception.PredictUnknownCategoricalLevelException
@@ -49,10 +49,12 @@ final case class H2oModel[U, N: RefInfo, -A, +B <: U](
   // Because H2O's RowData object is essentially a Map of String to Object, we unapply the wrapper
   // and throw away the type information on the function return type.  We have type safety because
   // FeatureFunction is sealed (ADT).
-  @transient private[this] lazy val lazyAnyRefFF = featureFunctions map {
-    case DoubleFeatureFunction(f) => f
-    case StringFeatureFunction(f) => f
-  }
+//  @transient private[this] lazy val lazyAnyRefFF = featureFunctions map {
+//    case DoubleFeatureFunction(f)    => f
+//    case StringFeatureFunction(f)    => f
+////    case DoubleSeqFeatureFunction(f) => f
+////    case StringSeqFeatureFunction(f) => f
+//  }
 
   @transient private[this] lazy val h2OPredictor: (RowData) => Either[IllConditioned, N] = {
     val retrieval = H2oModelCategory.predictor[N](new EasyPredictModelWrapper(h2OModel))
@@ -60,7 +62,7 @@ final case class H2oModel[U, N: RefInfo, -A, +B <: U](
   }
 
   // Force initialization of lazy vals.
-  require(lazyAnyRefFF != null)
+//  require(lazyAnyRefFF != null)
   require(h2OPredictor != null)
 
   override def subvalue(a: A): Subvalue[B, N] = {
@@ -83,9 +85,6 @@ final case class H2oModel[U, N: RefInfo, -A, +B <: U](
       fold(ill => failure(Seq(ill.errorMsg), getMissingVariables(f.missing)),
            s   => success(s, missingVarNames = getMissingVariables(f.missing)))
   }
-
-  /**
-    */
 
   /**
     * ''Attempt'' to determine if a categorical was missing in the h2o model.
@@ -141,30 +140,50 @@ final case class H2oModel[U, N: RefInfo, -A, +B <: U](
 
     // If we are going to err out, allow a linear scan (with repeated work so that we can get richer error
     // diagnostics.  Only include the values where the list of missing accessors variables is not empty.
-    def fullMissing(ff: sci.IndexedSeq[GenAggFunc[A, _]]): Map[String, Seq[String]] =
-      ff.foldLeft(Map.empty[String, Seq[String]])((missing, f) => f.accessorOutputMissing(a) match {
-        case m if m.nonEmpty => missing + (f.specification -> m)
+//    def fullMissing(ff: sci.IndexedSeq[GenAggFunc[A, _]]): Map[String, Seq[String]] =
+//      ff.foldLeft(Map.empty[String, Seq[String]])((missing, f) => f.accessorOutputMissing(a) match {
+//        case m if m.nonEmpty => missing + (f.specification -> m)
+//        case _               => missing
+//      })
+
+    def fullMissing(): Map[String, Seq[String]] =
+      featureFunctions.foldLeft(Map.empty[String, Seq[String]])((missing, f) => f.ff.accessorOutputMissing(a) match {
+        case m if m.nonEmpty => missing + (f.ff.specification -> m)
         case _               => missing
       })
 
-    @tailrec def features(i: Int,
-                          n: Int,
-                          rowData: RowData,
-                          missing: Map[String, Seq[String]],
-                          ff: sci.IndexedSeq[GenAggFunc[A, Option[AnyRef]]]): Features[RowData] =
+
+    @tailrec def features(i: Int, n: Int, rowData: RowData, missing: Map[String, Seq[String]]): Features[RowData] = {
       if (i >= n) {
         val numMissingOk = numMissingThreshold.fold(true)(missing.size <= _)
-        val m = if (numMissingOk) missing else fullMissing(ff)
+        val m = if (numMissingOk) missing else fullMissing()
         Features(rowData, m, numMissingOk)
       }
-      else ff(i)(a) match {
-        case Some(x) => features(i + 1, n, rowData + (featureNames(i), x), missing, ff)
-        case None    => features(i + 1, n, rowData, missing + (ff(i).specification -> ff(i).accessorOutputMissing(a)), ff)
+      else {
+        val additionalMissing = featureFunctions(i).fillRowData(a, featureNames(i), rowData)
+        features(i +1, n, rowData, missing ++ additionalMissing)
       }
+    }
+
+//    @tailrec def features(i: Int,
+//                          n: Int,
+//                          rowData: RowData,
+//                          missing: Map[String, Seq[String]],
+//                          ff: sci.IndexedSeq[GenAggFunc[A, Option[AnyRef]]]): Features[RowData] =
+//      if (i >= n) {
+//        val numMissingOk = numMissingThreshold.fold(true)(missing.size <= _)
+//        val m = if (numMissingOk) missing else fullMissing(ff)
+//        Features(rowData, m, numMissingOk)
+//      }
+//      else ff(i)(a) match {
+//        case Some(x) => features(i + 1, n, rowData + (featureNames(i), x), missing, ff)
+//        case None    => features(i + 1, n, rowData, missing + (ff(i).specification -> ff(i).accessorOutputMissing(a)), ff)
+//      }
 
     // Store lazyAnyRefFF to a local variable to avoid the repeated cost of asking for the lazy val.
-    val ff = lazyAnyRefFF
-    features(0, ff.size, new RowData, Map.empty, ff)
+//    val ff = lazyAnyRefFF
+//    features(0, ff.size, new RowData, Map.empty, ff)
+    features(0, featureFunctions.size, new RowData, Map.empty)
   }
 }
 

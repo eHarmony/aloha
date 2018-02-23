@@ -94,15 +94,75 @@ class H2oModelTest extends Logging {
     assertFalse(rowData.contains("len_none_no"))
   }
 
+  @Test def testVector(): Unit = {
+    // This is like the testProto test, except that the features are combined into a double vector.
+    // The underlying h2o model used in testProto was copied and changed so that the feature names
+    // line up with the feature names emitted by the Aloha wrapper.
 
+
+    println(AbaloneModelJson.parseJson.prettyPrint)
+
+    val featureStrs = Seq(
+      "1d + ${length} - 1L",
+      "${diameter} * 1f",
+      "identity(${height})",
+      "${weight.whole} * ${height} / ${height}",
+      "pow(${weight.shucked}, 1)",
+      "${weight.viscera} * (pow(sin(${diameter}), 2) + pow(cos(${diameter}), 2))"
+    )
+
+    val featureVec = featureStrs.mkString("Vector[Double](", ", ", ")")
+
+    val prefix =
+      """
+        |{
+        |  "modelType": "H2o",
+        |  "modelId": { "id": 0, "name": "proto model" },
+        |  "features": {
+        |    "Sex":            { "type": "string", "spec": "${sex}.name.substring(0,1)" },
+      """.stripMargin
+
+    val features =
+      s"""  "FeatureVec":     { "type": "double", "size": ${featureStrs.size}, "spec": "$featureVec" },
+       """.stripMargin
+
+    val suffix =
+      """
+        |    "Shell weight": "${weight.shell} + log((${length} + ${height}) / (${height} + ${length}))",
+        |    "Circumference (unused)":  "Pi * ${diameter}"
+        |  },
+        |  "modelUrl": "res:com/eharmony/aloha/models/h2o/vec_glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.java"
+        |}
+      """.stripMargin.trim
+
+    val abaloneVecModelJson = prefix + features + suffix
+
+    val model = ProtoFactory[Float].fromString(abaloneVecModelJson).get
+
+    val data = ExpectedAbaloneModelResults.zip(AbaloneData).zipWithIndex
+    data foreach { case ((exp, abalone), i) =>
+
+      // The prediction loop:  predict, given a native input type of the caller's choosing.
+      val act: Option[Float] = model(abalone).value
+      act match {
+        case Some(y) =>
+          assertEquals(s"in test $i", exp, y, Epsilon)
+        case None    =>
+          fail(s"no result produced in test $i")
+      }
+    }
+  }
 
   @Test def testProto(): Unit = {
-    val model = AbaloneModel
+    val model = AbaloneModel.asInstanceOf[H2oModel[NubRootedTree[Float], _, Abalone, NubRootedTree[Float]]]
 
     // For expository purposes:
-    val input:    Abalone       = AbaloneData.toStream.head
-    val expected: Double        = ExpectedAbaloneModelResults.toStream.head
-    val actual:   Option[Float] = model(input).value
+    val input: Abalone        = AbaloneData.head
+    val expected: Double      = ExpectedAbaloneModelResults.head
+    val out                   = model(input)
+    val actual: Option[Float] = out.value
+    println(model)
+    println(out)
     assertEquals(expected, actual.get, Epsilon)
 
 
@@ -296,7 +356,7 @@ object H2oModelTest {
     * Recreate the h2o model results
     */
 
-  private def ExpectedAbaloneModelResults = {
+  private lazy val ExpectedAbaloneModelResults: Seq[Double] = {
     val wts = Seq(
       0.0,-0.8257199606345127,0.048589336710687686,0.0,10.257730318325152,10.905035426114544,
       6.411898751852763,-17.066561775662798,-7.706232264683495,11.591721984154416,3.9185206059454405)
@@ -312,10 +372,10 @@ object H2oModelTest {
         case "F" => wts.head
       }
       l.slice(1, 8).zipWithIndex.foldLeft(z + intercept)((s, x) => s + x._1.toDouble * wts(3 + x._2))
-    }
+    }.toList
   }
 
-  private def AbaloneData: Iterator[Abalone] = {
+  private lazy val AbaloneData: List[Abalone] = {
     val is = VFS.getManager.resolveFile("res:abalone.csv").getContent.getInputStream
     scala.io.Source.fromInputStream(is).getLines.map { l =>
       val fields = l.split(",", -1)
@@ -337,7 +397,7 @@ object H2oModelTest {
       fields(7).d.foreach(w.setShell)
       b.setWeight(w)
       b.build
-    }
+    }.toList
   }
 
   private implicit class StringOps(val s: String) {
@@ -400,7 +460,8 @@ object H2oModelTest {
   private lazy val AbaloneModelFeatures =
     """\$\{([a-zA-Z\.]+)\}""".r.findAllMatchIn(AbaloneModelJson).map(_.group(1)).toSet
 
-  private lazy val AbaloneModel: Model[Abalone, NubRootedTree[Float]] = ProtoFactory[Float].fromString(AbaloneModelJson).get
+  private lazy val AbaloneModel: Model[Abalone, NubRootedTree[Float]] =
+    ProtoFactory[Float].fromString(AbaloneModelJson).get
 
   private val AbaloneGBMModelJson =
     """
