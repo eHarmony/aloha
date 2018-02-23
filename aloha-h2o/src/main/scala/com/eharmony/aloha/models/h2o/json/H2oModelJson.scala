@@ -103,12 +103,15 @@ case class DoubleSeqH2oSpec(name: String, spec: String, size: Int, defVal: Optio
   def ffConverter[B] = f => DoubleSeqFeatureFunction(f, size)
   def refInfo = RefInfo[Seq[Double]]
 
-  // NOTE: override here and wrap spec in Option to avoid adding implicit Option lift for Seq[Double]
-  override def compile[B](semantics: Semantics[B]): Either[Seq[String], FeatureFunction[B]] =
-    semantics.createFunction[Option[Seq[Double]]](s"Option($spec)", Option(defVal))(RefInfo[Option[Seq[Double]]]).right.map(f =>
-      ffConverter(f.andThenGenAggFunc(_ orElse defVal)))
-}
+  protected def sizeErr: String = s"feature '$name' output size != $size"
 
+  // NOTE: override here and wrap spec in Option to avoid adding implicit Option lift for Seq[Double]
+  override def compile[B](semantics: Semantics[B]): Either[Seq[String], FeatureFunction[B]] = {
+    val wrappedSpec = s"Option($spec).map{x => require(x.size == $size, " + s""""$sizeErr"); x}"""
+    semantics.createFunction[Option[Seq[Double]]](wrappedSpec, Option(defVal))(RefInfo[Option[Seq[Double]]]).right.map(f =>
+      ffConverter(f.andThenGenAggFunc(_ orElse defVal)))
+  }
+}
 
 case class StringH2oSpec(name: String, spec: String, defVal: Option[String]) extends H2oSpec {
   type A = String
