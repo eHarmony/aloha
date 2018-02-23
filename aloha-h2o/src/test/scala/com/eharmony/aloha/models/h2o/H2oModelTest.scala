@@ -76,7 +76,7 @@ class H2oModelTest extends Logging {
 
     val model = ProtoFactory[Float].fromString(json).get.asInstanceOf[H2oModel[Tree[_], Float, Abalone, NubRootedTree[Float]]]
 
-    val x = AbaloneData.take(1).toSeq.head
+    val x = AbaloneData.head
     val y: Features[RowData] = model.constructFeatures(x)
     val rowData = mapAsScalaMap(y.features).toMap
 
@@ -94,80 +94,46 @@ class H2oModelTest extends Logging {
     assertFalse(rowData.contains("len_none_no"))
   }
 
+  @Test def testVectorOnEmptyData(): Unit = {
+    val model = AbaloneVecModel
+
+    val empty = Abalone.getDefaultInstance
+
+    val expMissing = Set(
+      "diameter",
+      "height",
+      "length",
+      "sex",
+      "weight.shell",
+      "weight.shucked",
+      "weight.viscera",
+      "weight.whole"
+    )
+
+    val expEmptyOut =
+      RootedTreeImpl(
+        modelId = ModelId(0, "proto model"),
+        errorMsgs = Vector(
+          "H2o model may have encountered a missing categorical variable.  Likely features: Sex",
+          "See: vec_glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.score0(vec_glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.java:59)"
+        ),
+        missingVarNames = expMissing,
+        value = None,
+        subvalues = Vector.empty,
+        prob = None
+      )
+
+    val emptyOut = model(empty)
+    assertEquals(expEmptyOut, emptyOut)
+  }
+
   @Test def testVector(): Unit = {
     // This is like the testProto test, except that the features are combined into a double vector.
     // The underlying h2o model used in testProto was copied and changed so that the feature names
     // line up with the feature names emitted by the Aloha wrapper.
 
+    val model = AbaloneVecModel
 
-    println(AbaloneModelJson.parseJson.prettyPrint)
-
-    val featureStrs = Seq(
-      "1d + ${length} - 1L",
-      "${diameter} * 1f",
-      "identity(${height})",
-      "${weight.whole} * ${height} / ${height}",
-      "pow(${weight.shucked}, 1)",
-      "${weight.viscera} * (pow(sin(${diameter}), 2) + pow(cos(${diameter}), 2))"
-    )
-
-    val featureVec = featureStrs.mkString("Vector[Double](", ", ", ")")
-
-    val prefix =
-      """
-        |{
-        |  "modelType": "H2o",
-        |  "modelId": { "id": 0, "name": "proto model" },
-        |  "features": {
-        |    "Sex":            { "type": "string", "spec": "${sex}.name.substring(0,1)" },
-      """.stripMargin
-
-    val features =
-      s"""  "FeatureVec":     { "type": "double", "size": ${featureStrs.size}, "spec": "$featureVec" },
-       """.stripMargin
-
-    val suffix =
-      """
-        |    "Shell weight": "${weight.shell} + log((${length} + ${height}) / (${height} + ${length}))",
-        |    "Circumference (unused)":  "Pi * ${diameter}"
-        |  },
-        |  "modelUrl": "res:com/eharmony/aloha/models/h2o/vec_glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.java"
-        |}
-      """.stripMargin.trim
-
-    val abaloneVecModelJson = prefix + features + suffix
-
-    val model = ProtoFactory[Float].fromString(abaloneVecModelJson).get
-
-    val data = ExpectedAbaloneModelResults.zip(AbaloneData).zipWithIndex
-    data foreach { case ((exp, abalone), i) =>
-
-      // The prediction loop:  predict, given a native input type of the caller's choosing.
-      val act: Option[Float] = model(abalone).value
-      act match {
-        case Some(y) =>
-          assertEquals(s"in test $i", exp, y, Epsilon)
-        case None    =>
-          fail(s"no result produced in test $i")
-      }
-    }
-  }
-
-  @Test def testProto(): Unit = {
-    val model = AbaloneModel.asInstanceOf[H2oModel[NubRootedTree[Float], _, Abalone, NubRootedTree[Float]]]
-
-    // For expository purposes:
-    val input: Abalone        = AbaloneData.head
-    val expected: Double      = ExpectedAbaloneModelResults.head
-    val out                   = model(input)
-    val actual: Option[Float] = out.value
-    println(model)
-    println(out)
-    assertEquals(expected, actual.get, Epsilon)
-
-
-    // Test predictions are correct.
-    // To test in parallel, do something like  // val data = Vector.fill(1000)(AbaloneData.toVector).flatten.par
     val data = ExpectedAbaloneModelResults.zip(AbaloneData).zipWithIndex
     data foreach { case ((exp, abalone), i) =>
 
@@ -175,6 +141,31 @@ class H2oModelTest extends Logging {
       val act: Option[Float] = model(abalone).value
       assertEquals(s"in test $i", exp, act.get, Epsilon)
     }
+  }
+
+  @Test def testProto(): Unit = {
+    val model = AbaloneModel
+
+    // Test predictions are correct.
+    // To test in parallel, do something like  // val data = Vector.fill(1000)(AbaloneData.toVector).flatten.par
+    val data = ExpectedAbaloneModelResults.zip(AbaloneData).zipWithIndex
+    data foreach { case ((exp, abalone), i) =>
+
+      // The prediction loop:  predict, given a native input type of the caller's choosing.
+      val act = model(abalone).value
+      assertEquals(s"in test $i", exp, act.get, Epsilon)
+    }
+  }
+
+  @Test def testProtoEg(): Unit = {
+    val model = AbaloneModel
+
+    // For expository purposes:
+    val input: Abalone            = AbaloneData.head
+    val expected: Double          = ExpectedAbaloneModelResults.head
+    val out: NubRootedTree[Float] = model(input)
+    val actual: Option[Float]     = out.value
+    assertEquals(expected, actual.get, Epsilon)
   }
 
   @Test def testEmptyGLM(): Unit = {
@@ -356,7 +347,7 @@ object H2oModelTest {
     * Recreate the h2o model results
     */
 
-  private lazy val ExpectedAbaloneModelResults: Seq[Double] = {
+  private def ExpectedAbaloneModelResults: Seq[Double] = {
     val wts = Seq(
       0.0,-0.8257199606345127,0.048589336710687686,0.0,10.257730318325152,10.905035426114544,
       6.411898751852763,-17.066561775662798,-7.706232264683495,11.591721984154416,3.9185206059454405)
@@ -375,7 +366,7 @@ object H2oModelTest {
     }.toList
   }
 
-  private lazy val AbaloneData: List[Abalone] = {
+  private def  AbaloneData: Seq[Abalone] = {
     val is = VFS.getManager.resolveFile("res:abalone.csv").getContent.getInputStream
     scala.io.Source.fromInputStream(is).getLines.map { l =>
       val fields = l.split(",", -1)
@@ -457,11 +448,53 @@ object H2oModelTest {
       |}
     """.stripMargin.trim
 
+  private val AbaloneVecModelJson = {
+    val featureStrs = Seq(
+      "1d + ${length} - 1L",
+      "${diameter} * 1f",
+      "identity(${height})",
+      "${weight.whole} * ${height} / ${height}",
+      "pow(${weight.shucked}, 1)",
+      "${weight.viscera} * (pow(sin(${diameter}), 2) + pow(cos(${diameter}), 2))"
+    )
+
+    val featureVec = featureStrs.mkString("Vector[Double](", ", ", ")")
+
+    val prefix =
+      """
+        |{
+        |  "modelType": "H2o",
+        |  "modelId": { "id": 0, "name": "proto model" },
+        |  "features": {
+        |    "Sex":            { "type": "string", "spec": "${sex}.name.substring(0,1)" },
+      """.stripMargin
+
+    val features =
+      s"""  "FeatureVec":     { "type": "double", "size": ${featureStrs.size}, "spec": "$featureVec" },
+       """.stripMargin
+
+    val suffix =
+      """
+        |    "Shell weight": "${weight.shell} + log((${length} + ${height}) / (${height} + ${length}))",
+        |    "Circumference (unused)":  "Pi * ${diameter}"
+        |  },
+        |  "modelUrl": "res:com/eharmony/aloha/models/h2o/vec_glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.java"
+        |}
+      """.stripMargin.trim
+
+    prefix + features + suffix
+  }
+
+
   private lazy val AbaloneModelFeatures =
     """\$\{([a-zA-Z\.]+)\}""".r.findAllMatchIn(AbaloneModelJson).map(_.group(1)).toSet
 
   private lazy val AbaloneModel: Model[Abalone, NubRootedTree[Float]] =
     ProtoFactory[Float].fromString(AbaloneModelJson).get
+
+  private lazy val AbaloneVecModel: Model[Abalone, NubRootedTree[Float]] =
+    ProtoFactory[Float].fromString(AbaloneVecModelJson).get
+
 
   private val AbaloneGBMModelJson =
     """

@@ -17,7 +17,7 @@
 import java.util.Map;
 import hex.genmodel.GenModel;
 
-public class glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38 extends GenModel {
+public class vec_glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38 extends GenModel {
     public hex.ModelCategory getModelCategory() { return hex.ModelCategory.Regression; }
 
     public boolean isSupervised() { return true; }
@@ -25,11 +25,11 @@ public class glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38 extends GenModel {
     public int nclasses() { return 1; }
 
     // Names of columns used by model.
-    public static final String[] NAMES = NamesHolder_glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.VALUES;
+    public static final String[] NAMES = NamesHolder_vec_glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38.VALUES;
 
     // Column domains. The last array contains domain of response column.
     public static final String[][] DOMAINS = new String[][] {
-    /* Sex */ glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38_ColInfo_0.VALUES,
+    /* Sex */ vec_glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38_ColInfo_0.VALUES,
     /* Length */ null,
     /* Diameter */ null,
     /* Height */ null,
@@ -44,7 +44,7 @@ public class glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38 extends GenModel {
     // Class distribution used for model building
     public static final double[] MODEL_CLASS_DISTRIB = null;
 
-    public glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38() { super(NAMES,DOMAINS); }
+    public vec_glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38() { super(NAMES,DOMAINS); }
     public String getUUID() { return Long.toString(-1276963155634545896L); }
 
     // Pass in data in a double[], pre-aligned to the Model's requirements.
@@ -78,12 +78,12 @@ public class glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38 extends GenModel {
 
 
     // The class representing training column names
-    static class NamesHolder_glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38 implements java.io.Serializable {
+    static class NamesHolder_vec_glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38 implements java.io.Serializable {
         public static final String[] VALUES = new String[8];
         static {
-            NamesHolder_glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38_0.fill(VALUES);
+            NamesHolder_vec_glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38_0.fill(VALUES);
         }
-        static final class NamesHolder_glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38_0 implements java.io.Serializable {
+        static final class NamesHolder_vec_glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38_0 implements java.io.Serializable {
             static final void fill(String[] sa) {
                 sa[0] = "Sex";
                 sa[1] = "FeatureVec_0";  // "Length"          in orig model
@@ -97,12 +97,12 @@ public class glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38 extends GenModel {
         }
     }
     // The class representing column Sex
-    static class glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38_ColInfo_0 implements java.io.Serializable {
+    static class vec_glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38_ColInfo_0 implements java.io.Serializable {
         public static final String[] VALUES = new String[3];
         static {
-            glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38_ColInfo_0_0.fill(VALUES);
+            vec_glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38_ColInfo_0_0.fill(VALUES);
         }
-        static final class glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38_ColInfo_0_0 implements java.io.Serializable {
+        static final class vec_glm_afa04e31_17ad_4ca6_9bd1_8ab80005ce38_ColInfo_0_0 implements java.io.Serializable {
             static final void fill(String[] sa) {
                 sa[0] = "F";
                 sa[1] = "I";

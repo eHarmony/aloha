@@ -103,7 +103,7 @@ case class DoubleSeqH2oSpec(name: String, spec: String, size: Int, defVal: Optio
   def ffConverter[B] = f => DoubleSeqFeatureFunction(f, size)
   def refInfo = RefInfo[Seq[Double]]
 
-
+  // NOTE: override here and wrap spec in Option to avoid adding implicit Option lift for Seq[Double]
   override def compile[B](semantics: Semantics[B]): Either[Seq[String], FeatureFunction[B]] =
     semantics.createFunction[Option[Seq[Double]]](s"Option($spec)", Option(defVal))(RefInfo[Option[Seq[Double]]]).right.map(f =>
       ffConverter(f.andThenGenAggFunc(_ orElse defVal)))
