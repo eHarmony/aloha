@@ -288,8 +288,17 @@ sealed abstract private[json] class SeqCsvColumnLikeWithNoDefault[C: JsonReader:
       */
     override def defVal: Option[Seq[C]] = None
 
-    protected def sizeErr: String = s"feature '$name' output size != $size"
+    protected def guardSize: String = {
+        // This function is a little tricky.  We save the size of `x` as a variable `s`.
+        // Unfortunately, if this is not done, then if we try to do `output size (${x.size})`,
+        // Aloha thinks this is a feature since it's not smart enough to detect the difference.
 
+        ".map { x => " +
+          "val s = x.size;" +
+          "require(x.size == " + size + ", s\"feature '" + name + "' output size ($s) != expected size (" + size + ")\");" +
+          "x" +
+          "}"
+    }
 
     override def finalizer(sep: String, nullString: String): Finalizer[ColType] =
         BasicFinalizer(_.fold(Iterator.fill(size)(nullString).mkString(sep))(_.mkString(sep)))
@@ -305,8 +314,7 @@ final case class SeqCsvColumnWithNoDefault[C: JsonReader: RefInfo](name: String,
       * the generated sequence is as specified.  If not, an exception should be thrown.
       * @return
       */
-    override def wrappedSpec: String =
-        s"Option($spec).map{x => require(x.size == $size, " + s""""$sizeErr"); x}"""
+      override def wrappedSpec: String = s"Option($spec)$guardSize"
 }
 
 final case class OptionSeqCsvColumnWithNoDefault[C: JsonReader: RefInfo](name: String, spec: String, size: Int)
@@ -317,7 +325,7 @@ final case class OptionSeqCsvColumnWithNoDefault[C: JsonReader: RefInfo](name: S
       * @return
       */
     override def wrappedSpec: String =
-        s"$spec.map{x => require(x.size == $size, " + s""""$sizeErr"); x}"""
+        s"$spec$guardSize"
 }
 
 
