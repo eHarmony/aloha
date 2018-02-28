@@ -1,7 +1,7 @@
 package com.eharmony.aloha.dataset.csv.json
 
 import com.eharmony.aloha.dataset.csv.encoding.Encoding
-import com.eharmony.aloha.dataset.csv.finalizer.{BasicFinalizer, EncodingBasedFinalizer, Finalizer}
+import com.eharmony.aloha.dataset.csv.finalizer._
 import com.eharmony.aloha.factory.Formats
 import com.eharmony.aloha.factory.ri2jf.{RefInfoToJsonFormat, StdRefInfoToJsonFormat}
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
@@ -42,7 +42,25 @@ sealed trait CsvColumn {
     def defVal: Option[ColType]
     def refInfo: RefInfo[Option[ColType]]
     def finalizer(sep: String, nullString: String): Finalizer[ColType]
+    def columnarFinalizer(nullString: String): ColumnarFinalizer[ColType]
 }
+
+sealed trait EncodingBasedColumn { self: CsvColumn =>
+    def values: Seq[String]
+    override def finalizer(sep: String, nullString: String): Finalizer[ColType] =
+        EncodingBasedFinalizer((e: Encoding) => e.finalizer(sep, nullString, values))
+    override def columnarFinalizer(nullString: String): ColumnarFinalizer[ColType] =
+        EncodingBasedColumnarFinalizer((e: Encoding) => e.columnarFinalizer(nullString, values))
+}
+
+sealed trait ScalarBasedColumn { self: CsvColumn =>
+    override def finalizer(sep: String, nullString: String): Finalizer[ColType] =
+        BasicFinalizer(_.fold(nullString)(_.toString))
+    override def columnarFinalizer(nullString: String): ColumnarFinalizer[ColType] =
+        BasicColumnarFinalizer(_.fold(List(nullString))(x => List(x.toString)))
+}
+
+
 
 final case class CsvJson(
     imports: Seq[String],
@@ -160,9 +178,9 @@ extends DefaultJsonProtocol
     }
 
     private[json] def convertTypeOrThrow(
-                                          reader: ReaderProducer,
-                                          aStr: String,
-                                          o: JsObject)(implicit riJf: RefInfoToJsonFormat): CsvColumn = {
+            reader: ReaderProducer,
+            aStr: String,
+            o: JsObject)(implicit riJf: RefInfoToJsonFormat): CsvColumn = {
         convertType(reader, aStr, o) match {
             case Left(err) => throw new DeserializationException(s"Error: $err occurred for $o")
             case Right(s)  => s
@@ -233,11 +251,13 @@ extends DefaultJsonProtocol
     }
 }
 
-sealed abstract private[json] class CsvColumnLikeWithDefault[C: RefInfo] extends CsvColumn with Serializable {
+sealed abstract private[json] class CsvColumnLikeWithDefault[C: RefInfo]
+extends CsvColumn
+   with Serializable
+   with ScalarBasedColumn {
+
     type ColType = C
-    val refInfo = RefInfoOps.option(implicitly[RefInfo[C]])
-    override def finalizer(sep: String, nullString: String) =
-        BasicFinalizer(_.fold(nullString)(_.toString))
+    val refInfo: RefInfo[Option[C]] = RefInfoOps.option(implicitly[RefInfo[C]])
 }
 
 final case class OptionCsvColumnWithDefault[C: JsonReader: RefInfo](name: String, spec: String, defVal: Option[C] = None)
@@ -250,7 +270,8 @@ extends CsvColumnLikeWithDefault[C] {
 }
 
 sealed abstract private[json] class SeqCsvColumnLikeWithNoDefault[C: JsonReader: RefInfo]
-  extends CsvColumn with Serializable {
+  extends CsvColumn
+     with Serializable {
 
     override type ColType = Seq[C]
     override def refInfo: RefInfo[Option[ColType]] = RefInfoOps.option[ColType]
@@ -269,16 +290,11 @@ sealed abstract private[json] class SeqCsvColumnLikeWithNoDefault[C: JsonReader:
 
     protected def sizeErr: String = s"feature '$name' output size != $size"
 
-    /**
-      * If the result is missing, emit a sequence of `nullString` of length `size` and convert to
-      * CSV.  If present, emit `size` CSV fields.
-      * @param sep column separator
-      * @param nullString string used for missing values.
-      * @return
-      */
-    override def finalizer(sep: String, nullString: String): Finalizer[ColType] = {
+
+    override def finalizer(sep: String, nullString: String): Finalizer[ColType] =
         BasicFinalizer(_.fold(Iterator.fill(size)(nullString).mkString(sep))(_.mkString(sep)))
-    }
+    override def columnarFinalizer(nullString: String): ColumnarFinalizer[ColType] =
+        BasicColumnarFinalizer(_.fold[Seq[String]](Stream.fill(size)(nullString))(_.map(_.toString)))
 }
 
 final case class SeqCsvColumnWithNoDefault[C: JsonReader: RefInfo](name: String, spec: String, size: Int)
@@ -308,15 +324,17 @@ final case class OptionSeqCsvColumnWithNoDefault[C: JsonReader: RefInfo](name: S
 final case class CsvColumnWithDefault[C: RefInfo: JsonReader](name: String, spec: String, defVal: Option[C] = None)
 extends CsvColumnLikeWithDefault[C]
 
-final case class DefaultCsvColumn(name: String, spec: String) extends CsvColumn {
+final case class DefaultCsvColumn(name: String, spec: String)
+extends CsvColumn
+   with ScalarBasedColumn {
+
     type ColType = Any
     def defVal: Option[ColType] = None
     val refInfo = RefInfo[Option[Any]]
-    def finalizer(sep: String, nullString: String) = BasicFinalizer(_.fold(nullString)(_.toString))
 }
 
 final case class OptionEnumCsvColumn[E <: Enum[E]](name: String, spec: String, enumClass: String, defVal: Option[E] = None)
-  extends CsvColumn {
+  extends CsvColumn with EncodingBasedColumn {
 
     /**
       * This may throw during the constructor call.  That's the correct time to throw.
@@ -325,7 +343,6 @@ final case class OptionEnumCsvColumn[E <: Enum[E]](name: String, spec: String, e
     private[this] val clazz = Class.forName(enumClass).asInstanceOf[Class[E]]
     def values = clazz.getEnumConstants.map(_.name).toVector
     def refInfo = RefInfoOps.option(RefInfoOps.fromSimpleClass(clazz))
-    def finalizer(sep: String, nullString: String) = EncodingBasedFinalizer((e: Encoding) => e.finalizer(sep, nullString, values))
     override def wrappedSpec = spec
 }
 
@@ -339,7 +356,8 @@ object OptionEnumCsvColumn {
 }
 
 final case class EnumCsvColumn(name: String, spec: String, enumClass: String)
-extends CsvColumn {
+extends CsvColumn
+   with EncodingBasedColumn {
 
     /**
      * This may throw during the constructor call.  That's the correct time to throw.
@@ -349,14 +367,15 @@ extends CsvColumn {
     def values = clazz.getEnumConstants.map(_.name).toVector
     def refInfo = RefInfoOps.option(RefInfoOps.fromSimpleClass(clazz))
     def defVal: Option[Enum[_]] = None
-    def finalizer(sep: String, nullString: String) = EncodingBasedFinalizer((e: Encoding) => e.finalizer(sep, nullString, values))
 }
 
-sealed abstract private[json] class SyntheticEnumLikeCsvColumn extends CsvColumn {
+sealed abstract private[json] class SyntheticEnumLikeCsvColumn
+  extends CsvColumn
+     with EncodingBasedColumn {
+
     type ColType = String
     def refInfo = RefInfo[Option[ColType]]
     def values: Seq[String]
-    def finalizer(sep: String, nullString: String) = EncodingBasedFinalizer((e: Encoding) => e.finalizer(sep, nullString, values))
 }
 
 final case class SyntheticEnumCsvColumn(name: String, spec: String, values: Seq[String], defVal: Option[String] = None)

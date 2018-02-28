@@ -4,8 +4,28 @@ import com.eharmony.aloha.dataset.csv.json._
 import spray.json._
 import spray.json.DefaultJsonProtocol.lift
 
+import scala.collection.breakOut
+
 sealed trait Encoding {
-    def finalizer[A](sep: String, nullString: String, values: Iterable[String]): Option[A] => String
+
+    /**
+      * Creates a single string representing the entire feature output.
+      * @param sep a column separator
+      * @param nullString the string representing null values.
+      * @param values
+      * @tparam A
+      * @return
+      */
+    def finalizer[A](sep: String, nullString: String, values: Seq[String]): Option[A] => String
+
+    /**
+      * Creates a sequence of strings representing the columns created by a feature's output.
+      * @param nullString the string representing null values.
+      * @param values
+      * @tparam A
+      * @return
+      */
+    def columnarFinalizer[A](nullString: String, values: Seq[String]): Option[A] => Seq[String]
     def csvHeadersForColumn(c: CsvColumn): Seq[String]
 }
 
@@ -26,7 +46,10 @@ object Encoding {
 
 // TODO: Fill in
 case object ThermometerEncoding extends Encoding {
-    override def finalizer[A](sep: String, nullString: String, values: Iterable[String]) =
+    override def finalizer[A](sep: String, nullString: String, values: Seq[String]) =
+        throw new UnsupportedOperationException("ThermometerEncoding not implemented!")
+
+    override def columnarFinalizer[A](nullString: String, values: Seq[String]) =
         throw new UnsupportedOperationException("ThermometerEncoding not implemented!")
 
     override def csvHeadersForColumn(c: CsvColumn): Seq[String] =
@@ -34,9 +57,26 @@ case object ThermometerEncoding extends Encoding {
 }
 
 case object HotOneEncoding extends Encoding {
+
+    private[this] final case class HotOneVec[A](ind: Map[String, Int]) extends (Option[A] => Seq[String]) {
+        private[this] val n = ind.size
+        private[this] val missing = Stream.fill(n)("0")
+
+        private[this] def densifyVector(i: Int, n: Int): Seq[String] =
+            (Stream.fill(i)("0") :+ "1") ++ Stream.fill(n - i - 1)("0")
+
+        def apply(x: Option[A]): Seq[String] = {
+            val vec = for {
+                a <- x
+                i <- ind.get(a.toString)
+            } yield densifyVector(i, n)
+            vec.getOrElse(missing)
+        }
+    }
+
     private[this] case class HotOne[A](sep: String, ind: Map[String, Int]) extends (Option[A] => String) {
         private[this] val n = ind.size
-        private[this] def missing(n: Int, sep: String) = (0 to n).mkString(sep)
+        private[this] val missing = Iterator.fill(n)("0").mkString(sep)
 
         private[this] def densify(i: Int, n: Int, sep: String): String = {
             val b = new StringBuilder
@@ -54,10 +94,13 @@ case object HotOneEncoding extends Encoding {
             b.toString()
         }
 
-        def apply(x: Option[A]) =
-            x.fold(missing(n, sep))(a =>
-                ind.get(a.toString).
-                    fold(missing(n, sep))(i => densify(i, n, sep)))
+        def apply(x: Option[A]): String = {
+            val vec = for {
+                a <- x
+                i <- ind.get(a.toString)
+            } yield densify(i, n, sep)
+            vec.getOrElse(missing)
+        }
     }
 
     override def csvHeadersForColumn(c: CsvColumn): Seq[String] = c match {
@@ -68,7 +111,11 @@ case object HotOneEncoding extends Encoding {
         case d                                          => Seq(d.name)
     }
 
-    override def finalizer[A](sep: String, nullString: String, values: Iterable[String]): Option[A] => String = HotOne[A](sep, values.view.zipWithIndex.toMap)
+    override def finalizer[A](sep: String, nullString: String, values: Seq[String]): Option[A] => String =
+        HotOne[A](sep, values.zipWithIndex(breakOut[Seq[String], (String, Int), Map[String, Int]]))
+
+    override def columnarFinalizer[A](nullString: String, values: Seq[String]): Option[A] => Seq[String] =
+        HotOneVec[A](values.zipWithIndex(breakOut[Seq[String], (String, Int), Map[String, Int]]))
 }
 
 case object RegularEncoding extends Encoding {
@@ -80,6 +127,16 @@ case object RegularEncoding extends Encoding {
             }
     }
 
+    private[this] case class RegularVec[A](nullString: String, ok: Set[String]) extends (Option[A] => Seq[String]) {
+        def apply(o: Option[A]): Seq[String] = {
+            o.fold(List(nullString)) { v =>
+                val s = v.toString
+                val value = if (ok contains s) s else nullString
+                List(value)
+            }
+        }
+    }
+
     override def csvHeadersForColumn(c: CsvColumn): Seq[String] = {
         c match {
             case SeqCsvColumnWithNoDefault(_, _, n)       => (0 until n) map (i => s"${c.name}_$i")
@@ -88,5 +145,9 @@ case object RegularEncoding extends Encoding {
         }
     }
 
-    override def finalizer[A](sep: String, nullString: String, values: Iterable[String]): Option[A] => String = Regular[A](nullString, values.toSet)
+    override def finalizer[A](sep: String, nullString: String, values: Seq[String]): Option[A] => String =
+        Regular[A](nullString, values.toSet)
+
+    override def columnarFinalizer[A](nullString: String, values: Seq[String]): Option[A] => Seq[String] =
+        RegularVec[A](nullString, values.toSet)
 }

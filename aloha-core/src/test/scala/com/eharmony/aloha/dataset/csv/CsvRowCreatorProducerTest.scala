@@ -68,7 +68,7 @@ class CsvRowCreatorProducerTest {
         val expected = Seq(
             (MissingAndErroneousFeatureInfo(List(), List()),
              "2.0,1,2.0,e1v1,e2v1,VALUE_2"),
-            (MissingAndErroneousFeatureInfo(List("default_field", "opt_double"), List()),
+            (MissingAndErroneousFeatureInfo(List("default_field", "opt_double", "syn_enum"), List()),
              "null,1,null,null,e2v1,VALUE_2"),
             (MissingAndErroneousFeatureInfo(List(), List()),
              "2.0,1,2.0,null,null,VALUE_2"),

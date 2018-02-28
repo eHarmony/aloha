@@ -61,7 +61,8 @@ case class CsvLineImpl(
     def od(fieldName: String) = optField(fieldName, fod)
     def os(fieldName: String) = optField(fieldName, fos)
 
-    private[this] def optField[A](s: String, f: Option[String => A]): Option[A] = optHandler.produceOption(s, f, fields)
+    private[this] def optField[A](s: String, f: Option[String => A]): Option[A] =
+        optHandler.produceOption(s, f, fields, missingId)
 
     def ve(fieldName: String) = vecField(fieldName, enums(fieldName).valueOf)
     def vb(fieldName: String) = vecField(fieldName, fb)
