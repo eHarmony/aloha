@@ -1,7 +1,5 @@
 package com.eharmony.aloha.models.h2o
 
-import java.{lang => jl}
-
 import com.eharmony.aloha.semantics.func.GenAggFunc
 import hex.genmodel.easy.RowData
 
@@ -61,14 +59,14 @@ private[h2o] sealed abstract class VectorFeatureFunction[-A, B](implicit box: B 
   }
 }
 
-case class DoubleFeatureFunction[-A](ff: GenAggFunc[A, Option[jl.Double]])
-   extends ScalarFeatureFunction[A, jl.Double]
+case class DoubleFeatureFunction[-A](ff: GenAggFunc[A, Option[Double]])
+   extends ScalarFeatureFunction[A, Double]()(Double.box _)
       with FeatureFunction[A]
 
 case class StringFeatureFunction[-A](ff: GenAggFunc[A, Option[String]])
-   extends ScalarFeatureFunction[A, String]
+   extends ScalarFeatureFunction[A, String]()(identity _)
      with FeatureFunction[A]
 
 case class DoubleSeqFeatureFunction[-A](ff: GenAggFunc[A, Option[Seq[Double]]], size: Int)
-   extends VectorFeatureFunction[A, Double]
+   extends VectorFeatureFunction[A, Double]()(Double.box _)
       with FeatureFunction[A]
