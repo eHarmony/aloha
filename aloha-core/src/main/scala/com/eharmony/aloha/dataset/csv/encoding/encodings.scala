@@ -4,7 +4,12 @@ import com.eharmony.aloha.dataset.csv.json._
 import spray.json._
 import spray.json.DefaultJsonProtocol.lift
 
-import scala.collection.breakOut
+import scala.collection.{breakOut, immutable => sci}
+
+private[encoding] sealed trait VectorHeaders {
+    def vectorHeaders(n: Int, name: String): sci.IndexedSeq[String] =
+        (0 until n) map (i => s"${name}_$i")
+}
 
 sealed trait Encoding {
 
@@ -56,7 +61,7 @@ case object ThermometerEncoding extends Encoding {
         throw new UnsupportedOperationException("ThermometerEncoding not implemented!")
 }
 
-case object HotOneEncoding extends Encoding {
+case object HotOneEncoding extends Encoding with VectorHeaders {
 
     private[this] final case class HotOneVec[A](ind: Map[String, Int]) extends (Option[A] => Seq[String]) {
         private[this] val n = ind.size
@@ -106,8 +111,8 @@ case object HotOneEncoding extends Encoding {
     override def csvHeadersForColumn(c: CsvColumn): Seq[String] = c match {
         case e@EnumCsvColumn(name, _, _)                => e.values.map(v => s"${name}_$v")
         case SyntheticEnumCsvColumn(name, _, values, _) => values.map(v => s"${name}_$v")
-        case SeqCsvColumnWithNoDefault(_, _, n)         => (0 until n) map (i => s"${c.name}_$i")
-        case OptionSeqCsvColumnWithNoDefault(_, _, n)   => (0 until n) map (i => s"${c.name}_$i")
+        case SeqCsvColumnWithNoDefault(_, _, n)         => vectorHeaders(n, c.name)
+        case OptionSeqCsvColumnWithNoDefault(_, _, n)   => vectorHeaders(n, c.name)
         case d                                          => Seq(d.name)
     }
 
@@ -118,7 +123,7 @@ case object HotOneEncoding extends Encoding {
         HotOneVec[A](values.zipWithIndex(breakOut[Seq[String], (String, Int), Map[String, Int]]))
 }
 
-case object RegularEncoding extends Encoding {
+case object RegularEncoding extends Encoding with VectorHeaders {
     private[this] case class Regular[A](nullString: String, ok: Set[String]) extends (Option[A] => String) {
         def apply(o: Option[A]): String =
             o.fold(nullString){ v =>
@@ -139,8 +144,8 @@ case object RegularEncoding extends Encoding {
 
     override def csvHeadersForColumn(c: CsvColumn): Seq[String] = {
         c match {
-            case SeqCsvColumnWithNoDefault(_, _, n)       => (0 until n) map (i => s"${c.name}_$i")
-            case OptionSeqCsvColumnWithNoDefault(_, _, n) => (0 until n) map (i => s"${c.name}_$i")
+            case SeqCsvColumnWithNoDefault(_, _, n)       => vectorHeaders(n, c.name)
+            case OptionSeqCsvColumnWithNoDefault(_, _, n) => vectorHeaders(n, c.name)
             case d                                        => Seq(d.name)
         }
     }
