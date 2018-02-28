@@ -10,15 +10,16 @@ import spray.json.JsValue
 
 import scala.util.{Failure, Success, Try}
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.collection.{breakOut, immutable => sci}
 
 /**
   * Created by ryan.deak on 2/27/18.
   */
 final case class CsvColumnarRowCreator[-A](features: FeatureExtractorFunction[A, Seq[String]], headers: Vector[String])
-  extends RowCreator[A, Seq[String]] {
-  override def apply(data: A): (MissingAndErroneousFeatureInfo, Seq[String]) = {
+  extends RowCreator[A, sci.IndexedSeq[String]] {
+  override def apply(data: A): (MissingAndErroneousFeatureInfo, sci.IndexedSeq[String]) = {
     val (missing, values) = features(data)
-    (missing, values.flatten)
+    (missing, values.flatMap(identity)(breakOut))
   }
 }
 
