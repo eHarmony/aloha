@@ -117,7 +117,7 @@ class CsvRowCreatorProducerTest {
 
         val spec = specBuilder.fromString(json).get
         val pipeline = lines.view.take(1).map(spec)
-        val expMsg = "requirement failed: feature 'i=1..3, size=2' output size != 2"
+        val expMsg = "requirement failed: feature 'i=1..3, size=2' output size (3) != expected size (2)"
 
         try {
             pipeline.headOption
