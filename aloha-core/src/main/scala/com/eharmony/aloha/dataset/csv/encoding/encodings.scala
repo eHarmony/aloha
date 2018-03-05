@@ -31,6 +31,15 @@ sealed trait Encoding {
       * @return
       */
     def columnarFinalizer[A](nullString: String, values: Seq[String]): Option[A] => Seq[String]
+
+    /**
+      * Creates a Seq[Option[Any]] representing the columns created by a feature's output.
+      * @param values
+      * @tparam A
+      * @return
+      */
+    def anyColumnarFinalizer[A](values: Seq[String]): Option[A] => Seq[Option[Any]]
+
     def csvHeadersForColumn(c: CsvColumn): Seq[String]
 }
 
@@ -57,11 +66,40 @@ case object ThermometerEncoding extends Encoding {
     override def columnarFinalizer[A](nullString: String, values: Seq[String]) =
         throw new UnsupportedOperationException("ThermometerEncoding not implemented!")
 
+    override def anyColumnarFinalizer[A](values: Seq[String]) =
+        throw new UnsupportedOperationException("ThermometerEncoding not implemented!")
+
     override def csvHeadersForColumn(c: CsvColumn): Seq[String] =
         throw new UnsupportedOperationException("ThermometerEncoding not implemented!")
 }
 
 case object HotOneEncoding extends Encoding with VectorHeaders {
+    final case class HotOneVector[A](zero: A, one: A, oneIndex: Int, length: Int) extends scala.collection.immutable.IndexedSeq[A] {
+        override def apply(idx: Int): A =
+            if (idx < length)
+                if (idx == oneIndex) one
+                else zero
+            else throw new ArrayIndexOutOfBoundsException(idx)
+    }
+
+    final case class Repeated[A](length: Int, a: A) extends scala.collection.immutable.IndexedSeq[A] {
+        override def apply(idx: Int): A =
+            if (idx < length)
+                a
+            else throw new ArrayIndexOutOfBoundsException(idx)
+    }
+
+    private[this] final case class HotOneVec1[A](ind: Map[String, Int]) extends (Option[A] => sci.IndexedSeq[Option[Int]]) {
+        private[this] val n = ind.size
+        def apply(x: Option[A]): sci.IndexedSeq[Option[Int]] = {
+            x.map{ v =>
+                ind.get(v.toString)
+                  .map(i => HotOneVector(Option(0), Option(1), i, n))
+                  .getOrElse(Repeated(n, Option.empty[Int]))
+            }.getOrElse(Repeated(n, Option.empty[Int]))
+        }
+    }
+
 
     private[this] final case class HotOneVec[A](ind: Map[String, Int]) extends (Option[A] => Seq[String]) {
         private[this] val n = ind.size
@@ -121,6 +159,9 @@ case object HotOneEncoding extends Encoding with VectorHeaders {
 
     override def columnarFinalizer[A](nullString: String, values: Seq[String]): Option[A] => Seq[String] =
         HotOneVec[A](values.zipWithIndex(breakOut[Seq[String], (String, Int), Map[String, Int]]))
+
+    override def anyColumnarFinalizer[A](values: Seq[String]): Option[A] => Seq[Option[Any]] =
+        HotOneVec1[A](values.zipWithIndex(breakOut[Seq[String], (String, Int), Map[String, Int]]))
 }
 
 case object RegularEncoding extends Encoding with VectorHeaders {
@@ -142,6 +183,17 @@ case object RegularEncoding extends Encoding with VectorHeaders {
         }
     }
 
+    private[this] case class RegularVec1[A](ok: Set[String]) extends (Option[A] => Seq[Option[A]]) {
+        def apply(o: Option[A]): Seq[Option[A]] = {
+            o.fold(List(Option.empty[A])){ v =>
+                if (ok contains v.toString)
+                    List(Option(v))
+                else List(Option.empty[A])
+            }
+        }
+    }
+
+
     override def csvHeadersForColumn(c: CsvColumn): Seq[String] = {
         c match {
             case SeqCsvColumnWithNoDefault(_, _, n)       => vectorHeaders(n, c.name)
@@ -155,4 +207,7 @@ case object RegularEncoding extends Encoding with VectorHeaders {
 
     override def columnarFinalizer[A](nullString: String, values: Seq[String]): Option[A] => Seq[String] =
         RegularVec[A](nullString, values.toSet)
+
+    override def anyColumnarFinalizer[A](values: Seq[String]): Option[A] => Seq[Option[Any]] =
+        RegularVec1[A](values.toSet)
 }

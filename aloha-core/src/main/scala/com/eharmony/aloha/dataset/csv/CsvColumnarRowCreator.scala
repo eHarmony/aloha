@@ -4,18 +4,20 @@ import com.eharmony.aloha.dataset._
 import com.eharmony.aloha.dataset.csv.encoding.Encoding
 import com.eharmony.aloha.dataset.csv.finalizer.{BasicColumnarFinalizer, EncodingBasedColumnarFinalizer}
 import com.eharmony.aloha.dataset.csv.json.{CsvColumn, CsvJson}
+import com.eharmony.aloha.reflect.RefInfoOps
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.func.GenAggFunc
 import spray.json.JsValue
 
-import scala.util.{Failure, Success, Try}
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.collection.{breakOut, immutable => sci}
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.{Failure, Success, Try}
 
 /**
+  * A `CsvColumnarRowCreator` makes a sequence of `String`-based column values.
   * Created by ryan.deak on 2/27/18.
   */
-final case class CsvColumnarRowCreator[-A](features: FeatureExtractorFunction[A, Seq[String]], headers: Vector[String])
+final case class CsvColumnarRowCreator[-A] private[csv](features: FeatureExtractorFunction[A, Seq[String]], headers: Vector[String])
   extends RowCreator[A, sci.IndexedSeq[String]] {
   override def apply(data: A): (MissingAndErroneousFeatureInfo, sci.IndexedSeq[String]) = {
     val (missing, values) = features(data)

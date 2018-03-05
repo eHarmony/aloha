@@ -30,6 +30,12 @@ final case class StringSeqFeatureExtractorFunction[-A](features: sci.IndexedSeq[
   protected[this] implicit def ctB(): ClassTag[Seq[String]] = classTag[Seq[String]]
 }
 
+final case class OptionAnySeqFeatureExtractorFunction[-A](features: sci.IndexedSeq[(String, GenAggFunc[A, Seq[Option[Any]]])])
+  extends FeatureExtractorFunction[A, Seq[Option[Any]]] {
+  override protected[this] val postProcessingFunction = (_: String, b: Seq[Option[Any]]) => b
+  protected[this] implicit def ctB(): ClassTag[Seq[Option[Any]]] = classTag[Seq[Option[Any]]]
+}
+
 
 /**
  * A function that takes a value and returns extracted features and information on missing and erring features.
