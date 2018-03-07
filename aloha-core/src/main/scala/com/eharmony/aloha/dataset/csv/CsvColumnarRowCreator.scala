@@ -26,11 +26,13 @@ import scala.util.{Failure, Success, Try}
   * @param features a feature extractor function.
   * @param headersToTypes An ordering mapping from column name to type.  The size should be the
   *                       output size of the `apply` function.
+  * @param nullString the string representing null.
   * @tparam A The domain of the row creator.
   */
 final case class CsvColumnarRowCreator[-A] private[csv](
     features: FeatureExtractorFunction[A, Seq[String]],
-    headersToTypes: Seq[(ColumnName, ColumnType)]
+    headersToTypes: Seq[(ColumnName, ColumnType)],
+    nullString: String
 ) extends RowCreator[A, sci.IndexedSeq[String]] {
 
   /**
@@ -101,7 +103,7 @@ object CsvColumnarRowCreator {
       val creator = getCovariates(semantics, jsonSpec, nullString, encoding) map {
         case (cov, headers, types) =>
           val typeStrs = types.map(t => RefInfoOps.toString(t))
-          CsvColumnarRowCreator(cov, headers zip typeStrs)
+          CsvColumnarRowCreator(cov, headers zip typeStrs, nullString)
       }
       creator
     }
