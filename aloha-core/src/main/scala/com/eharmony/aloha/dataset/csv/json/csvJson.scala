@@ -43,7 +43,6 @@ sealed trait CsvColumn {
     def refInfo: RefInfo[Option[ColType]]
     def finalizer(sep: String, nullString: String): Finalizer[ColType]
     def columnarFinalizer(nullString: String): ColumnarFinalizer[ColType]
-    def anyColumnarFinalizer: AnyColumnarFinalizer[ColType]
 }
 
 sealed trait EncodingBasedColumn { self: CsvColumn =>
@@ -52,8 +51,6 @@ sealed trait EncodingBasedColumn { self: CsvColumn =>
         EncodingBasedFinalizer((e: Encoding) => e.finalizer(sep, nullString, values))
     override def columnarFinalizer(nullString: String): ColumnarFinalizer[ColType] =
         EncodingBasedColumnarFinalizer((e: Encoding) => e.columnarFinalizer(nullString, values))
-    override def anyColumnarFinalizer: AnyColumnarFinalizer[ColType] =
-        EncodingBasedAnyColumnarFinalizer((e: Encoding) => e.anyColumnarFinalizer(values))
 }
 
 sealed trait ScalarBasedColumn { self: CsvColumn =>
@@ -61,10 +58,6 @@ sealed trait ScalarBasedColumn { self: CsvColumn =>
         BasicFinalizer(_.fold(nullString)(_.toString))
     override def columnarFinalizer(nullString: String): ColumnarFinalizer[ColType] =
         BasicColumnarFinalizer(_.fold(List(nullString))(x => List(x.toString)))
-    override def anyColumnarFinalizer: AnyColumnarFinalizer[ColType] =
-        BasicAnyColumnarFinalizer[ColType](
-            (x: Option[ColType]) => x.fold(List(Option.empty[ColType]))(c => List(Option(c)))
-        )
 }
 
 final case class CsvJson(
@@ -272,8 +265,6 @@ extends CsvColumnLikeWithDefault[C] {
     * @return
     */
     override def wrappedSpec = spec
-
-    override def anyColumnarFinalizer: AnyColumnarFinalizer[C] = ???
 }
 
 sealed abstract private[json] class SeqCsvColumnLikeWithNoDefault[C: JsonReader: RefInfo]
@@ -311,10 +302,6 @@ sealed abstract private[json] class SeqCsvColumnLikeWithNoDefault[C: JsonReader:
         BasicFinalizer(_.fold(Iterator.fill(size)(nullString).mkString(sep))(_.mkString(sep)))
     override def columnarFinalizer(nullString: String): ColumnarFinalizer[ColType] =
         BasicColumnarFinalizer(_.fold[Seq[String]](Stream.fill(size)(nullString))(_.map(_.toString)))
-    override def anyColumnarFinalizer: AnyColumnarFinalizer[Seq[C]] =
-        BasicAnyColumnarFinalizer[ColType](
-            (x: Option[Seq[C]]) => x.fold[Seq[Option[C]]](Stream.fill(size)(Option.empty[C]))(s => s.map(c => Option(c)))
-        )
 }
 
 final case class SeqCsvColumnWithNoDefault[C: JsonReader: RefInfo](name: String, spec: String, size: Int)
