@@ -2,7 +2,7 @@ package com.eharmony.aloha
 
 import scala.language.existentials
 import com.eharmony.aloha
-import com.eharmony.aloha.models.Model
+import com.eharmony.aloha.models.{Model, SubmodelBase}
 import org.junit.Assert._
 import org.junit.Test
 import org.reflections.Reflections
@@ -22,18 +22,27 @@ extends Logging {
   def this() = this(pkgs = Seq(aloha.pkgName), Seq.empty)
 
   @Test def testSerialization(): Unit = {
-    val modelClasses = new Reflections(pkgs:_*).
-      getSubTypesOf(classOf[Model[Any, Nothing]]).toSeq.view.
-      filterNot{ _.isInterface }.
-      filterNot { c =>
-        val name = c.getName
-        outFilters.exists(name.matches)
-      }
+    val ref = new Reflections(pkgs:_*)
+    val submodels = ref.getSubTypesOf(classOf[SubmodelBase[_, _, _, _]]).toSeq
+    val models = ref.getSubTypesOf(classOf[Model[_, _]]).toSeq
 
-    debug {
-      modelClasses
-        .map(_.getCanonicalName)
-        .mkString("Models tested for Serializability:\n\t", "\n\t", "")
+    val modelClasses =
+      (models ++ submodels).
+        filterNot { _.isInterface }.
+        filterNot { c =>
+          val name = c.getName
+          outFilters.exists(name.matches)
+        }
+
+    if (modelClasses.isEmpty) {
+      fail(s"No models found to test for Serializability in packages: ${pkgs.mkString(",")}")
+    }
+    else {
+      debug {
+        modelClasses
+          .map(_.getCanonicalName)
+          .mkString("Models tested for Serializability:\n\t", "\n\t", "")
+      }
     }
 
     modelClasses.foreach { c =>
