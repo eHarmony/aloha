@@ -30,7 +30,9 @@ sealed trait FeatureFunction[-A] {
   def fillRowData(input: A, name: String, rowData: RowData): Option[(String, Seq[String])]
 }
 
-private[h2o] sealed abstract class ScalarFeatureFunction[-A, B](implicit box: B => AnyRef) {
+// (implicit box: B => AnyRef)
+private[h2o] sealed abstract class ScalarFeatureFunction[-A, B] {
+  def box(b: B): AnyRef
   def ff: GenAggFunc[A, Option[B]]
   def fillRowData(input: A, name: String, rowData: RowData): Option[(String, Seq[String])] = {
     ff(input) match {
@@ -43,7 +45,8 @@ private[h2o] sealed abstract class ScalarFeatureFunction[-A, B](implicit box: B 
   }
 }
 
-private[h2o] sealed abstract class VectorFeatureFunction[-A, B](implicit box: B => AnyRef) {
+private[h2o] sealed abstract class VectorFeatureFunction[-A, B] {
+  def box(b: B): AnyRef
   def size: Int
   def ff: GenAggFunc[A, Option[Seq[B]]]
   def fillRowData(input: A, name: String, rowData: RowData): Option[(String, Seq[String])] = {
@@ -60,13 +63,19 @@ private[h2o] sealed abstract class VectorFeatureFunction[-A, B](implicit box: B 
 }
 
 case class DoubleFeatureFunction[-A](ff: GenAggFunc[A, Option[Double]])
-   extends ScalarFeatureFunction[A, Double]()(Double.box _)
-      with FeatureFunction[A]
+  extends ScalarFeatureFunction[A, Double]
+    with FeatureFunction[A] {
+  override def box(d: Double): AnyRef = Double.box(d)
+}
 
 case class StringFeatureFunction[-A](ff: GenAggFunc[A, Option[String]])
-   extends ScalarFeatureFunction[A, String]()(identity _)
-     with FeatureFunction[A]
+  extends ScalarFeatureFunction[A, String]
+    with FeatureFunction[A] {
+  override def box(s: String): AnyRef = s
+}
 
 case class DoubleSeqFeatureFunction[-A](ff: GenAggFunc[A, Option[Seq[Double]]], size: Int)
-   extends VectorFeatureFunction[A, Double]()(Double.box _)
-      with FeatureFunction[A]
+  extends VectorFeatureFunction[A, Double]
+    with FeatureFunction[A] {
+  override def box(d: Double): AnyRef = Double.box(d)
+}
