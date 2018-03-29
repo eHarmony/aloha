@@ -1,6 +1,6 @@
 package com.eharmony.aloha.models.h2o
 
-import com.eharmony.aloha.FileLocations
+import com.eharmony.aloha.{FileLocations, ModelSerializationTestHelper}
 import com.eharmony.aloha.audit.impl.tree.{NubRootedTree, RootedTreeAuditor, RootedTreeImpl, Tree}
 import com.eharmony.aloha.factory.ModelFactory
 import com.eharmony.aloha.id.ModelId
@@ -37,8 +37,22 @@ import scala.util.Try
   * Created by deak on 10/23/15.
   */
 @RunWith(classOf[BlockJUnit4ClassRunner])
-class H2oModelTest extends Logging {
+class H2oModelTest extends Logging with ModelSerializationTestHelper {
   import H2oModelTest._
+
+  @Test def testSerialization(): Unit = {
+    val h2oModelClass = classOf[H2oModel[_, _, _, _]]
+    val unserialized = AbaloneModel match {
+      case x: H2oModel[Any, Float, Abalone, NubRootedTree[Float]] => x
+      case _ =>
+        fail(s"AbaloneModel should be an ${h2oModelClass.getCanonicalName}")
+        throw new IllegalStateException("NEVER GET HERE!")
+    }
+
+    assertTrue(h2oModelClass isAssignableFrom unserialized.getClass)
+    val serialized = serializeDeserializeRoundTrip(unserialized)
+    assertTrue(h2oModelClass isAssignableFrom serialized.getClass)
+  }
 
   @Test def testParseSpecNoTypeIsDouble(): Unit = {
     val json = """{ "myFeatureName": { "spec": "${length}", "defVal": -654321 } }"""
