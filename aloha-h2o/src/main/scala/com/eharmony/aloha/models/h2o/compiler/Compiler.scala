@@ -35,7 +35,22 @@ private[h2o] class Compiler[B](parentClassLoader: ClassLoader = ToolProvider.get
                                charSet: Charset = Charset.defaultCharset)
                               (implicit riB: RefInfo[B])
 extends AlohaReadable[Try[B]]
-   with ReadableByString[Try[B]] {
+   with ReadableByString[Try[B]]
+   with Logging {
+
+  if (isDebugEnabled) {
+    debug(s"h2o compiler classLoader type: ${parentClassLoader.getClass.getCanonicalName}")
+    parentClassLoader match {
+      case cl: java.net.URLClassLoader =>
+        debug(
+          cl.getURLs.map{ u =>
+            val exists = new java.io.File(u.getPath).exists()
+            u.toString + s" (exists = $exists)"
+          }.mkString("h2o compiler classLoader classpath: ", ", ","")
+        )
+      case _ =>
+    }
+  }
 
   /** Read from a String.
     * @param code a String to read.

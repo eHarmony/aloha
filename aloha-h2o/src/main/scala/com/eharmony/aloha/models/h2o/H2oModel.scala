@@ -3,6 +3,7 @@ package com.eharmony.aloha.models.h2o
 import java.io.File
 import java.net.{URL, URLClassLoader}
 import java.util.Properties
+import java.util.jar.JarFile
 
 import com.eharmony.aloha.audit.Auditor
 import com.eharmony.aloha.factory.{ModelParser, ModelSubmodelParsingPlugin, ParserProviderCompanion, SubmodelFactory}
@@ -10,26 +11,27 @@ import com.eharmony.aloha.id.{ModelId, ModelIdentity}
 import com.eharmony.aloha.io.AlohaReadable
 import com.eharmony.aloha.io.sources.{Base64StringSource, ExternalSource, ModelSource}
 import com.eharmony.aloha.io.vfs.Vfs
+import com.eharmony.aloha.models.{SubmodelBase, Subvalue}
 import com.eharmony.aloha.models.h2o.H2oModel.Features
 import com.eharmony.aloha.models.h2o.categories._
 import com.eharmony.aloha.models.h2o.compiler.Compiler
 import com.eharmony.aloha.models.h2o.json.{H2oAst, H2oSpec}
-import com.eharmony.aloha.models.{SubmodelBase, Subvalue}
 import com.eharmony.aloha.reflect.{RefInfo, RefInfoOps}
 import com.eharmony.aloha.semantics.Semantics
 import com.eharmony.aloha.semantics.compiled.CompiledSemantics
 import com.eharmony.aloha.semantics.compiled.compiler.TwitterEvalCompiler
 import com.eharmony.aloha.util.{EitherHelpers, Logging}
 import hex.genmodel.GenModel
-import hex.genmodel.easy.exception.PredictUnknownCategoricalLevelException
 import hex.genmodel.easy.{EasyPredictModelWrapper, RowData}
+import hex.genmodel.easy.exception.PredictUnknownCategoricalLevelException
 import org.apache.commons.codec.binary.Base64
-import spray.json.DefaultJsonProtocol.StringJsonFormat
 import spray.json._
+import spray.json.DefaultJsonProtocol.StringJsonFormat
 
 import scala.annotation.tailrec
-import scala.collection.immutable.ListMap
 import scala.collection.{immutable => sci}
+import scala.collection.JavaConverters.enumerationAsScalaIteratorConverter
+import scala.collection.immutable.ListMap
 import scala.util.{Failure, Success, Try}
 
 /**
@@ -277,10 +279,33 @@ object H2oModel extends ParserProviderCompanion
     //
     // This has been proven to work within a Jetty environment.
     val h2oGenModelJarName = h2oProps.getProperty("h2oGenModelName")
-    val h2oGenModelJar = getJar((url: URL) => url.toString.contains(h2oGenModelJarName))
+
+    val gmcp = genModelClassPath
+
+    val h2oGenModelJar = getJar((url: URL) => {
+      // Try to find the h2o genmodel jar.
+      val foundExactJar = url.toString.contains(h2oGenModelJarName)
+
+      // Try to find the class in an uberjar if necessary.
+      lazy val foundInJar = Try {
+        new JarFile(url.getPath).entries().asScala.exists(_.getName == gmcp)
+      }.getOrElse(false)
+
+      val useUrl = foundExactJar || foundInJar
+
+      if (useUrl) {
+        debug(s"including URL in classpath for H2O compiler: $useUrl")
+      }
+
+      useUrl
+    })
+
     val compiler = new Compiler[GenModel](currentClassLoader, h2oGenModelJar, classCacheDir)
     f(compiler)(input)
   }
+
+  private[h2o] def genModelClassPath: String =
+    classOf[GenModel].getCanonicalName.replaceAllLiterally(".", "/") + ".class"
 
   private[this] def getGenModelFromFile[B](modelSource: ModelSource, classCacheDir: Option[File]): GenModel = {
     val sourceFile = new java.io.File(modelSource.localVfs.descriptor)
