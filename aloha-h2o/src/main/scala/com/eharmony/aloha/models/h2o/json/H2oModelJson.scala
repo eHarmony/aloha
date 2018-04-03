@@ -57,14 +57,22 @@ object H2oSpec {
       val m = json.convertTo[sci.ListMap[String, JsValue]]
       m.map {
         case (k, JsString(s)) => (k, DoubleH2oSpec(k, s, None))
-        case (k, o: JsObject) => o.fields.get("type") match {
-          case Some(JsString("double")) if o.fields.contains("size") =>
-            (k, DoubleSeqH2oSpec(k, spec(o), size(o), o.fields.get("defVal").flatMap(_.convertTo[Option[Seq[Double]]])))
-          case None | Some(JsString("double")) => (k, DoubleH2oSpec(k, spec(o), o.fields.get("defVal").flatMap(_.convertTo[Option[Double]])))
-          case Some(JsString("string"))        => (k, StringH2oSpec(k, spec(o), o.fields.get("defVal").flatMap(_.convertTo[Option[String]])))
-          case Some(JsString(d))               => throw new DeserializationException(s"unsupported H2oSpec type: $d. Should be 'double' or 'string'.")
-          case Some(d)                         => throw new DeserializationException(s"H2oSpec type expected string, got: $d")
-        }
+        case (k, o: JsObject) =>
+
+          // Lowercase the type so that it is more forgiving.
+          val tpe = o.fields.get("type").map {
+            case JsString(str) => JsString(str.toLowerCase)
+            case d => d
+          }
+
+          tpe match {
+            case Some(JsString("double")) if o.fields.contains("size") =>
+              (k, DoubleSeqH2oSpec(k, spec(o), size(o), o.fields.get("defVal").flatMap(_.convertTo[Option[Seq[Double]]])))
+            case None | Some(JsString("double")) => (k, DoubleH2oSpec(k, spec(o), o.fields.get("defVal").flatMap(_.convertTo[Option[Double]])))
+            case Some(JsString("string"))        => (k, StringH2oSpec(k, spec(o), o.fields.get("defVal").flatMap(_.convertTo[Option[String]])))
+            case Some(JsString(d))               => throw new DeserializationException(s"unsupported H2oSpec type: $d. Should be 'double' or 'string'.")
+            case Some(d)                         => throw new DeserializationException(s"H2oSpec type expected string, got: $d")
+          }
         case (k, v) => throw new DeserializationException(s"key '$k' needs to be a JSON string or object. found $v.")
       }
     }
