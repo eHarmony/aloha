@@ -31,8 +31,6 @@ class CsvColumnTest {
         assertEquals(expected, act)
     }
 
-//    final case class SyntheticEnumCsvColumn(name: String, spec: String, values: Seq[String], defVal: Option[String] = None)
-
     @Test def testReqEnum() {
         val jsonTxt = """{ "name": "some_enum",
                         |  "type": "enum",
