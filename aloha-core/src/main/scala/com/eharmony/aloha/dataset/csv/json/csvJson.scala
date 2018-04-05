@@ -166,7 +166,9 @@ extends DefaultJsonProtocol
             o: JsObject)(implicit riJf: RefInfoToJsonFormat): Either[String, CsvColumn] = {
         for {
             riUncast <- RefInfo.fromString(aStr.capitalize).right
-            ri <- Right(riUncast.asInstanceOf[RefInfo[Any]]).right // cast :-(
+            ri <- Try(riUncast.asInstanceOf[RefInfo[Any]]) // cast :-(
+                    .toOption
+                    .toRight(s"Couldn't cast ${RefInfoOps.toString(riUncast)} to Any").right
             jf <- riJf(ri).toRight(
                 s"Couldn't produce JsonFormat from ${RefInfoOps.toString(ri)}"
             ).right
@@ -222,8 +224,6 @@ extends DefaultJsonProtocol
                 convertTypeOrThrow(rp, ft, o)
             case Some("enum") =>
                 enumFn(enumClassName, enumClass, o)
-            // case Some(d) => Cannot do d
-            // case None =>
             case _ =>
                 info(s"No type provided.  Assuming Any.  Given: ${o.compactPrint}")
                 o.convertTo[DefaultCsvColumn]
@@ -238,10 +238,7 @@ extends DefaultJsonProtocol
         fieldType match {
             case Some(ft) if StdTypes contains ft =>
                 convertTypeOrThrow(rp, ft, o)
-            // case Some("enum") =>
             // TODO: Support Enum Case
-            // case Some(d) => Cannot do d
-            // case None =>
             case _ =>
                 // TODO: SUPPORT ENUM
                 throw new DeserializationException("Sized fields must of a type in " + (StdTypes - "enum").mkString(", "))
