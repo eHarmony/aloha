@@ -1,8 +1,7 @@
 package com.eharmony.aloha.models.h2o
 
-import java.{lang => jl}
-
 import com.eharmony.aloha.semantics.func.GenAggFunc
+import hex.genmodel.easy.RowData
 
 /**
  * When a RowData observation is provided to a predict method, the value types are extremely restricted.
@@ -11,8 +10,72 @@ import com.eharmony.aloha.semantics.func.GenAggFunc
  *
  * See documentation for `hex.genmodel.easy.exception.PredictUnknownTypeException`.
  */
-sealed trait FeatureFunction[-A]
+sealed trait FeatureFunction[-A] {
+  def ff: GenAggFunc[A, _]
 
-case class DoubleFeatureFunction[-A](ff: GenAggFunc[A, Option[jl.Double]]) extends FeatureFunction[A]
-case class StringFeatureFunction[-A](ff: GenAggFunc[A, Option[String]]) extends FeatureFunction[A]
+  /**
+    * Fill in the `rowData` object with data extracted by `ff`
+    *
+    * The returned missing information should be found by:
+    *
+    * {{{
+    * ff.specification -> ff.accessorOutputMissing(a)
+    * }}}
+    *
+    * @param input the input that will be passed to the feature function `ff`.
+    * @param name name of the feature.
+    * @param rowData the mutable `RowData` object that should be filled
+    * @return Missing feature information
+    */
+  def fillRowData(input: A, name: String, rowData: RowData): Option[(String, Seq[String])]
+}
 
+// (implicit box: B => AnyRef)
+private[h2o] sealed abstract class ScalarFeatureFunction[-A, B] {
+  def box(b: B): AnyRef
+  def ff: GenAggFunc[A, Option[B]]
+  def fillRowData(input: A, name: String, rowData: RowData): Option[(String, Seq[String])] = {
+    ff(input) match {
+      case Some(x) =>
+        rowData.put(name, box(x))
+        None
+      case None =>
+        Some(ff.specification -> ff.accessorOutputMissing(input))
+    }
+  }
+}
+
+private[h2o] sealed abstract class VectorFeatureFunction[-A, B] {
+  def box(b: B): AnyRef
+  def size: Int
+  def ff: GenAggFunc[A, Option[Seq[B]]]
+  def fillRowData(input: A, name: String, rowData: RowData): Option[(String, Seq[String])] = {
+    ff(input) match {
+      case Some(xs) =>
+        xs.zipWithIndex.foreach {
+          case(x, i) => rowData.put(s"${name}_$i", box(x))
+        }
+        None
+      case None =>
+        Some(ff.specification -> ff.accessorOutputMissing(input))
+    }
+  }
+}
+
+case class DoubleFeatureFunction[-A](ff: GenAggFunc[A, Option[Double]])
+  extends ScalarFeatureFunction[A, Double]
+    with FeatureFunction[A] {
+  override def box(d: Double): AnyRef = Double.box(d)
+}
+
+case class StringFeatureFunction[-A](ff: GenAggFunc[A, Option[String]])
+  extends ScalarFeatureFunction[A, String]
+    with FeatureFunction[A] {
+  override def box(s: String): AnyRef = s
+}
+
+case class DoubleSeqFeatureFunction[-A](ff: GenAggFunc[A, Option[Seq[Double]]], size: Int)
+  extends VectorFeatureFunction[A, Double]
+    with FeatureFunction[A] {
+  override def box(d: Double): AnyRef = Double.box(d)
+}

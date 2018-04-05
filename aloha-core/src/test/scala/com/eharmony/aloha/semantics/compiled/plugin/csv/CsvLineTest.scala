@@ -637,7 +637,9 @@ class CsvLineTest {
     }
 
     @Test def testOptEmptyString() {
-        assertEquals(s"For string: ''", Option(""), extract("optional.string", "", _.os))
+        // When empty string indicates missing data, a empty string field
+        // should result in a None when the output is optional.
+        assertEquals("For string: \"\"", None, extract("optional.string", "", _.os))
     }
 
     @Test def testOptStrings() {
@@ -689,9 +691,14 @@ class CsvLineTest {
 
     // =====================  NUMERIC 0 PARSING  =====================
 
-    @Test(expected = classOf[IllegalArgumentException])
+    @Test
     def testOptEnumEmptyStringMean() {
-        extractMean("optional.enum", "", _.oe)
+        assertEquals(None, extractMean("optional.enum", "", _.oe))
+    }
+
+    @Test(expected = classOf[NoSuchElementException])
+    def testOptEnumEmptyStringMeanFeatureNotFound() {
+        extractMean("optional.enum_NOT_FOUND", "", _.oe)
     }
 
     @Test(expected = classOf[IllegalArgumentException])
@@ -704,9 +711,14 @@ class CsvLineTest {
         tests foreach { k => assertEquals(Option(GenderProto.valueOf(k)), extractMean("optional.enum", k, _.oe)) }
     }
 
-    @Test(expected = classOf[IllegalArgumentException])
+    @Test
     def testOptBoolEmptyStringMean() {
-        extractMean("optional.boolean", "", _.ob)
+        assertEquals(None, extractMean("optional.boolean", "", _.ob))
+    }
+
+    @Test(expected = classOf[NoSuchElementException])
+    def testOptBoolEmptyStringMeanFeatureNotFound() {
+        extractMean("optional.boolean_NOT_FOUND", "", _.ob)
     }
 
     @Test(expected = classOf[IllegalArgumentException]) def testOptBoolBadValueMean() {
@@ -725,9 +737,14 @@ class CsvLineTest {
         assertEquals(Some(true), extractMean("optional.boolean", "TRUE", _.ob))
     }
 
-    @Test(expected = classOf[NumberFormatException])
+    @Test
     def testOptIntEmptyStringMean() {
-        extractMean("optional.int", "", _.oi)
+        assertEquals(None, extractMean("optional.int", "", _.oi))
+    }
+
+    @Test(expected = classOf[NoSuchElementException])
+    def testOptIntEmptyStringMeanFeatureNotFound() {
+        extractMean("optional.int_NOT_FOUND", "", _.oi)
     }
 
     @Test(expected = classOf[NumberFormatException])
@@ -768,9 +785,14 @@ class CsvLineTest {
         tests foreach { i => assertEquals(s"For int: $i", i, extractMean("optional.int", i.toString, _.oi).get) }
     }
 
-    @Test(expected = classOf[NumberFormatException])
+    @Test
     def testOptLongEmptyStringMean() {
-        extractMean("optional.long", "", _.ol)
+        assertEquals(None, extractMean("optional.long", "", _.ol))
+    }
+
+    @Test(expected = classOf[NoSuchElementException])
+    def testOptLongEmptyStringMeanFeatureNotFound() {
+        extractMean("optional.long_NOT_FOUND", "", _.ol)
     }
 
     @Test(expected = classOf[NumberFormatException])
@@ -820,9 +842,14 @@ class CsvLineTest {
         tests foreach { i => assertEquals(s"For long: $i", i, extractMean("optional.long", i.toString, _.ol).get) }
     }
 
-    @Test(expected = classOf[NumberFormatException])
+    @Test
     def testOptFloatEmptyStringMean() {
-        extractMean("optional.float", "", _.of)
+        assertEquals(None, extractMean("optional.float", "", _.of))
+    }
+
+    @Test(expected = classOf[NoSuchElementException])
+    def testOptFloatEmptyStringMeanFeatureNotFound() {
+        extractMean("optional.float_NOT_FOUND", "", _.of)
     }
 
     @Test(expected = classOf[NumberFormatException])
@@ -868,9 +895,14 @@ class CsvLineTest {
         tests foreach { i => assertEquals(s"For float: $i", i, extractMean("optional.float", s"${i}f", _.of).get, 0f) }
     }
 
-    @Test(expected = classOf[NumberFormatException])
+    @Test
     def testOptDoubleEmptyStringMean() {
-        extractMean("optional.double", "", _.od)
+        assertEquals(None, extractMean("optional.double", "", _.od))
+    }
+
+    @Test(expected = classOf[NoSuchElementException])
+    def testOptDoubleEmptyStringMeanFeatureNotFound() {
+        extractMean("optional.double_NOT_FOUND", "", _.od)
     }
 
     @Test(expected = classOf[NumberFormatException])
@@ -917,7 +949,12 @@ class CsvLineTest {
     }
 
     @Test def testOptEmptyStringMean() {
-        assertEquals(s"For string: ''", Option(""), extractMean("optional.string", "", _.os))
+        assertEquals(s"For string: ''", None, extractMean("optional.string", "", _.os))
+    }
+
+    @Test(expected = classOf[NoSuchElementException])
+    def testOptEmptyStringMeanFeatureNotFound() {
+        extractMean("optional.string_NOT_FOUND", "", _.os)
     }
 
     @Test def testOptStringsMean() {
