@@ -15,7 +15,7 @@ object Dependencies {
   val log4jVersion = "1.2.17"
 
   val vwJniVersion = "8.4.1"
-  val h2oVersion = "3.10.3.2"
+  val h2oVersion = "3.18.0.5"
   val guavaVersion = "16.0.1"
   val avroVersion = "1.8.1"
 
@@ -45,8 +45,13 @@ object Dependencies {
 
   val vwJni = "com.github.johnlangford" % "vw-jni" % vwJniVersion
 
-  val h2o = "ai.h2o" % "h2o-core" % h2oVersion excludeAll(ExclusionRule("ai.h2o", "reflections"))
-  val h2oGenModel = "ai.h2o" % "h2o-genmodel" % h2oVersion
+  val h2o = "ai.h2o" % "h2o-core" % h2oVersion excludeAll(
+    ExclusionRule("ai.h2o", "reflections"),
+    ExclusionRule("org.slf4j", "slf4j-log4j12")
+  )
+  val h2oGenModel = "ai.h2o" % "h2o-genmodel" % h2oVersion excludeAll(
+    ExclusionRule("org.slf4j", "slf4j-log4j12")
+  )
 
   val guava = "com.google.guava" % "guava"  % guavaVersion
 

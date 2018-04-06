@@ -8,8 +8,8 @@ description := "Scala-based machine learning library with generic models and laz
 
 lazy val commonSettings = Seq(
   organization := "com.eharmony",
-  scalaVersion := "2.11.8",
-  crossScalaVersions := Seq("2.10.5", "2.11.8"),
+  scalaVersion := "2.11.12",
+  crossScalaVersions := Seq("2.10.5", "2.11.12"),
   crossPaths := true,
   incOptions := incOptions.value.withNameHashing(true),
   javacOptions ++= Seq("-Xlint:unchecked"),
