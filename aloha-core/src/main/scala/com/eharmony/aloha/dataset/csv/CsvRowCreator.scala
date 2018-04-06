@@ -55,7 +55,9 @@ object CsvRowCreator {
             val separator = jsonSpec.separator.getOrElse(Separator)
             val encoding = jsonSpec.encoding.getOrElse(Encoding)
 
-            val creator = getCovariates(semantics, jsonSpec, nullString, separator, encoding) map { case (cov, headers) => CsvRowCreator(cov, headers, separator) }
+            val creator = getCovariates(semantics, jsonSpec, nullString, separator, encoding) map {
+                case (cov, headers) => CsvRowCreator(cov, headers, separator)
+            }
             creator
         }
 

@@ -1,9 +1,9 @@
 package com.eharmony.aloha.semantics.compiled.plugin.csv
 
-import com.eharmony.aloha.semantics.compiled.plugin.csv.CsvLines.{NonErringOptEnumFunc, ErrorOnOptMissingFieldOptEnumFunc}
+import com.eharmony.aloha.semantics.compiled.plugin.csv.CsvLines.{EmptyStringIsMissing, ErrorOnOptMissingFieldOptEnumFunc, NonErringOptEnumFunc}
 
 import scala.annotation.varargs
-import scala.collection.{TraversableLike, GenTraversableLike}
+import scala.collection.{GenTraversableLike, TraversableLike}
 import scala.collection.generic.CanBuildFrom
 
 /** A class capable of efficiently creating CsvLine objects.
@@ -21,15 +21,19 @@ case class CsvLines(
         enums: Map[String, Enum] = Map.empty,
         fs: String = "\t",
         ifs: String = ",",
-        missingData: String => Boolean = _ == "",
+        missingData: String => Boolean = EmptyStringIsMissing,
         errorOnOptMissingField: Boolean = false,
         errorOnOptMissingEnum: Boolean = false) {
 
     private[this] val optEnumFunc: String => Option[(String) => EnumConstant] =
-        if (errorOnOptMissingField) ErrorOnOptMissingFieldOptEnumFunc(missingData, enums)
+        if (errorOnOptMissingField)
+            ErrorOnOptMissingFieldOptEnumFunc(missingData, enums)
         else NonErringOptEnumFunc(missingData, enums)
 
-    private[this] val optHandler = if (errorOnOptMissingField) FailFastOptionalHandler(indices) else GracefulOptionalHandler(indices)
+    private[this] val optHandler =
+        if (errorOnOptMissingField)
+            FailFastOptionalHandler(indices)
+        else GracefulOptionalHandler(indices)
 
     /** Generate a
       * @param t
@@ -77,6 +81,12 @@ case class CsvLines(
 }
 
 object CsvLines {
+    // This is so that it shows up better in toString.
+    case object EmptyStringIsMissing extends (String => Boolean) {
+        override def apply(s: String): Boolean = s == ""
+        override def toString: String = getClass.getSimpleName.replaceAllLiterally("$", "")
+    }
+
     sealed trait OptEnumFunc extends (String => Option[(String) => EnumConstant]) {
         val missingDataFunc: String => Boolean
         val enums: Map[String, Enum]
