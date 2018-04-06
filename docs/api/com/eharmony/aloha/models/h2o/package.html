@@ -90,7 +90,7 @@
         <div id="types" class="types members">
               <h3>Type Members</h3>
               <ol><li name="com.eharmony.aloha.models.h2o.DoubleFeatureFunction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="DoubleFeatureFunction[-A]extendsFeatureFunction[A]withProductwithSerializable"></a>
+      <a id="DoubleFeatureFunction[-A]extendsScalarFeatureFunction[A,Double]withFeatureFunction[A]withProductwithSerializable"></a>
       <a id="DoubleFeatureFunction[-A]:DoubleFeatureFunction[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -98,10 +98,27 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="DoubleFeatureFunction.html"><span class="name">DoubleFeatureFunction</span></a><span class="tparams">[<span name="A">-A</span>]</span><span class="params">(<span name="ff">ff: <a href="../../semantics/func/GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.models.h2o.DoubleFeatureFunction.A">A</span>, <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="java.lang.Double">Double</span>]]</span>)</span><span class="result"> extends <a href="FeatureFunction.html" class="extype" name="com.eharmony.aloha.models.h2o.FeatureFunction">FeatureFunction</a>[<span class="extype" name="com.eharmony.aloha.models.h2o.DoubleFeatureFunction.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="DoubleFeatureFunction.html"><span class="name">DoubleFeatureFunction</span></a><span class="tparams">[<span name="A">-A</span>]</span><span class="params">(<span name="ff">ff: <a href="../../semantics/func/GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.models.h2o.DoubleFeatureFunction.A">A</span>, <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Double">Double</span>]]</span>)</span><span class="result"> extends <span class="extype" name="com.eharmony.aloha.models.h2o.ScalarFeatureFunction">ScalarFeatureFunction</span>[<span class="extype" name="com.eharmony.aloha.models.h2o.DoubleFeatureFunction.A">A</span>, <span class="extype" name="scala.Double">Double</span>] with <a href="FeatureFunction.html" class="extype" name="com.eharmony.aloha.models.h2o.FeatureFunction">FeatureFunction</a>[<span class="extype" name="com.eharmony.aloha.models.h2o.DoubleFeatureFunction.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.eharmony.aloha.models.h2o.package@DoubleFeatureFunction[-A]extendsFeatureFunction[A]withProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../index.html#com.eharmony.aloha.models.h2o.package@DoubleFeatureFunction[-A]extendsScalarFeatureFunction[A,Double]withFeatureFunction[A]withProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.models.h2o.DoubleSeqFeatureFunction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DoubleSeqFeatureFunction[-A]extendsVectorFeatureFunction[A,Double]withFeatureFunction[A]withProductwithSerializable"></a>
+      <a id="DoubleSeqFeatureFunction[-A]:DoubleSeqFeatureFunction[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="DoubleSeqFeatureFunction.html"><span class="name">DoubleSeqFeatureFunction</span></a><span class="tparams">[<span name="A">-A</span>]</span><span class="params">(<span name="ff">ff: <a href="../../semantics/func/GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.models.h2o.DoubleSeqFeatureFunction.A">A</span>, <span class="extype" name="scala.Option">Option</span>[<a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Double">Double</span>]]]</span>, <span name="size">size: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="com.eharmony.aloha.models.h2o.VectorFeatureFunction">VectorFeatureFunction</span>[<span class="extype" name="com.eharmony.aloha.models.h2o.DoubleSeqFeatureFunction.A">A</span>, <span class="extype" name="scala.Double">Double</span>] with <a href="FeatureFunction.html" class="extype" name="com.eharmony.aloha.models.h2o.FeatureFunction">FeatureFunction</a>[<span class="extype" name="com.eharmony.aloha.models.h2o.DoubleSeqFeatureFunction.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.models.h2o.package@DoubleSeqFeatureFunction[-A]extendsVectorFeatureFunction[A,Double]withFeatureFunction[A]withProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -197,7 +214,7 @@ This is not really acceptable.  So, we actually
     </span>
       
     </li><li name="com.eharmony.aloha.models.h2o.StringFeatureFunction" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="StringFeatureFunction[-A]extendsFeatureFunction[A]withProductwithSerializable"></a>
+      <a id="StringFeatureFunction[-A]extendsScalarFeatureFunction[A,String]withFeatureFunction[A]withProductwithSerializable"></a>
       <a id="StringFeatureFunction[-A]:StringFeatureFunction[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -205,10 +222,10 @@ This is not really acceptable.  So, we actually
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="StringFeatureFunction.html"><span class="name">StringFeatureFunction</span></a><span class="tparams">[<span name="A">-A</span>]</span><span class="params">(<span name="ff">ff: <a href="../../semantics/func/GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.models.h2o.StringFeatureFunction.A">A</span>, <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>)</span><span class="result"> extends <a href="FeatureFunction.html" class="extype" name="com.eharmony.aloha.models.h2o.FeatureFunction">FeatureFunction</a>[<span class="extype" name="com.eharmony.aloha.models.h2o.StringFeatureFunction.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="StringFeatureFunction.html"><span class="name">StringFeatureFunction</span></a><span class="tparams">[<span name="A">-A</span>]</span><span class="params">(<span name="ff">ff: <a href="../../semantics/func/GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.models.h2o.StringFeatureFunction.A">A</span>, <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>)</span><span class="result"> extends <span class="extype" name="com.eharmony.aloha.models.h2o.ScalarFeatureFunction">ScalarFeatureFunction</span>[<span class="extype" name="com.eharmony.aloha.models.h2o.StringFeatureFunction.A">A</span>, <span class="extype" name="scala.Predef.String">String</span>] with <a href="FeatureFunction.html" class="extype" name="com.eharmony.aloha.models.h2o.FeatureFunction">FeatureFunction</a>[<span class="extype" name="com.eharmony.aloha.models.h2o.StringFeatureFunction.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../index.html#com.eharmony.aloha.models.h2o.package@StringFeatureFunction[-A]extendsFeatureFunction[A]withProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../index.html#com.eharmony.aloha.models.h2o.package@StringFeatureFunction[-A]extendsScalarFeatureFunction[A,String]withFeatureFunction[A]withProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>

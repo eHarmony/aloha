@@ -45,13 +45,13 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">StringFeatureFunction</span><span class="tparams">[<span name="A">-A</span>]</span><span class="params">(<span name="ff">ff: <a href="../../semantics/func/GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.models.h2o.StringFeatureFunction.A">A</span>, <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>)</span><span class="result"> extends <a href="FeatureFunction.html" class="extype" name="com.eharmony.aloha.models.h2o.FeatureFunction">FeatureFunction</a>[<span class="extype" name="com.eharmony.aloha.models.h2o.StringFeatureFunction.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">StringFeatureFunction</span><span class="tparams">[<span name="A">-A</span>]</span><span class="params">(<span name="ff">ff: <a href="../../semantics/func/GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.models.h2o.StringFeatureFunction.A">A</span>, <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>]]</span>)</span><span class="result"> extends <span class="extype" name="com.eharmony.aloha.models.h2o.ScalarFeatureFunction">ScalarFeatureFunction</span>[<span class="extype" name="com.eharmony.aloha.models.h2o.StringFeatureFunction.A">A</span>, <span class="extype" name="scala.Predef.String">String</span>] with <a href="FeatureFunction.html" class="extype" name="com.eharmony.aloha.models.h2o.FeatureFunction">FeatureFunction</a>[<span class="extype" name="com.eharmony.aloha.models.h2o.StringFeatureFunction.A">A</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="FeatureFunction.html" class="extype" name="com.eharmony.aloha.models.h2o.FeatureFunction">FeatureFunction</a>[<span class="extype" name="com.eharmony.aloha.models.h2o.StringFeatureFunction.A">A</span>], <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="FeatureFunction.html" class="extype" name="com.eharmony.aloha.models.h2o.FeatureFunction">FeatureFunction</a>[<span class="extype" name="com.eharmony.aloha.models.h2o.StringFeatureFunction.A">A</span>], <span class="extype" name="com.eharmony.aloha.models.h2o.ScalarFeatureFunction">ScalarFeatureFunction</span>[<span class="extype" name="com.eharmony.aloha.models.h2o.StringFeatureFunction.A">A</span>, <span class="extype" name="scala.Predef.String">String</span>], <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -69,7 +69,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.eharmony.aloha.models.h2o.StringFeatureFunction"><span>StringFeatureFunction</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="com.eharmony.aloha.models.h2o.FeatureFunction"><span>FeatureFunction</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.eharmony.aloha.models.h2o.StringFeatureFunction"><span>StringFeatureFunction</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="com.eharmony.aloha.models.h2o.FeatureFunction"><span>FeatureFunction</span></li><li class="in" name="com.eharmony.aloha.models.h2o.ScalarFeatureFunction"><span>ScalarFeatureFunction</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -182,6 +182,23 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.h2o.StringFeatureFunction#box" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="box(s:String):AnyRef"></a>
+      <a id="box(String):AnyRef"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">box</span><span class="params">(<span name="s">s: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.models.h2o.StringFeatureFunction@box(s:String):AnyRef" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.eharmony.aloha.models.h2o.StringFeatureFunction">StringFeatureFunction</a> → ScalarFeatureFunction</dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -222,7 +239,7 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.eharmony.aloha.models.h2o.StringFeatureFunction#ff" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="com.eharmony.aloha.models.h2o.StringFeatureFunction#ff" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ff:com.eharmony.aloha.semantics.func.GenAggFunc[A,Option[String]]"></a>
       <a id="ff:GenAggFunc[A,Option[String]]"></a>
       <h4 class="signature">
@@ -238,7 +255,24 @@
         <img src="../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.eharmony.aloha.models.h2o.StringFeatureFunction">StringFeatureFunction</a> → <a href="FeatureFunction.html" class="extype" name="com.eharmony.aloha.models.h2o.FeatureFunction">FeatureFunction</a> → ScalarFeatureFunction</dd></dl></div>
+    </li><li name="com.eharmony.aloha.models.h2o.ScalarFeatureFunction#fillRowData" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="fillRowData(input:A,name:String,rowData:hex.genmodel.easy.RowData):Option[(String,Seq[String])]"></a>
+      <a id="fillRowData(A,String,RowData):Option[(String,Seq[String])]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fillRowData</span><span class="params">(<span name="input">input: <span class="extype" name="com.eharmony.aloha.models.h2o.StringFeatureFunction.A">A</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="rowData">rowData: <span class="extype" name="hex.genmodel.easy.RowData">RowData</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[(<span class="extype" name="scala.Predef.String">String</span>, <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>])]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.models.h2o.StringFeatureFunction@fillRowData(input:A,name:String,rowData:hex.genmodel.easy.RowData):Option[(String,Seq[String])]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ScalarFeatureFunction</dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -452,6 +486,8 @@
               <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
             </div><div class="parent" name="com.eharmony.aloha.models.h2o.FeatureFunction">
               <h3>Inherited from <a href="FeatureFunction.html" class="extype" name="com.eharmony.aloha.models.h2o.FeatureFunction">FeatureFunction</a>[<span class="extype" name="com.eharmony.aloha.models.h2o.StringFeatureFunction.A">A</span>]</h3>
+            </div><div class="parent" name="com.eharmony.aloha.models.h2o.ScalarFeatureFunction">
+              <h3>Inherited from <span class="extype" name="com.eharmony.aloha.models.h2o.ScalarFeatureFunction">ScalarFeatureFunction</span>[<span class="extype" name="com.eharmony.aloha.models.h2o.StringFeatureFunction.A">A</span>, <span class="extype" name="scala.Predef.String">String</span>]</h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">

@@ -104,7 +104,7 @@ f <span class="kw">match</span> {
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="CsvColumnWithDefault.html"><span class="name">CsvColumnWithDefault</span></a><span class="tparams">[<span name="C">C</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="spec">spec: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="defVal">defVal: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.eharmony.aloha.dataset.csv.json.CsvColumnWithDefault.C">C</span>] = <span class="symbol"><span class="name"><a href="../../../../../../scala/package.html">None</a></span></span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="evidence$8">evidence$8: <a href="../../../reflect/package.html#RefInfo[A]=Manifest[A]" class="extmbr" name="com.eharmony.aloha.reflect.RefInfo">RefInfo</a>[<span class="extype" name="com.eharmony.aloha.dataset.csv.json.CsvColumnWithDefault.C">C</span>]</span>, <span name="evidence$9">evidence$9: <span class="extype" name="spray.json.JsonReader">JsonReader</span>[<span class="extype" name="com.eharmony.aloha.dataset.csv.json.CsvColumnWithDefault.C">C</span>]</span>)</span><span class="result"> extends <span class="extype" name="com.eharmony.aloha.dataset.csv.json.CsvColumnLikeWithDefault">CsvColumnLikeWithDefault</span>[<span class="extype" name="com.eharmony.aloha.dataset.csv.json.CsvColumnWithDefault.C">C</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="CsvColumnWithDefault.html"><span class="name">CsvColumnWithDefault</span></a><span class="tparams">[<span name="C">C</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="spec">spec: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="defVal">defVal: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.eharmony.aloha.dataset.csv.json.CsvColumnWithDefault.C">C</span>] = <span class="symbol"><span class="name"><a href="../../../../../../scala/package.html">None</a></span></span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="evidence$10">evidence$10: <a href="../../../reflect/package.html#RefInfo[A]=Manifest[A]" class="extmbr" name="com.eharmony.aloha.reflect.RefInfo">RefInfo</a>[<span class="extype" name="com.eharmony.aloha.dataset.csv.json.CsvColumnWithDefault.C">C</span>]</span>, <span name="evidence$11">evidence$11: <span class="extype" name="spray.json.JsonReader">JsonReader</span>[<span class="extype" name="com.eharmony.aloha.dataset.csv.json.CsvColumnWithDefault.C">C</span>]</span>)</span><span class="result"> extends <span class="extype" name="com.eharmony.aloha.dataset.csv.json.CsvColumnLikeWithDefault">CsvColumnLikeWithDefault</span>[<span class="extype" name="com.eharmony.aloha.dataset.csv.json.CsvColumnWithDefault.C">C</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../../index.html#com.eharmony.aloha.dataset.csv.json.package@CsvColumnWithDefault[C]extendsCsvColumnLikeWithDefault[C]withProductwithSerializable" title="Permalink" target="_top">
@@ -130,7 +130,7 @@ f <span class="kw">match</span> {
     </span>
       
     </li><li name="com.eharmony.aloha.dataset.csv.json.DefaultCsvColumn" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="DefaultCsvColumnextendsCsvColumnwithProductwithSerializable"></a>
+      <a id="DefaultCsvColumnextendsCsvColumnwithScalarBasedColumnwithProductwithSerializable"></a>
       <a id="DefaultCsvColumn:DefaultCsvColumn"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -138,16 +138,33 @@ f <span class="kw">match</span> {
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="DefaultCsvColumn.html"><span class="name">DefaultCsvColumn</span></a><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="spec">spec: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="CsvColumn.html" class="extype" name="com.eharmony.aloha.dataset.csv.json.CsvColumn">CsvColumn</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="DefaultCsvColumn.html"><span class="name">DefaultCsvColumn</span></a><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="spec">spec: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="CsvColumn.html" class="extype" name="com.eharmony.aloha.dataset.csv.json.CsvColumn">CsvColumn</a> with <a href="ScalarBasedColumn.html" class="extype" name="com.eharmony.aloha.dataset.csv.json.ScalarBasedColumn">ScalarBasedColumn</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.csv.json.package@DefaultCsvColumnextendsCsvColumnwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.csv.json.package@DefaultCsvColumnextendsCsvColumnwithScalarBasedColumnwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.dataset.csv.json.EncodingBasedColumn" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="EncodingBasedColumnextendsAnyRef"></a>
+      <a id="EncodingBasedColumn:EncodingBasedColumn"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="EncodingBasedColumn.html"><span class="name">EncodingBasedColumn</span></a><span class="result"> extends <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.csv.json.package@EncodingBasedColumnextendsAnyRef" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       
     </li><li name="com.eharmony.aloha.dataset.csv.json.EnumCsvColumn" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="EnumCsvColumnextendsCsvColumnwithProductwithSerializable"></a>
+      <a id="EnumCsvColumnextendsCsvColumnwithEncodingBasedColumnwithProductwithSerializable"></a>
       <a id="EnumCsvColumn:EnumCsvColumn"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -155,10 +172,10 @@ f <span class="kw">match</span> {
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="EnumCsvColumn.html"><span class="name">EnumCsvColumn</span></a><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="spec">spec: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="enumClass">enumClass: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="CsvColumn.html" class="extype" name="com.eharmony.aloha.dataset.csv.json.CsvColumn">CsvColumn</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="EnumCsvColumn.html"><span class="name">EnumCsvColumn</span></a><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="spec">spec: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="enumClass">enumClass: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="CsvColumn.html" class="extype" name="com.eharmony.aloha.dataset.csv.json.CsvColumn">CsvColumn</a> with <a href="EncodingBasedColumn.html" class="extype" name="com.eharmony.aloha.dataset.csv.json.EncodingBasedColumn">EncodingBasedColumn</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.csv.json.package@EnumCsvColumnextendsCsvColumnwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.csv.json.package@EnumCsvColumnextendsCsvColumnwithEncodingBasedColumnwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -172,7 +189,7 @@ f <span class="kw">match</span> {
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="OptionCsvColumnWithDefault.html"><span class="name">OptionCsvColumnWithDefault</span></a><span class="tparams">[<span name="C">C</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="spec">spec: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="defVal">defVal: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.eharmony.aloha.dataset.csv.json.OptionCsvColumnWithDefault.C">C</span>] = <span class="symbol"><span class="name"><a href="../../../../../../scala/package.html">None</a></span></span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="evidence$6">evidence$6: <span class="extype" name="spray.json.JsonReader">JsonReader</span>[<span class="extype" name="com.eharmony.aloha.dataset.csv.json.OptionCsvColumnWithDefault.C">C</span>]</span>, <span name="evidence$7">evidence$7: <a href="../../../reflect/package.html#RefInfo[A]=Manifest[A]" class="extmbr" name="com.eharmony.aloha.reflect.RefInfo">RefInfo</a>[<span class="extype" name="com.eharmony.aloha.dataset.csv.json.OptionCsvColumnWithDefault.C">C</span>]</span>)</span><span class="result"> extends <span class="extype" name="com.eharmony.aloha.dataset.csv.json.CsvColumnLikeWithDefault">CsvColumnLikeWithDefault</span>[<span class="extype" name="com.eharmony.aloha.dataset.csv.json.OptionCsvColumnWithDefault.C">C</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="OptionCsvColumnWithDefault.html"><span class="name">OptionCsvColumnWithDefault</span></a><span class="tparams">[<span name="C">C</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="spec">spec: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="defVal">defVal: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.eharmony.aloha.dataset.csv.json.OptionCsvColumnWithDefault.C">C</span>] = <span class="symbol"><span class="name"><a href="../../../../../../scala/package.html">None</a></span></span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="evidence$2">evidence$2: <span class="extype" name="spray.json.JsonReader">JsonReader</span>[<span class="extype" name="com.eharmony.aloha.dataset.csv.json.OptionCsvColumnWithDefault.C">C</span>]</span>, <span name="evidence$3">evidence$3: <a href="../../../reflect/package.html#RefInfo[A]=Manifest[A]" class="extmbr" name="com.eharmony.aloha.reflect.RefInfo">RefInfo</a>[<span class="extype" name="com.eharmony.aloha.dataset.csv.json.OptionCsvColumnWithDefault.C">C</span>]</span>)</span><span class="result"> extends <span class="extype" name="com.eharmony.aloha.dataset.csv.json.CsvColumnLikeWithDefault">CsvColumnLikeWithDefault</span>[<span class="extype" name="com.eharmony.aloha.dataset.csv.json.OptionCsvColumnWithDefault.C">C</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../../../../index.html#com.eharmony.aloha.dataset.csv.json.package@OptionCsvColumnWithDefault[C]extendsCsvColumnLikeWithDefault[C]withProductwithSerializable" title="Permalink" target="_top">
@@ -181,7 +198,7 @@ f <span class="kw">match</span> {
     </span>
       
     </li><li name="com.eharmony.aloha.dataset.csv.json.OptionEnumCsvColumn" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="OptionEnumCsvColumn[E&lt;:Enum[E]]extendsCsvColumnwithProductwithSerializable"></a>
+      <a id="OptionEnumCsvColumn[E&lt;:Enum[E]]extendsCsvColumnwithEncodingBasedColumnwithProductwithSerializable"></a>
       <a id="OptionEnumCsvColumn[E&lt;:Enum[E]]:OptionEnumCsvColumn[E]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -189,10 +206,27 @@ f <span class="kw">match</span> {
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="OptionEnumCsvColumn.html"><span class="name">OptionEnumCsvColumn</span></a><span class="tparams">[<span name="E">E &lt;: <span class="extype" name="java.lang.Enum">Enum</span>[<span class="extype" name="com.eharmony.aloha.dataset.csv.json.OptionEnumCsvColumn.E">E</span>]</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="spec">spec: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="enumClass">enumClass: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="defVal">defVal: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.eharmony.aloha.dataset.csv.json.OptionEnumCsvColumn.E">E</span>] = <span class="symbol"><span class="name"><a href="../../../../../../scala/package.html">None</a></span></span></span>)</span><span class="result"> extends <a href="CsvColumn.html" class="extype" name="com.eharmony.aloha.dataset.csv.json.CsvColumn">CsvColumn</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="OptionEnumCsvColumn.html"><span class="name">OptionEnumCsvColumn</span></a><span class="tparams">[<span name="E">E &lt;: <span class="extype" name="java.lang.Enum">Enum</span>[<span class="extype" name="com.eharmony.aloha.dataset.csv.json.OptionEnumCsvColumn.E">E</span>]</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="spec">spec: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="enumClass">enumClass: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="defVal">defVal: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.eharmony.aloha.dataset.csv.json.OptionEnumCsvColumn.E">E</span>] = <span class="symbol"><span class="name"><a href="../../../../../../scala/package.html">None</a></span></span></span>)</span><span class="result"> extends <a href="CsvColumn.html" class="extype" name="com.eharmony.aloha.dataset.csv.json.CsvColumn">CsvColumn</a> with <a href="EncodingBasedColumn.html" class="extype" name="com.eharmony.aloha.dataset.csv.json.EncodingBasedColumn">EncodingBasedColumn</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.csv.json.package@OptionEnumCsvColumn[E&lt;:Enum[E]]extendsCsvColumnwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.csv.json.package@OptionEnumCsvColumn[E&lt;:Enum[E]]extendsCsvColumnwithEncodingBasedColumnwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.dataset.csv.json.OptionSeqCsvColumnWithNoDefault" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="OptionSeqCsvColumnWithNoDefault[C]extendsSeqCsvColumnLikeWithNoDefault[C]withProductwithSerializable"></a>
+      <a id="OptionSeqCsvColumnWithNoDefault[C]:OptionSeqCsvColumnWithNoDefault[C]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="OptionSeqCsvColumnWithNoDefault.html"><span class="name">OptionSeqCsvColumnWithNoDefault</span></a><span class="tparams">[<span name="C">C</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="spec">spec: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="size">size: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="evidence$8">evidence$8: <span class="extype" name="spray.json.JsonReader">JsonReader</span>[<span class="extype" name="com.eharmony.aloha.dataset.csv.json.OptionSeqCsvColumnWithNoDefault.C">C</span>]</span>, <span name="evidence$9">evidence$9: <a href="../../../reflect/package.html#RefInfo[A]=Manifest[A]" class="extmbr" name="com.eharmony.aloha.reflect.RefInfo">RefInfo</a>[<span class="extype" name="com.eharmony.aloha.dataset.csv.json.OptionSeqCsvColumnWithNoDefault.C">C</span>]</span>)</span><span class="result"> extends <span class="extype" name="com.eharmony.aloha.dataset.csv.json.SeqCsvColumnLikeWithNoDefault">SeqCsvColumnLikeWithNoDefault</span>[<span class="extype" name="com.eharmony.aloha.dataset.csv.json.OptionSeqCsvColumnWithNoDefault.C">C</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.csv.json.package@OptionSeqCsvColumnWithNoDefault[C]extendsSeqCsvColumnLikeWithNoDefault[C]withProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -210,6 +244,40 @@ f <span class="kw">match</span> {
       </span>
       </h4><span class="permalink">
       <a href="../../../../../../index.html#com.eharmony.aloha.dataset.csv.json.package@OptionSyntheticEnumCsvColumnextendsSyntheticEnumLikeCsvColumnwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.dataset.csv.json.ScalarBasedColumn" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ScalarBasedColumnextendsAnyRef"></a>
+      <a id="ScalarBasedColumn:ScalarBasedColumn"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="ScalarBasedColumn.html"><span class="name">ScalarBasedColumn</span></a><span class="result"> extends <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.csv.json.package@ScalarBasedColumnextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.dataset.csv.json.SeqCsvColumnWithNoDefault" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SeqCsvColumnWithNoDefault[C]extendsSeqCsvColumnLikeWithNoDefault[C]withProductwithSerializable"></a>
+      <a id="SeqCsvColumnWithNoDefault[C]:SeqCsvColumnWithNoDefault[C]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="SeqCsvColumnWithNoDefault.html"><span class="name">SeqCsvColumnWithNoDefault</span></a><span class="tparams">[<span name="C">C</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="spec">spec: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="size">size: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="evidence$6">evidence$6: <span class="extype" name="spray.json.JsonReader">JsonReader</span>[<span class="extype" name="com.eharmony.aloha.dataset.csv.json.SeqCsvColumnWithNoDefault.C">C</span>]</span>, <span name="evidence$7">evidence$7: <a href="../../../reflect/package.html#RefInfo[A]=Manifest[A]" class="extmbr" name="com.eharmony.aloha.reflect.RefInfo">RefInfo</a>[<span class="extype" name="com.eharmony.aloha.dataset.csv.json.SeqCsvColumnWithNoDefault.C">C</span>]</span>)</span><span class="result"> extends <span class="extype" name="com.eharmony.aloha.dataset.csv.json.SeqCsvColumnLikeWithNoDefault">SeqCsvColumnLikeWithNoDefault</span>[<span class="extype" name="com.eharmony.aloha.dataset.csv.json.SeqCsvColumnWithNoDefault.C">C</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.csv.json.package@SeqCsvColumnWithNoDefault[C]extendsSeqCsvColumnLikeWithNoDefault[C]withProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>

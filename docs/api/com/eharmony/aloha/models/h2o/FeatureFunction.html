@@ -57,7 +57,7 @@ This exception occurs if the value of a RowData element is of the wrong data typ
           <div class="superTypes hiddenContent"><a href="../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
             <span class="toggle">Known Subclasses</span>
-            <div class="subClasses hiddenContent"><a href="DoubleFeatureFunction.html" class="extype" name="com.eharmony.aloha.models.h2o.DoubleFeatureFunction">DoubleFeatureFunction</a>, <a href="StringFeatureFunction.html" class="extype" name="com.eharmony.aloha.models.h2o.StringFeatureFunction">StringFeatureFunction</a></div>
+            <div class="subClasses hiddenContent"><a href="DoubleFeatureFunction.html" class="extype" name="com.eharmony.aloha.models.h2o.DoubleFeatureFunction">DoubleFeatureFunction</a>, <a href="DoubleSeqFeatureFunction.html" class="extype" name="com.eharmony.aloha.models.h2o.DoubleSeqFeatureFunction">DoubleSeqFeatureFunction</a>, <a href="StringFeatureFunction.html" class="extype" name="com.eharmony.aloha.models.h2o.StringFeatureFunction">StringFeatureFunction</a></div>
           </div></div>
         
 
@@ -96,10 +96,47 @@ This exception occurs if the value of a RowData element is of the wrong data typ
 
         
 
-        
+        <div id="values" class="values members">
+              <h3>Abstract Value Members</h3>
+              <ol><li name="com.eharmony.aloha.models.h2o.FeatureFunction#ff" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ff:com.eharmony.aloha.semantics.func.GenAggFunc[A,_]"></a>
+      <a id="ff:GenAggFunc[A,_]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ff</span><span class="result">: <a href="../../semantics/func/GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.models.h2o.FeatureFunction.A">A</span>, _]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.models.h2o.FeatureFunction@ff:com.eharmony.aloha.semantics.func.GenAggFunc[A,_]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="com.eharmony.aloha.models.h2o.FeatureFunction#fillRowData" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="fillRowData(input:A,name:String,rowData:hex.genmodel.easy.RowData):Option[(String,Seq[String])]"></a>
+      <a id="fillRowData(A,String,RowData):Option[(String,Seq[String])]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fillRowData</span><span class="params">(<span name="input">input: <span class="extype" name="com.eharmony.aloha.models.h2o.FeatureFunction.A">A</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="rowData">rowData: <span class="extype" name="hex.genmodel.easy.RowData">RowData</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[(<span class="extype" name="scala.Predef.String">String</span>, <a href="../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>])]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../index.html#com.eharmony.aloha.models.h2o.FeatureFunction@fillRowData(input:A,name:String,rowData:hex.genmodel.easy.RowData):Option[(String,Seq[String])]" title="Permalink" target="_top">
+        <img src="../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Fill in the <code>rowData</code> object with data extracted by <code>ff</code></p><div class="fullcomment"><div class="comment cmt"><p>Fill in the <code>rowData</code> object with data extracted by <code>ff</code></p><p>The returned missing information should be found by:</p><pre>ff.specification -&gt; ff.accessorOutputMissing(a)</pre></div><dl class="paramcmts block"><dt class="param">input</dt><dd class="cmt"><p>the input that will be passed to the feature function <code>ff</code>.</p></dd><dt class="param">name</dt><dd class="cmt"><p>name of the feature.</p></dd><dt class="param">rowData</dt><dd class="cmt"><p>the mutable <code>RowData</code> object that should be filled</p></dd><dt>returns</dt><dd class="cmt"><p>Missing feature information</p></dd></dl></div>
+    </li></ol>
+            </div>
 
         <div id="values" class="values members">
-              <h3>Value Members</h3>
+              <h3>Concrete Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a>
       <a id="!=(Any):Boolean"></a>

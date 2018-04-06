@@ -1,9 +1,9 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>RowCreator - com.eharmony.aloha.dataset.RowCreator</title>
-          <meta name="description" content="RowCreator - com.eharmony.aloha.dataset.RowCreator" />
-          <meta name="keywords" content="RowCreator com.eharmony.aloha.dataset.RowCreator" />
+          <title>StringSeqFeatureExtractorFunction - com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction</title>
+          <meta name="description" content="StringSeqFeatureExtractorFunction - com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction" />
+          <meta name="keywords" content="StringSeqFeatureExtractorFunction com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -16,7 +16,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../../index.html';
-            var hash = 'com.eharmony.aloha.dataset.RowCreator';
+            var hash = 'com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -28,12 +28,12 @@
         </head>
         <body class="type">
       <div id="definition">
-        <img alt="Trait" src="../../../../lib/trait_big.png" />
+        <img alt="Class" src="../../../../lib/class_big.png" />
         <p id="owner"><a href="../../../package.html" class="extype" name="com">com</a>.<a href="../../package.html" class="extype" name="com.eharmony">eharmony</a>.<a href="../package.html" class="extype" name="com.eharmony.aloha">aloha</a>.<a href="package.html" class="extype" name="com.eharmony.aloha.dataset">dataset</a></p>
-        <h1>RowCreator</h1><h3><span class="morelinks"><div>Related Doc:
+        <h1>StringSeqFeatureExtractorFunction</h1><h3><span class="morelinks"><div>Related Doc:
             <a href="package.html" class="extype" name="com.eharmony.aloha.dataset">package dataset</a>
           </div></span></h3><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreator" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -41,21 +41,18 @@
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">trait</span>
+        <span class="modifier">final </span>
+        <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">RowCreator</span><span class="tparams">[<span name="A">-A</span>, <span name="B">+B</span>]</span><span class="result"> extends (<span class="extype" name="com.eharmony.aloha.dataset.RowCreator.A">A</span>) ⇒ (<a href="MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreator.B">B</span>) with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">StringSeqFeatureExtractorFunction</span><span class="tparams">[<span name="A">-A</span>]</span><span class="params">(<span name="features">features: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[(<span class="extype" name="scala.Predef.String">String</span>, <a href="../semantics/func/GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction.A">A</span>, <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]])]</span>)</span><span class="result"> extends <a href="FeatureExtractorFunction.html" class="extype" name="com.eharmony.aloha.dataset.FeatureExtractorFunction">FeatureExtractorFunction</a>[<span class="extype" name="com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction.A">A</span>, <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, (<span class="extype" name="com.eharmony.aloha.dataset.RowCreator.A">A</span>) ⇒ (<a href="MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreator.B">B</span>), <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
-        </div><div class="toggleContainer block">
-            <span class="toggle">Known Subclasses</span>
-            <div class="subClasses hiddenContent"><a href="csv/CsvColumnarRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.csv.CsvColumnarRowCreator">CsvColumnarRowCreator</a>, <a href="csv/CsvRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.csv.CsvRowCreator">CsvRowCreator</a>, <a href="LabelRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.LabelRowCreator">LabelRowCreator</a>, <a href="libsvm/labeled/LibSvmLabelRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.libsvm.labeled.LibSvmLabelRowCreator">LibSvmLabelRowCreator</a>, <a href="libsvm/unlabeled/LibSvmRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.libsvm.unlabeled.LibSvmRowCreator">LibSvmRowCreator</a>, <a href="vw/cb/VwContextualBanditRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.vw.cb.VwContextualBanditRowCreator">VwContextualBanditRowCreator</a>, <a href="vw/labeled/VwLabelRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.vw.labeled.VwLabelRowCreator">VwLabelRowCreator</a>, <a href="vw/multilabel/VwMultilabelRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.vw.multilabel.VwMultilabelRowCreator">VwMultilabelRowCreator</a>, <a href="vw/unlabeled/VwRowCreator.html" class="extype" name="com.eharmony.aloha.dataset.vw.unlabeled.VwRowCreator">VwRowCreator</a></div>
-          </div></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="FeatureExtractorFunction.html" class="extype" name="com.eharmony.aloha.dataset.FeatureExtractorFunction">FeatureExtractorFunction</a>[<span class="extype" name="com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction.A">A</span>, <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]], (<span class="extype" name="com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction.A">A</span>) ⇒ (<a href="MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <a href="../../../../scala/package.html#IndexedSeq[+A]=IndexedSeq[A]" class="extmbr" name="scala.IndexedSeq">IndexedSeq</a>[<a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]]), <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+        </div></div>
         
 
       <div id="mbrsel">
@@ -72,7 +69,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.eharmony.aloha.dataset.RowCreator"><span>RowCreator</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Function1"><span>Function1</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction"><span>StringSeqFeatureExtractorFunction</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="com.eharmony.aloha.dataset.FeatureExtractorFunction"><span>FeatureExtractorFunction</span></li><li class="in" name="scala.Function1"><span>Function1</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -89,34 +86,34 @@
 
       <div id="template">
         <div id="allMembers">
-        
-
-        
-
-        <div id="values" class="values members">
-              <h3>Abstract Value Members</h3>
-              <ol><li name="scala.Function1#apply" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="apply(v1:T1):R"></a>
-      <a id="apply(A):(MissingAndErroneousFeatureInfo,B)"></a>
+        <div id="constructors" class="members">
+              <h3>Instance Constructors</h3>
+              <ol><li name="com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(features:scala.collection.immutable.IndexedSeq[(String,com.eharmony.aloha.semantics.func.GenAggFunc[A,Seq[String]])]):com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction[A]"></a>
+      <a id="&lt;init&gt;:StringSeqFeatureExtractorFunction[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
+        <span class="modifier"></span>
+        <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="v1">v1: <span class="extype" name="com.eharmony.aloha.dataset.RowCreator.A">A</span></span>)</span><span class="result">: (<a href="MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreator.B">B</span>)</span>
+        <span class="name">StringSeqFeatureExtractorFunction</span><span class="params">(<span name="features">features: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[(<span class="extype" name="scala.Predef.String">String</span>, <a href="../semantics/func/GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction.A">A</span>, <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]])]</span>)</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreator@apply(v1:T1):R" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction@&lt;init&gt;(features:scala.collection.immutable.IndexedSeq[(String,com.eharmony.aloha.semantics.func.GenAggFunc[A,Seq[String]])]):com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction[A]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Function1</dd></dl></div>
+      
     </li></ol>
             </div>
 
+        
+
+        
+
         <div id="values" class="values members">
-              <h3>Concrete Value Members</h3>
+              <h3>Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a>
       <a id="!=(Any):Boolean"></a>
@@ -129,7 +126,7 @@
         <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreator@!=(x$1:Any):Boolean" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction@!=(x$1:Any):Boolean" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -146,7 +143,7 @@
         <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreator@##():Int" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction@##():Int" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -163,24 +160,24 @@
         <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreator@==(x$1:Any):Boolean" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction@==(x$1:Any):Boolean" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.Function1#andThen" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="andThen[A](g:R=&gt;A):T1=&gt;A"></a>
-      <a id="andThen[A](((MissingAndErroneousFeatureInfo,B))⇒A):(A)⇒A"></a>
+      <a id="andThen[A](((MissingAndErroneousFeatureInfo,IndexedSeq[Seq[String]]))⇒A):(A)⇒A"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">andThen</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="g">g: ((<a href="MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreator.B">B</span>)) ⇒ <span class="extype" name="scala.Function1.andThen.A">A</span></span>)</span><span class="result">: (<span class="extype" name="com.eharmony.aloha.dataset.RowCreator.A">A</span>) ⇒ <span class="extype" name="scala.Function1.andThen.A">A</span></span>
+        <span class="name">andThen</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="g">g: ((<a href="MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <a href="../../../../scala/package.html#IndexedSeq[+A]=IndexedSeq[A]" class="extmbr" name="scala.IndexedSeq">IndexedSeq</a>[<a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]])) ⇒ <span class="extype" name="scala.Function1.andThen.A">A</span></span>)</span><span class="result">: (<span class="extype" name="com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction.A">A</span>) ⇒ <span class="extype" name="scala.Function1.andThen.A">A</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreator@andThen[A](g:R=&gt;A):T1=&gt;A" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction@andThen[A](g:R=&gt;A):T1=&gt;A" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -188,6 +185,23 @@
                 <span class="name">@unspecialized</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="com.eharmony.aloha.dataset.FeatureExtractorFunction#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="apply(a:A):(com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo,IndexedSeq[Density])"></a>
+      <a id="apply(A):(MissingAndErroneousFeatureInfo,IndexedSeq[Seq[String]])"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="a">a: <span class="extype" name="com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction.A">A</span></span>)</span><span class="result">: (<a href="MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <a href="../../../../scala/package.html#IndexedSeq[+A]=IndexedSeq[A]" class="extmbr" name="scala.IndexedSeq">IndexedSeq</a>[<a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]])</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction@apply(a:A):(com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo,IndexedSeq[Density])" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">a</dt><dd class="cmt"><p>an input</p></dd><dt>returns</dt><dd class="cmt"><p>information about which feature names are missing or in err in addition to the expanded features.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="FeatureExtractorFunction.html" class="extype" name="com.eharmony.aloha.dataset.FeatureExtractorFunction">FeatureExtractorFunction</a> → Function1</dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -200,7 +214,7 @@
         <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreator@asInstanceOf[T0]:T0" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction@asInstanceOf[T0]:T0" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -217,7 +231,7 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreator@clone():Object" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction@clone():Object" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -230,17 +244,17 @@
         </dd></dl></div>
     </li><li name="scala.Function1#compose" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="compose[A](g:A=&gt;T1):A=&gt;R"></a>
-      <a id="compose[A]((A)⇒A):(A)⇒(MissingAndErroneousFeatureInfo,B)"></a>
+      <a id="compose[A]((A)⇒A):(A)⇒(MissingAndErroneousFeatureInfo,IndexedSeq[Seq[String]])"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">compose</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="g">g: (<span class="extype" name="scala.Function1.compose.A">A</span>) ⇒ <span class="extype" name="com.eharmony.aloha.dataset.RowCreator.A">A</span></span>)</span><span class="result">: (<span class="extype" name="scala.Function1.compose.A">A</span>) ⇒ (<a href="MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreator.B">B</span>)</span>
+        <span class="name">compose</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="g">g: (<span class="extype" name="scala.Function1.compose.A">A</span>) ⇒ <span class="extype" name="com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction.A">A</span></span>)</span><span class="result">: (<span class="extype" name="scala.Function1.compose.A">A</span>) ⇒ (<a href="MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <a href="../../../../scala/package.html#IndexedSeq[+A]=IndexedSeq[A]" class="extmbr" name="scala.IndexedSeq">IndexedSeq</a>[<a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]])</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreator@compose[A](g:A=&gt;T1):A=&gt;R" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction@compose[A](g:A=&gt;T1):A=&gt;R" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -248,6 +262,23 @@
                 <span class="name">@unspecialized</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction#ctB" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ctB():scala.reflect.ClassTag[Seq[String]]"></a>
+      <a id="ctB():ClassTag[Seq[String]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ctB</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.reflect.ClassTag">ClassTag</span>[<a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction@ctB():scala.reflect.ClassTag[Seq[String]]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction">StringSeqFeatureExtractorFunction</a> → <a href="FeatureExtractorFunction.html" class="extype" name="com.eharmony.aloha.dataset.FeatureExtractorFunction">FeatureExtractorFunction</a></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -260,28 +291,28 @@
         <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreator@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="equals(x$1:Any):Boolean"></a>
-      <a id="equals(Any):Boolean"></a>
+    </li><li name="com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction#features" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="features:scala.collection.immutable.IndexedSeq[(String,com.eharmony.aloha.semantics.func.GenAggFunc[A,Seq[String]])]"></a>
+      <a id="features:IndexedSeq[(String,GenAggFunc[A,Seq[String]])]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">def</span>
+        <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">features</span><span class="result">: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[(<span class="extype" name="scala.Predef.String">String</span>, <a href="../semantics/func/GenAggFunc.html" class="extype" name="com.eharmony.aloha.semantics.func.GenAggFunc">GenAggFunc</a>[<span class="extype" name="com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction.A">A</span>, <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]])]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreator@equals(x$1:Any):Boolean" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction@features:scala.collection.immutable.IndexedSeq[(String,com.eharmony.aloha.semantics.func.GenAggFunc[A,Seq[String]])]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction">StringSeqFeatureExtractorFunction</a> → <a href="FeatureExtractorFunction.html" class="extype" name="com.eharmony.aloha.dataset.FeatureExtractorFunction">FeatureExtractorFunction</a></dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -294,7 +325,7 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreator@finalize():Unit" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction@finalize():Unit" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -317,24 +348,7 @@
         <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreator@getClass():Class[_]" title="Permalink" target="_top">
-        <img src="../../../../lib/permalink.png" alt="Permalink" />
-      </a>
-    </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="hashCode():Int"></a>
-      <a id="hashCode():Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreator@hashCode():Int" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction@getClass():Class[_]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -351,7 +365,7 @@
         <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreator@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -368,7 +382,7 @@
         <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreator@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -385,7 +399,7 @@
         <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreator@notify():Unit" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction@notify():Unit" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -402,11 +416,28 @@
         <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreator@notifyAll():Unit" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction@notifyAll():Unit" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction#postProcessingFunction" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="postProcessingFunction:(String,Seq[String])=&gt;Seq[String]"></a>
+      <a id="postProcessingFunction:(String,Seq[String])⇒Seq[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">postProcessingFunction</span><span class="result">: (<span class="extype" name="scala.Predef.String">String</span>, <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]) ⇒ <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction@postProcessingFunction:(String,Seq[String])=&gt;Seq[String]" title="Permalink" target="_top">
+        <img src="../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[this] </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction">StringSeqFeatureExtractorFunction</a> → <a href="FeatureExtractorFunction.html" class="extype" name="com.eharmony.aloha.dataset.FeatureExtractorFunction">FeatureExtractorFunction</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -419,7 +450,7 @@
         <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreator@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -436,7 +467,7 @@
         <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreator@toString():String" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction@toString():String" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -453,7 +484,7 @@
         <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreator@wait():Unit" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction@wait():Unit" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -476,7 +507,7 @@
         <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreator@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -499,7 +530,7 @@
         <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.eharmony.aloha.dataset.RowCreator@wait(x$1:Long):Unit" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction@wait(x$1:Long):Unit" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -523,8 +554,14 @@
               <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
             </div><div class="parent" name="java.io.Serializable">
               <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="scala.Product">
+              <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
+            </div><div class="parent" name="scala.Equals">
+              <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
+            </div><div class="parent" name="com.eharmony.aloha.dataset.FeatureExtractorFunction">
+              <h3>Inherited from <a href="FeatureExtractorFunction.html" class="extype" name="com.eharmony.aloha.dataset.FeatureExtractorFunction">FeatureExtractorFunction</a>[<span class="extype" name="com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction.A">A</span>, <a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]]</h3>
             </div><div class="parent" name="scala.Function1">
-              <h3>Inherited from (<span class="extype" name="com.eharmony.aloha.dataset.RowCreator.A">A</span>) ⇒ (<a href="MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <span class="extype" name="com.eharmony.aloha.dataset.RowCreator.B">B</span>)</h3>
+              <h3>Inherited from (<span class="extype" name="com.eharmony.aloha.dataset.StringSeqFeatureExtractorFunction.A">A</span>) ⇒ (<a href="MissingAndErroneousFeatureInfo.html" class="extype" name="com.eharmony.aloha.dataset.MissingAndErroneousFeatureInfo">MissingAndErroneousFeatureInfo</a>, <a href="../../../../scala/package.html#IndexedSeq[+A]=IndexedSeq[A]" class="extmbr" name="scala.IndexedSeq">IndexedSeq</a>[<a href="../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]])</h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">

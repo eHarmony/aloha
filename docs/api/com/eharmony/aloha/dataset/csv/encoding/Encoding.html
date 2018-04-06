@@ -97,7 +97,24 @@
 
         <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
-              <ol><li name="com.eharmony.aloha.dataset.csv.encoding.Encoding#csvHeadersForColumn" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+              <ol><li name="com.eharmony.aloha.dataset.csv.encoding.Encoding#columnarFinalizer" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="columnarFinalizer[A](nullString:String,values:Seq[String]):Option[A]=&gt;Seq[String]"></a>
+      <a id="columnarFinalizer[A](String,Seq[String]):(Option[A])⇒Seq[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">columnarFinalizer</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="nullString">nullString: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="values">values: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: (<span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.eharmony.aloha.dataset.csv.encoding.Encoding.columnarFinalizer.A">A</span>]) ⇒ <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.csv.encoding.Encoding@columnarFinalizer[A](nullString:String,values:Seq[String]):Option[A]=&gt;Seq[String]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Creates a sequence of strings representing the columns created by a feature's output.</p><div class="fullcomment"><div class="comment cmt"><p>Creates a sequence of strings representing the columns created by a feature's output.</p></div><dl class="paramcmts block"><dt class="param">nullString</dt><dd class="cmt"><p>the string representing null values.</p></dd></dl></div>
+    </li><li name="com.eharmony.aloha.dataset.csv.encoding.Encoding#csvHeadersForColumn" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="csvHeadersForColumn(c:com.eharmony.aloha.dataset.csv.json.CsvColumn):Seq[String]"></a>
       <a id="csvHeadersForColumn(CsvColumn):Seq[String]"></a>
       <h4 class="signature">
@@ -114,23 +131,23 @@
       </a>
     </span>
       
-    </li><li name="com.eharmony.aloha.dataset.csv.encoding.Encoding#finalizer" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="finalizer[A](sep:String,nullString:String,values:Iterable[String]):Option[A]=&gt;String"></a>
-      <a id="finalizer[A](String,String,Iterable[String]):(Option[A])⇒String"></a>
+    </li><li name="com.eharmony.aloha.dataset.csv.encoding.Encoding#finalizer" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="finalizer[A](sep:String,nullString:String,values:Seq[String]):Option[A]=&gt;String"></a>
+      <a id="finalizer[A](String,String,Seq[String]):(Option[A])⇒String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">finalizer</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="sep">sep: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="nullString">nullString: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="values">values: <a href="../../../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: (<span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.eharmony.aloha.dataset.csv.encoding.Encoding.finalizer.A">A</span>]) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">finalizer</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="sep">sep: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="nullString">nullString: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="values">values: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: (<span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.eharmony.aloha.dataset.csv.encoding.Encoding.finalizer.A">A</span>]) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.csv.encoding.Encoding@finalizer[A](sep:String,nullString:String,values:Iterable[String]):Option[A]=&gt;String" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.csv.encoding.Encoding@finalizer[A](sep:String,nullString:String,values:Seq[String]):Option[A]=&gt;String" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      
+      <p class="shortcomment cmt">Creates a single string representing the entire feature output.</p><div class="fullcomment"><div class="comment cmt"><p>Creates a single string representing the entire feature output.</p></div><dl class="paramcmts block"><dt class="param">sep</dt><dd class="cmt"><p>a column separator</p></dd><dt class="param">nullString</dt><dd class="cmt"><p>the string representing null values.</p></dd></dl></div>
     </li></ol>
             </div>
 

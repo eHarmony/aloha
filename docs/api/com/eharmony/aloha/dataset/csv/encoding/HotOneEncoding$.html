@@ -45,13 +45,13 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">HotOneEncoding</span><span class="result"> extends <a href="Encoding.html" class="extype" name="com.eharmony.aloha.dataset.csv.encoding.Encoding">Encoding</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">HotOneEncoding</span><span class="result"> extends <a href="Encoding.html" class="extype" name="com.eharmony.aloha.dataset.csv.encoding.Encoding">Encoding</a> with <span class="extype" name="com.eharmony.aloha.dataset.csv.encoding.VectorHeaders">VectorHeaders</span> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="Encoding.html" class="extype" name="com.eharmony.aloha.dataset.csv.encoding.Encoding">Encoding</a>, <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <span class="extype" name="com.eharmony.aloha.dataset.csv.encoding.VectorHeaders">VectorHeaders</span>, <a href="Encoding.html" class="extype" name="com.eharmony.aloha.dataset.csv.encoding.Encoding">Encoding</a>, <a href="../../../../../../scala/package.html#AnyRef=Object" class="extmbr" name="scala.AnyRef">AnyRef</a>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -69,7 +69,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.eharmony.aloha.dataset.csv.encoding.HotOneEncoding"><span>HotOneEncoding</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="com.eharmony.aloha.dataset.csv.encoding.Encoding"><span>Encoding</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.eharmony.aloha.dataset.csv.encoding.HotOneEncoding"><span>HotOneEncoding</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="com.eharmony.aloha.dataset.csv.encoding.VectorHeaders"><span>VectorHeaders</span></li><li class="in" name="com.eharmony.aloha.dataset.csv.encoding.Encoding"><span>Encoding</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -185,6 +185,23 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="com.eharmony.aloha.dataset.csv.encoding.HotOneEncoding#columnarFinalizer" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="columnarFinalizer[A](nullString:String,values:Seq[String]):Option[A]=&gt;Seq[String]"></a>
+      <a id="columnarFinalizer[A](String,Seq[String]):(Option[A])⇒Seq[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">columnarFinalizer</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="nullString">nullString: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="values">values: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: (<span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.eharmony.aloha.dataset.csv.encoding.HotOneEncoding.columnarFinalizer.A">A</span>]) ⇒ <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.csv.encoding.HotOneEncoding$@columnarFinalizer[A](nullString:String,values:Seq[String]):Option[A]=&gt;Seq[String]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Creates a sequence of strings representing the columns created by a feature's output.</p><div class="fullcomment"><div class="comment cmt"><p>Creates a sequence of strings representing the columns created by a feature's output.</p></div><dl class="paramcmts block"><dt class="param">nullString</dt><dd class="cmt"><p>the string representing null values.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.eharmony.aloha.dataset.csv.encoding.HotOneEncoding">HotOneEncoding</a> → <a href="Encoding.html" class="extype" name="com.eharmony.aloha.dataset.csv.encoding.Encoding">Encoding</a></dd></dl></div>
     </li><li name="com.eharmony.aloha.dataset.csv.encoding.HotOneEncoding#csvHeadersForColumn" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="csvHeadersForColumn(c:com.eharmony.aloha.dataset.csv.json.CsvColumn):Seq[String]"></a>
       <a id="csvHeadersForColumn(CsvColumn):Seq[String]"></a>
@@ -260,22 +277,22 @@
               
         </dd></dl></div>
     </li><li name="com.eharmony.aloha.dataset.csv.encoding.HotOneEncoding#finalizer" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="finalizer[A](sep:String,nullString:String,values:Iterable[String]):Option[A]=&gt;String"></a>
-      <a id="finalizer[A](String,String,Iterable[String]):(Option[A])⇒String"></a>
+      <a id="finalizer[A](sep:String,nullString:String,values:Seq[String]):Option[A]=&gt;String"></a>
+      <a id="finalizer[A](String,String,Seq[String]):(Option[A])⇒String"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">finalizer</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="sep">sep: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="nullString">nullString: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="values">values: <a href="../../../../../../scala/package.html#Iterable[+A]=Iterable[A]" class="extmbr" name="scala.Iterable">Iterable</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: (<span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.eharmony.aloha.dataset.csv.encoding.HotOneEncoding.finalizer.A">A</span>]) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>
+        <span class="name">finalizer</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="sep">sep: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="nullString">nullString: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="values">values: <a href="../../../../../../scala/package.html#Seq[+A]=Seq[A]" class="extmbr" name="scala.Seq">Seq</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: (<span class="extype" name="scala.Option">Option</span>[<span class="extype" name="com.eharmony.aloha.dataset.csv.encoding.HotOneEncoding.finalizer.A">A</span>]) ⇒ <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.csv.encoding.HotOneEncoding$@finalizer[A](sep:String,nullString:String,values:Iterable[String]):Option[A]=&gt;String" title="Permalink" target="_top">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.csv.encoding.HotOneEncoding$@finalizer[A](sep:String,nullString:String,values:Seq[String]):Option[A]=&gt;String" title="Permalink" target="_top">
         <img src="../../../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.eharmony.aloha.dataset.csv.encoding.HotOneEncoding">HotOneEncoding</a> → <a href="Encoding.html" class="extype" name="com.eharmony.aloha.dataset.csv.encoding.Encoding">Encoding</a></dd></dl></div>
+      <p class="shortcomment cmt">Creates a single string representing the entire feature output.</p><div class="fullcomment"><div class="comment cmt"><p>Creates a single string representing the entire feature output.</p></div><dl class="paramcmts block"><dt class="param">sep</dt><dd class="cmt"><p>a column separator</p></dd><dt class="param">nullString</dt><dd class="cmt"><p>the string representing null values.</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.eharmony.aloha.dataset.csv.encoding.HotOneEncoding">HotOneEncoding</a> → <a href="Encoding.html" class="extype" name="com.eharmony.aloha.dataset.csv.encoding.Encoding">Encoding</a></dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -378,6 +395,23 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="com.eharmony.aloha.dataset.csv.encoding.VectorHeaders#vectorHeaders" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="vectorHeaders(n:Int,name:String):scala.collection.immutable.IndexedSeq[String]"></a>
+      <a id="vectorHeaders(Int,String):IndexedSeq[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">vectorHeaders</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../../../../index.html#com.eharmony.aloha.dataset.csv.encoding.HotOneEncoding$@vectorHeaders(n:Int,name:String):scala.collection.immutable.IndexedSeq[String]" title="Permalink" target="_top">
+        <img src="../../../../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>VectorHeaders</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -464,6 +498,8 @@
               <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
             </div><div class="parent" name="scala.Equals">
               <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
+            </div><div class="parent" name="com.eharmony.aloha.dataset.csv.encoding.VectorHeaders">
+              <h3>Inherited from <span class="extype" name="com.eharmony.aloha.dataset.csv.encoding.VectorHeaders">VectorHeaders</span></h3>
             </div><div class="parent" name="com.eharmony.aloha.dataset.csv.encoding.Encoding">
               <h3>Inherited from <a href="Encoding.html" class="extype" name="com.eharmony.aloha.dataset.csv.encoding.Encoding">Encoding</a></h3>
             </div><div class="parent" name="scala.AnyRef">
