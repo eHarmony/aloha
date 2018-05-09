@@ -244,7 +244,45 @@ object H2oModel extends ParserProviderCompanion
     case Left(TypeCoercionNotFound(category)) => Failure(new IllegalArgumentException(s"In model ${classOf[H2oModel[_, _, _, _]].getCanonicalName}: Could not ${category.name} model to Aloha output type: ${RefInfoOps.toString[N]}."))
   }
 
-  private[h2o] def getJar(collectFn: URL => Boolean): Option[File] = {
+  /**
+    * Find the first transformed item that satisfies any predicate.
+    *
+    * Iterate over predicates in output loop and items in inner loop.
+    * @param items items to search
+    * @param predicates predicates used to filter
+    * @param transform transform of item.  If `None` is returned, continue searching.
+    * @tparam A item type
+    * @tparam B output type
+    * @return
+    */
+  private[h2o] def findTransformedItem[A, B](
+      items: Seq[A],
+      predicates: Seq[A => Boolean])(
+      transform: A => Option[B]
+  ): Option[B] = {
+
+    // Iterate through the fast predicates first.
+    // If any predicate finds an acceptable item after transforming it,
+    // short circuit.
+
+    val itemsView = items.view
+    (
+      for {
+        filter <- predicates.view
+        item   <- itemsView.filter(filter)
+        file   <- transform(item)
+      } yield file
+    ).headOption
+  }
+
+  /**
+    * Find the first file for which a predicate applies (returns `true`).
+    * @param predicates a list of predicates.  The sequence should be ordered
+    *                   by fastest predicate first.
+    * @return Some if at least one of the predicates returns true for the file.
+    */
+  private[h2o] def getJar(predicates: Seq[URL => Boolean]): Option[File] = {
+    def urlToFile(u: URL) = Try(new File(u.toURI)).toOption
 
     // Recurse up the chain of class loaders from the leaf to the root if necessary.
     // Recursion was added here mainly because of the Spark REPL where the driver
@@ -253,32 +291,24 @@ object H2oModel extends ParserProviderCompanion
 
     @tailrec
     def findFirstMatch(cl: ClassLoader): Option[File] = {
-      cl match {
-        case urlClassLoader: URLClassLoader =>
-          val found =
-            urlClassLoader.getURLs.view.flatMap { url =>
-              if (collectFn(url)) {
-                // The File constructor can throw if the URL does not reference a local file.
-                // This might be possible if running in some kind of applet.
-                Try(new File(url.toURI)).toOption
-              }
-              else None
-            }.headOption
+      val found =
+        cl match {
+          case urlClassLoader: URLClassLoader =>
+            val urls = urlClassLoader.getURLs
+            // The File constructor can throw if the URL does not reference a local
+            // file.  This might be possible if running in some kind of applet.
+            findTransformedItem(urls, predicates)(urlToFile)
+          case _ => None
+        }
 
-          found match {
-            case Some(file) => Option(file)
-            case None       =>
-              // Don't map or fold to ensure tail recursion.  Could trampoline w/ .
-              Option(cl.getParent) match {
-                case None           => None
-                case Some(parentCl) => findFirstMatch(parentCl)
-              }
-          }
-        case _ =>
-          // Don't map or fold to ensure tail recursion.
+      found match {
+        case Some(file) => Option(file)
+        case None =>
           Option(cl.getParent) match {
-            case None           => None
-            case Some(parentCl) => findFirstMatch(parentCl)
+            case Some(parentCl) =>
+              // Don't map or fold to ensure tail recursion.
+              findFirstMatch(parentCl)
+            case None => None
           }
       }
     }
@@ -313,23 +343,16 @@ object H2oModel extends ParserProviderCompanion
 
     val gmcp = genModelClassPath
 
-    val h2oGenModelJar = getJar((url: URL) => {
+    val h2oGenModelJar = getJar(Seq[URL => Boolean](
       // Try to find the h2o genmodel jar.
-      val foundExactJar = url.toString.contains(h2oGenModelJarName)
+      url => url.toString.contains(h2oGenModelJarName),
 
       // Try to find the class in an uberjar if necessary.
-      lazy val foundInJar = Try {
-        new JarFile(url.getPath).entries().asScala.exists(_.getName == gmcp)
-      }.getOrElse(false)
-
-      val useUrl = foundExactJar || foundInJar
-
-      if (useUrl) {
-        debug(s"including URL in classpath for H2O compiler: $useUrl")
-      }
-
-      useUrl
-    })
+      url =>
+        Try {
+          new JarFile(url.getPath).entries().asScala.exists(_.getName == gmcp)
+        }.getOrElse(false)
+    ))
 
     val compiler = new Compiler[GenModel](currentClassLoader, h2oGenModelJar, classCacheDir)
     f(compiler)(input)

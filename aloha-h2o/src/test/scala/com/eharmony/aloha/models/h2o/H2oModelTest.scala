@@ -19,15 +19,15 @@ import com.eharmony.aloha.test.proto.TestProtoBuffs.Abalone.Gender.{FEMALE, INFA
 import com.eharmony.aloha.util.Logging
 import hex.genmodel.easy.RowData
 import org.apache.commons.vfs2.VFS
-import org.junit.Assert._
 import org.junit.Test
+import org.junit.Assert._
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
-import spray.json.DefaultJsonProtocol._
 import spray.json.pimpString
+import spray.json.DefaultJsonProtocol._
 
-import scala.collection.JavaConversions.mapAsScalaMap
 import scala.collection.{immutable => sci}
+import scala.collection.JavaConversions.mapAsScalaMap
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.implicitConversions
 import scala.util.Try
@@ -52,6 +52,24 @@ class H2oModelTest extends Logging with ModelSerializationTestHelper {
     assertTrue(h2oModelClass isAssignableFrom unserialized.getClass)
     val serialized = serializeDeserializeRoundTrip(unserialized)
     assertTrue(h2oModelClass isAssignableFrom serialized.getClass)
+  }
+
+  @Test def testGetJarShouldBeLazy(): Unit = {
+    val urls = Seq(1, 2, 3)
+    val filters = Seq[Int => Boolean](_ > 4, x => { Thread.sleep(100); x < 2  })
+    def time[A](a: => A) = {
+      val t = System.nanoTime
+      val r = a
+      val t1 = System.nanoTime
+      (r, (1.0e-9*(t1 - t)).toFloat)
+    }
+
+    val (x, t) = time(H2oModel.findTransformedItem(urls, filters)(Option.apply))
+    assertEquals(Option(1), x)
+
+    // It should fail all of first predicate tests and only the first test
+    // of the second predicate.
+    assertTrue(0.09 <= t && t <= 0.11)
   }
 
   @Test def testParseSpecNoTypeIsDouble(): Unit = {
