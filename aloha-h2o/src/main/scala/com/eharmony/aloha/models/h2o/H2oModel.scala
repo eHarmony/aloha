@@ -244,16 +244,47 @@ object H2oModel extends ParserProviderCompanion
     case Left(TypeCoercionNotFound(category)) => Failure(new IllegalArgumentException(s"In model ${classOf[H2oModel[_, _, _, _]].getCanonicalName}: Could not ${category.name} model to Aloha output type: ${RefInfoOps.toString[N]}."))
   }
 
-  private[h2o] def getJar(collectFn: URL => Boolean): Array[File] =
-    currentClassLoader match {
-      case urlClassLoader: URLClassLoader => urlClassLoader.getURLs.flatMap { url =>
-        // The File constructor can throw if the URL does not reference a local file.  This might be possible if
-        // running in some kind of applet.
-        if (collectFn(url)) Try(new File(url.toURI)).toOption
-        else None
+  private[h2o] def getJar(collectFn: URL => Boolean): Option[File] = {
+
+    // Recurse up the chain of class loaders from the leaf to the root if necessary.
+    // Recursion was added here mainly because of the Spark REPL where the driver
+    // class loader is a scala.tools.nsc.interpreter.IMain$TranslatingClassLoader
+    // and its parent is a scala.reflect.internal.util.ScalaClassLoader$URLClassLoader.
+
+    @tailrec
+    def findFirstMatch(cl: ClassLoader): Option[File] = {
+      cl match {
+        case urlClassLoader: URLClassLoader =>
+          val found =
+            urlClassLoader.getURLs.view.flatMap { url =>
+              if (collectFn(url)) {
+                // The File constructor can throw if the URL does not reference a local file.
+                // This might be possible if running in some kind of applet.
+                Try(new File(url.toURI)).toOption
+              }
+              else None
+            }.headOption
+
+          found match {
+            case Some(file) => Option(file)
+            case None       =>
+              // Don't map or fold to ensure tail recursion.  Could trampoline w/ .
+              Option(cl.getParent) match {
+                case None           => None
+                case Some(parentCl) => findFirstMatch(parentCl)
+              }
+          }
+        case _ =>
+          // Don't map or fold to ensure tail recursion.
+          Option(cl.getParent) match {
+            case None           => None
+            case Some(parentCl) => findFirstMatch(parentCl)
+          }
       }
-      case _ => Array.empty[File]
     }
+
+    findFirstMatch(currentClassLoader)
+  }
 
   // This guarantees that the h2oGenModelName property used below is guaranteed to be in sync with the maven artifact
   // dependency defined in the POM. This is because the h2o.properties is a filtered resource, meaning maven injects
