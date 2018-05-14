@@ -6,6 +6,14 @@ description := "Scala-based machine learning library with generic models and laz
 //  Build Settings
 // ===========================================================================
 
+incOptions := incOptions.value.withNameHashing(true)
+
+// This can yield significant improvements in artifact resolution and
+// compilation speeds.  See:
+// https://www.lightbend.com/blog/improved-dependency-management-with-sbt-0137
+updateOptions := updateOptions.value.withCachedResolution(true)
+
+
 lazy val commonSettings = Seq(
   organization := "com.eharmony",
   scalaVersion := "2.11.12",
