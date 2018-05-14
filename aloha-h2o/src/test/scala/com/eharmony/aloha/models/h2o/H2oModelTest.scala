@@ -19,15 +19,15 @@ import com.eharmony.aloha.test.proto.TestProtoBuffs.Abalone.Gender.{FEMALE, INFA
 import com.eharmony.aloha.util.Logging
 import hex.genmodel.easy.RowData
 import org.apache.commons.vfs2.VFS
-import org.junit.Assert._
 import org.junit.Test
+import org.junit.Assert._
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
-import spray.json.DefaultJsonProtocol._
 import spray.json.pimpString
+import spray.json.DefaultJsonProtocol._
 
-import scala.collection.JavaConversions.mapAsScalaMap
 import scala.collection.{immutable => sci}
+import scala.collection.JavaConversions.mapAsScalaMap
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.implicitConversions
 import scala.util.Try
@@ -52,6 +52,61 @@ class H2oModelTest extends Logging with ModelSerializationTestHelper {
     assertTrue(h2oModelClass isAssignableFrom unserialized.getClass)
     val serialized = serializeDeserializeRoundTrip(unserialized)
     assertTrue(h2oModelClass isAssignableFrom serialized.getClass)
+  }
+
+  @Test def testFindingH2oJarByName(): Unit = {
+
+    val r = new scala.util.Random(9814609234626446L)
+
+    val versions = Seq.fill(5)(
+      (1 to 2 + r.nextInt(2))                       // 1 to 4 blocks
+        .map(_ => (1 + r.nextInt(1000)).toString)   // 1 to 1000 within each block.
+        .mkString(".")
+    )
+
+    val good = Seq(
+      "~/.ivy2/cache/ai.h2o/h2o-genmodel/jars/h2o-genmodel-VERSION.jar",
+      "/h2o-genmodel-VERSION.jar",
+      "C:\\a\\b\\c\\h2o-genmodel-VERSION.jar"
+    )
+
+    for {
+      v <- versions
+      g <- good
+      u  = g.replaceAllLiterally("VERSION", v)
+    } assertTrue(u.matches(H2oModel.GenModelJarNameRe))
+
+    val bad = "/PREFIXh2o-genmodel-VERSION.jarSUFFIX"
+
+    for {
+      prefix <- Iterator.continually(r.nextString(1 + r.nextInt(10)))
+                        .filterNot(x => x.endsWith("/") || x.endsWith("\\"))
+                        .take(10)
+                        .toSeq
+      suffix <- Stream.fill(10)(r.nextString(1 + r.nextInt(10)))
+      v      <- versions
+      u       = bad.replaceAllLiterally("VERSION", v)
+                   .replaceAllLiterally("PREFIX", prefix)
+                   .replaceAllLiterally("SUFFIX", suffix)
+    } assertFalse(u.matches(H2oModel.GenModelJarNameRe))
+  }
+
+  @Test def testGetJarShouldBeLazy(): Unit = {
+    val urls = Seq(1, 2, 3)
+    val filters = Seq[Int => Boolean](_ > 4, x => { Thread.sleep(100); x < 2  })
+    def time[A](a: => A) = {
+      val t = System.nanoTime
+      val r = a
+      val t1 = System.nanoTime
+      (r, (1.0e-9*(t1 - t)).toFloat)
+    }
+
+    val (x, t) = time(H2oModel.findTransformedItem(urls, filters)(Option.apply))
+    assertEquals(Option(1), x)
+
+    // It should fail all of first predicate tests and only the first test
+    // of the second predicate.
+    assertTrue(0.09 <= t && t <= 0.11)
   }
 
   @Test def testParseSpecNoTypeIsDouble(): Unit = {

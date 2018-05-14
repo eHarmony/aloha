@@ -2,7 +2,6 @@ package com.eharmony.aloha.models.h2o
 
 import java.io.File
 import java.net.{URL, URLClassLoader}
-import java.util.Properties
 import java.util.jar.JarFile
 
 import com.eharmony.aloha.audit.Auditor
@@ -182,6 +181,8 @@ final case class H2oModel[U, N: RefInfo, -A, +B <: U](
 object H2oModel extends ParserProviderCompanion
                    with Logging {
 
+  private[h2o] val GenModelJarNameRe = """^(.*[\/\\])?h2o-genmodel-(\d+)(\.\d+)+.jar$"""
+
   protected[h2o] case class Features[F](features: F,
                                         missing: Map[String, Seq[String]] = Map.empty,
                                         missingOk: Boolean = true)
@@ -244,28 +245,76 @@ object H2oModel extends ParserProviderCompanion
     case Left(TypeCoercionNotFound(category)) => Failure(new IllegalArgumentException(s"In model ${classOf[H2oModel[_, _, _, _]].getCanonicalName}: Could not ${category.name} model to Aloha output type: ${RefInfoOps.toString[N]}."))
   }
 
-  private[h2o] def getJar(collectFn: URL => Boolean): Array[File] =
-    currentClassLoader match {
-      case urlClassLoader: URLClassLoader => urlClassLoader.getURLs.flatMap { url =>
-        // The File constructor can throw if the URL does not reference a local file.  This might be possible if
-        // running in some kind of applet.
-        if (collectFn(url)) Try(new File(url.toURI)).toOption
-        else None
+  /**
+    * Find the first transformed item that satisfies any predicate.
+    *
+    * Iterate over predicates in output loop and items in inner loop.
+    * @param items items to search
+    * @param predicates predicates used to filter
+    * @param transform transform of item.  If `None` is returned, continue searching.
+    * @tparam A item type
+    * @tparam B output type
+    * @return
+    */
+  private[h2o] def findTransformedItem[A, B](
+      items: Seq[A],
+      predicates: Seq[A => Boolean])(
+      transform: A => Option[B]
+  ): Option[B] = {
+
+    // Iterate through the fast predicates first.
+    // If any predicate finds an acceptable item after transforming it,
+    // short circuit.
+
+    val itemsView = items.view
+    (
+      for {
+        filter <- predicates.view
+        item   <- itemsView.filter(filter)
+        file   <- transform(item)
+      } yield file
+    ).headOption
+  }
+
+  /**
+    * Find the first file for which a predicate applies (returns `true`).
+    * @param predicates a list of predicates.  The sequence should be ordered
+    *                   by fastest predicate first.
+    * @return Some if at least one of the predicates returns true for the file.
+    */
+  private[h2o] def getJar(predicates: Seq[URL => Boolean]): Option[File] = {
+    def urlToFile(u: URL) = Try(new File(u.toURI)).toOption
+
+    // Recurse up the chain of class loaders from the leaf to the root if necessary.
+    // Recursion was added here mainly because of the Spark REPL where the driver
+    // class loader is a scala.tools.nsc.interpreter.IMain$TranslatingClassLoader
+    // and its parent is a scala.reflect.internal.util.ScalaClassLoader$URLClassLoader.
+
+    @tailrec
+    def findFirstMatch(cl: ClassLoader): Option[File] = {
+      val found =
+        cl match {
+          case urlClassLoader: URLClassLoader =>
+            val urls = urlClassLoader.getURLs
+            // The File constructor can throw if the URL does not reference a local
+            // file.  This might be possible if running in some kind of applet.
+            findTransformedItem(urls, predicates)(urlToFile)
+          case _ => None
+        }
+
+      found match {
+        case Some(file) => Option(file)
+        case None =>
+          Option(cl.getParent) match {
+            case Some(parentCl) =>
+              // Don't map or fold to ensure tail recursion.
+              findFirstMatch(parentCl)
+            case None => None
+          }
       }
-      case _ => Array.empty[File]
     }
 
-  // This guarantees that the h2oGenModelName property used below is guaranteed to be in sync with the maven artifact
-  // dependency defined in the POM. This is because the h2o.properties is a filtered resource, meaning maven injects
-  // values from the build into the properties file at build time.
-  private[h2o] lazy val h2oProps = {
-    val stream = getClass.getClassLoader.getResourceAsStream("h2o.properties")
-    try {
-      val p = new Properties
-      p.load(stream)
-      p
-    }
-    finally stream.close()
+    findFirstMatch(currentClassLoader)
   }
 
   private[this] lazy val currentClassLoader = Thread.currentThread().getContextClassLoader
@@ -278,27 +327,19 @@ object H2oModel extends ParserProviderCompanion
     // not available in the System's classloader, however, it is available in the thread's local classloader.
     //
     // This has been proven to work within a Jetty environment.
-    val h2oGenModelJarName = h2oProps.getProperty("h2oGenModelName")
 
     val gmcp = genModelClassPath
 
-    val h2oGenModelJar = getJar((url: URL) => {
+    val h2oGenModelJar = getJar(Seq[URL => Boolean](
       // Try to find the h2o genmodel jar.
-      val foundExactJar = url.toString.contains(h2oGenModelJarName)
+      url => url.toString.matches(GenModelJarNameRe),
 
       // Try to find the class in an uberjar if necessary.
-      lazy val foundInJar = Try {
-        new JarFile(url.getPath).entries().asScala.exists(_.getName == gmcp)
-      }.getOrElse(false)
-
-      val useUrl = foundExactJar || foundInJar
-
-      if (useUrl) {
-        debug(s"including URL in classpath for H2O compiler: $useUrl")
-      }
-
-      useUrl
-    })
+      url =>
+        Try {
+          new JarFile(url.getPath).entries().asScala.exists(_.getName == gmcp)
+        }.getOrElse(false)
+    ))
 
     val compiler = new Compiler[GenModel](currentClassLoader, h2oGenModelJar, classCacheDir)
     f(compiler)(input)

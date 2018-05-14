@@ -6,6 +6,14 @@ description := "Scala-based machine learning library with generic models and laz
 //  Build Settings
 // ===========================================================================
 
+incOptions := incOptions.value.withNameHashing(true)
+
+// This can yield significant improvements in artifact resolution and
+// compilation speeds.  See:
+// https://www.lightbend.com/blog/improved-dependency-management-with-sbt-0137
+updateOptions := updateOptions.value.withCachedResolution(true)
+
+
 lazy val commonSettings = Seq(
   organization := "com.eharmony",
   scalaVersion := "2.11.12",
@@ -101,7 +109,6 @@ def editSourceSettings = Seq[Setting[_]](
   variables in EditSource += crossTarget {t => ("projectBuildDirectory", t.getCanonicalPath)}.value,
   variables in EditSource += (sourceDirectory in Test) {s => ("scalaTestSource", s.getCanonicalPath)}.value,
   variables in EditSource += version {s => ("projectVersion", s.toString)}.value,
-  variables in EditSource += ("h2oVersion", Dependencies.h2oVersion.toString),
 
   // Try doing this with adding to sourceManaged direcory instead of directly
   // adding to the class directory in the compile task.  This would most likely
