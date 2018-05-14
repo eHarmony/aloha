@@ -79,7 +79,9 @@ class H2oModelTest extends Logging with ModelSerializationTestHelper {
     val bad = "/PREFIXh2o-genmodel-VERSION.jarSUFFIX"
 
     for {
-      prefix <- Stream.fill(10)(r.nextString(1 + r.nextInt(10)))
+      prefix <- Stream.continually(r.nextString(1 + r.nextInt(10)))
+                      .filterNot(x => x.endsWith("/") || x.endsWith("\\"))
+                      .take(10)
       suffix <- Stream.fill(10)(r.nextString(1 + r.nextInt(10)))
       v      <- versions
       u       = bad.replaceAllLiterally("VERSION", v)
