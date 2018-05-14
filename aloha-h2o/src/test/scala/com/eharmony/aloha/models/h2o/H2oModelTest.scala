@@ -54,6 +54,40 @@ class H2oModelTest extends Logging with ModelSerializationTestHelper {
     assertTrue(h2oModelClass isAssignableFrom serialized.getClass)
   }
 
+  @Test def testFindingH2oJarByName(): Unit = {
+
+    val r = new scala.util.Random(9814609234626446L)
+
+    val versions = Seq.fill(5)(
+      (1 to 2 + r.nextInt(2))                       // 1 to 4 blocks
+        .map(_ => (1 + r.nextInt(1000)).toString)   // 1 to 1000 within each block.
+        .mkString(".")
+    )
+
+    val good = Seq(
+      "~/.ivy2/cache/ai.h2o/h2o-genmodel/jars/h2o-genmodel-VERSION.jar",
+      "/h2o-genmodel-VERSION.jar",
+      "C:\\a\\b\\c\\h2o-genmodel-VERSION.jar"
+    )
+
+    for {
+      v <- versions
+      g <- good
+      u  = g.replaceAllLiterally("VERSION", v)
+    } assertTrue(u.matches(H2oModel.GenModelJarNameRe))
+
+    val bad = "/PREFIXh2o-genmodel-VERSION.jarSUFFIX"
+
+    for {
+      prefix <- Stream.fill(10)(r.nextString(1 + r.nextInt(10)))
+      suffix <- Stream.fill(10)(r.nextString(1 + r.nextInt(10)))
+      v      <- versions
+      u       = bad.replaceAllLiterally("VERSION", v)
+                   .replaceAllLiterally("PREFIX", prefix)
+                   .replaceAllLiterally("SUFFIX", suffix)
+    } assertFalse(u.matches(H2oModel.GenModelJarNameRe))
+  }
+
   @Test def testGetJarShouldBeLazy(): Unit = {
     val urls = Seq(1, 2, 3)
     val filters = Seq[Int => Boolean](_ > 4, x => { Thread.sleep(100); x < 2  })

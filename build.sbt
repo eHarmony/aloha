@@ -101,7 +101,6 @@ def editSourceSettings = Seq[Setting[_]](
   variables in EditSource += crossTarget {t => ("projectBuildDirectory", t.getCanonicalPath)}.value,
   variables in EditSource += (sourceDirectory in Test) {s => ("scalaTestSource", s.getCanonicalPath)}.value,
   variables in EditSource += version {s => ("projectVersion", s.toString)}.value,
-  variables in EditSource += ("h2oVersion", Dependencies.h2oVersion.toString),
 
   // Try doing this with adding to sourceManaged direcory instead of directly
   // adding to the class directory in the compile task.  This would most likely

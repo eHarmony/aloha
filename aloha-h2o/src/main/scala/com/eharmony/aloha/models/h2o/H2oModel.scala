@@ -2,7 +2,6 @@ package com.eharmony.aloha.models.h2o
 
 import java.io.File
 import java.net.{URL, URLClassLoader}
-import java.util.Properties
 import java.util.jar.JarFile
 
 import com.eharmony.aloha.audit.Auditor
@@ -182,6 +181,8 @@ final case class H2oModel[U, N: RefInfo, -A, +B <: U](
 object H2oModel extends ParserProviderCompanion
                    with Logging {
 
+  private[h2o] val GenModelJarNameRe = """^(.*[\/\\])?h2o-genmodel-(\d+)(\.\d+)+.jar$"""
+
   protected[h2o] case class Features[F](features: F,
                                         missing: Map[String, Seq[String]] = Map.empty,
                                         missingOk: Boolean = true)
@@ -316,19 +317,6 @@ object H2oModel extends ParserProviderCompanion
     findFirstMatch(currentClassLoader)
   }
 
-  // This guarantees that the h2oGenModelName property used below is guaranteed to be in sync with the maven artifact
-  // dependency defined in the POM. This is because the h2o.properties is a filtered resource, meaning maven injects
-  // values from the build into the properties file at build time.
-  private[h2o] lazy val h2oProps = {
-    val stream = getClass.getClassLoader.getResourceAsStream("h2o.properties")
-    try {
-      val p = new Properties
-      p.load(stream)
-      p
-    }
-    finally stream.close()
-  }
-
   private[this] lazy val currentClassLoader = Thread.currentThread().getContextClassLoader
 
   protected[h2o] def getGenModel[B, C](input: => C,
@@ -339,13 +327,12 @@ object H2oModel extends ParserProviderCompanion
     // not available in the System's classloader, however, it is available in the thread's local classloader.
     //
     // This has been proven to work within a Jetty environment.
-    val h2oGenModelJarName = h2oProps.getProperty("h2oGenModelName")
 
     val gmcp = genModelClassPath
 
     val h2oGenModelJar = getJar(Seq[URL => Boolean](
       // Try to find the h2o genmodel jar.
-      url => url.toString.contains(h2oGenModelJarName),
+      url => url.toString.matches(GenModelJarNameRe),
 
       // Try to find the class in an uberjar if necessary.
       url =>
