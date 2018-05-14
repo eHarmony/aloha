@@ -351,7 +351,7 @@ class VwJniModelTest extends ModelSerializationTestHelper with Logging {
              """.stripMargin.trim.parseJson
 
         val m = model[Float](extJson(VwModelPath))
-        assertEquals(ExpVwOutput, m(missingHeight).get, 0)
+        assertEquals(expVwOutput, m(missingHeight).get, 0)
 
         val m1 = model[Float](b64Json)
         assertEquals(m1(missingHeight).get, m(missingHeight).get, 0)
@@ -381,30 +381,12 @@ class VwJniModelTest extends ModelSerializationTestHelper with Logging {
         }
     }
 
-    private[this] def model[A : RefInfo](modelJson: JsValue) = {
-      val factory = ModelFactory.defaultFactory(semantics, OptionAuditor[A]())
-      val m: Model[CsvLine, Option[A]] = factory.fromString(modelJson.compactPrint).get
-      assertEquals("VwJniModel", m.getClass.getSimpleName)
-      m.asInstanceOf[VwJniModel[Option[_], A, CsvLine, Option[A]]]
-    }
-
   private[this] def modelWithOutput[A : RefInfo](modelJson: JsValue) = {
     val factory = ModelFactory.defaultFactory(semantics, RootedTreeAuditor.noUpperBound[A]())
     val m: Model[CsvLine, NubRootedTree[A]] = factory.fromString(modelJson.compactPrint).get
     assertEquals("VwJniModel", m.getClass.getSimpleName)
     m.asInstanceOf[VwJniModel[NubRootedTree[_], A, CsvLine, NubRootedTree[A]]]
   }
-
-  /**
-     * Tests that the output equals the expected output value.  This ensures that the
-     * @tparam A The output type.
-     */
-    private[this] def testOutputType[A : RefInfo](): Unit = {
-        val tc = TypeCoercion[Double, Option[A]].get
-        val m = model[A](typeTestJson)
-        val y = m(missingHeight)
-        assertEquals(tc(ExpVwOutput), y)
-    }
 }
 
 object VwJniModelTest extends Logging {
@@ -646,11 +628,30 @@ object VwJniModelTest extends Logging {
 
     val missingHeight = csvLines(",0,red")
 
+    private def model[A : RefInfo](modelJson: JsValue) = {
+        val factory = ModelFactory.defaultFactory(semantics, OptionAuditor[A]())
+        val m: Model[CsvLine, Option[A]] = factory.fromString(modelJson.compactPrint).get
+        assertEquals("VwJniModel", m.getClass.getSimpleName)
+        m.asInstanceOf[VwJniModel[Option[_], A, CsvLine, Option[A]]]
+    }
 
     /**
-     * The output of the model created by createModel.
-     */
-    val ExpVwOutput = 0.5041967630386353
+      * Tests that the output equals the expected output value.  This ensures that the
+      * @tparam A The output type.
+      */
+    private def testOutputType[A : RefInfo](): Unit = {
+        val tc = TypeCoercion[Double, Option[A]].get
+        val m = model[A](typeTestJson)
+        val y = m(missingHeight)
+        assertEquals(tc(ExpVwOutput), y)
+    }
+
+    /**
+      * The output of the model created by createModel.
+      */
+    private[this] val ExpVwOutput = 0.5041967630386353
+    private[this] var actExpVwOutput = 0d
+    private def expVwOutput: Double = actExpVwOutput
 
     /**
      * Don't call this manually.  Should only be called by the testing framework.  Is Idempotent though.
@@ -660,7 +661,25 @@ object VwJniModelTest extends Logging {
             deleted <- Try { VwModelFile.delete }
 
             // Try doesn't catch ExceptionInInitializerError, but this is exactly what we want to catch, so wrap, if found.
-            _       <- Try { try { allocateModel() } catch { case e: ExceptionInInitializerError => throw new RuntimeException(e) } }
+            _       <- Try {
+                         try {
+                           allocateModel()
+
+                           model[Double](extJson(VwModelPath)).apply(missingHeight).foreach(v =>
+                             actExpVwOutput = v
+                           )
+
+                           // Blow up tests if necessary.
+                           require(
+                             math.abs(ExpVwOutput - actExpVwOutput) < 0.000005,
+                             "VW didn't learn the model appropriately."
+                           )
+                         }
+                         catch {
+                           case e: ExceptionInInitializerError =>
+                             throw new RuntimeException(e)
+                         }
+                       }
         } yield Unit
 
         if (x.isFailure) error(s"Couldn't properly allocate vw model: $VwModelPath")
